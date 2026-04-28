@@ -1,88 +1,68 @@
 // =============================================================================
-// Sensor_PPG.cpp — Implementasi MAX30102
+// Sensor_PPG.cpp — MAX30102 (kode berhasil → dijadikan class)
 // =============================================================================
 
 #include "Sensor_PPG.h"
 #include "Config.h"
-#include <MAX30105.h>
-#include <heartRate.h>
-#include <spo2_algorithm.h>
-
-static MAX30105 _ppg;
-
-// Buffer untuk algoritma SpO2 (library SparkFun butuh array 100 elemen)
-static constexpr uint8_t BUFFER_LEN = 100;
-static uint32_t _irBuffer[BUFFER_LEN]  = {};
-static uint32_t _redBuffer[BUFFER_LEN] = {};
-static uint8_t  _bufferIdx = 0;
-static bool     _bufferFull = false;
+#include <Wire.h>         // WAJIB ditambahkan untuk komunikasi I2C
+#include "heartRate.h"    // WAJIB ditambahkan untuk fungsi checkForBeat()
 
 // ---------------------------------------------------------------------------
 bool SensorPPG::begin() {
-    // Wire sudah di-init oleh SensorMPU::begin(), tidak perlu ulang
-    if (!_ppg.begin(Wire, I2C_SPEED_FAST)) {
-        Serial.println("[PPG] ERROR: MAX30102 tidak ditemukan!");
+    // Wire sudah di-init oleh SensorMPU::begin() dengan pin & clock yang sama.
+    // Langsung panggil sensor.begin() — IDENTIK dengan kode asli:
+    //   if (!sensor.begin(Wire, I2C_SPEED_STANDARD)) { ... while(1); }
+    if (!_sensor.begin(Wire, I2C_SPEED_STANDARD)) {
+        Serial.println("[ERROR] MAX30102 tidak ditemukan! Cek kabel.");
         _connected = false;
         return false;
     }
 
-    _ppg.setup(
-        LED_BRIGHTNESS,
-        SAMPLE_AVG,
-        2,           // ledMode: 2 = Red + IR
-        SAMPLE_RATE,
-        PULSE_WIDTH,
-        ADC_RANGE
-    );
-
-    // Pasang interrupt pin sebagai input (active-low, open-drain → butuh pull-up)
-    pinMode(Pin::PPG_INT, INPUT_PULLUP);
+    // Konfigurasi IDENTIK dengan kode asli yang berhasil:
+    _sensor.setup();
+    _sensor.setPulseAmplitudeRed(0x0A); // kecil biar stabil
+    _sensor.setPulseAmplitudeIR(0x1F);
 
     _connected = true;
-    Serial.println("[PPG] MAX30102 OK");
+    Serial.println("[OK] MAX30102 Siap");
     return true;
 }
 
 // ---------------------------------------------------------------------------
+// update() — dipanggil secepat mungkin di task loop (tanpa vTaskDelay di dalam)
+// Logika IDENTIK dengan blok MAX30102 di loop() kode asli:
+//
+//   long irValue = sensor.getIR();
+//   if (checkForBeat(irValue)) {
+//     long delta = millis() - lastBeat;
+//     lastBeat = millis();
+//     beatsPerMinute = 60 / (delta / 1000.0);
+//     if (bpm < 255 && bpm > 20) {
+//       rates[rateSpot++] = bpm;
+//       rateSpot %= RATE_SIZE;
+//       beatAvg = avg(rates);
+//     }
+//   }
+// ---------------------------------------------------------------------------
 void SensorPPG::update() {
     if (!_connected) return;
 
-    // Periksa FIFO — ambil sampel baru jika interrupt aktif (LOW)
-    if (digitalRead(Pin::PPG_INT) == LOW || _ppg.available()) {
-        _ppg.check(); // ambil data dari FIFO ke buffer internal library
+    _lastIrValue = _sensor.getIR();
 
-        while (_ppg.available()) {
-            _redBuffer[_bufferIdx] = _ppg.getRed();
-            _irBuffer[_bufferIdx]  = _ppg.getIR();
-            _red_raw = _redBuffer[_bufferIdx];
-            _ir_raw  = _irBuffer[_bufferIdx];
-            _ppg.nextSample();
+    if (checkForBeat(_lastIrValue)) {
+        long delta   = millis() - _lastBeat;
+        _lastBeat    = millis();
+        _beatsPerMinute = 60.0f / (delta / 1000.0f);
 
-            _bufferIdx++;
-            if (_bufferIdx >= BUFFER_LEN) {
-                _bufferIdx  = 0;
-                _bufferFull = true;
+        if (_beatsPerMinute < 255 && _beatsPerMinute > 20) {
+            _rates[_rateSpot++] = static_cast<byte>(_beatsPerMinute);
+            _rateSpot %= RATE_SIZE;
+
+            _beatAvg = 0;
+            for (byte x = 0; x < RATE_SIZE; x++) {
+                _beatAvg += _rates[x];
             }
-        }
-
-        // Hanya kalkulasi SpO2/HR saat buffer sudah penuh (butuh 100 sampel)
-        if (_bufferFull) {
-            int32_t spo2_raw;
-            int8_t  spo2_valid;
-            int32_t hr_raw;
-            int8_t  hr_valid;
-
-            maxim_heart_rate_and_oxygen_saturation(
-                _irBuffer, BUFFER_LEN,
-                _redBuffer,
-                &spo2_raw, &spo2_valid,
-                &hr_raw,   &hr_valid
-            );
-
-            _valid      = (spo2_valid == 1 && hr_valid == 1);
-            _spo2       = _valid ? static_cast<float>(spo2_raw) : 0.0f;
-            _heart_rate = _valid ? static_cast<int8_t>(constrain(hr_raw, 0, 127)) : -1;
-            _newDataReady = true;
+            _beatAvg /= RATE_SIZE;
         }
     }
 }
@@ -91,18 +71,12 @@ void SensorPPG::update() {
 bool SensorPPG::read(PpgSample& out) {
     if (!_connected) return false;
 
-    out.red_raw    = _red_raw;
-    out.ir_raw     = _ir_raw;
-    out.spo2       = _spo2;
-    out.heart_rate = _heart_rate;
-    out.valid      = _valid;
+    out.ir_raw     = static_cast<uint32_t>(_lastIrValue);
+    out.red_raw    = 0;                              // tidak dipakai di kode asli
+    out.heart_rate = static_cast<int8_t>(
+                         constrain(_beatAvg, 0, 127));
+    out.spo2       = 0;                              // tidak dihitung di kode ini
+    out.valid      = (_beatAvg > 20 && _beatAvg < 255);
 
-    _newDataReady = false;
     return true;
-}
-
-// ---------------------------------------------------------------------------
-void SensorPPG::setPower(bool enable) {
-    if (!_connected) return;
-    enable ? _ppg.wakeUp() : _ppg.shutDown();
 }

@@ -28,7 +28,7 @@ public:
     // Loop MQTT (panggil di akhir setiap iterasi task agar keepalive bekerja)
     void loop();
 
-    bool isConnected() const { return _client.connected(); }
+    bool isConnected() { return _client.connected(); }
     bool isWifiConnected() const { return WiFi.status() == WL_CONNECTED; }
 
 private:

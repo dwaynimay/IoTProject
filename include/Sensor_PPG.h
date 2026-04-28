@@ -5,43 +5,40 @@
 // =============================================================================
 
 #include <Arduino.h>
+#include <MAX30105.h> // WAJIB ditambahkan untuk objek _sensor
 #include "DataModels.h"
 
-class SensorPPG {
+class SensorPPG
+{
 public:
     SensorPPG() = default;
 
-    // Inisialisasi sensor. Kembalikan true jika berhasil.
-    // Memasang ISR pada pin interrupt (PPG_INT) jika tersedia.
     bool begin();
-
-    // Update pembacaan internal (panggil sesering mungkin di task loop).
-    // Mengambil sampel dari FIFO MAX30102 dan akumulasi untuk kalkulasi HR/SpO2.
     void update();
-
-    // Isi struct PpgSample dengan nilai terbaru. Kembalikan true jika valid.
-    bool read(PpgSample& out);
-
-    // Aktifkan/nonaktifkan sensor (low-power off)
+    bool read(PpgSample &out);
     void setPower(bool enable);
-
     bool isConnected() const { return _connected; }
 
 private:
-    bool _connected    = false;
+    MAX30105 _sensor; // Deklarasi objek library SparkFun
+
+    bool _connected = false;
     bool _newDataReady = false;
 
-    // Nilai terakhir
-    float    _spo2      = 0.0f;
-    int8_t   _heart_rate = -1;
-    bool     _valid     = false;
-    uint32_t _red_raw   = 0;
-    uint32_t _ir_raw    = 0;
+    // Variabel kalkulasi detak jantung (yang sebelumnya error "not declared")
+    long _lastIrValue = 0;
+    long _lastBeat = 0;
+    float _beatsPerMinute = 0;
+    int _beatAvg = 0;
+
+    static const byte RATE_SIZE = 4;
+    byte _rates[4] = {0};
+    byte _rateSpot = 0;
 
     // Konstanta konfigurasi sensor
-    static constexpr uint8_t SAMPLE_RATE    = 100;  // Hz
-    static constexpr uint8_t SAMPLE_AVG     = 4;    // rata-rata FIFO
-    static constexpr uint8_t LED_BRIGHTNESS = 60;   // 0–255 (atur sesuai pengguna)
-    static constexpr uint8_t PULSE_WIDTH    = 411;  // µs
-    static constexpr uint16_t ADC_RANGE    = 16384;
+    static constexpr uint8_t SAMPLE_RATE = 100;   // Hz
+    static constexpr uint8_t SAMPLE_AVG = 4;      // rata-rata FIFO
+    static constexpr uint8_t LED_BRIGHTNESS = 60; // 0–255
+    static constexpr uint16_t PULSE_WIDTH = 411;  // µs
+    static constexpr uint16_t ADC_RANGE = 16384;
 };

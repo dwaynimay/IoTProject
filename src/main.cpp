@@ -1,20 +1,14 @@
 // =============================================================================
 // main.cpp — Entry Point & Orkestrasi FreeRTOS Task
 //
-// Node dikonfigurasi via NODE_ROLE di platformio.ini:
-//   ROLE_SENSOR  → baca sensor, kirim via ESP-NOW ke gateway
-//   ROLE_GATEWAY → terima ESP-NOW, publish ke MQTT
+// SENSOR NODE (ROLE_SENSOR):
+//   Core 1: taskReadPPG  → update() tanpa delay → snapshot ke queue tiap 100ms
+//   Core 1: taskReadIMU  → baca tiap 100ms → queue
+//   Core 0: taskSendEspNow → ambil queue → kirim ke gateway
 //
-// Arsitektur Task:
-// ┌─────────────────────────────────────────────────────────────────┐
-// │  SENSOR NODE                                                    │
-// │  taskReadImu ──► imuQueue ──► taskSendEspNow ──► [ESP-NOW] ──► │
-// │  taskReadPpg ──► ppgQueue ──┘                                   │
-// └─────────────────────────────────────────────────────────────────┘
-// ┌─────────────────────────────────────────────────────────────────┐
-// │  GATEWAY NODE                                                   │
-// │  [ESP-NOW] ──► onDataRecv (ISR) ──► g_mqttQueue ──► taskMqttPub│
-// └─────────────────────────────────────────────────────────────────┘
+// GATEWAY NODE (ROLE_GATEWAY):
+//   Urutan init WAJIB: WiFi.mode → WiFi.begin (konek dulu!) → esp_now_init
+//   [ESP-NOW onDataRecv ISR] → g_mqttQueue → taskMqttPublish
 // =============================================================================
 
 #include <Arduino.h>
@@ -25,91 +19,69 @@
 #include "Network_EspNow.h"
 #include "Network_Mqtt.h"
 
-// ---------------------------------------------------------------------------
-// Objek global
-// ---------------------------------------------------------------------------
-#if NODE_ROLE == ROLE_SENSOR
-    static SensorMPU     g_imu;
-    static SensorPPG     g_ppg;
-    static NetworkEspNow g_espnow;
-
-    // Queue antar task sensor → task pengirim
-    static QueueHandle_t g_imuQueue;
-    static QueueHandle_t g_ppgQueue;
-#endif
-
-#if NODE_ROLE == ROLE_GATEWAY
-    static NetworkEspNow g_espnow;
-    static NetworkMqtt   g_mqtt;
-    // g_mqttQueue dideklarasikan extern di Network_EspNow.h
-#endif
-
 // ===========================================================================
-// ██████╗  ██████╗ ██╗     ███████╗    ███████╗███████╗███╗   ██╗███████╗ ██████╗ ██████╗
-// ROLE: SENSOR NODE
+// SENSOR NODE
 // ===========================================================================
 #if NODE_ROLE == ROLE_SENSOR
 
-// ---------------------------------------------------------------------------
-// Task: Baca IMU 100 Hz
-// ---------------------------------------------------------------------------
-static void taskReadImu(void* param) {
-    TickType_t xLastWake = xTaskGetTickCount();
-    ImuPacket pkt{};
-    pkt.header.type    = PacketType::IMU_DATA;
-    pkt.header.node_id = NODE_ID;
+static SensorMPU     g_imu;
+static SensorPPG     g_ppg;
+static NetworkEspNow g_espnow;
 
-    for (;;) {
-        if (g_imu.read(pkt.data)) {
-            pkt.header.timestamp = millis();
-            xQueueOverwrite(g_imuQueue, &pkt);  // selalu simpan yang terbaru
-        }
-        vTaskDelayUntil(&xLastWake, pdMS_TO_TICKS(Timing::IMU_SAMPLE_MS));
-    }
-}
+static QueueHandle_t g_imuQueue;
+static QueueHandle_t g_ppgQueue;
 
-// ---------------------------------------------------------------------------
-// Task: Baca PPG 50 Hz
-// ---------------------------------------------------------------------------
-static void taskReadPpg(void* param) {
-    TickType_t xLastWake = xTaskGetTickCount();
+static void taskReadPPG(void* param) {
     PpgPacket pkt{};
     pkt.header.type    = PacketType::PPG_DATA;
     pkt.header.node_id = NODE_ID;
+    uint32_t lastSnapshot = 0;
 
     for (;;) {
-        g_ppg.update();  // update FIFO internal
+        g_ppg.update(); // polling secepat mungkin, tanpa delay
 
-        if (g_ppg.read(pkt.data)) {
-            pkt.header.timestamp = millis();
-            xQueueOverwrite(g_ppgQueue, &pkt);
+        if (millis() - lastSnapshot >= Timing::PRINT_MS) {
+            if (g_ppg.read(pkt.data)) {
+                pkt.header.timestamp = millis();
+                xQueueOverwrite(g_ppgQueue, &pkt);
+            }
+            lastSnapshot = millis();
         }
-        vTaskDelayUntil(&xLastWake, pdMS_TO_TICKS(Timing::PPG_SAMPLE_MS));
+        taskYIELD();
     }
 }
 
-// ---------------------------------------------------------------------------
-// Task: Kirim data via ESP-NOW ke Gateway (100ms interval)
-// ---------------------------------------------------------------------------
+static void taskReadIMU(void* param) {
+    ImuPacket pkt{};
+    pkt.header.type    = PacketType::IMU_DATA;
+    pkt.header.node_id = NODE_ID;
+    uint32_t lastRead = 0;
+
+    for (;;) {
+        if (millis() - lastRead >= Timing::PRINT_MS) {
+            if (g_imu.read(pkt.data)) {
+                pkt.header.timestamp = millis();
+                xQueueOverwrite(g_imuQueue, &pkt);
+            }
+            lastRead = millis();
+        }
+        vTaskDelay(pdMS_TO_TICKS(10));
+    }
+}
+
 static void taskSendEspNow(void* param) {
     TickType_t xLastWake = xTaskGetTickCount();
     ImuPacket imuPkt{};
     PpgPacket ppgPkt{};
-
     uint32_t lastHeartbeat = 0;
 
     for (;;) {
-        // Kirim IMU jika ada data baru
         if (xQueuePeek(g_imuQueue, &imuPkt, 0) == pdTRUE) {
             g_espnow.sendImu(imuPkt);
         }
-
-        // Kirim PPG jika ada data baru
         if (xQueuePeek(g_ppgQueue, &ppgPkt, 0) == pdTRUE) {
             g_espnow.sendPpg(ppgPkt);
         }
-
-        // Heartbeat setiap 30 detik
         if (millis() - lastHeartbeat > 30000) {
             HeartbeatPacket hb{};
             hb.header.type      = PacketType::HEARTBEAT;
@@ -119,7 +91,6 @@ static void taskSendEspNow(void* param) {
             g_espnow.sendHeartbeat(hb);
             lastHeartbeat = millis();
         }
-
         vTaskDelayUntil(&xLastWake, pdMS_TO_TICKS(Timing::ESPNOW_SEND_MS));
     }
 }
@@ -127,95 +98,108 @@ static void taskSendEspNow(void* param) {
 #endif // ROLE_SENSOR
 
 // ===========================================================================
-// ROLE: GATEWAY NODE
+// GATEWAY NODE
 // ===========================================================================
 #if NODE_ROLE == ROLE_GATEWAY
 
-// ---------------------------------------------------------------------------
-// Task: Baca queue dan publish ke MQTT
-// ---------------------------------------------------------------------------
+static NetworkEspNow g_espnow;
+static NetworkMqtt   g_mqtt;
+
 static void taskMqttPublish(void* param) {
     MqttMessage msg{};
-
     for (;;) {
-        // Blokir sampai ada pesan di queue (max 500ms)
         if (xQueueReceive(g_mqttQueue, &msg, pdMS_TO_TICKS(Timing::MQTT_PUBLISH_MS)) == pdTRUE) {
             g_mqtt.publish(msg.topic, msg.payload);
         }
-
-        g_mqtt.loop(); // keepalive MQTT
+        g_mqtt.loop();
     }
 }
 
 #endif // ROLE_GATEWAY
 
 // ===========================================================================
-// setup() & loop()
+// setup()
 // ===========================================================================
 void setup() {
     Serial.begin(115200);
     delay(500);
+    Serial.println("\n--- Memulai Health Monitor ---");
 
-    Serial.println("==============================================");
-    Serial.printf("  ESP32 Health Monitor | Node ID: %d | Role: %s\n",
-                  NODE_ID,
-                  (NODE_ROLE == ROLE_SENSOR) ? "SENSOR" : "GATEWAY");
-    Serial.println("==============================================");
-
+// ---------------------------------------------------------------------------
 #if NODE_ROLE == ROLE_SENSOR
-    // --- Init Sensor ---
+
+    // Sensor: MPU dulu (Wire.begin ada di sini), lalu PPG reuse wire
     if (!g_imu.begin()) {
-        Serial.println("[FATAL] MPU6050 gagal! Halt.");
+        Serial.println("[FATAL] MPU6050 gagal! Cek SDA=18, SCL=19.");
         while (true) delay(1000);
     }
-    g_imu.calibrate();
-
     if (!g_ppg.begin()) {
-        Serial.println("[WARN] MAX30102 gagal! PPG dinonaktifkan.");
-        // Tidak halt — sistem bisa jalan tanpa PPG
+        Serial.println("[WARN] MAX30102 gagal. Lanjut tanpa PPG.");
     }
 
-    // --- Init ESP-NOW (mode sender) ---
+    Serial.println("Tempel jari Anda ke sensor MAX30102...");
+    Serial.println("----------------------------------------");
+
+    // ESP-NOW sensor: WiFi.mode → set channel → esp_now_init → add peer
     if (!g_espnow.begin(true)) {
-        Serial.println("[FATAL] ESP-NOW gagal! Halt.");
+        Serial.println("[FATAL] ESP-NOW gagal!");
         while (true) delay(1000);
     }
 
-    // --- Buat Queue (ukuran 1 — overwrite, selalu data terbaru) ---
-    g_imuQueue = xQueueCreate(1, sizeof(ImuPacket));
-    g_ppgQueue = xQueueCreate(1, sizeof(PpgPacket));
+    g_imuQueue = xQueueCreate(QueueLen::IMU_DATA, sizeof(ImuPacket));
+    g_ppgQueue = xQueueCreate(QueueLen::PPG_DATA, sizeof(PpgPacket));
 
-    // --- Buat FreeRTOS Task ---
-    xTaskCreatePinnedToCore(taskReadImu,    "IMU",     StackSize::SENSOR_IMU,  nullptr, TaskPrio::SENSOR_IMU,  nullptr, 1);
-    xTaskCreatePinnedToCore(taskReadPpg,    "PPG",     StackSize::SENSOR_PPG,  nullptr, TaskPrio::SENSOR_PPG,  nullptr, 1);
-    xTaskCreatePinnedToCore(taskSendEspNow, "ESPNOW",  StackSize::ESPNOW_TX,   nullptr, TaskPrio::ESPNOW_TX,   nullptr, 0);
+    xTaskCreatePinnedToCore(taskReadPPG,    "PPG",    StackSize::SENSOR_PPG, nullptr, TaskPrio::SENSOR_PPG, nullptr, 1);
+    xTaskCreatePinnedToCore(taskReadIMU,    "IMU",    StackSize::SENSOR_IMU, nullptr, TaskPrio::SENSOR_IMU, nullptr, 1);
+    xTaskCreatePinnedToCore(taskSendEspNow, "ESPNOW", StackSize::ESPNOW_TX,  nullptr, TaskPrio::ESPNOW_TX,  nullptr, 0);
 
     Serial.println("[SETUP] Sensor node siap.");
-#endif
 
-#if NODE_ROLE == ROLE_GATEWAY
-    // --- Buat MQTT Queue (diakses oleh ESP-NOW callback ISR) ---
+// ---------------------------------------------------------------------------
+#elif NODE_ROLE == ROLE_GATEWAY
+
+    // -----------------------------------------------------------------------
+    // URUTAN GATEWAY — SANGAT PENTING, JANGAN DIBALIK:
+    //
+    //  1. Buat queue DULU (sebelum ESP-NOW init, karena callback ISR
+    //     bisa langsung tembak queue begitu esp_now_init selesai)
+    //
+    //  2. WiFi.mode(STA) + WiFi.begin() → KONEK KE ROUTER DULU
+    //     Channel baru terset dengan benar setelah konek
+    //
+    //  3. BARU esp_now_init() — sekarang channel sudah pasti = channel router
+    //
+    //  4. Daftarkan peer sensor (channel harus sudah benar)
+    // -----------------------------------------------------------------------
+
+    // Step 1: buat queue
     g_mqttQueue = xQueueCreate(QueueLen::MQTT_MSG, sizeof(MqttMessage));
 
-    // --- Init ESP-NOW (mode receiver) ---
-    if (!g_espnow.begin(false)) {
-        Serial.println("[FATAL] ESP-NOW gagal! Halt.");
+    // Step 2 & 3 & 4: WiFi konek dulu, baru ESP-NOW
+    // NetworkMqtt::begin() → connectWifi() → WiFi.begin() + tunggu konek
+    // NetworkEspNow::begin(false) → esp_now_init() saat channel sudah benar
+    //
+    // ⚠️  Urutan ini kebalikan dari sensor node!
+    //     Gateway: MQTT.begin() dulu → EspNow.begin() setelah WiFi konek
+    if (!g_mqtt.begin()) {
+        // Jika WiFi gagal, ESP-NOW juga tidak akan bisa dapat channel yang benar
+        Serial.println("[FATAL] WiFi gagal! ESP-NOW channel tidak bisa ditentukan.");
         while (true) delay(1000);
     }
 
-    // --- Init MQTT (blokir sampai konek) ---
-    if (!g_mqtt.begin()) {
-        Serial.println("[WARN] MQTT gagal tersambung, akan retry otomatis.");
+    // Step 4: ESP-NOW init SETELAH WiFi konek (channel sudah benar)
+    if (!g_espnow.begin(false)) {
+        Serial.println("[FATAL] ESP-NOW gagal!");
+        while (true) delay(1000);
     }
 
-    // --- Buat FreeRTOS Task ---
-    xTaskCreatePinnedToCore(taskMqttPublish, "MQTT_PUB", StackSize::MQTT_PUB, nullptr, TaskPrio::MQTT_PUB, nullptr, 0);
+    xTaskCreatePinnedToCore(taskMqttPublish, "MQTT", StackSize::MQTT_PUB, nullptr, TaskPrio::MQTT_PUB, nullptr, 0);
 
-    Serial.println("[SETUP] Gateway node siap.");
+    Serial.println("[SETUP] Gateway siap.");
+
 #endif
 }
 
-// loop() kosong — semua logika ada di FreeRTOS task
 void loop() {
     vTaskDelay(pdMS_TO_TICKS(10000));
 }
