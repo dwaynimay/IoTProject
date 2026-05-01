@@ -1,10 +1,6 @@
 #pragma once
 // =============================================================================
 // Network_Mqtt.h — MQTT Client (Hanya untuk Node Gateway)
-// Menggunakan library: knolleary/PubSubClient
-//
-// WiFi dan MQTT dihandle di dalam class ini.
-// Task MQTT membaca dari g_mqttQueue dan publish ke broker.
 // =============================================================================
 
 #include <Arduino.h>
@@ -17,19 +13,13 @@ class NetworkMqtt {
 public:
     NetworkMqtt() : _client(_wifiClient) {}
 
-    // Konek ke WiFi lalu ke MQTT broker.
-    // Blokir sampai berhasil atau timeout (Timing::WIFI_TIMEOUT_MS).
     bool begin();
-
-    // Publish satu pesan. Reconnect otomatis jika terputus.
-    // Dipanggil dari FreeRTOS task, aman karena sudah ada mutex.
     bool publish(const char* topic, const char* payload, bool retain = false);
-
-    // Loop MQTT (panggil di akhir setiap iterasi task agar keepalive bekerja)
     void loop();
 
-    bool isConnected() { return _client.connected(); }
+    bool isConnected()     { return _client.connected(); }
     bool isWifiConnected() const { return WiFi.status() == WL_CONNECTED; }
+    int  state()           { return _client.state(); } // PubSubClient state code
 
 private:
     WiFiClient   _wifiClient;
