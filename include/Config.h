@@ -57,8 +57,8 @@ namespace I2CAddr
 // ---------------------------------------------------------------------------
 namespace Wifi
 {
-    constexpr char SSID[] = "NAMA_WIFI7";
-    constexpr char PASSWORD[] = "PASSWORD_WIFI";
+    constexpr char SSID[] = "Adhyaksa_4, No. 7";
+    constexpr char PASSWORD[] = "adhyaksanet123";
 }
 
 namespace Mqtt
@@ -86,10 +86,10 @@ namespace MacAddr
     constexpr uint8_t NODE_A[6] = {0xF4, 0x2D, 0xC9, 0x6F, 0x5C, 0x40};
 
     // Node B (Sensor 2) -> ganti dengan MAC aktual ESP32 kedua
-    constexpr uint8_t NODE_B[6] = {0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0x02};
+    constexpr uint8_t NODE_B[6] = {0x28, 0x05, 0xA5, 0x31, 0xF4, 0x94};
 
-    // Node C (Gateway) -> Sesuai log: 28:05:A5:31:F4:94
-    constexpr uint8_t GATEWAY[6] = {0x28, 0x05, 0xA5, 0x31, 0xF4, 0x94};
+    // Node C (Gateway) -> Sesuai log: F4:2D:C9:70:D1:34
+    constexpr uint8_t GATEWAY[6] = {0xF4, 0x2D, 0xC9, 0x70, 0xD1, 0x34};
 }
 
 // ---------------------------------------------------------------------------
@@ -177,8 +177,11 @@ namespace StackSize
 {
     constexpr uint32_t SENSOR_PPG = 4096;
     constexpr uint32_t SENSOR_IMU = 4096;
-    constexpr uint32_t ESPNOW_TX = 3072;
-    constexpr uint32_t MQTT_PUB = 8192;
+    // CS_TX butuh lebih besar: 7 array float[32] lokal + overhead encode
+    // 92 byte sisa (dari log) → naik 4x dari 3072 ke 12288 untuk aman
+    constexpr uint32_t ESPNOW_TX  = 12288;
+    constexpr uint32_t MQTT_PUB   = 8192;
+    constexpr uint32_t MONITOR    = 4096; // Monitor task stack (sebelumnya hardcode 3072)
 }
 
 // ---------------------------------------------------------------------------
@@ -188,5 +191,10 @@ namespace QueueLen
 {
     constexpr uint8_t IMU_DATA = 1;
     constexpr uint8_t PPG_DATA = 1;
-    constexpr uint8_t MQTT_MSG = 40; // diperbesar dari 20 → 40 untuk buffer aman
+    // RAM queue = sizeof(MqttMessage) × MQTT_MSG
+    //           = (80 + 420) × 30 = 15,000 bytes = 15 KB  ← AMAN
+    //
+    // 30 entry = cukup buffer ~4 window (7 paket/window) jika MQTT lambat.
+    // Jangan naikkan tanpa hitung ulang sizeof(MqttMessage)!
+    constexpr uint8_t MQTT_MSG = 30;
 }

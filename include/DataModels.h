@@ -21,6 +21,13 @@ enum class PacketType : uint8_t {
     IMU_DATA      = 0x01,
     PPG_DATA      = 0x02,
     COMBINED_DATA = 0x03, // NEW: IMU + PPG + EdgeResult dalam satu frame
+    CS_AX         = 0x10,   // ← tambahkan mulai sini
+    CS_AY         = 0x11,
+    CS_AZ         = 0x12,
+    CS_GX         = 0x13,
+    CS_GY         = 0x14,
+    CS_GZ         = 0x15,
+    CS_IR         = 0x16,
     HEARTBEAT     = 0xFF,
 };
 
@@ -116,9 +123,22 @@ union EspNowPayload {
 
 // ---------------------------------------------------------------------------
 // Pesan internal antar FreeRTOS task di gateway (disimpan dalam queue)
-// Payload diperbesar untuk akomodasi JSON combined packet.
+//
+// ⚠ PERHATIAN UKURAN RAM — hitung sebelum mengubah:
+//   sizeof(MqttMessage) × QueueLen::MQTT_MSG = total heap queue
+//
+// Ukuran payload aktual (dari log, CS mode):
+//   cs_ax/ay/az/gx/gy/gz : ~310 bytes
+//   cs_ir                 : ~360 bytes  (ada field hr + ppg_valid tambahan)
+//   CombinedPacket JSON   : ~250 bytes
+//
+// Payload 420 bytes = cukup untuk tipe terbesar (cs_ir ~360B) + margin 60B
+// RAM queue: 30 × (80 + 420) = 15,000 bytes = 15 KB   ← AMAN
+//
+// JANGAN naikkan payload atau queue size tanpa hitung ulang!
+// Contoh bahaya: payload=1300 × queue=80 → 108 KB → heap habis → restart loop
 // ---------------------------------------------------------------------------
 struct MqttMessage {
     char topic[80];
-    char payload[400]; // diperbesar dari 200 → 400 untuk combined JSON
+    char payload[420]; // cukup untuk cs_ir (360B) + margin
 };
