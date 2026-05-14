@@ -6,8 +6,18 @@
 //   Sensor Node (A/B) → kirim CombinedPacket ke Gateway setiap SEND_INTERVAL_MS
 //   Gateway Node (C)  → terima dari A & B, routing ke queue MQTT per node_id
 //
-// Callback ESP-NOW berjalan di konteks ISR/WiFi task, bukan FreeRTOS task —
-// pengolahan berat harus di-delegate ke queue.
+// [Item #5 ISR Offload] Pipeline baru di gateway:
+//
+//   onDataRecv ISR          taskSerialize           taskMqttPublish
+//   ──────────────          ─────────────           ───────────────
+//   memcpy raw bytes   →    format JSON        →    mqtt.publish()
+//   xQueueSendFromISR        xQueueReceive           xQueueReceive
+//   ~5µs (aman di ISR)       boleh lambat            tidak berubah
+//        ↓                        ↓
+//    g_rawQueue             g_mqttQueue
+//
+// Sebelumnya onDataRecv melakukan snprintf 32× (CS_M) dan Serial.printf
+// langsung di ISR → bisa makan beberapa ms → watchdog timeout di gateway.
 // =============================================================================
 
 #include <Arduino.h>
@@ -16,7 +26,18 @@
 #include "DataModels.h"
 #include "Config.h"
 
-// Queue global untuk data yang diterima gateway (dideklarasikan di .cpp)
+// ---------------------------------------------------------------------------
+// Queue global
+//
+// g_rawQueue  — ISR → taskSerialize (raw ESP-NOW bytes, isi RawPacket)
+//               Didefinisikan di Network_EspNow.cpp
+//               Dibuat di main.cpp sebelum g_espnow.begin()
+//
+// g_mqttQueue — taskSerialize → taskMqttPublish (JSON siap publish)
+//               Didefinisikan di Network_EspNow.cpp
+//               Dibuat di main.cpp (tidak berubah dari sebelumnya)
+// ---------------------------------------------------------------------------
+extern QueueHandle_t g_rawQueue;
 extern QueueHandle_t g_mqttQueue;
 
 class NetworkEspNow {
@@ -31,7 +52,6 @@ public:
     // --- Sensor Node API ---
 
     // Kirim CombinedPacket (IMU + PPG + EdgeResult) ke gateway.
-    // Ini adalah fungsi kirim utama — gunakan ini, bukan sendImu/sendPpg terpisah.
     bool sendCombined(const CombinedPacket& pkt);
 
     // Kirim heartbeat periodik
@@ -46,6 +66,9 @@ private:
 
     // Callback statis (ESP-NOW hanya menerima C-style function pointer)
     static void onDataSent(const uint8_t* mac, esp_now_send_status_t status);
+
+    // [Item #5] ISR minimal — hanya memcpy ke g_rawQueue
+    // Semua serialisasi JSON dipindah ke taskSerialize di main.cpp
     static void onDataRecv(const uint8_t* mac, const uint8_t* data, int len);
 
     // Helper: daftarkan satu peer

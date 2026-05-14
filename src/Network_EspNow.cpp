@@ -7,8 +7,17 @@
 //
 // GATEWAY (senderMode=false):
 //   WiFi sudah konek (dilakukan NetworkMqtt::begin() sebelum fungsi ini).
-//   onDataRecv menerima CombinedPacket → format JSON → push ke g_mqttQueue
-//   Batching dikontrol via BatchConfig::BATCHING_ENABLED di Config.h
+//   [Item #5 ISR Offload]
+//   onDataRecv ISR → hanya memcpy raw bytes → push ke g_rawQueue
+//   taskSerialize (di main.cpp) → ambil dari g_rawQueue → format JSON
+//                               → push ke g_mqttQueue
+//   taskMqttPublish → publish ke broker (tidak berubah)
+//
+// Kenapa ISR harus minimal?
+//   ESP-NOW callback berjalan di WiFi task context (setara ISR priority).
+//   snprintf loop 32× + Serial.printf di ISR bisa makan 1–5ms →
+//   watchdog idle task timeout → gateway restart loop.
+//   memcpy 250 bytes ~1µs → aman.
 // =============================================================================
 
 #include "Network_EspNow.h"
@@ -16,35 +25,18 @@
 #include <cstring>
 #include <esp_wifi.h>
 
+QueueHandle_t g_rawQueue  = nullptr;
 QueueHandle_t g_mqttQueue = nullptr;
+
 static NetworkEspNow* _instance = nullptr;
 
 static constexpr uint8_t ESPNOW_CHANNEL = 1;
 
 // ---------------------------------------------------------------------------
-// Batching state — per node_id (support node 1 dan 2)
-// Aktif hanya jika BatchConfig::BATCHING_ENABLED == true
+// Catatan batching:
+// BatchBuffer dan logika batching sudah DIPINDAH ke taskSerialize di main.cpp.
+// Di sini tidak ada state batching — onDataRecv hanya memcpy ke g_rawQueue.
 // ---------------------------------------------------------------------------
-#if NODE_ROLE == ROLE_GATEWAY
-
-struct BatchBuffer {
-    // Buffer menyimpan JSON entry per sampel, digabung saat penuh
-    // Format entry: {"ts":...,"ax":...,...,"ir":...,"hr":...,"finger":...}
-    static constexpr uint8_t MAX_BATCH = 10; // batas atas hardcoded
-    char     entries[MAX_BATCH][180];         // setiap entry max 180 char
-    uint8_t  count    = 0;
-    uint8_t  node_id  = 0;
-};
-
-// Buffer untuk node 1 dan node 2 (index 0 = node 1, index 1 = node 2)
-static BatchBuffer g_batchBuf[2];
-
-// Ambil index buffer berdasarkan node_id (1→0, 2→1, lainnya→0)
-static inline uint8_t batchIdx(uint8_t node_id) {
-    return (node_id >= 1 && node_id <= 2) ? (node_id - 1) : 0;
-}
-
-#endif // ROLE_GATEWAY
 
 // ---------------------------------------------------------------------------
 bool NetworkEspNow::begin(bool senderMode) {
@@ -96,6 +88,7 @@ bool NetworkEspNow::begin(bool senderMode) {
         Serial.printf("[ESP-NOW] Batching: %s (size=%d)\n",
                       BatchConfig::BATCHING_ENABLED ? "AKTIF" : "NONAKTIF",
                       BatchConfig::BATCH_SIZE);
+        Serial.println("[ESP-NOW] ISR mode: MINIMAL → serialisasi di taskSerialize");
     }
 
     Serial.printf("[ESP-NOW] MAC lokal: %s\n", WiFi.macAddress().c_str());
@@ -123,13 +116,12 @@ bool NetworkEspNow::sendCombined(const CombinedPacket& pkt) {
                                reinterpret_cast<const uint8_t*>(&pkt),
                                sizeof(CombinedPacket));
     if (r != ESP_OK) {
-        Serial.printf("[ESP-NOW] sendCombined GAGAL: esp_err=0x%X (%s)\n",
-                      r,
-                      r == ESP_ERR_ESPNOW_NOT_INIT  ? "NOT_INIT" :
-                      r == ESP_ERR_ESPNOW_ARG        ? "ARG_INVALID" :
-                      r == ESP_ERR_ESPNOW_INTERNAL   ? "INTERNAL" :
-                      r == ESP_ERR_ESPNOW_NO_MEM     ? "NO_MEM" :
-                      r == ESP_ERR_ESPNOW_NOT_FOUND  ? "PEER_NOT_FOUND" :
+        Serial.printf("[ESP-NOW] sendCombined GAGAL: esp_err=0x%X (%s)\n", r,
+                      r == ESP_ERR_ESPNOW_NOT_INIT  ? "NOT_INIT"      :
+                      r == ESP_ERR_ESPNOW_ARG        ? "ARG_INVALID"   :
+                      r == ESP_ERR_ESPNOW_INTERNAL   ? "INTERNAL"      :
+                      r == ESP_ERR_ESPNOW_NO_MEM     ? "NO_MEM"        :
+                      r == ESP_ERR_ESPNOW_NOT_FOUND  ? "PEER_NOT_FOUND":
                       r == ESP_ERR_ESPNOW_IF         ? "INTERFACE_ERR" : "UNKNOWN");
     }
     return r == ESP_OK;
@@ -151,205 +143,38 @@ void NetworkEspNow::onDataSent(const uint8_t* mac, esp_now_send_status_t status)
 }
 
 // ---------------------------------------------------------------------------
-// onDataRecv — berjalan di ISR context, harus cepat.
-// Semua format JSON dilakukan di sini lalu push ke queue.
-// Untuk CombinedPacket: routing berdasarkan node_id → topic node_<id>/combined
+// [Item #5 ISR Offload] onDataRecv — MINIMAL, hanya memcpy
+//
+// TIDAK boleh ada di sini:
+//   ✗ snprintf / sprintf
+//   ✗ Serial.printf / Serial.println
+//   ✗ malloc / new
+//   ✗ logika bisnis apapun
+//
+// Yang boleh:
+//   ✓ memcpy (< 250 bytes, ~1µs)
+//   ✓ xQueueSendFromISR
+//   ✓ perbandingan integer sederhana
+//
+// Semua serialisasi JSON dan routing dipindah ke taskSerialize di main.cpp.
 // ---------------------------------------------------------------------------
-static void serializeFloatArray(char* buf, int bufLen,
-                                const char* topic_base, uint8_t nodeId,
-                                const char* axis_name,
-                                const float* y, uint8_t m,
-                                uint32_t ts, bool finger,
-                                QueueHandle_t queue) {
-    MqttMessage msg{};
-    snprintf(msg.topic, sizeof(msg.topic),
-             "%s/node_%d/cs_%s", topic_base, nodeId, axis_name);
-
-    // Format: {"ts":..., "finger":..., "y":[f0,f1,...,fM-1]}
-    char* p = msg.payload;
-    int   rem = sizeof(msg.payload);
-    int   w;
-
-    w   = snprintf(p, rem, "{\"ts\":%lu,\"finger\":%s,\"y\":[",
-                   ts, finger ? "true" : "false");
-    p  += w; rem -= w;
-
-    for (uint8_t i = 0; i < m && rem > 15; i++) {
-        w = snprintf(p, rem, i ? ",%.5f" : "%.5f", y[i]);
-        p += w; rem -= w;
-    }
-    snprintf(p, rem, "]}");
-
-    xQueueSendFromISR(queue, &msg, nullptr);
-}
-
 void NetworkEspNow::onDataRecv(const uint8_t* mac, const uint8_t* data, int len) {
-    if (len < 1 || !g_mqttQueue) return;
+    if (len < 1 || !g_rawQueue) return;
 
-    PacketType type   = static_cast<PacketType>(data[0]);
-    uint8_t    nodeId = data[1];
+    RawPacket raw{};
+    raw.len = static_cast<uint8_t>(len <= 250 ? len : 250);
+    memcpy(raw.data, data, raw.len);
+    memcpy(raw.src_mac, mac, 6);
 
-    // -----------------------------------------------------------------------
-    // Handle CombinedPacket
-    // -----------------------------------------------------------------------
-    if (type == PacketType::COMBINED_DATA) {
-        if (len < static_cast<int>(sizeof(CombinedPacket))) return;
-        const auto* pkt = reinterpret_cast<const CombinedPacket*>(data);
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+    BaseType_t sent = xQueueSendFromISR(g_rawQueue, &raw, &xHigherPriorityTaskWoken);
 
-        // Format entry JSON untuk sampel ini
-        char entry[180];
-        snprintf(entry, sizeof(entry),
-                 "{"
-                 "\"ts\":%lu,"
-                 "\"ax\":%.4f,\"ay\":%.4f,\"az\":%.4f,"
-                 "\"gx\":%.4f,\"gy\":%.4f,\"gz\":%.4f,"
-                 "\"ir\":%lu,\"red\":%lu,"
-                 "\"hr\":%d,\"spo2\":%.1f,\"ppg_valid\":%s,"
-                 "\"finger\":%s"
-                 "}",
-                 pkt->header.timestamp,
-                 pkt->imu.accel_x, pkt->imu.accel_y, pkt->imu.accel_z,
-                 pkt->imu.gyro_x,  pkt->imu.gyro_y,  pkt->imu.gyro_z,
-                 (unsigned long)pkt->ppg.ir_raw, (unsigned long)pkt->ppg.red_raw,
-                 pkt->ppg.heart_rate, pkt->ppg.spo2,
-                 pkt->ppg.valid   ? "true" : "false",
-                 pkt->edge.finger_on ? "true" : "false");
+    // Jika queue penuh, paket dibuang — lebih baik drop 1 paket daripada
+    // block ISR. taskSerialize akan log drop rate via counter.
+    (void)sent;
 
-#if NODE_ROLE == ROLE_GATEWAY
-        if (BatchConfig::BATCHING_ENABLED) {
-            // ---------------------------------------------------------------
-            // MODE BATCH: kumpulkan sampai BATCH_SIZE, baru publish 1 array
-            // ---------------------------------------------------------------
-            uint8_t idx = batchIdx(nodeId);
-            BatchBuffer& buf = g_batchBuf[idx];
-            buf.node_id = nodeId;
-
-            uint8_t batchSize = (BatchConfig::BATCH_SIZE <= BatchBuffer::MAX_BATCH)
-                                ? BatchConfig::BATCH_SIZE
-                                : BatchBuffer::MAX_BATCH;
-
-            if (buf.count < batchSize) {
-                strncpy(buf.entries[buf.count], entry, sizeof(buf.entries[0]) - 1);
-                buf.count++;
-            }
-
-            if (buf.count >= batchSize) {
-                // Batch penuh → gabungkan jadi JSON array dan push ke queue
-                MqttMessage msg{};
-                snprintf(msg.topic, sizeof(msg.topic),
-                         "%s/node_%d/combined", Mqtt::TOPIC_BASE, nodeId);
-
-                // Gabungkan: [entry0,entry1,...,entryN]
-                int pos = 0;
-                msg.payload[pos++] = '[';
-                for (uint8_t i = 0; i < buf.count && pos < (int)sizeof(msg.payload) - 2; i++) {
-                    if (i > 0) { msg.payload[pos++] = ','; }
-                    int remaining = sizeof(msg.payload) - pos - 2;
-                    int written   = snprintf(msg.payload + pos, remaining, "%s", buf.entries[i]);
-                    if (written > 0 && written < remaining) pos += written;
-                }
-                msg.payload[pos++] = ']';
-                msg.payload[pos]   = '\0';
-
-                xQueueSendFromISR(g_mqttQueue, &msg, nullptr);
-                buf.count = 0; // reset buffer
-            }
-        } else {
-#endif
-            // ---------------------------------------------------------------
-            // MODE LANGSUNG: setiap sampel langsung publish (1 objek JSON)
-            // ---------------------------------------------------------------
-            MqttMessage msg{};
-            snprintf(msg.topic, sizeof(msg.topic),
-                     "%s/node_%d/combined", Mqtt::TOPIC_BASE, nodeId);
-            snprintf(msg.payload, sizeof(msg.payload), "%s", entry);
-
-            if (xQueueSendFromISR(g_mqttQueue, &msg, nullptr) != pdTRUE) {
-                Serial.println("[ESP-NOW] WARN: queue penuh, paket dibuang!");
-            }
-#if NODE_ROLE == ROLE_GATEWAY
-        }
-#endif
-        return;
+    // Yield ke task prioritas lebih tinggi jika ada yang terbangun
+    if (xHigherPriorityTaskWoken == pdTRUE) {
+        portYIELD_FROM_ISR();
     }
-
-    // -----------------------------------------------------------------------
-    // Handle Heartbeat (tetap dipertahankan)
-    // -----------------------------------------------------------------------
-    if (type == PacketType::HEARTBEAT) {
-        if (len < static_cast<int>(sizeof(HeartbeatPacket))) return;
-        const auto* pkt = reinterpret_cast<const HeartbeatPacket*>(data);
-        MqttMessage msg{};
-        snprintf(msg.topic, sizeof(msg.topic),
-                 "%s/node_%d/heartbeat", Mqtt::TOPIC_BASE, nodeId);
-        snprintf(msg.payload, sizeof(msg.payload),
-                 "{\"ts\":%lu,\"uptime\":%lu}",
-                 pkt->header.timestamp, (unsigned long)pkt->uptime_s);
-        xQueueSendFromISR(g_mqttQueue, &msg, nullptr);
-        return;
-    }
-
-    // -----------------------------------------------------------------------
-    // Handle CS sinyal tunggal (ax / ay / az / gx / gy / gz / ir)
-    // -----------------------------------------------------------------------
-    uint8_t raw_type = static_cast<uint8_t>(type);
-    if (raw_type >= PKT_CS_AX && raw_type <= PKT_CS_IR) {
-
-        const char* axis_names[] = {"ax","ay","az","gx","gy","gz","ir"};
-        uint8_t axis_idx = raw_type - PKT_CS_AX;  // 0..6
-
-        if (raw_type == PKT_CS_IR) {
-            // CSPpgPacket — ada metadata tambahan
-            if (len < static_cast<int>(sizeof(CSPpgPacket))) return;
-            const auto* pkt = reinterpret_cast<const CSPpgPacket*>(data);
-
-            MqttMessage msg{};
-            snprintf(msg.topic, sizeof(msg.topic),
-                     "%s/node_%d/cs_ir", Mqtt::TOPIC_BASE, nodeId);
-
-            char* p = msg.payload;
-            int rem = sizeof(msg.payload);
-            int w = snprintf(p, rem,
-                     "{\"ts\":%lu,\"hr\":%d,\"ppg_valid\":%s,\"finger\":%s,\"y\":[",
-                     pkt->header.timestamp, pkt->heart_rate,
-                     pkt->ppg_valid ? "true" : "false",
-                     pkt->edge.finger_on ? "true" : "false");
-            p += w; rem -= w;
-            for (uint8_t i = 0; i < CS_M && rem > 15; i++) {
-                w = snprintf(p, rem, i ? ",%.5f" : "%.5f", pkt->y_ir[i]);
-                p += w; rem -= w;
-            }
-            snprintf(p, rem, "]}");
-            xQueueSendFromISR(g_mqttQueue, &msg, nullptr);
-
-        } else {
-            // CS1AxisPacket — IMU axis
-            if (len < static_cast<int>(sizeof(CS1AxisPacket))) return;
-            const auto* pkt = reinterpret_cast<const CS1AxisPacket*>(data);
-
-            MqttMessage msg{};
-            snprintf(msg.topic, sizeof(msg.topic),
-                     "%s/node_%d/cs_%s",
-                     Mqtt::TOPIC_BASE, nodeId, axis_names[axis_idx]);
-
-            char* p = msg.payload;
-            int rem = sizeof(msg.payload);
-            int w = snprintf(p, rem,
-                     "{\"ts\":%lu,\"finger\":%s,\"y\":[",
-                     pkt->header.timestamp,
-                     pkt->edge.finger_on ? "true" : "false");
-            p += w; rem -= w;
-            for (uint8_t i = 0; i < CS_M && rem > 15; i++) {
-                w = snprintf(p, rem, i ? ",%.5f" : "%.5f", pkt->y[i]);
-                p += w; rem -= w;
-            }
-            snprintf(p, rem, "]}");
-            xQueueSendFromISR(g_mqttQueue, &msg, nullptr);
-        }
-        return;
-    }
-
-    // Tipe lama (IMU_DATA / PPG_DATA terpisah) — log peringatan
-    Serial.printf("[ESP-NOW] WARN: tipe paket lama/tidak dikenal: 0x%02X — pakai CombinedPacket\n",
-                  static_cast<uint8_t>(type));
 }

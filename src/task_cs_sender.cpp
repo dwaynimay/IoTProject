@@ -1,18 +1,18 @@
 // =============================================================================
-// task_cs_sender_deploy.cpp — Task CS untuk sistem nyata (M=32)
+// task_cs_sender.cpp — Task CS encode & kirim (Core 0)
+//
+// PERUBAHAN dari versi sebelumnya:
+//   - CSPhiMatrix singleton otomatis di-init saat CSEncoder pertama dibuat
+//   - Tambah CSPhiMatrix::printInfo() di log awal untuk verifikasi
+//   - Semua logika encode & kirim TIDAK berubah
 //
 // Kirim 7 paket CS1AxisPacket per window (1 per sinyal):
 //   PKT_CS_AX, PKT_CS_AY, PKT_CS_AZ,
 //   PKT_CS_GX, PKT_CS_GY, PKT_CS_GZ,
 //   PKT_CS_IR
 //
-// FIX v2:
-//   1. Semua 7 paket dalam 1 window pakai timestamp yang SAMA (diambil sekali
-//      sebelum kirim) → server tidak lagi warning "timestamp spread 656ms"
-//   2. Serial.printf di hot path dihapus → kurangi jitter timing
-//   3. Jeda antar paket dikurangi 3ms → 1ms (masih aman untuk ESP-NOW)
-//   4. Stack: variabel float[] lokal tetap di stack tapi ESPNOW_TX sudah
-//      dinaikkan ke 12288 di Config.h → 92 byte → aman
+// Semua 7 paket dalam 1 window pakai timestamp yang SAMA (diambil sekali
+// sebelum kirim) → server tidak warning "timestamp spread Xms".
 // =============================================================================
 
 #include <Arduino.h>
@@ -24,32 +24,34 @@
 #include "Watchdog.h"
 
 extern portMUX_TYPE g_stateMux;
-extern ImuSample g_latestImu;
-extern PpgSample g_latestPpg;
+extern ImuSample    g_latestImu;
+extern PpgSample    g_latestPpg;
 
-// 7 encoder — static agar matrix Φ (8KB each) tidak di stack
+// 7 encoder — static agar tidak di stack.
+// Sekarang masing-masing hanya 261 byte (pointer ke singleton Φ + buffer).
+// Total: 7 × 261 = 1.827 byte  (vs 7 × 8.448 = 59.136 byte sebelumnya)
 static CSEncoder g_enc_ax, g_enc_ay, g_enc_az;
 static CSEncoder g_enc_gx, g_enc_gy, g_enc_gz;
 static CSEncoder g_enc_ir;
 
 // ---------------------------------------------------------------------------
 // Helper: kirim 1 axis sebagai CS1AxisPacket
-// ts_window: timestamp diambil SEKALI sebelum loop kirim → konsisten semua axis
+// ts_window diambil SEKALI sebelum loop kirim → timestamp konsisten
 // ---------------------------------------------------------------------------
 static void sendAxis(uint8_t pktType, uint8_t nodeId,
                      const float y[CS_M], bool fingerOn,
                      uint32_t ts_window)
 {
     CS1AxisPacket pkt{};
-    pkt.header.type = static_cast<PacketType>(pktType);
-    pkt.header.node_id = nodeId;
-    pkt.header.timestamp = ts_window; // ← timestamp konsisten
+    pkt.header.type      = static_cast<PacketType>(pktType);
+    pkt.header.node_id   = nodeId;
+    pkt.header.timestamp = ts_window;
     memcpy(pkt.y, y, CS_M * sizeof(float));
     pkt.edge = {fingerOn, 0};
 
     esp_now_send(MacAddr::GATEWAY,
                  reinterpret_cast<uint8_t *>(&pkt), sizeof(CS1AxisPacket));
-    vTaskDelay(pdMS_TO_TICKS(1)); // 1ms jeda cukup, hemat 14ms per window
+    vTaskDelay(pdMS_TO_TICKS(1)); // 1ms jeda antar paket
 }
 
 // ---------------------------------------------------------------------------
@@ -59,18 +61,21 @@ void taskCSSender(void *param)
 {
     g_watchdog.registerTask();
 
-    // Array output encoder — di stack task (butuh 7 × 32 × 4 = 896 byte)
-    // Stack ESPNOW_TX harus >= 12288 (sudah diset di Config.h)
+    // Output encoder — di stack task
+    // Stack ESPNOW_TX harus >= 12288 (diset di config/tuning.h)
     float y_ax[CS_M], y_ay[CS_M], y_az[CS_M];
     float y_gx[CS_M], y_gy[CS_M], y_gz[CS_M];
     float y_ir[CS_M];
 
     uint32_t windowCount = 0;
-    uint32_t lastLog = 0;
+    uint32_t lastLog     = 0;
 
-    Serial.printf("[CS] Encoder aktif | N=%d M=%d (%.0f%%)\n",
-                  CS_N, CS_M, 100.0f * CS_M / CS_N);
-    Serial.printf("[CS] 7 paket per window | ts konsisten per window\n");
+    // Log info singleton Φ — untuk verifikasi seed dan ukuran RAM
+    CSPhiMatrix::printInfo();
+    CSPhiMatrix::printSyncDebug(); // bandingkan dengan: python -m server.verify_phi
+    Serial.printf("[CS] 7 encoder aktif | N=%d M=%d (%.0f%%) | RAM encoder: ~%d byte\n",
+                  CS_N, CS_M, 100.0f * CS_M / CS_N,
+                  (int)(7 * (CS_N * sizeof(float) + sizeof(void *))));
     Serial.printf("[CS] Window duration: %d ms\n", CS_N * Timing::IMU_SAMPLE_MS);
 
     for (;;)
@@ -98,7 +103,6 @@ void taskCSSender(void *param)
         if (ax_rdy && ay_rdy && az_rdy &&
             gx_rdy && gy_rdy && gz_rdy && ir_rdy)
         {
-
             g_enc_ax.encode(y_ax);
             g_enc_ay.encode(y_ay);
             g_enc_az.encode(y_az);
@@ -109,9 +113,7 @@ void taskCSSender(void *param)
 
             bool finger = (ppg.ir_raw >= EdgeConfig::IR_FINGER_THRESHOLD);
 
-            // ── Ambil timestamp SEKALI untuk semua 7 paket ──────────────────
-            // Ini yang menyebabkan "timestamp spread 656ms" di server.
-            // Sebelumnya timestamp diambil di dalam sendAxis() → beda tiap paket.
+            // Ambil timestamp SEKALI untuk semua 7 paket → spread ≈ 0ms
             uint32_t ts_now = millis();
 
             // Kirim 6 IMU axis
@@ -124,17 +126,17 @@ void taskCSSender(void *param)
 
             // PPG dengan HR metadata — timestamp sama
             CSPpgPacket ppgPkt{};
-            ppgPkt.header = {static_cast<PacketType>(PKT_CS_IR), NODE_ID, ts_now};
+            ppgPkt.header     = {static_cast<PacketType>(PKT_CS_IR), NODE_ID, ts_now};
             memcpy(ppgPkt.y_ir, y_ir, CS_M * sizeof(float));
             ppgPkt.heart_rate = ppg.heart_rate;
-            ppgPkt.ppg_valid = ppg.valid;
-            ppgPkt.edge = {finger, 0};
+            ppgPkt.ppg_valid  = ppg.valid;
+            ppgPkt.edge       = {finger, 0};
             esp_now_send(MacAddr::GATEWAY,
                          reinterpret_cast<uint8_t *>(&ppgPkt), sizeof(CSPpgPacket));
 
             windowCount++;
 
-            // Log hanya setiap 5 window (~3 detik) — kurangi Serial overhead
+            // Log setiap 5 window (~3 detik)
             if (windowCount % 5 == 0)
             {
                 Serial.printf("[CS TX] Window #%lu | finger=%s | HR=%d | ts=%lu\n",
@@ -147,18 +149,17 @@ void taskCSSender(void *param)
         if (millis() - lastLog >= 10000)
         {
             Serial.printf("[CS DBG] buf=%d/%d | sent=%lu windows | heap=%luKB\n",
-                          g_enc_ax.count(), CS_N, windowCount,
+                          g_enc_ax.count(), CS_N,
+                          windowCount,
                           esp_get_free_heap_size() / 1024);
             lastLog = millis();
         }
 
-        // Stack check setiap 500 iterasi (~5 detik pada 100Hz)
+        // Stack check setiap 500 iterasi
         static uint32_t iter = 0;
         if (++iter % 500 == 0)
-        {
             g_watchdog.checkTaskStack("CS_TX");
-        }
 
-        vTaskDelay(pdMS_TO_TICKS(10)); // 100Hz
+        vTaskDelay(pdMS_TO_TICKS(Timing::IMU_SAMPLE_MS)); // 100 Hz
     }
 }
