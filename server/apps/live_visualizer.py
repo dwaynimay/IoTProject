@@ -33,7 +33,7 @@ except ImportError:
 
 from core.config import (
     CS_N, CS_M, MQTT_BROKER, MQTT_PORT, MQTT_KEEPALIVE,
-    TOPIC_BASE, SIGNALS, UNITS, COLORS,
+    TOPIC_BASE, SIGNALS, IMU_SIGNALS, UNITS, COLORS,
     HISTORY_WINDOWS, MAX_HIST, TOTAL_SAMPLES,
 )
 from core.cs_router import reconstruct
@@ -45,7 +45,8 @@ NODE_ID = 1  # ubah sesuai node yang ingin divisualisasi
 # Buffer MQTT — thread-safe
 # =============================================================================
 _buf_lock    = threading.Lock()
-_signal_buf  = {} # Map: ts -> {"data": {}, "hr": 0, "finger": False}
+_imu_buf     = {}   # buffer cs_imu per node_id
+_ppg_buf     = {}   # buffer cs_ppg per node_id
 
 # maxlen=10: buffer window yang menumpuk saat plot lag
 window_queue = collections.deque(maxlen=10)
@@ -69,56 +70,52 @@ def _on_message(client, userdata, msg):
         node_id = int(parts[1].split("_")[1])
     except (IndexError, ValueError):
         return
+
     if node_id != NODE_ID:
         return
 
     sig_type = parts[2]
-    ts = payload.get("ts", 0)
 
     with _buf_lock:
-        if ts not in _signal_buf:
-            _signal_buf[ts] = {"data": {}, "hr": 0, "finger": False, "ts": ts}
-        
-        buf = _signal_buf[ts]
-        
         if sig_type == "cs_imu":
-            for sig in ["ax", "ay", "az", "gx", "gy", "gz"]:
-                y = payload.get(sig, [])
-                if len(y) == CS_M:
-                    buf["data"][sig] = reconstruct(y)
-            buf["finger"] = payload.get("finger", False)
-            
+            _imu_buf[node_id] = payload
         elif sig_type == "cs_ppg":
-            y = payload.get("y", [])
-            if len(y) == CS_M:
-                buf["data"]["ir"] = reconstruct(y)
-            buf["hr"] = payload.get("hr", 0)
-            buf["finger"] = payload.get("finger", False)
+            _ppg_buf[node_id] = payload
 
-        if len(buf["data"]) == 7:
+        # Proses kalau keduanya sudah ada
+        if node_id in _imu_buf and node_id in _ppg_buf:
+            imu_data = _imu_buf.pop(node_id)
+            ppg_data = _ppg_buf.pop(node_id)
+
+            results = {}
+            for sig in IMU_SIGNALS:
+                y = imu_data.get(sig, [])
+                if len(y) == CS_M:
+                    results[sig] = reconstruct(y)
+
+            y_ir = ppg_data.get("ir", [])
+            if len(y_ir) == CS_M:
+                results["ir"] = reconstruct(y_ir)
+
             meta["win"] += 1
             window_queue.append({
                 "win"   : meta["win"],
-                "hr"    : buf["hr"],
-                "finger": buf["finger"],
-                "ts"    : ts,
-                "data"  : buf["data"],
+                "hr"    : ppg_data.get("hr", 0),
+                "finger": ppg_data.get("finger", False),
+                "ts"    : imu_data.get("ts", 0),
+                "data"  : results,
             })
-            del _signal_buf[ts]
-            
-        # cleanup old buffers
-        if len(_signal_buf) > 5:
-            oldest_ts = min(_signal_buf.keys())
-            del _signal_buf[oldest_ts]
+
 
 def _on_connect(client, userdata, *args):
     rc = args[1] if len(args) >= 2 else args[0]
     rc_val = rc if isinstance(rc, int) else rc.value
     if rc_val == 0:
         print(f"[MQTT] Terhubung → Node {NODE_ID}")
-        client.subscribe(f"{TOPIC_BASE}/node_{NODE_ID}/cs_imu")
-        client.subscribe(f"{TOPIC_BASE}/node_{NODE_ID}/cs_ppg")
-        print(f"[MQTT] sub: {TOPIC_BASE}/node_{NODE_ID}/(cs_imu & cs_ppg)")
+        for topic_type in ["cs_imu", "cs_ppg"]:
+            topic = f"{TOPIC_BASE}/node_{NODE_ID}/{topic_type}"
+            client.subscribe(topic)
+            print(f"[MQTT] sub: {topic}")
     else:
         print(f"[MQTT] Gagal rc={rc_val}")
 
