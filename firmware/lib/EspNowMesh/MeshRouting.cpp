@@ -23,12 +23,11 @@
 
 static constexpr char TAG[] = "ROUTE";
 
-// Definisi static member
 ImuWindowBuffer MeshRouting::_imuBuf[2] = {};
 
 
 // =============================================================================
-// route() — Entry Point, Dispatch ke Handler yang Sesuai
+// route()
 // =============================================================================
 RouteResult MeshRouting::route(const RawPacket& raw, MqttMessage& out)
 {
@@ -67,8 +66,7 @@ RouteResult MeshRouting::route(const RawPacket& raw, MqttMessage& out)
 
 
 // =============================================================================
-// _routeCombined() — Serialize CombinedPacket → JSON
-// FIXED: semua field lama diganti ke camelCase
+// _routeCombined()
 // =============================================================================
 RouteResult MeshRouting::_routeCombined(const RawPacket& raw, MqttMessage& out)
 {
@@ -81,40 +79,62 @@ RouteResult MeshRouting::_routeCombined(const RawPacket& raw, MqttMessage& out)
 
     const auto* pkt = reinterpret_cast<const CombinedPacket*>(raw.data);
 
-    // FIXED: node_id → nodeId
     snprintf(out.topic, sizeof(out.topic),
              "%s/node_%d/combined", Mqtt::TOPIC_BASE, pkt->header.nodeId);
 
-    // FIXED: accel_x → accelX, gyro_x → gyroX, ir_raw → irRaw,
-    //        red_raw → redRaw, heart_rate → heartRate, finger_on → fingerOn
-    snprintf(out.payload, sizeof(out.payload),
-             "{"
-             "\"ts\":%lu,"
-             "\"ax\":%.4f,\"ay\":%.4f,\"az\":%.4f,"
-             "\"gx\":%.4f,\"gy\":%.4f,\"gz\":%.4f,"
-             "\"ir\":%lu,\"red\":%lu,"
-             "\"hr\":%d,\"spo2\":%.1f,\"ppg_valid\":%s,"
-             "\"finger\":%s"
-             "}",
-             (unsigned long)pkt->header.timestamp,
-             pkt->imu.accelX, pkt->imu.accelY, pkt->imu.accelZ,
-             pkt->imu.gyroX,  pkt->imu.gyroY,  pkt->imu.gyroZ,
-             (unsigned long)pkt->ppg.irRaw,
-             (unsigned long)pkt->ppg.redRaw,
-             pkt->ppg.heartRate,
-             pkt->ppg.spo2,
-             pkt->ppg.valid      ? "true" : "false",
-             pkt->edge.fingerOn  ? "true" : "false");
+    // spo2: tampilkan nilai nyata jika valid, null jika tidak
+    if (pkt->ppg.spo2 > 0.0f)
+    {
+        snprintf(out.payload, sizeof(out.payload),
+                 "{"
+                 "\"ts\":%lu,"
+                 "\"ax\":%.4f,\"ay\":%.4f,\"az\":%.4f,"
+                 "\"gx\":%.4f,\"gy\":%.4f,\"gz\":%.4f,"
+                 "\"ir\":%lu,\"red\":%lu,"
+                 "\"hr\":%d,\"spo2\":%.1f,\"ppg_valid\":%s,"
+                 "\"finger\":%s"
+                 "}",
+                 (unsigned long)pkt->header.timestamp,
+                 pkt->imu.accelX, pkt->imu.accelY, pkt->imu.accelZ,
+                 pkt->imu.gyroX,  pkt->imu.gyroY,  pkt->imu.gyroZ,
+                 (unsigned long)pkt->ppg.irRaw,
+                 (unsigned long)pkt->ppg.redRaw,
+                 pkt->ppg.heartRate,
+                 pkt->ppg.spo2,
+                 pkt->ppg.valid     ? "true" : "false",
+                 pkt->edge.fingerOn ? "true" : "false");
+    }
+    else
+    {
+        snprintf(out.payload, sizeof(out.payload),
+                 "{"
+                 "\"ts\":%lu,"
+                 "\"ax\":%.4f,\"ay\":%.4f,\"az\":%.4f,"
+                 "\"gx\":%.4f,\"gy\":%.4f,\"gz\":%.4f,"
+                 "\"ir\":%lu,\"red\":%lu,"
+                 "\"hr\":%d,\"spo2\":null,\"ppg_valid\":%s,"
+                 "\"finger\":%s"
+                 "}",
+                 (unsigned long)pkt->header.timestamp,
+                 pkt->imu.accelX, pkt->imu.accelY, pkt->imu.accelZ,
+                 pkt->imu.gyroX,  pkt->imu.gyroY,  pkt->imu.gyroZ,
+                 (unsigned long)pkt->ppg.irRaw,
+                 (unsigned long)pkt->ppg.redRaw,
+                 pkt->ppg.heartRate,
+                 pkt->ppg.valid     ? "true" : "false",
+                 pkt->edge.fingerOn ? "true" : "false");
+    }
 
-    LOG_DEBUG(TAG, "COMBINED node=%d ts=%lu",
-              pkt->header.nodeId, (unsigned long)pkt->header.timestamp);
+    LOG_DEBUG(TAG, "COMBINED node=%d ts=%lu spo2=%.1f%%",
+              pkt->header.nodeId,
+              (unsigned long)pkt->header.timestamp,
+              pkt->ppg.spo2);
     return RouteResult::PUBLISHED;
 }
 
 
 // =============================================================================
-// _routeHeartbeat() — Serialize HeartbeatPacket → JSON
-// FIXED: node_id → nodeId (uptimeS sudah camelCase di MeshPackets.h baru)
+// _routeHeartbeat()
 // =============================================================================
 RouteResult MeshRouting::_routeHeartbeat(const RawPacket& raw, MqttMessage& out)
 {
@@ -127,7 +147,6 @@ RouteResult MeshRouting::_routeHeartbeat(const RawPacket& raw, MqttMessage& out)
 
     const auto* pkt = reinterpret_cast<const HeartbeatPacket*>(raw.data);
 
-    // FIXED: node_id → nodeId
     snprintf(out.topic, sizeof(out.topic),
              "%s/node_%d/heartbeat", Mqtt::TOPIC_BASE, pkt->header.nodeId);
 
@@ -143,7 +162,7 @@ RouteResult MeshRouting::_routeHeartbeat(const RawPacket& raw, MqttMessage& out)
 
 
 // =============================================================================
-// _routeCsAxis() — Serialize CS1AxisPacket → Buffer IMU → JSON
+// _routeCsAxis()
 // =============================================================================
 RouteResult MeshRouting::_routeCsAxis(const RawPacket& raw, MqttMessage& out)
 {
@@ -154,15 +173,14 @@ RouteResult MeshRouting::_routeCsAxis(const RawPacket& raw, MqttMessage& out)
         return RouteResult::DROPPED;
     }
 
-    const auto* pkt    = reinterpret_cast<const CS1AxisPacket*>(raw.data);
-    const uint8_t axIdx  = raw.data[0] - PKT_CS_AX; // 0=ax,1=ay,2=az,3=gx,4=gy,5=gz
-    const uint8_t bufIdx = _nodeIdx(pkt->header.nodeId);
+    const auto*    pkt    = reinterpret_cast<const CS1AxisPacket*>(raw.data);
+    const uint8_t  axIdx  = raw.data[0] - PKT_CS_AX;
+    const uint8_t  bufIdx = _nodeIdx(pkt->header.nodeId);
 
     ImuWindowBuffer& buf = _imuBuf[bufIdx];
 
-    // Cek stale — jika buffer tidak lengkap dalam 2 detik, reset
-    // Ini mencegah buffer stuck menunggu axis yang tidak pernah datang
-    if (buf.receivedMask != 0 && 
+    // Cek stale — reset jika buffer tidak lengkap dalam 2 detik
+    if (buf.receivedMask != 0 &&
         buf.receivedMask != IMU_ALL_RECEIVED &&
         (millis() - buf.lastUpdateMs) > 2000)
     {
@@ -171,7 +189,7 @@ RouteResult MeshRouting::_routeCsAxis(const RawPacket& raw, MqttMessage& out)
         buf.receivedMask = 0;
     }
 
-    // Deteksi stale window — toleransi 100ms untuk jitter jaringan
+    // Deteksi window baru
     if (buf.receivedMask != 0 &&
         pkt->header.timestamp != buf.timestamp)
     {
@@ -181,7 +199,6 @@ RouteResult MeshRouting::_routeCsAxis(const RawPacket& raw, MqttMessage& out)
 
         if (diff < 100)
         {
-            // Jitter normal, update timestamp ke yang terbaru
             buf.timestamp = pkt->header.timestamp;
         }
         else
@@ -197,22 +214,21 @@ RouteResult MeshRouting::_routeCsAxis(const RawPacket& raw, MqttMessage& out)
     // Simpan axis ke buffer
     float* dsts[] = {buf.ax, buf.ay, buf.az, buf.gx, buf.gy, buf.gz};
     memcpy(dsts[axIdx], pkt->y, CS_M * sizeof(float));
-    buf.receivedMask  |= (1u << axIdx);
-    buf.timestamp      = pkt->header.timestamp;
-    buf.fingerOn       = pkt->edge.fingerOn;
-    buf.nodeId         = pkt->header.nodeId;
-    buf.lastUpdateMs   = millis();
+    buf.receivedMask |= (1u << axIdx);
+    buf.timestamp     = pkt->header.timestamp;
+    buf.fingerOn      = pkt->edge.fingerOn;
+    buf.nodeId        = pkt->header.nodeId;
+    buf.lastUpdateMs  = millis();
 
-    // Belum lengkap — jangan publish dulu
     if (buf.receivedMask != IMU_ALL_RECEIVED)
     {
-        LOG_DEBUG(TAG, "IMU buf node=%d mask=0x%02X (menunggu %d axis lagi)",
+        LOG_DEBUG(TAG, "IMU buf node=%d mask=0x%02X (%d axis lagi)",
                   buf.nodeId, buf.receivedMask,
                   6 - __builtin_popcount(buf.receivedMask));
         return RouteResult::ACCUMULATING;
     }
 
-    // Semua 6 axis terkumpul — format 1 JSON dan publish
+    // Semua 6 axis terkumpul — format JSON
     buf.receivedMask = 0;
 
     snprintf(out.topic, sizeof(out.topic),
@@ -241,16 +257,21 @@ RouteResult MeshRouting::_routeCsAxis(const RawPacket& raw, MqttMessage& out)
     }
     snprintf(p, rem, "}");
 
-    LOG_DEBUG(TAG, "cs_imu node=%d ts=%lu — 6 axis terkumpul, publish",
+    LOG_DEBUG(TAG, "cs_imu node=%d ts=%lu — publish",
               buf.nodeId, (unsigned long)buf.timestamp);
     return RouteResult::PUBLISHED;
 }
 
 
 // =============================================================================
-// _routeCsIr() — Serialize CSPpgPacket → JSON
-// FIXED: node_id → nodeId, y_ir → yIr, heart_rate → heartRate,
-//        ppg_valid → ppgValid, finger_on → fingerOn
+// _routeCsIr() — v2.1: tambah spo2 di JSON
+//
+// Format JSON cs_ppg:
+//   { "ts": 12345, "hr": 72, "spo2": 98.5, "ppg_valid": true,
+//     "finger": true, "ir": [...] }
+//
+// Jika spo2 tidak valid (pkt->spo2 == 0.0), field ditulis sebagai null
+// agar server Python bisa membedakan "tidak tersedia" vs "nilai 0%".
 // =============================================================================
 RouteResult MeshRouting::_routeCsIr(const RawPacket& raw, MqttMessage& out)
 {
@@ -263,37 +284,52 @@ RouteResult MeshRouting::_routeCsIr(const RawPacket& raw, MqttMessage& out)
 
     const auto* pkt = reinterpret_cast<const CSPpgPacket*>(raw.data);
 
-    // FIXED: node_id → nodeId
     snprintf(out.topic, sizeof(out.topic),
              "%s/node_%d/cs_ppg", Mqtt::TOPIC_BASE, pkt->header.nodeId);
 
     char* p   = out.payload;
     int   rem = sizeof(out.payload);
+    int   w;
 
-    // FIXED: heart_rate → heartRate, ppg_valid → ppgValid, finger_on → fingerOn
-    int w = snprintf(p, rem,
-                     "{\"ts\":%lu,\"hr\":%d,\"ppg_valid\":%s,\"finger\":%s,\"y\":[",
+    // Header JSON dengan HR dan SpO2
+    if (pkt->spo2 > 0.0f)
+    {
+        w = snprintf(p, rem,
+                     "{\"ts\":%lu,\"hr\":%d,\"spo2\":%.1f,"
+                     "\"ppg_valid\":%s,\"finger\":%s,\"ir\":[",
+                     (unsigned long)pkt->header.timestamp,
+                     pkt->heartRate,
+                     pkt->spo2,
+                     pkt->ppgValid      ? "true" : "false",
+                     pkt->edge.fingerOn ? "true" : "false");
+    }
+    else
+    {
+        w = snprintf(p, rem,
+                     "{\"ts\":%lu,\"hr\":%d,\"spo2\":null,"
+                     "\"ppg_valid\":%s,\"finger\":%s,\"ir\":[",
                      (unsigned long)pkt->header.timestamp,
                      pkt->heartRate,
                      pkt->ppgValid      ? "true" : "false",
                      pkt->edge.fingerOn ? "true" : "false");
+    }
     p += w; rem -= w;
 
-    // FIXED: y_ir → yIr
     w = _writeFloatArray(p, rem, pkt->yIr, CS_M);
     p += w; rem -= w;
-
     snprintf(p, rem, "]}");
 
-    LOG_DEBUG(TAG, "CS_IR node=%d HR=%d finger=%s",
-              pkt->header.nodeId, pkt->heartRate,
+    LOG_DEBUG(TAG, "cs_ppg node=%d HR=%d SpO2=%.1f%% finger=%s",
+              pkt->header.nodeId,
+              pkt->heartRate,
+              pkt->spo2,
               pkt->edge.fingerOn ? "Y" : "N");
     return RouteResult::PUBLISHED;
 }
 
 
 // =============================================================================
-// _writeFloatArray() — Tulis float[] sebagai JSON array
+// Helpers
 // =============================================================================
 int MeshRouting::_writeFloatArray(char* dst, int rem,
                                   const float* arr, uint8_t len)
@@ -307,10 +343,6 @@ int MeshRouting::_writeFloatArray(char* dst, int rem,
     return total;
 }
 
-
-// =============================================================================
-// _axisName() — Nama Axis dari PacketType Raw Byte
-// =============================================================================
 const char* MeshRouting::_axisName(uint8_t rawType)
 {
     switch (rawType)

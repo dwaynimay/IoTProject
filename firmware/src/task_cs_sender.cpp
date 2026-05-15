@@ -1,4 +1,4 @@
-// File: src/task_cs_sender.cpp
+// File: firmware/src/task_cs_sender.cpp
 
 // =============================================================================
 // task_cs_sender.cpp — Task CS Encode & Kirim (Sensor Node, Core 0)
@@ -37,12 +37,6 @@ static constexpr char TAG[] = "CS_TX";
 
 // =============================================================================
 // Encoder instances — static agar tidak di stack task
-//
-// Static di sini artinya lifetime = program lifetime, bukan per-call.
-// Masing-masing encoder hanya butuh ~261 byte (pointer Φ + buffer CS_N float)
-// karena Φ di-share via CSPhiMatrix singleton.
-//
-// Total RAM: 7 × 261 = 1.827 byte (vs 7 × 8.448 = 59.136 byte versi lama)
 // =============================================================================
 static CSEncoder g_encAx, g_encAy, g_encAz;
 static CSEncoder g_encGx, g_encGy, g_encGz;
@@ -56,8 +50,6 @@ void taskCSSender(void* param)
 {
     g_watchdog.registerTask();
 
-    // Output buffer encoder — di stack task, bukan global
-    // Stack harus >= 12288 bytes untuk menampung ini + overhead
     float yAx[CS_M], yAy[CS_M], yAz[CS_M];
     float yGx[CS_M], yGy[CS_M], yGz[CS_M];
     float yIr[CS_M];
@@ -96,9 +88,6 @@ void taskCSSender(void* param)
         const bool irRdy = g_encIr.pushSample(static_cast<float>(ppg.irRaw));
 
         // ── Encode & kirim saat semua window penuh ────────────────────────────
-        // Semua encoder harus penuh bersamaan karena mereka diisi dengan
-        // sample dari snapshot yang sama. Jika salah satu tidak siap,
-        // berarti ada bug di logika reset encoder.
         if (axRdy && ayRdy && azRdy && gxRdy && gyRdy && gzRdy && irRdy)
         {
             g_encAx.encode(yAx);
@@ -110,26 +99,29 @@ void taskCSSender(void* param)
             g_encIr.encode(yIr);
 
             const bool     finger  = (ppg.irRaw >= EdgeConfig::IR_FINGER_THRESHOLD);
-            const uint32_t tsNow   = millis(); // satu timestamp untuk semua 7 paket
+            const uint32_t tsNow   = millis();
 
-            // ── Kirim 6 IMU axis dan 1 PPG IR dengan NACK checking ────────────
+            // ── Kirim 6 IMU axis ──────────────────────────────────────────────
             uint8_t nack = 0;
-            
+
             if (!g_mesh.sendCsAxis(PKT_CS_AX, NODE_ID, yAx, finger, tsNow)) nack++;
             if (!g_mesh.sendCsAxis(PKT_CS_AY, NODE_ID, yAy, finger, tsNow)) nack++;
             if (!g_mesh.sendCsAxis(PKT_CS_AZ, NODE_ID, yAz, finger, tsNow)) nack++;
             if (!g_mesh.sendCsAxis(PKT_CS_GX, NODE_ID, yGx, finger, tsNow)) nack++;
             if (!g_mesh.sendCsAxis(PKT_CS_GY, NODE_ID, yGy, finger, tsNow)) nack++;
             if (!g_mesh.sendCsAxis(PKT_CS_GZ, NODE_ID, yGz, finger, tsNow)) nack++;
-            
+
+            // ── Kirim PPG + SpO2 sebagai metadata di CSPpgPacket ─────────────
+            // ppg.spo2 sudah diisi oleh SensorPPG::read() jika valid (> 0)
             if (!g_mesh.sendCsPpg(NODE_ID, yIr, ppg.heartRate,
-                                   ppg.valid, finger, tsNow)) nack++;
+                                   ppg.valid, ppg.spo2,
+                                   finger, tsNow)) nack++;
 
             windowCount++;
 
             if (nack > 0)
             {
-                LOG_WARN(TAG, "Window #%lu — %d/7 paket gagal antre TX!", windowCount, nack);
+                LOG_WARN(TAG, "Window #%lu — %d/7 paket gagal TX!", windowCount, nack);
             }
             else
             {
@@ -139,11 +131,26 @@ void taskCSSender(void* param)
             // Log setiap 5 window (~3.2 detik pada 100Hz IMU, N=64)
             if (windowCount % 5 == 0)
             {
-                LOG_INFO(TAG, "Window #%lu | finger=%s | HR=%d | ts=%lu ms",
-                         windowCount,
-                         finger ? "Y" : "N",
-                         ppg.heartRate,
-                         tsNow);
+                // Tampilkan SpO2 — "---" jika belum valid
+                if (ppg.spo2 > 0.0f)
+                {
+                    LOG_INFO(TAG,
+                             "Window #%lu | finger=%s | HR=%d BPM | SpO2=%.1f%% | ts=%lu ms",
+                             windowCount,
+                             finger ? "Y" : "N",
+                             ppg.heartRate,
+                             ppg.spo2,
+                             tsNow);
+                }
+                else
+                {
+                    LOG_INFO(TAG,
+                             "Window #%lu | finger=%s | HR=%d BPM | SpO2=--- | ts=%lu ms",
+                             windowCount,
+                             finger ? "Y" : "N",
+                             ppg.heartRate,
+                             tsNow);
+                }
             }
         }
 
@@ -154,11 +161,10 @@ void taskCSSender(void* param)
                     windowCount,
                     esp_get_free_heap_size() / 1024);
 
-        // Stack check setiap 500 iterasi
         LOG_EVERY_N(500, LOG_DEBUG, TAG,
                     "Stack watermark: %u bytes",
                     uxTaskGetStackHighWaterMark(NULL));
 
-        vTaskDelay(pdMS_TO_TICKS(Timing::IMU_SAMPLE_MS)); // 100 Hz
+        vTaskDelay(pdMS_TO_TICKS(Timing::IMU_SAMPLE_MS));
     }
 }

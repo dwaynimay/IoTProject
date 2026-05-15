@@ -24,14 +24,10 @@
 #include <esp_wifi.h>
 #include "EspNowMesh.h"
 
-static constexpr char TAG[]           = "MESH";
+static constexpr char TAG[]             = "MESH";
 static constexpr uint8_t ESPNOW_CHANNEL = 1;
 
-// g_rawQueue dimiliki oleh modul ini — ISR push ke sini
 QueueHandle_t g_rawQueue  = nullptr;
-
-// g_mqttQueue dimiliki oleh task_mesh_handler.cpp — extern saja di sini
-// jika ada kode di modul ini yang perlu akses (saat ini tidak ada)
 extern QueueHandle_t g_mqttQueue;
 
 EspNowMesh* EspNowMesh::_instance = nullptr;
@@ -96,7 +92,6 @@ bool EspNowMesh::begin(bool senderMode)
         if (!_addPeer(MacAddr::NODE_B)) return false;
         LOG_INFO(TAG, "Mode: RECEIVER | Node A & B terdaftar | MAC lokal: %s",
                  WiFi.macAddress().c_str());
-        LOG_INFO(TAG, "ISR pipeline: onDataRecv → g_rawQueue → taskMeshHandler");
     }
 
     return true;
@@ -122,6 +117,7 @@ bool EspNowMesh::sendCsAxis(uint8_t pktType, uint8_t nodeId,
 
 bool EspNowMesh::sendCsPpg(uint8_t nodeId, const float yIr[CS_M],
                             int8_t heartRate, bool ppgValid,
+                            float spo2,
                             bool fingerOn, uint32_t timestamp)
 {
     CSPpgPacket pkt{};
@@ -129,6 +125,7 @@ bool EspNowMesh::sendCsPpg(uint8_t nodeId, const float yIr[CS_M],
     memcpy(pkt.yIr, yIr, CS_M * sizeof(float));
     pkt.heartRate = heartRate;
     pkt.ppgValid  = ppgValid;
+    pkt.spo2      = spo2;      // ← SpO2 dari SensorPPG
     pkt.edge      = { fingerOn, 0 };
 
     return _send(&pkt, sizeof(CSPpgPacket));
@@ -146,7 +143,6 @@ bool EspNowMesh::sendHeartbeat(uint8_t nodeId, uint32_t uptimeS)
                     static_cast<uint32_t>(millis()) };
     pkt.uptimeS = uptimeS;
     pkt.rssi    = 0;
-
     return _send(&pkt, sizeof(HeartbeatPacket));
 }
 
@@ -207,14 +203,14 @@ void EspNowMesh::_onDataSent(const uint8_t* mac, esp_now_send_status_t status)
     else
     {
         _nackCount++;
-        LOG_EVERY_N(5, LOG_WARN, "MESH", 
+        LOG_EVERY_N(5, LOG_WARN, "MESH",
                     "ESP-NOW NACK (total=%lu, rate=%.1f%%)",
                     _nackCount,
                     100.0f * _nackCount / (_ackCount + _nackCount));
     }
 }
 
-// ISR — HANYA memcpy, tidak ada yang lain
+// ISR — HANYA memcpy
 void EspNowMesh::_onDataRecv(const uint8_t* mac, const uint8_t* data, int len)
 {
     if (len < 1 || !g_rawQueue) return;

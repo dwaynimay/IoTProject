@@ -5,26 +5,21 @@
 // MeshPackets.h — Satu-satunya definisi struct paket ESP-NOW
 // =============================================================================
 //
-// PERUBAHAN v2 (refactor):
-//   - MqttMessage dipindah ke sini (sebelumnya di DataModels.h)
-//   - RawPacket dipindah ke sini
-//   - DataModels.h lama (root include/ dan firmware/include/) sudah TIDAK DIPAKAI
-//     Hapus atau kosongkan kedua file tersebut setelah migrasi selesai.
+// PERUBAHAN v2.1 (SpO2):
+//   - CSPpgPacket: tambah field spo2 (float, 4 byte)
+//     Size baru: 6 + 128 + 1 + 1 + 4 + 2 = 142 byte ✓ (< 250 byte limit)
+//   - MqttMessage.payload: tidak perlu diubah (420 byte cukup untuk spo2)
 //
 // File ini adalah SATU-SATUNYA sumber kebenaran untuk:
 //   1. Struct paket ESP-NOW (CS1AxisPacket, CSPpgPacket, CombinedPacket, dst.)
 //   2. MqttMessage — pesan internal antar FreeRTOS task di gateway
 //   3. RawPacket   — wrapper ISR → taskMeshHandler
 //
-// Semua nama field menggunakan camelCase (nodeId, accelX, fingerOn, dst.)
-// agar konsisten dengan gaya kode baru. MeshRouting.cpp sudah diupdate
-// untuk memakai nama field baru ini.
-//
 // BATAS UKURAN ESP-NOW: 250 bytes per frame.
 // Layout ukuran (verify sebelum deploy):
 //   PacketHeader    =   6 bytes
 //   CS1AxisPacket   = 136 bytes  ✓ (6 + 32×4 + 2)
-//   CSPpgPacket     = 138 bytes  ✓ (6 + 32×4 + 1 + 1 + 2)
+//   CSPpgPacket     = 142 bytes  ✓ (6 + 32×4 + 1 + 1 + 4 + 2)
 //   CombinedPacket  =  50 bytes  ✓ (6 + 28 + 14 + 2)
 //   HeartbeatPacket =  11 bytes  ✓
 // =============================================================================
@@ -34,7 +29,7 @@
 
 
 // =============================================================================
-// PacketType — byte pertama setiap frame, dipakai untuk routing di gateway
+// PacketType
 // =============================================================================
 enum class PacketType : uint8_t
 {
@@ -49,7 +44,6 @@ enum class PacketType : uint8_t
     HEARTBEAT     = 0xFF,
 };
 
-// Alias uint8_t untuk switch-case tanpa cast berulang
 static constexpr uint8_t PKT_CS_AX  = static_cast<uint8_t>(PacketType::CS_AX);
 static constexpr uint8_t PKT_CS_AY  = static_cast<uint8_t>(PacketType::CS_AY);
 static constexpr uint8_t PKT_CS_AZ  = static_cast<uint8_t>(PacketType::CS_AZ);
@@ -60,131 +54,112 @@ static constexpr uint8_t PKT_CS_IR  = static_cast<uint8_t>(PacketType::CS_IR);
 
 
 // =============================================================================
-// Sub-structs — building blocks paket ESP-NOW
-//
-// CATATAN NAMA FIELD (camelCase):
-//   nodeId      ← sebelumnya node_id
-//   accelX/Y/Z  ← sebelumnya accel_x/y/z
-//   gyroX/Y/Z   ← sebelumnya gyro_x/y/z
-//   irRaw       ← sebelumnya ir_raw
-//   redRaw      ← sebelumnya red_raw
-//   heartRate   ← sebelumnya heart_rate
-//   fingerOn    ← sebelumnya finger_on
-//   uptimeS     ← sebelumnya uptime_s
-//   yIr         ← sebelumnya y_ir
-//   ppgValid    ← sebelumnya ppg_valid
+// Sub-structs
 // =============================================================================
 
-// Header umum — byte pertama setiap frame
 struct __attribute__((packed)) PacketHeader
 {
-    PacketType type;       // 1 byte
-    uint8_t    nodeId;     // 1 byte — ID node pengirim (1, 2, 3, ...)
-    uint32_t   timestamp;  // 4 byte — millis() saat data diambil
-};                         // Total: 6 bytes
+    PacketType type;
+    uint8_t    nodeId;
+    uint32_t   timestamp;
+};  // 6 bytes
 
-// Data IMU dari MPU6050
 struct __attribute__((packed)) ImuSample
 {
-    float accelX;  // m/s²
-    float accelY;
-    float accelZ;
-    float gyroX;   // °/s
-    float gyroY;
-    float gyroZ;
-    float tempC;   // suhu dari register MPU (jarang dipakai)
-};                 // Total: 28 bytes
+    float accelX, accelY, accelZ;  // m/s²
+    float gyroX,  gyroY,  gyroZ;   // °/s
+    float tempC;
+};  // 28 bytes
 
-// Data PPG dari MAX30102
 struct __attribute__((packed)) PpgSample
 {
-    uint32_t irRaw;      // nilai LED inframerah (raw ADC)
-    uint32_t redRaw;     // nilai LED merah (raw ADC)
-    float    spo2;       // SpO2 hasil kalkulasi (0–100%)
-    int8_t   heartRate;  // BPM hasil kalkulasi (-1 jika invalid)
-    bool     valid;      // true jika HR/SpO2 dalam range fisiologis
-};                       // Total: 14 bytes
+    uint32_t irRaw;      // raw ADC inframerah
+    uint32_t redRaw;     // raw ADC merah
+    float    spo2;       // SpO2 dalam % (0.0 jika tidak valid)
+    int8_t   heartRate;  // BPM (-1 jika invalid)
+    bool     valid;      // true jika HR dan SpO2 keduanya valid
+};  // 14 bytes
 
-// Hasil edge computing di sensor node
 struct __attribute__((packed)) EdgeResult
 {
-    bool    fingerOn;  // true jika IR > IR_FINGER_THRESHOLD
-    uint8_t reserved;  // padding untuk alignment
-};                     // Total: 2 bytes
+    bool    fingerOn;
+    uint8_t reserved;
+};  // 2 bytes
 
 
 // =============================================================================
-// Packet Types — frame lengkap yang dikirim via ESP-NOW
+// Packet Types
 // =============================================================================
 
-// CombinedPacket — semua data sensor dalam satu frame (mode non-CS)
 struct __attribute__((packed)) CombinedPacket
 {
     PacketHeader header;  //  6 bytes
     ImuSample    imu;     // 28 bytes
-    PpgSample    ppg;     // 14 bytes
+    PpgSample    ppg;     // 14 bytes  (termasuk spo2)
     EdgeResult   edge;    //  2 bytes
-};                        // Total: 50 bytes ✓
+};  // Total: 50 bytes ✓
 
-// HeartbeatPacket — dikirim periodik untuk deteksi node mati
 struct __attribute__((packed)) HeartbeatPacket
 {
-    PacketHeader header;   //  6 bytes
-    uint32_t     uptimeS;  //  4 bytes
-    uint8_t      rssi;     //  1 byte
-};                         // Total: 11 bytes ✓
+    PacketHeader header;
+    uint32_t     uptimeS;
+    uint8_t      rssi;
+};  // 11 bytes ✓
 
-// CS1AxisPacket — satu sinyal CS (ax/ay/az/gx/gy/gz)
 struct __attribute__((packed)) CS1AxisPacket
 {
-    PacketHeader header;   //   6 bytes — header.type membedakan axis mana
-    float        y[CS_M];  // 128 bytes — measurement vector
-    EdgeResult   edge;     //   2 bytes
-};                         // Total: 136 bytes ✓
+    PacketHeader header;
+    float        y[CS_M];
+    EdgeResult   edge;
+};  // 136 bytes ✓
 
-// CSPpgPacket — sinyal CS untuk PPG IR beserta metadata HR
+// ---------------------------------------------------------------------------
+// CSPpgPacket — v2.1: tambah spo2 (float, 4 byte)
+//
+// SpO2 dikirim sebagai metadata bersama sinyal IR terkompresi.
+// Nilai 0.0 berarti kalkulasi SpO2 belum valid (jari tidak menempel,
+// buffer belum penuh, atau nilai di luar range fisiologis).
+//
+// Penerima (MeshRouting) harus:
+//   - Tampilkan SpO2 hanya jika spo2 > 0.0 && ppgValid == true
+//   - 0.0 bukan "SpO2 = 0%" melainkan "SpO2 tidak tersedia"
+//
+// Size: 6 + 128 + 1 + 1 + 4 + 2 = 142 bytes ✓ (< 250 byte limit)
+// ---------------------------------------------------------------------------
 struct __attribute__((packed)) CSPpgPacket
 {
     PacketHeader header;     //   6 bytes
-    float        yIr[CS_M];  // 128 bytes
+    float        yIr[CS_M]; // 128 bytes
     int8_t       heartRate;  //   1 byte
     bool         ppgValid;   //   1 byte
+    float        spo2;       //   4 bytes  ← BARU
     EdgeResult   edge;       //   2 bytes
-};                           // Total: 138 bytes ✓
+};  // Total: 142 bytes ✓
 
-// RawPacket — wrapper internal ISR → taskMeshHandler (tidak dikirim via ESP-NOW)
+// RawPacket — wrapper ISR → taskMeshHandler
 struct RawPacket
 {
-    uint8_t data[250];  // raw ESP-NOW payload (max 250 bytes)
-    uint8_t len;        // panjang aktual data yang valid
-    uint8_t srcMac[6];  // MAC address pengirim
-};                      // Total: 257 bytes
+    uint8_t data[250];
+    uint8_t len;
+    uint8_t srcMac[6];
+};  // 257 bytes
 
-
-// Tambah struct buffer akumulasi IMU (internal gateway, tidak dikirim via ESP-NOW)
+// Buffer akumulasi IMU (internal gateway)
 struct ImuWindowBuffer
 {
     float    ax[CS_M], ay[CS_M], az[CS_M];
     float    gx[CS_M], gy[CS_M], gz[CS_M];
     uint32_t timestamp;
     bool     fingerOn;
-    uint8_t  receivedMask; // bitmask: bit0=ax,bit1=ay,bit2=az,bit3=gx,bit4=gy,bit5=gz
+    uint8_t  receivedMask;
     uint8_t  nodeId;
-    uint32_t lastUpdateMs;  // untuk deteksi stale window
+    uint32_t lastUpdateMs;
 };
 
-static constexpr uint8_t IMU_ALL_RECEIVED = 0x3F; // 0b00111111
-
+static constexpr uint8_t IMU_ALL_RECEIVED = 0x3F;
 
 // =============================================================================
-// MqttMessage — pesan internal antar FreeRTOS task di gateway
-//
-// Dipindah dari DataModels.h ke sini agar semua definisi ada di satu tempat.
-//
-// ⚠ PERHATIAN UKURAN RAM:
-//   sizeof(MqttMessage) × QueueLen::MQTT_MSG = total heap queue
-//   Payload 950 bytes = cukup untuk cs_imu (~900B) + margin 50B
-//   RAM queue: 30 × (80 + 950) = 30,900 bytes = 30 KB
+// MqttMessage
 // =============================================================================
 struct MqttMessage
 {
@@ -192,9 +167,8 @@ struct MqttMessage
     char payload[950];
 };
 
-
 // =============================================================================
-// EspNowPayload — union untuk cast raw bytes ke struct yang sesuai
+// EspNowPayload — union cast helper
 // =============================================================================
 union EspNowPayload
 {
