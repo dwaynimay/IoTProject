@@ -30,6 +30,7 @@ namespace Timing
     constexpr uint32_t MQTT_PUBLISH_MS   = 500;   // timeout tunggu queue
     constexpr uint32_t WIFI_TIMEOUT_MS   = 10000; // batas waktu konek WiFi
     constexpr uint32_t HEARTBEAT_MS      = 30000; // interval heartbeat node → gateway
+    constexpr uint32_t TIME_SYNC_MS      = 60000; // 1 menit sekali gateway kirim sync
 }
 
 // ---------------------------------------------------------------------------

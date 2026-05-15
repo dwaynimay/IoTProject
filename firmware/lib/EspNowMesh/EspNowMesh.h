@@ -54,6 +54,7 @@
 
 extern QueueHandle_t g_rawQueue;
 extern QueueHandle_t g_mqttQueue;
+extern volatile uint64_t g_epochOffsetMs;
 
 
 class EspNowMesh
@@ -78,6 +79,8 @@ public:
     bool sendCombined(const CombinedPacket& pkt);
 
     bool sendHeartbeat(uint8_t nodeId, uint32_t uptimeS);
+
+    bool sendTimeSync(uint32_t epochS, uint16_t epochMsPart);
 
     bool lastSendOk() const { return _lastSendOk; }
 

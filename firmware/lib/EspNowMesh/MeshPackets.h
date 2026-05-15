@@ -41,6 +41,7 @@ enum class PacketType : uint8_t
     CS_GY         = 0x14,
     CS_GZ         = 0x15,
     CS_IR         = 0x16,
+    TIME_SYNC     = 0x20,
     HEARTBEAT     = 0xFF,
 };
 
@@ -61,8 +62,8 @@ struct __attribute__((packed)) PacketHeader
 {
     PacketType type;
     uint8_t    nodeId;
-    uint32_t   timestamp;
-};  // 6 bytes
+    uint64_t   timestamp;
+};  // 10 bytes
 
 struct __attribute__((packed)) ImuSample
 {
@@ -104,7 +105,14 @@ struct __attribute__((packed)) HeartbeatPacket
     PacketHeader header;
     uint32_t     uptimeS;
     uint8_t      rssi;
-};  // 11 bytes ✓
+};  // 15 bytes ✓
+
+struct __attribute__((packed)) TimeSyncPacket
+{
+    PacketHeader header;
+    uint32_t     epochS;
+    uint16_t     epochMsPart;
+};  // 16 bytes ✓
 
 struct __attribute__((packed)) CS1AxisPacket
 {
@@ -149,7 +157,7 @@ struct ImuWindowBuffer
 {
     float    ax[CS_M], ay[CS_M], az[CS_M];
     float    gx[CS_M], gy[CS_M], gz[CS_M];
-    uint32_t timestamp;
+    uint64_t timestamp;
     bool     fingerOn;
     uint8_t  receivedMask;
     uint8_t  nodeId;
@@ -177,6 +185,7 @@ union EspNowPayload
     HeartbeatPacket heartbeat;
     CS1AxisPacket   csAxis;
     CSPpgPacket     csPpg;
+    TimeSyncPacket  timeSync;
 
     PacketType type() const { return static_cast<PacketType>(raw[0]); }
 };

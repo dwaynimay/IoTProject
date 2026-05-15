@@ -190,6 +190,8 @@ static void taskMonitorSensor(void* param)
 
 static void taskMonitorGateway(void* param)
 {
+    static uint32_t lastTimeSyncMs = 0;
+
     for (;;)
     {
         g_watchdog.healthCheck();
@@ -226,6 +228,16 @@ static void taskMonitorGateway(void* param)
                  g_mqtt.isWifiConnected() ? "OK" : "DOWN",
                  rssi,
                  esp_get_free_heap_size() / 1024);
+
+        if (millis() - lastTimeSyncMs >= Timing::TIME_SYNC_MS)
+        {
+            lastTimeSyncMs = millis();
+            uint32_t epochS = g_mqtt.getEpochS();
+            if (epochS > 1600000000) // Pastikan NTP sudah sync
+            {
+                g_mesh.sendTimeSync(epochS, g_mqtt.getEpochMsPart());
+            }
+        }
 
         vTaskDelay(pdMS_TO_TICKS(HEALTH_CHECK_MS));
     }

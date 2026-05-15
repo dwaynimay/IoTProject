@@ -29,6 +29,7 @@ static constexpr uint8_t ESPNOW_CHANNEL = 1;
 
 QueueHandle_t g_rawQueue  = nullptr;
 extern QueueHandle_t g_mqttQueue;
+volatile uint64_t g_epochOffsetMs = 0;
 
 EspNowMesh* EspNowMesh::_instance = nullptr;
 
@@ -146,6 +147,26 @@ bool EspNowMesh::sendHeartbeat(uint8_t nodeId, uint32_t uptimeS)
     return _send(&pkt, sizeof(HeartbeatPacket));
 }
 
+bool EspNowMesh::sendTimeSync(uint32_t epochS, uint16_t epochMsPart)
+{
+    TimeSyncPacket pkt{};
+    pkt.header = { PacketType::TIME_SYNC, NODE_ID, static_cast<uint64_t>(millis()) };
+    pkt.epochS = epochS;
+    pkt.epochMsPart = epochMsPart;
+    
+    // Broadcast to all registered peers
+    const esp_err_t err = esp_now_send(
+        NULL,
+        reinterpret_cast<const uint8_t*>(&pkt),
+        sizeof(TimeSyncPacket)
+    );
+
+    if (err != ESP_OK)
+        LOG_EVERY_N(10, LOG_WARN, TAG, "esp_now_send TimeSync gagal: 0x%X", err);
+
+    return err == ESP_OK;
+}
+
 
 // =============================================================================
 // Private Helpers
@@ -210,10 +231,22 @@ void EspNowMesh::_onDataSent(const uint8_t* mac, esp_now_send_status_t status)
     }
 }
 
-// ISR — HANYA memcpy
+// ISR — HANYA memcpy atau logika sangat singkat
 void EspNowMesh::_onDataRecv(const uint8_t* mac, const uint8_t* data, int len)
 {
-    if (len < 1 || !g_rawQueue) return;
+    if (len < 1) return;
+
+    PacketType type = static_cast<PacketType>(data[0]);
+    if (type == PacketType::TIME_SYNC && len >= static_cast<int>(sizeof(TimeSyncPacket)))
+    {
+        const auto* pkt = reinterpret_cast<const TimeSyncPacket*>(data);
+        uint64_t gwMs = (uint64_t)pkt->epochS * 1000 + pkt->epochMsPart;
+        // Hitung offset: (waktu global) - (waktu lokal saat paket diterima)
+        g_epochOffsetMs = gwMs - millis();
+        return; // Tidak perlu diteruskan ke g_rawQueue
+    }
+
+    if (!g_rawQueue) return;
 
     RawPacket raw{};
     raw.len = static_cast<uint8_t>(len <= 250 ? len : 250);

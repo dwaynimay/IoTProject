@@ -9,6 +9,8 @@
 
 #include "Network_Mqtt.h"
 #include <esp_wifi.h>
+#include <time.h>
+#include <sys/time.h>
 
 static constexpr char TAG[] = "MQTT";
 
@@ -29,6 +31,9 @@ bool NetworkMqtt::begin()
         LOG_ERROR(TAG, "WiFi gagal tersambung — gateway tidak bisa beroperasi");
         return false;
     }
+
+    // Init NTP setelah WiFi terhubung
+    initNTP();
 
     // MQTT boleh gagal saat pertama kali — tryReconnect() akan handle ini
     if (!_connectMqtt())
@@ -260,4 +265,27 @@ const char* NetworkMqtt::_mqttStateStr(int state)
         case  5: return "UNAUTHORIZED";
         default: return "UNKNOWN";
     }
+}
+
+// =============================================================================
+// NTP & Time Helpers
+// =============================================================================
+void NetworkMqtt::initNTP()
+{
+    configTime(0, 0, "pool.ntp.org", "time.nist.gov");
+    LOG_INFO(TAG, "NTP dikonfigurasi (pool.ntp.org)");
+}
+
+uint32_t NetworkMqtt::getEpochS() const
+{
+    time_t now;
+    time(&now);
+    return (uint32_t)now;
+}
+
+uint16_t NetworkMqtt::getEpochMsPart() const
+{
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    return tv.tv_usec / 1000;
 }

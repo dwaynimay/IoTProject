@@ -87,14 +87,14 @@ RouteResult MeshRouting::_routeCombined(const RawPacket& raw, MqttMessage& out)
     {
         snprintf(out.payload, sizeof(out.payload),
                  "{"
-                 "\"ts\":%lu,"
+                 "\"ts\":%llu,"
                  "\"ax\":%.4f,\"ay\":%.4f,\"az\":%.4f,"
                  "\"gx\":%.4f,\"gy\":%.4f,\"gz\":%.4f,"
                  "\"ir\":%lu,\"red\":%lu,"
                  "\"hr\":%d,\"spo2\":%.1f,\"ppg_valid\":%s,"
                  "\"finger\":%s"
                  "}",
-                 (unsigned long)pkt->header.timestamp,
+                 (unsigned long long)pkt->header.timestamp,
                  pkt->imu.accelX, pkt->imu.accelY, pkt->imu.accelZ,
                  pkt->imu.gyroX,  pkt->imu.gyroY,  pkt->imu.gyroZ,
                  (unsigned long)pkt->ppg.irRaw,
@@ -108,14 +108,14 @@ RouteResult MeshRouting::_routeCombined(const RawPacket& raw, MqttMessage& out)
     {
         snprintf(out.payload, sizeof(out.payload),
                  "{"
-                 "\"ts\":%lu,"
+                 "\"ts\":%llu,"
                  "\"ax\":%.4f,\"ay\":%.4f,\"az\":%.4f,"
                  "\"gx\":%.4f,\"gy\":%.4f,\"gz\":%.4f,"
                  "\"ir\":%lu,\"red\":%lu,"
                  "\"hr\":%d,\"spo2\":null,\"ppg_valid\":%s,"
                  "\"finger\":%s"
                  "}",
-                 (unsigned long)pkt->header.timestamp,
+                 (unsigned long long)pkt->header.timestamp,
                  pkt->imu.accelX, pkt->imu.accelY, pkt->imu.accelZ,
                  pkt->imu.gyroX,  pkt->imu.gyroY,  pkt->imu.gyroZ,
                  (unsigned long)pkt->ppg.irRaw,
@@ -125,9 +125,9 @@ RouteResult MeshRouting::_routeCombined(const RawPacket& raw, MqttMessage& out)
                  pkt->edge.fingerOn ? "true" : "false");
     }
 
-    LOG_DEBUG(TAG, "COMBINED node=%d ts=%lu spo2=%.1f%%",
+    LOG_DEBUG(TAG, "COMBINED node=%d ts=%llu spo2=%.1f%%",
               pkt->header.nodeId,
-              (unsigned long)pkt->header.timestamp,
+              (unsigned long long)pkt->header.timestamp,
               pkt->ppg.spo2);
     return RouteResult::PUBLISHED;
 }
@@ -151,8 +151,8 @@ RouteResult MeshRouting::_routeHeartbeat(const RawPacket& raw, MqttMessage& out)
              "%s/node_%d/heartbeat", Mqtt::TOPIC_BASE, pkt->header.nodeId);
 
     snprintf(out.payload, sizeof(out.payload),
-             "{\"ts\":%lu,\"uptime\":%lu}",
-             (unsigned long)pkt->header.timestamp,
+             "{\"ts\":%llu,\"uptime\":%lu}",
+             (unsigned long long)pkt->header.timestamp,
              (unsigned long)pkt->uptimeS);
 
     LOG_DEBUG(TAG, "HEARTBEAT node=%d uptime=%lu s",
@@ -203,9 +203,9 @@ RouteResult MeshRouting::_routeCsAxis(const RawPacket& raw, MqttMessage& out)
         }
         else
         {
-            LOG_WARN(TAG, "Node %d: window baru ts=%lu (diff=%lums) — reset buffer",
+            LOG_WARN(TAG, "Node %d: window baru ts=%llu (diff=%lums) — reset buffer",
                      pkt->header.nodeId,
-                     (unsigned long)pkt->header.timestamp,
+                     (unsigned long long)pkt->header.timestamp,
                      (unsigned long)diff);
             buf.receivedMask = 0;
         }
@@ -238,8 +238,8 @@ RouteResult MeshRouting::_routeCsAxis(const RawPacket& raw, MqttMessage& out)
     int   rem = sizeof(out.payload);
     int   w;
 
-    w = snprintf(p, rem, "{\"ts\":%lu,\"finger\":%s",
-                 (unsigned long)buf.timestamp,
+    w = snprintf(p, rem, "{\"ts\":%llu,\"finger\":%s",
+                 (unsigned long long)buf.timestamp,
                  buf.fingerOn ? "true" : "false");
     p += w; rem -= w;
 
@@ -257,8 +257,8 @@ RouteResult MeshRouting::_routeCsAxis(const RawPacket& raw, MqttMessage& out)
     }
     snprintf(p, rem, "}");
 
-    LOG_DEBUG(TAG, "cs_imu node=%d ts=%lu — publish",
-              buf.nodeId, (unsigned long)buf.timestamp);
+    LOG_DEBUG(TAG, "cs_imu node=%d ts=%llu — publish",
+              buf.nodeId, (unsigned long long)buf.timestamp);
     return RouteResult::PUBLISHED;
 }
 
@@ -295,9 +295,9 @@ RouteResult MeshRouting::_routeCsIr(const RawPacket& raw, MqttMessage& out)
     if (pkt->spo2 > 0.0f)
     {
         w = snprintf(p, rem,
-                     "{\"ts\":%lu,\"hr\":%d,\"spo2\":%.1f,"
+                     "{\"ts\":%llu,\"hr\":%d,\"spo2\":%.1f,"
                      "\"ppg_valid\":%s,\"finger\":%s,\"ir\":[",
-                     (unsigned long)pkt->header.timestamp,
+                     (unsigned long long)pkt->header.timestamp,
                      pkt->heartRate,
                      pkt->spo2,
                      pkt->ppgValid      ? "true" : "false",
@@ -306,9 +306,9 @@ RouteResult MeshRouting::_routeCsIr(const RawPacket& raw, MqttMessage& out)
     else
     {
         w = snprintf(p, rem,
-                     "{\"ts\":%lu,\"hr\":%d,\"spo2\":null,"
+                     "{\"ts\":%llu,\"hr\":%d,\"spo2\":null,"
                      "\"ppg_valid\":%s,\"finger\":%s,\"ir\":[",
-                     (unsigned long)pkt->header.timestamp,
+                     (unsigned long long)pkt->header.timestamp,
                      pkt->heartRate,
                      pkt->ppgValid      ? "true" : "false",
                      pkt->edge.fingerOn ? "true" : "false");

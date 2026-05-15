@@ -60,6 +60,13 @@ public:
 
     // ── Maintenance ───────────────────────────────────────────────────────────
 
+    // Init NTP setelah WiFi connect
+    void initNTP();
+
+    // Helper untuk waktu
+    uint32_t getEpochS() const;
+    uint16_t getEpochMsPart() const;
+
     // Proses incoming message dan jaga koneksi MQTT tetap hidup.
     // Panggil di setiap iterasi task MQTT.
     void loop();

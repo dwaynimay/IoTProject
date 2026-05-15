@@ -30,8 +30,8 @@ extern portMUX_TYPE g_stateMux;
 extern ImuSample    g_latestImu;
 extern PpgSample    g_latestPpg;
 
-// Instance mesh dari main.cpp
 extern EspNowMesh g_mesh;
+extern volatile uint64_t g_epochOffsetMs;
 
 static constexpr char TAG[] = "CS_TX";
 
@@ -99,7 +99,7 @@ void taskCSSender(void* param)
             g_encIr.encode(yIr);
 
             const bool     finger  = (ppg.irRaw >= EdgeConfig::IR_FINGER_THRESHOLD);
-            const uint32_t tsNow   = millis();
+            const uint64_t tsNow   = millis() + g_epochOffsetMs;
 
             // ── Kirim 6 IMU axis ──────────────────────────────────────────────
             uint8_t nack = 0;
@@ -135,21 +135,21 @@ void taskCSSender(void* param)
                 if (ppg.spo2 > 0.0f)
                 {
                     LOG_INFO(TAG,
-                             "Window #%lu | finger=%s | HR=%d BPM | SpO2=%.1f%% | ts=%lu ms",
+                             "Window #%lu | finger=%s | HR=%d BPM | SpO2=%.1f%% | ts=%llu ms",
                              windowCount,
                              finger ? "Y" : "N",
                              ppg.heartRate,
                              ppg.spo2,
-                             tsNow);
+                             (unsigned long long)tsNow);
                 }
                 else
                 {
                     LOG_INFO(TAG,
-                             "Window #%lu | finger=%s | HR=%d BPM | SpO2=--- | ts=%lu ms",
+                             "Window #%lu | finger=%s | HR=%d BPM | SpO2=--- | ts=%llu ms",
                              windowCount,
                              finger ? "Y" : "N",
                              ppg.heartRate,
-                             tsNow);
+                             (unsigned long long)tsNow);
                 }
             }
         }
