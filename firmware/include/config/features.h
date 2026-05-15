@@ -23,8 +23,8 @@
 //   3 = INFO    — informasi umum (production recommended)
 //   4 = DEBUG   — semua pesan termasuk detail internal
 // ---------------------------------------------------------------------------
-#define LOG_LEVEL        4
-#define LOG_ENABLE_COLOR 1
+#define LOG_LEVEL        3
+#define LOG_ENABLE_COLOR 0
 
 
 // ---------------------------------------------------------------------------

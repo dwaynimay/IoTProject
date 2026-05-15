@@ -84,7 +84,7 @@ namespace StackSize
 // QUEUE SIZE
 //
 // MQTT_MSG: jumlah pesan yang bisa antri sebelum gateway mulai buang paket.
-// RAM yang dipakai: sizeof(MqttMessage) × MQTT_MSG = 500B × 30 = 15 KB
+// RAM yang dipakai: sizeof(MqttMessage) × MQTT_MSG = 500B × 50 = 25 KB
 //
 // Jangan naikkan sembarangan — setiap +10 entry = +5 KB heap gateway.
 // Cek log "[MONITOR] Queue MQTT: X% penuh" untuk tahu apakah perlu dinaikkan.
@@ -93,5 +93,9 @@ namespace QueueLen
 {
     constexpr uint8_t IMU_DATA = 1;
     constexpr uint8_t PPG_DATA = 1;
-    constexpr uint8_t MQTT_MSG = 30;
+    // Hybrid: 2 pesan/window/node × 2 node = 4 pesan/window
+    // Buffer 10 detik = 4 × (1000/640) × 10 = ~63 pesan
+    // Pakai 40 sebagai angka aman dengan RAM terjangkau
+    // RAM: 40 × (80+950) = 41.200 byte = ~40 KB — heap gateway 140KB, aman
+    constexpr uint8_t MQTT_MSG = 40;
 }

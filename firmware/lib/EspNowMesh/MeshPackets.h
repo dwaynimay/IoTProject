@@ -161,6 +161,21 @@ struct RawPacket
 };                      // Total: 257 bytes
 
 
+// Tambah struct buffer akumulasi IMU (internal gateway, tidak dikirim via ESP-NOW)
+struct ImuWindowBuffer
+{
+    float    ax[CS_M], ay[CS_M], az[CS_M];
+    float    gx[CS_M], gy[CS_M], gz[CS_M];
+    uint32_t timestamp;
+    bool     fingerOn;
+    uint8_t  receivedMask; // bitmask: bit0=ax,bit1=ay,bit2=az,bit3=gx,bit4=gy,bit5=gz
+    uint8_t  nodeId;
+    uint32_t lastUpdateMs;  // untuk deteksi stale window
+};
+
+static constexpr uint8_t IMU_ALL_RECEIVED = 0x3F; // 0b00111111
+
+
 // =============================================================================
 // MqttMessage — pesan internal antar FreeRTOS task di gateway
 //
@@ -168,14 +183,13 @@ struct RawPacket
 //
 // ⚠ PERHATIAN UKURAN RAM:
 //   sizeof(MqttMessage) × QueueLen::MQTT_MSG = total heap queue
-//   Payload 420 bytes = cukup untuk cs_ir (~360B) + margin 60B
-//   RAM queue: 30 × (80 + 420) = 15,000 bytes = 15 KB ← AMAN
-//   JANGAN naikkan tanpa hitung ulang!
+//   Payload 950 bytes = cukup untuk cs_imu (~900B) + margin 50B
+//   RAM queue: 30 × (80 + 950) = 30,900 bytes = 30 KB
 // =============================================================================
 struct MqttMessage
 {
     char topic[80];
-    char payload[420];
+    char payload[950];
 };
 
 

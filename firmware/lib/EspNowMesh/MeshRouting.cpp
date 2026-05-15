@@ -23,16 +23,19 @@
 
 static constexpr char TAG[] = "ROUTE";
 
+// Definisi static member
+ImuWindowBuffer MeshRouting::_imuBuf[2] = {};
+
 
 // =============================================================================
 // route() — Entry Point, Dispatch ke Handler yang Sesuai
 // =============================================================================
-bool MeshRouting::route(const RawPacket& raw, MqttMessage& out)
+RouteResult MeshRouting::route(const RawPacket& raw, MqttMessage& out)
 {
     if (raw.len < 2)
     {
         LOG_WARN(TAG, "Packet terlalu pendek (%d bytes) — dibuang", raw.len);
-        return false;
+        return RouteResult::DROPPED;
     }
 
     const uint8_t rawType = raw.data[0];
@@ -58,7 +61,7 @@ bool MeshRouting::route(const RawPacket& raw, MqttMessage& out)
 
         default:
             LOG_WARN(TAG, "Tipe packet tidak dikenal: 0x%02X", rawType);
-            return false;
+            return RouteResult::DROPPED;
     }
 }
 
@@ -67,13 +70,13 @@ bool MeshRouting::route(const RawPacket& raw, MqttMessage& out)
 // _routeCombined() — Serialize CombinedPacket → JSON
 // FIXED: semua field lama diganti ke camelCase
 // =============================================================================
-bool MeshRouting::_routeCombined(const RawPacket& raw, MqttMessage& out)
+RouteResult MeshRouting::_routeCombined(const RawPacket& raw, MqttMessage& out)
 {
     if (raw.len < static_cast<int>(sizeof(CombinedPacket)))
     {
         LOG_WARN(TAG, "COMBINED terlalu pendek: %d < %d bytes",
                  raw.len, sizeof(CombinedPacket));
-        return false;
+        return RouteResult::DROPPED;
     }
 
     const auto* pkt = reinterpret_cast<const CombinedPacket*>(raw.data);
@@ -105,7 +108,7 @@ bool MeshRouting::_routeCombined(const RawPacket& raw, MqttMessage& out)
 
     LOG_DEBUG(TAG, "COMBINED node=%d ts=%lu",
               pkt->header.nodeId, (unsigned long)pkt->header.timestamp);
-    return true;
+    return RouteResult::PUBLISHED;
 }
 
 
@@ -113,13 +116,13 @@ bool MeshRouting::_routeCombined(const RawPacket& raw, MqttMessage& out)
 // _routeHeartbeat() — Serialize HeartbeatPacket → JSON
 // FIXED: node_id → nodeId (uptimeS sudah camelCase di MeshPackets.h baru)
 // =============================================================================
-bool MeshRouting::_routeHeartbeat(const RawPacket& raw, MqttMessage& out)
+RouteResult MeshRouting::_routeHeartbeat(const RawPacket& raw, MqttMessage& out)
 {
     if (raw.len < static_cast<int>(sizeof(HeartbeatPacket)))
     {
         LOG_WARN(TAG, "HEARTBEAT terlalu pendek: %d < %d bytes",
                  raw.len, sizeof(HeartbeatPacket));
-        return false;
+        return RouteResult::DROPPED;
     }
 
     const auto* pkt = reinterpret_cast<const HeartbeatPacket*>(raw.data);
@@ -135,51 +138,112 @@ bool MeshRouting::_routeHeartbeat(const RawPacket& raw, MqttMessage& out)
 
     LOG_DEBUG(TAG, "HEARTBEAT node=%d uptime=%lu s",
               pkt->header.nodeId, (unsigned long)pkt->uptimeS);
-    return true;
+    return RouteResult::PUBLISHED;
 }
 
 
 // =============================================================================
-// _routeCsAxis() — Serialize CS1AxisPacket → JSON
-// FIXED: node_id → nodeId, finger_on → fingerOn
+// _routeCsAxis() — Serialize CS1AxisPacket → Buffer IMU → JSON
 // =============================================================================
-bool MeshRouting::_routeCsAxis(const RawPacket& raw, MqttMessage& out)
+RouteResult MeshRouting::_routeCsAxis(const RawPacket& raw, MqttMessage& out)
 {
     if (raw.len < static_cast<int>(sizeof(CS1AxisPacket)))
     {
         LOG_WARN(TAG, "CS_AXIS terlalu pendek: %d < %d bytes",
                  raw.len, sizeof(CS1AxisPacket));
-        return false;
+        return RouteResult::DROPPED;
     }
 
-    const auto*  pkt      = reinterpret_cast<const CS1AxisPacket*>(raw.data);
-    const char*  axisName = _axisName(raw.data[0]);
+    const auto* pkt    = reinterpret_cast<const CS1AxisPacket*>(raw.data);
+    const uint8_t axIdx  = raw.data[0] - PKT_CS_AX; // 0=ax,1=ay,2=az,3=gx,4=gy,5=gz
+    const uint8_t bufIdx = _nodeIdx(pkt->header.nodeId);
 
-    // FIXED: node_id → nodeId
+    ImuWindowBuffer& buf = _imuBuf[bufIdx];
+
+    // Cek stale — jika buffer tidak lengkap dalam 2 detik, reset
+    // Ini mencegah buffer stuck menunggu axis yang tidak pernah datang
+    if (buf.receivedMask != 0 && 
+        buf.receivedMask != IMU_ALL_RECEIVED &&
+        (millis() - buf.lastUpdateMs) > 2000)
+    {
+        LOG_WARN(TAG, "Node %d: IMU buffer timeout (mask=0x%02X) — reset",
+                 buf.nodeId, buf.receivedMask);
+        buf.receivedMask = 0;
+    }
+
+    // Deteksi stale window — toleransi 100ms untuk jitter jaringan
+    if (buf.receivedMask != 0 &&
+        pkt->header.timestamp != buf.timestamp)
+    {
+        uint32_t diff = (pkt->header.timestamp > buf.timestamp)
+                        ? pkt->header.timestamp - buf.timestamp
+                        : buf.timestamp - pkt->header.timestamp;
+
+        if (diff < 100)
+        {
+            // Jitter normal, update timestamp ke yang terbaru
+            buf.timestamp = pkt->header.timestamp;
+        }
+        else
+        {
+            LOG_WARN(TAG, "Node %d: window baru ts=%lu (diff=%lums) — reset buffer",
+                     pkt->header.nodeId,
+                     (unsigned long)pkt->header.timestamp,
+                     (unsigned long)diff);
+            buf.receivedMask = 0;
+        }
+    }
+
+    // Simpan axis ke buffer
+    float* dsts[] = {buf.ax, buf.ay, buf.az, buf.gx, buf.gy, buf.gz};
+    memcpy(dsts[axIdx], pkt->y, CS_M * sizeof(float));
+    buf.receivedMask  |= (1u << axIdx);
+    buf.timestamp      = pkt->header.timestamp;
+    buf.fingerOn       = pkt->edge.fingerOn;
+    buf.nodeId         = pkt->header.nodeId;
+    buf.lastUpdateMs   = millis();
+
+    // Belum lengkap — jangan publish dulu
+    if (buf.receivedMask != IMU_ALL_RECEIVED)
+    {
+        LOG_DEBUG(TAG, "IMU buf node=%d mask=0x%02X (menunggu %d axis lagi)",
+                  buf.nodeId, buf.receivedMask,
+                  6 - __builtin_popcount(buf.receivedMask));
+        return RouteResult::ACCUMULATING;
+    }
+
+    // Semua 6 axis terkumpul — format 1 JSON dan publish
+    buf.receivedMask = 0;
+
     snprintf(out.topic, sizeof(out.topic),
-             "%s/node_%d/cs_%s",
-             Mqtt::TOPIC_BASE, pkt->header.nodeId, axisName);
+             "%s/node_%d/cs_imu", Mqtt::TOPIC_BASE, buf.nodeId);
 
     char* p   = out.payload;
     int   rem = sizeof(out.payload);
+    int   w;
 
-    // FIXED: finger_on → fingerOn
-    int w = snprintf(p, rem,
-                     "{\"ts\":%lu,\"finger\":%s,\"y\":[",
-                     (unsigned long)pkt->header.timestamp,
-                     pkt->edge.fingerOn ? "true" : "false");
+    w = snprintf(p, rem, "{\"ts\":%lu,\"finger\":%s",
+                 (unsigned long)buf.timestamp,
+                 buf.fingerOn ? "true" : "false");
     p += w; rem -= w;
 
-    w = _writeFloatArray(p, rem, pkt->y, CS_M);
-    p += w; rem -= w;
+    const char* names[] = {"ax","ay","az","gx","gy","gz"};
+    float*      arrs[]  = {buf.ax,buf.ay,buf.az,buf.gx,buf.gy,buf.gz};
 
-    snprintf(p, rem, "]}");
+    for (uint8_t i = 0; i < 6; i++)
+    {
+        w = snprintf(p, rem, ",\"%s\":[", names[i]);
+        p += w; rem -= w;
+        w = _writeFloatArray(p, rem, arrs[i], CS_M);
+        p += w; rem -= w;
+        w = snprintf(p, rem, "]");
+        p += w; rem -= w;
+    }
+    snprintf(p, rem, "}");
 
-    LOG_DEBUG(TAG, "CS_%s node=%d ts=%lu finger=%s",
-              axisName, pkt->header.nodeId,
-              (unsigned long)pkt->header.timestamp,
-              pkt->edge.fingerOn ? "Y" : "N");
-    return true;
+    LOG_DEBUG(TAG, "cs_imu node=%d ts=%lu — 6 axis terkumpul, publish",
+              buf.nodeId, (unsigned long)buf.timestamp);
+    return RouteResult::PUBLISHED;
 }
 
 
@@ -188,20 +252,20 @@ bool MeshRouting::_routeCsAxis(const RawPacket& raw, MqttMessage& out)
 // FIXED: node_id → nodeId, y_ir → yIr, heart_rate → heartRate,
 //        ppg_valid → ppgValid, finger_on → fingerOn
 // =============================================================================
-bool MeshRouting::_routeCsIr(const RawPacket& raw, MqttMessage& out)
+RouteResult MeshRouting::_routeCsIr(const RawPacket& raw, MqttMessage& out)
 {
     if (raw.len < static_cast<int>(sizeof(CSPpgPacket)))
     {
         LOG_WARN(TAG, "CS_IR terlalu pendek: %d < %d bytes",
                  raw.len, sizeof(CSPpgPacket));
-        return false;
+        return RouteResult::DROPPED;
     }
 
     const auto* pkt = reinterpret_cast<const CSPpgPacket*>(raw.data);
 
     // FIXED: node_id → nodeId
     snprintf(out.topic, sizeof(out.topic),
-             "%s/node_%d/cs_ir", Mqtt::TOPIC_BASE, pkt->header.nodeId);
+             "%s/node_%d/cs_ppg", Mqtt::TOPIC_BASE, pkt->header.nodeId);
 
     char* p   = out.payload;
     int   rem = sizeof(out.payload);
@@ -224,7 +288,7 @@ bool MeshRouting::_routeCsIr(const RawPacket& raw, MqttMessage& out)
     LOG_DEBUG(TAG, "CS_IR node=%d HR=%d finger=%s",
               pkt->header.nodeId, pkt->heartRate,
               pkt->edge.fingerOn ? "Y" : "N");
-    return true;
+    return RouteResult::PUBLISHED;
 }
 
 

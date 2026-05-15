@@ -21,8 +21,8 @@ bool NetworkMqtt::begin()
     _mqttClient.setServer(Mqtt::BROKER, Mqtt::PORT);
     _mqttClient.setKeepAlive(Mqtt::KEEPALIVE);
 
-    // Buffer 512 byte — cukup untuk payload CS (~360 byte) + margin
-    _mqttClient.setBufferSize(512);
+    // Buffer 1200 byte — cukup untuk payload CS (~900 byte) + margin
+    _mqttClient.setBufferSize(1200);
 
     if (!_connectWifi())
     {
@@ -50,6 +50,18 @@ bool NetworkMqtt::publish(const char* topic, const char* payload, bool retain)
         _failCount++;
         LOG_EVERY_N(10, LOG_WARN, TAG, "Publish gagal — MQTT tidak terhubung (fail #%lu)",
                     _failCount);
+        return false;
+    }
+
+    // Cek ukuran sebelum kirim
+    size_t payloadLen = strlen(payload);
+    size_t topicLen   = strlen(topic);
+    
+    if (payloadLen + topicLen + 5 > 1200) // 5 = MQTT fixed header overhead
+    {
+        LOG_WARN(TAG, "Payload terlalu besar: topic=%d payload=%d total=%d bytes",
+                 topicLen, payloadLen, topicLen + payloadLen + 5);
+        _failCount++;
         return false;
     }
 
@@ -193,6 +205,11 @@ bool NetworkMqtt::_connectMqtt()
 
     if (ok)
     {
+        // Reset timer reconnect saat berhasil connect
+        // Mencegah tryReconnect() langsung jalan setelah begin()
+        _lastReconnectAttempt = millis();
+        _reconnectDelay       = Mqtt::RECONNECT_DELAY_MS;
+
         LOG_INFO(TAG, "MQTT terhubung sebagai '%s'", Mqtt::CLIENT_ID);
         _publishOnlineStatus();
     }

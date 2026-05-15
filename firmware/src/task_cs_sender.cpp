@@ -112,20 +112,29 @@ void taskCSSender(void* param)
             const bool     finger  = (ppg.irRaw >= EdgeConfig::IR_FINGER_THRESHOLD);
             const uint32_t tsNow   = millis(); // satu timestamp untuk semua 7 paket
 
-            // ── Kirim 6 IMU axis ──────────────────────────────────────────────
-            g_mesh.sendCsAxis(PKT_CS_AX, NODE_ID, yAx, finger, tsNow);
-            g_mesh.sendCsAxis(PKT_CS_AY, NODE_ID, yAy, finger, tsNow);
-            g_mesh.sendCsAxis(PKT_CS_AZ, NODE_ID, yAz, finger, tsNow);
-            g_mesh.sendCsAxis(PKT_CS_GX, NODE_ID, yGx, finger, tsNow);
-            g_mesh.sendCsAxis(PKT_CS_GY, NODE_ID, yGy, finger, tsNow);
-            g_mesh.sendCsAxis(PKT_CS_GZ, NODE_ID, yGz, finger, tsNow);
-
-            // ── Kirim PPG IR dengan metadata HR ───────────────────────────────
-            g_mesh.sendCsPpg(NODE_ID, yIr,
-                             ppg.heartRate, ppg.valid,
-                             finger, tsNow);
+            // ── Kirim 6 IMU axis dan 1 PPG IR dengan NACK checking ────────────
+            uint8_t nack = 0;
+            
+            if (!g_mesh.sendCsAxis(PKT_CS_AX, NODE_ID, yAx, finger, tsNow)) nack++;
+            if (!g_mesh.sendCsAxis(PKT_CS_AY, NODE_ID, yAy, finger, tsNow)) nack++;
+            if (!g_mesh.sendCsAxis(PKT_CS_AZ, NODE_ID, yAz, finger, tsNow)) nack++;
+            if (!g_mesh.sendCsAxis(PKT_CS_GX, NODE_ID, yGx, finger, tsNow)) nack++;
+            if (!g_mesh.sendCsAxis(PKT_CS_GY, NODE_ID, yGy, finger, tsNow)) nack++;
+            if (!g_mesh.sendCsAxis(PKT_CS_GZ, NODE_ID, yGz, finger, tsNow)) nack++;
+            
+            if (!g_mesh.sendCsPpg(NODE_ID, yIr, ppg.heartRate,
+                                   ppg.valid, finger, tsNow)) nack++;
 
             windowCount++;
+
+            if (nack > 0)
+            {
+                LOG_WARN(TAG, "Window #%lu — %d/7 paket gagal antre TX!", windowCount, nack);
+            }
+            else
+            {
+                LOG_EVERY_N(5, LOG_DEBUG, TAG, "Window #%lu — 7/7 TX OK", windowCount);
+            }
 
             // Log setiap 5 window (~3.2 detik pada 100Hz IMU, N=64)
             if (windowCount % 5 == 0)

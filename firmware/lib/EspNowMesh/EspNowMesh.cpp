@@ -191,10 +191,27 @@ bool EspNowMesh::_addPeer(const uint8_t* mac)
 // =============================================================================
 // Callbacks
 // =============================================================================
+static volatile uint32_t _ackCount  = 0;
+static volatile uint32_t _nackCount = 0;
+
 void EspNowMesh::_onDataSent(const uint8_t* mac, esp_now_send_status_t status)
 {
     if (_instance)
         _instance->_lastSendOk = (status == ESP_NOW_SEND_SUCCESS);
+
+    if (status == ESP_NOW_SEND_SUCCESS)
+    {
+        _ackCount++;
+        LOG_EVERY_N(50, LOG_DEBUG, "MESH", "ESP-NOW ACK (total=%lu)", _ackCount);
+    }
+    else
+    {
+        _nackCount++;
+        LOG_EVERY_N(5, LOG_WARN, "MESH", 
+                    "ESP-NOW NACK (total=%lu, rate=%.1f%%)",
+                    _nackCount,
+                    100.0f * _nackCount / (_ackCount + _nackCount));
+    }
 }
 
 // ISR — HANYA memcpy, tidak ada yang lain

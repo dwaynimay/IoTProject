@@ -33,6 +33,13 @@
 #include "MeshPackets.h"
 
 
+enum class RouteResult
+{
+    PUBLISHED,      // siap publish ke MQTT
+    ACCUMULATING,   // sedang akumulasi (normal, bukan error)
+    DROPPED,        // paket invalid atau queue penuh
+};
+
 // =============================================================================
 // MeshRouting — Static Class (tidak perlu instance)
 //
@@ -43,19 +50,20 @@ class MeshRouting
 {
 public:
     // Proses satu RawPacket menjadi MqttMessage.
-    // Kembalikan true jika berhasil di-route, false jika packet tidak dikenal
+    // Kembalikan PUBLISHED jika berhasil di-route, ACCUMULATING jika sedang
+    // diakumulasi (seperti CS Axis), atau DROPPED jika packet tidak dikenal
     // atau data tidak valid (terlalu pendek, dsb).
-    static bool route(const RawPacket& raw, MqttMessage& out);
+    static RouteResult route(const RawPacket& raw, MqttMessage& out);
 
 private:
     // ── Router per Packet Type ────────────────────────────────────────────────
     // Dipanggil oleh route() setelah dispatch berdasarkan PacketType.
-    // Setiap fungsi mengisi out.topic dan out.payload, return true jika sukses.
+    // Setiap fungsi mengisi out.topic dan out.payload, return PUBLISHED/ACCUMULATING/DROPPED.
 
-    static bool _routeCombined (const RawPacket& raw, MqttMessage& out);
-    static bool _routeHeartbeat(const RawPacket& raw, MqttMessage& out);
-    static bool _routeCsAxis   (const RawPacket& raw, MqttMessage& out);
-    static bool _routeCsIr     (const RawPacket& raw, MqttMessage& out);
+    static RouteResult _routeCombined (const RawPacket& raw, MqttMessage& out);
+    static RouteResult _routeHeartbeat(const RawPacket& raw, MqttMessage& out);
+    static RouteResult _routeCsAxis   (const RawPacket& raw, MqttMessage& out);
+    static RouteResult _routeCsIr     (const RawPacket& raw, MqttMessage& out);
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
@@ -66,4 +74,12 @@ private:
 
     // Nama axis dari PacketType (untuk MQTT topic string)
     static const char* _axisName(uint8_t rawType);
+
+    // Buffer akumulasi IMU — index 0 = node 1, index 1 = node 2
+    static ImuWindowBuffer _imuBuf[2];
+
+    static inline uint8_t _nodeIdx(uint8_t nodeId)
+    {
+        return (nodeId >= 1 && nodeId <= 2) ? (nodeId - 1) : 0;
+    }
 };

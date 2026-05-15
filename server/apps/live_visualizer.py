@@ -45,7 +45,7 @@ NODE_ID = 1  # ubah sesuai node yang ingin divisualisasi
 # Buffer MQTT — thread-safe
 # =============================================================================
 _buf_lock    = threading.Lock()
-_signal_buf  = {}
+_signal_buf  = {} # Map: ts -> {"data": {}, "hr": 0, "finger": False}
 
 # maxlen=10: buffer window yang menumpuk saat plot lag
 window_queue = collections.deque(maxlen=10)
@@ -72,43 +72,53 @@ def _on_message(client, userdata, msg):
     if node_id != NODE_ID:
         return
 
-    signal = parts[2].replace("cs_", "")
-    if signal not in SIGNALS:
-        return
+    sig_type = parts[2]
+    ts = payload.get("ts", 0)
 
     with _buf_lock:
-        _signal_buf[signal] = payload
-
-        if all(s in _signal_buf for s in SIGNALS):
-            buf_copy = dict(_signal_buf)
-            _signal_buf.clear()
-
-            results = {}
-            for sig in SIGNALS:
-                y = buf_copy[sig].get("y", [])
+        if ts not in _signal_buf:
+            _signal_buf[ts] = {"data": {}, "hr": 0, "finger": False, "ts": ts}
+        
+        buf = _signal_buf[ts]
+        
+        if sig_type == "cs_imu":
+            for sig in ["ax", "ay", "az", "gx", "gy", "gz"]:
+                y = payload.get(sig, [])
                 if len(y) == CS_M:
-                    results[sig] = reconstruct(y)
+                    buf["data"][sig] = reconstruct(y)
+            buf["finger"] = payload.get("finger", False)
+            
+        elif sig_type == "cs_ppg":
+            y = payload.get("y", [])
+            if len(y) == CS_M:
+                buf["data"]["ir"] = reconstruct(y)
+            buf["hr"] = payload.get("hr", 0)
+            buf["finger"] = payload.get("finger", False)
 
-            ir_meta  = buf_copy.get("ir", {})
+        if len(buf["data"]) == 7:
             meta["win"] += 1
             window_queue.append({
                 "win"   : meta["win"],
-                "hr"    : ir_meta.get("hr", 0),
-                "finger": ir_meta.get("finger", False),
-                "ts"    : buf_copy["ax"].get("ts", 0),
-                "data"  : results,
+                "hr"    : buf["hr"],
+                "finger": buf["finger"],
+                "ts"    : ts,
+                "data"  : buf["data"],
             })
-
+            del _signal_buf[ts]
+            
+        # cleanup old buffers
+        if len(_signal_buf) > 5:
+            oldest_ts = min(_signal_buf.keys())
+            del _signal_buf[oldest_ts]
 
 def _on_connect(client, userdata, *args):
     rc = args[1] if len(args) >= 2 else args[0]
     rc_val = rc if isinstance(rc, int) else rc.value
     if rc_val == 0:
         print(f"[MQTT] Terhubung → Node {NODE_ID}")
-        for sig in SIGNALS:
-            topic = f"{TOPIC_BASE}/node_{NODE_ID}/cs_{sig}"
-            client.subscribe(topic)
-            print(f"[MQTT] sub: {topic}")
+        client.subscribe(f"{TOPIC_BASE}/node_{NODE_ID}/cs_imu")
+        client.subscribe(f"{TOPIC_BASE}/node_{NODE_ID}/cs_ppg")
+        print(f"[MQTT] sub: {TOPIC_BASE}/node_{NODE_ID}/(cs_imu & cs_ppg)")
     else:
         print(f"[MQTT] Gagal rc={rc_val}")
 

@@ -166,4 +166,4 @@
         if (++_call_count % (n) == 0) {                   \
             level_macro(tag, fmt, ##__VA_ARGS__);          \
         }                                                  \
-    } while(0)
+    } while(0)
