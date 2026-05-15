@@ -3,22 +3,29 @@
 // =============================================================================
 // MeshRouting.cpp — Implementasi Routing Packet → MQTT
 // =============================================================================
-// Semua output log menggunakan makro LOG_* dari utils/Logger.h.
-// DILARANG menggunakan Serial.print/printf secara langsung di file ini.
+// PERUBAHAN v2 (refactor):
+//   Semua field access diupdate ke camelCase sesuai MeshPackets.h baru:
+//     pkt->header.node_id  → pkt->header.nodeId
+//     pkt->imu.accel_x     → pkt->imu.accelX
+//     pkt->ppg.ir_raw      → pkt->ppg.irRaw
+//     pkt->ppg.heart_rate  → pkt->ppg.heartRate
+//     pkt->ppg.spo2        → pkt->ppg.spo2  (tidak berubah)
+//     pkt->ppg.valid       → pkt->ppg.valid  (tidak berubah)
+//     pkt->edge.finger_on  → pkt->edge.fingerOn
+//     pkt->uptimeS         → pkt->uptimeS  (sudah benar di HeartbeatPacket)
+//     pkt->yIr             → pkt->yIr
+//     pkt->ppgValid        → pkt->ppgValid
+//     pkt->heartRate       → pkt->heartRate (CSPpgPacket)
 // =============================================================================
 
 #include "MeshRouting.h"
-#include "Config.h"
+#include "../../include/Config.h"
 
 static constexpr char TAG[] = "ROUTE";
 
 
 // =============================================================================
 // route() — Entry Point, Dispatch ke Handler yang Sesuai
-//
-// Pola dispatch ini (switch pada byte pertama) membuat penambahan
-// packet type baru hanya butuh tambah satu case — tidak ada perubahan
-// di tempat lain.
 // =============================================================================
 bool MeshRouting::route(const RawPacket& raw, MqttMessage& out)
 {
@@ -30,7 +37,6 @@ bool MeshRouting::route(const RawPacket& raw, MqttMessage& out)
 
     const uint8_t rawType = raw.data[0];
 
-    // Dispatch berdasarkan tipe packet
     switch (rawType)
     {
         case static_cast<uint8_t>(PacketType::COMBINED_DATA):
@@ -59,10 +65,11 @@ bool MeshRouting::route(const RawPacket& raw, MqttMessage& out)
 
 // =============================================================================
 // _routeCombined() — Serialize CombinedPacket → JSON
+// FIXED: semua field lama diganti ke camelCase
 // =============================================================================
 bool MeshRouting::_routeCombined(const RawPacket& raw, MqttMessage& out)
 {
-    if (raw.len < sizeof(CombinedPacket))
+    if (raw.len < static_cast<int>(sizeof(CombinedPacket)))
     {
         LOG_WARN(TAG, "COMBINED terlalu pendek: %d < %d bytes",
                  raw.len, sizeof(CombinedPacket));
@@ -71,9 +78,12 @@ bool MeshRouting::_routeCombined(const RawPacket& raw, MqttMessage& out)
 
     const auto* pkt = reinterpret_cast<const CombinedPacket*>(raw.data);
 
+    // FIXED: node_id → nodeId
     snprintf(out.topic, sizeof(out.topic),
              "%s/node_%d/combined", Mqtt::TOPIC_BASE, pkt->header.nodeId);
 
+    // FIXED: accel_x → accelX, gyro_x → gyroX, ir_raw → irRaw,
+    //        red_raw → redRaw, heart_rate → heartRate, finger_on → fingerOn
     snprintf(out.payload, sizeof(out.payload),
              "{"
              "\"ts\":%lu,"
@@ -90,8 +100,8 @@ bool MeshRouting::_routeCombined(const RawPacket& raw, MqttMessage& out)
              (unsigned long)pkt->ppg.redRaw,
              pkt->ppg.heartRate,
              pkt->ppg.spo2,
-             pkt->ppg.valid       ? "true" : "false",
-             pkt->edge.fingerOn   ? "true" : "false");
+             pkt->ppg.valid      ? "true" : "false",
+             pkt->edge.fingerOn  ? "true" : "false");
 
     LOG_DEBUG(TAG, "COMBINED node=%d ts=%lu",
               pkt->header.nodeId, (unsigned long)pkt->header.timestamp);
@@ -101,10 +111,11 @@ bool MeshRouting::_routeCombined(const RawPacket& raw, MqttMessage& out)
 
 // =============================================================================
 // _routeHeartbeat() — Serialize HeartbeatPacket → JSON
+// FIXED: node_id → nodeId (uptimeS sudah camelCase di MeshPackets.h baru)
 // =============================================================================
 bool MeshRouting::_routeHeartbeat(const RawPacket& raw, MqttMessage& out)
 {
-    if (raw.len < sizeof(HeartbeatPacket))
+    if (raw.len < static_cast<int>(sizeof(HeartbeatPacket)))
     {
         LOG_WARN(TAG, "HEARTBEAT terlalu pendek: %d < %d bytes",
                  raw.len, sizeof(HeartbeatPacket));
@@ -113,6 +124,7 @@ bool MeshRouting::_routeHeartbeat(const RawPacket& raw, MqttMessage& out)
 
     const auto* pkt = reinterpret_cast<const HeartbeatPacket*>(raw.data);
 
+    // FIXED: node_id → nodeId
     snprintf(out.topic, sizeof(out.topic),
              "%s/node_%d/heartbeat", Mqtt::TOPIC_BASE, pkt->header.nodeId);
 
@@ -129,13 +141,11 @@ bool MeshRouting::_routeHeartbeat(const RawPacket& raw, MqttMessage& out)
 
 // =============================================================================
 // _routeCsAxis() — Serialize CS1AxisPacket → JSON
-//
-// Dipakai untuk: ax, ay, az, gx, gy, gz (6 axis IMU).
-// Nama axis ditentukan dari PacketType via _axisName().
+// FIXED: node_id → nodeId, finger_on → fingerOn
 // =============================================================================
 bool MeshRouting::_routeCsAxis(const RawPacket& raw, MqttMessage& out)
 {
-    if (raw.len < sizeof(CS1AxisPacket))
+    if (raw.len < static_cast<int>(sizeof(CS1AxisPacket)))
     {
         LOG_WARN(TAG, "CS_AXIS terlalu pendek: %d < %d bytes",
                  raw.len, sizeof(CS1AxisPacket));
@@ -145,14 +155,15 @@ bool MeshRouting::_routeCsAxis(const RawPacket& raw, MqttMessage& out)
     const auto*  pkt      = reinterpret_cast<const CS1AxisPacket*>(raw.data);
     const char*  axisName = _axisName(raw.data[0]);
 
+    // FIXED: node_id → nodeId
     snprintf(out.topic, sizeof(out.topic),
              "%s/node_%d/cs_%s",
              Mqtt::TOPIC_BASE, pkt->header.nodeId, axisName);
 
-    // Bangun payload: header JSON + float array
     char* p   = out.payload;
     int   rem = sizeof(out.payload);
 
+    // FIXED: finger_on → fingerOn
     int w = snprintf(p, rem,
                      "{\"ts\":%lu,\"finger\":%s,\"y\":[",
                      (unsigned long)pkt->header.timestamp,
@@ -174,12 +185,12 @@ bool MeshRouting::_routeCsAxis(const RawPacket& raw, MqttMessage& out)
 
 // =============================================================================
 // _routeCsIr() — Serialize CSPpgPacket → JSON
-//
-// Dipakai khusus untuk IR PPG yang punya metadata tambahan (HR, ppgValid).
+// FIXED: node_id → nodeId, y_ir → yIr, heart_rate → heartRate,
+//        ppg_valid → ppgValid, finger_on → fingerOn
 // =============================================================================
 bool MeshRouting::_routeCsIr(const RawPacket& raw, MqttMessage& out)
 {
-    if (raw.len < sizeof(CSPpgPacket))
+    if (raw.len < static_cast<int>(sizeof(CSPpgPacket)))
     {
         LOG_WARN(TAG, "CS_IR terlalu pendek: %d < %d bytes",
                  raw.len, sizeof(CSPpgPacket));
@@ -188,12 +199,14 @@ bool MeshRouting::_routeCsIr(const RawPacket& raw, MqttMessage& out)
 
     const auto* pkt = reinterpret_cast<const CSPpgPacket*>(raw.data);
 
+    // FIXED: node_id → nodeId
     snprintf(out.topic, sizeof(out.topic),
              "%s/node_%d/cs_ir", Mqtt::TOPIC_BASE, pkt->header.nodeId);
 
     char* p   = out.payload;
     int   rem = sizeof(out.payload);
 
+    // FIXED: heart_rate → heartRate, ppg_valid → ppgValid, finger_on → fingerOn
     int w = snprintf(p, rem,
                      "{\"ts\":%lu,\"hr\":%d,\"ppg_valid\":%s,\"finger\":%s,\"y\":[",
                      (unsigned long)pkt->header.timestamp,
@@ -202,6 +215,7 @@ bool MeshRouting::_routeCsIr(const RawPacket& raw, MqttMessage& out)
                      pkt->edge.fingerOn ? "true" : "false");
     p += w; rem -= w;
 
+    // FIXED: y_ir → yIr
     w = _writeFloatArray(p, rem, pkt->yIr, CS_M);
     p += w; rem -= w;
 
@@ -216,9 +230,6 @@ bool MeshRouting::_routeCsIr(const RawPacket& raw, MqttMessage& out)
 
 // =============================================================================
 // _writeFloatArray() — Tulis float[] sebagai JSON array
-//
-// Memisahkan logika ini ke helper mencegah duplikasi antara
-// _routeCsAxis() dan _routeCsIr().
 // =============================================================================
 int MeshRouting::_writeFloatArray(char* dst, int rem,
                                   const float* arr, uint8_t len)

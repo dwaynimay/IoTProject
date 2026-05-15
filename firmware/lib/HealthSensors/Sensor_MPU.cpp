@@ -8,7 +8,7 @@
 // =============================================================================
 
 #include "Sensor_MPU.h"
-#include "Config.h"
+#include "../../include/Config.h"
 
 static constexpr char TAG[] = "MPU";
 
@@ -79,13 +79,13 @@ bool SensorMPU::read(ImuSample& out)
 
     // Kurangi offset kalibrasi (dalam domain raw ADC) lalu konversi ke fisik.
     // Urutan: subtract offset → bagi skala → kalikan gravitasi (khusus accel).
-    out.accel_x = ((ax - _axOff) / ACCEL_SCALE) * GRAVITY;
-    out.accel_y = ((ay - _ayOff) / ACCEL_SCALE) * GRAVITY;
-    out.accel_z = ((az - _azOff) / ACCEL_SCALE) * GRAVITY;
-    out.gyro_x  =  (gx - _gxOff) / GYRO_SCALE;
-    out.gyro_y  =  (gy - _gyOff) / GYRO_SCALE;
-    out.gyro_z  =  (gz - _gzOff) / GYRO_SCALE;
-    out.temp_c  = 0; // tidak dipakai — skip parsing register suhu
+    out.accelX = ((ax - _axOff) / ACCEL_SCALE) * GRAVITY;
+    out.accelY = ((ay - _ayOff) / ACCEL_SCALE) * GRAVITY;
+    out.accelZ = ((az - _azOff) / ACCEL_SCALE) * GRAVITY;
+    out.gyroX  =  (gx - _gxOff) / GYRO_SCALE;
+    out.gyroY  =  (gy - _gyOff) / GYRO_SCALE;
+    out.gyroZ  =  (gz - _gzOff) / GYRO_SCALE;
+    out.tempC  = 0; // tidak dipakai — skip parsing register suhu
 
     return true;
 }

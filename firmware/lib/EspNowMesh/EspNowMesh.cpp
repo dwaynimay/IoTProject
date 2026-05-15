@@ -3,33 +3,42 @@
 // =============================================================================
 // EspNowMesh.cpp — Implementasi Transport Layer ESP-NOW
 // =============================================================================
-// Semua output log menggunakan makro LOG_* dari utils/Logger.h.
-// DILARANG menggunakan Serial.print/printf secara langsung di file ini.
+//
+// PERUBAHAN v2 (refactor):
+//   - g_mqttQueue DIHAPUS dari file ini. g_mqttQueue adalah milik
+//     task_mesh_handler.cpp (layer di atasnya). Modul transport tidak boleh
+//     tahu tentang MQTT queue.
+//   - g_rawQueue tetap di sini karena ISR _onDataRecv push ke sini.
+//   - Deklarasi extern g_mqttQueue dihapus dari EspNowMesh.h juga.
+//
+// KEPEMILIKAN QUEUE:
+//   g_rawQueue  → didefinisikan di EspNowMesh.cpp (transport layer)
+//   g_mqttQueue → didefinisikan di task_mesh_handler.cpp (app layer)
+//   Keduanya di-extern di file yang membutuhkan.
 //
 // ⚠️  PERATURAN ISR (_onDataRecv):
-//   TIDAK BOLEH ada di dalam _onDataRecv:
-//     ✗ LOG_* / Serial.printf
-//     ✗ malloc / new / delete
-//     ✗ logika bisnis apapun
-//   BOLEH:
-//     ✓ memcpy (< 250 bytes, ~1µs)
-//     ✓ xQueueSendFromISR
-//     ✓ perbandingan integer sederhana
+//   TIDAK BOLEH ada: LOG_*, Serial, malloc, logika bisnis
+//   BOLEH: memcpy (<250 bytes), xQueueSendFromISR, perbandingan integer
 // =============================================================================
 
+#include <esp_wifi.h>
 #include "EspNowMesh.h"
 
 static constexpr char TAG[]           = "MESH";
 static constexpr uint8_t ESPNOW_CHANNEL = 1;
 
-// Definisi storage untuk variable extern dan static member
+// g_rawQueue dimiliki oleh modul ini — ISR push ke sini
 QueueHandle_t g_rawQueue  = nullptr;
-QueueHandle_t g_mqttQueue = nullptr;
-EspNowMesh*   EspNowMesh::_instance = nullptr;
+
+// g_mqttQueue dimiliki oleh task_mesh_handler.cpp — extern saja di sini
+// jika ada kode di modul ini yang perlu akses (saat ini tidak ada)
+extern QueueHandle_t g_mqttQueue;
+
+EspNowMesh* EspNowMesh::_instance = nullptr;
 
 
 // =============================================================================
-// begin() — Inisialisasi ESP-NOW
+// begin()
 // =============================================================================
 bool EspNowMesh::begin(bool senderMode)
 {
@@ -38,8 +47,6 @@ bool EspNowMesh::begin(bool senderMode)
 
     if (senderMode)
     {
-        // ── Sensor Node ───────────────────────────────────────────────────────
-        // Set channel manual sebelum esp_now_init agar match dengan gateway
         WiFi.mode(WIFI_STA);
         WiFi.disconnect();
         delay(100);
@@ -48,38 +55,26 @@ bool EspNowMesh::begin(bool senderMode)
         esp_wifi_set_channel(ESPNOW_CHANNEL, WIFI_SECOND_CHAN_NONE);
         esp_wifi_set_promiscuous(false);
 
-        // Verifikasi channel berhasil di-set
         uint8_t ch; wifi_second_chan_t sch;
         esp_wifi_get_channel(&ch, &sch);
 
         if (ch != ESPNOW_CHANNEL)
-        {
-            LOG_WARN(TAG, "Channel mismatch: set=%d actual=%d",
-                     ESPNOW_CHANNEL, ch);
-        }
+            LOG_WARN(TAG, "Channel mismatch: set=%d actual=%d", ESPNOW_CHANNEL, ch);
         else
-        {
             LOG_DEBUG(TAG, "Channel sensor dikunci ke %d", ch);
-        }
     }
     else
     {
-        // ── Gateway Node ──────────────────────────────────────────────────────
-        // Channel gateway mengikuti router — verifikasi saja
         uint8_t ch; wifi_second_chan_t sch;
         esp_wifi_get_channel(&ch, &sch);
-
         LOG_INFO(TAG, "Gateway channel (ikut router): %d", ch);
 
         if (ch != ESPNOW_CHANNEL)
-        {
             LOG_WARN(TAG, "Channel gateway=%d, sensor dikunci ke %d. "
                      "Kompile ulang sensor dengan channel=%d",
                      ch, ESPNOW_CHANNEL, ch);
-        }
     }
 
-    // Init ESP-NOW
     if (esp_now_init() != ESP_OK)
     {
         LOG_ERROR(TAG, "esp_now_init() gagal!");
@@ -89,7 +84,6 @@ bool EspNowMesh::begin(bool senderMode)
     esp_now_register_send_cb(_onDataSent);
     esp_now_register_recv_cb(_onDataRecv);
 
-    // Daftarkan peer sesuai role
     if (senderMode)
     {
         if (!_addPeer(MacAddr::GATEWAY)) return false;
@@ -110,7 +104,7 @@ bool EspNowMesh::begin(bool senderMode)
 
 
 // =============================================================================
-// sendCsAxis() — Kirim Satu Axis CS
+// Send API
 // =============================================================================
 bool EspNowMesh::sendCsAxis(uint8_t pktType, uint8_t nodeId,
                              const float y[CS_M], bool fingerOn,
@@ -122,17 +116,10 @@ bool EspNowMesh::sendCsAxis(uint8_t pktType, uint8_t nodeId,
     pkt.edge   = { fingerOn, 0 };
 
     const bool ok = _send(&pkt, sizeof(CS1AxisPacket));
-
-    // Jeda antar paket — mencegah buffer overflow di gateway
     vTaskDelay(pdMS_TO_TICKS(1));
-
     return ok;
 }
 
-
-// =============================================================================
-// sendCsPpg() — Kirim Data PPG CS
-// =============================================================================
 bool EspNowMesh::sendCsPpg(uint8_t nodeId, const float yIr[CS_M],
                             int8_t heartRate, bool ppgValid,
                             bool fingerOn, uint32_t timestamp)
@@ -147,19 +134,11 @@ bool EspNowMesh::sendCsPpg(uint8_t nodeId, const float yIr[CS_M],
     return _send(&pkt, sizeof(CSPpgPacket));
 }
 
-
-// =============================================================================
-// sendCombined() — Kirim CombinedPacket
-// =============================================================================
 bool EspNowMesh::sendCombined(const CombinedPacket& pkt)
 {
     return _send(&pkt, sizeof(CombinedPacket));
 }
 
-
-// =============================================================================
-// sendHeartbeat() — Kirim Heartbeat Periodik
-// =============================================================================
 bool EspNowMesh::sendHeartbeat(uint8_t nodeId, uint32_t uptimeS)
 {
     HeartbeatPacket pkt{};
@@ -173,7 +152,7 @@ bool EspNowMesh::sendHeartbeat(uint8_t nodeId, uint32_t uptimeS)
 
 
 // =============================================================================
-// _send() — Helper Kirim ke Gateway
+// Private Helpers
 // =============================================================================
 bool EspNowMesh::_send(const void* data, size_t len)
 {
@@ -184,17 +163,11 @@ bool EspNowMesh::_send(const void* data, size_t len)
     );
 
     if (err != ESP_OK)
-    {
         LOG_EVERY_N(10, LOG_WARN, TAG, "esp_now_send gagal: 0x%X", err);
-    }
 
     return err == ESP_OK;
 }
 
-
-// =============================================================================
-// _addPeer() — Daftarkan Satu Peer ke ESP-NOW
-// =============================================================================
 bool EspNowMesh::_addPeer(const uint8_t* mac)
 {
     esp_now_peer_info_t peer{};
@@ -216,25 +189,15 @@ bool EspNowMesh::_addPeer(const uint8_t* mac)
 
 
 // =============================================================================
-// _onDataSent() — Callback Pengiriman
+// Callbacks
 // =============================================================================
 void EspNowMesh::_onDataSent(const uint8_t* mac, esp_now_send_status_t status)
 {
     if (_instance)
         _instance->_lastSendOk = (status == ESP_NOW_SEND_SUCCESS);
-
-    // LOG tidak aman di sini (WiFi task context) — hanya update flag
-    // Task sender akan baca _lastSendOk via lastSendOk()
 }
 
-
-// =============================================================================
-// _onDataRecv() — ISR Penerima (HANYA memcpy!)
-//
-// ⚠️  JANGAN TAMBAH KODE APAPUN DI SINI kecuali ada alasan sangat kuat.
-//     Semua logika routing ada di MeshRouting.cpp yang dipanggil dari
-//     taskMeshHandler di task context (aman untuk LOG_*, snprintf, dsb).
-// =============================================================================
+// ISR — HANYA memcpy, tidak ada yang lain
 void EspNowMesh::_onDataRecv(const uint8_t* mac, const uint8_t* data, int len)
 {
     if (len < 1 || !g_rawQueue) return;

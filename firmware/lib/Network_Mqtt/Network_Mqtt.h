@@ -32,8 +32,8 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include <PubSubClient.h>
-#include "DataModels.h"
-#include "Config.h"
+#include "MeshPackets.h"
+#include "../../include/Config.h"
 
 
 // =============================================================================
@@ -71,9 +71,9 @@ public:
 
     // ── Status ────────────────────────────────────────────────────────────────
 
-    bool     isConnected()     const { return _mqttClient.connected(); }
+    bool     isConnected()      { return _mqttClient.connected(); }
     bool     isWifiConnected() const { return WiFi.status() == WL_CONNECTED; }
-    int      mqttState()       const { return _mqttClient.state(); }
+    int      mqttState()        { return _mqttClient.state(); }
     uint32_t publishCount()    const { return _publishCount; }
     uint32_t failCount()       const { return _failCount; }
 

@@ -8,7 +8,7 @@
 // =============================================================================
 
 #include "Sensor_PPG.h"
-#include "Config.h"
+#include "../../include/Config.h"
 #include <Wire.h>
 #include "heartRate.h" // algoritma beat detection dari library SparkFun
 
@@ -114,14 +114,14 @@ bool SensorPPG::read(PpgSample& out)
     if (!_connected)
     {
         out = {}; // zero-initialize semua field
-        out.heart_rate = -1;
+        out.heartRate = -1;
         out.valid      = false;
         return true;
     }
 
-    out.ir_raw     = static_cast<uint32_t>(_lastIrValue);
-    out.red_raw    = 0; // tidak dipakai saat ini
-    out.heart_rate = static_cast<int8_t>(constrain(_beatAvg, 0, 127));
+    out.irRaw     = static_cast<uint32_t>(_lastIrValue);
+    out.redRaw    = 0; // tidak dipakai saat ini
+    out.heartRate = static_cast<int8_t>(constrain(_beatAvg, 0, 127));
     out.spo2       = 0.0f; // kalkulasi SpO2 belum diimplementasikan
     out.valid      = (_beatAvg > 20 && _beatAvg < 255);
 

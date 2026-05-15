@@ -20,11 +20,10 @@
 
 #include <Arduino.h>
 #include "Config.h"
-#include "DataModels.h"
 #include "CS_Sensor.h"
-#include "EspNowMesh/EspNowMesh.h"
-#include "EspNowMesh/MeshPackets.h"
-#include "Watchdog/Watchdog.h"
+#include "EspNowMesh.h"
+#include "MeshPackets.h"
+#include "Watchdog.h"
 
 // Shared state dari main.cpp (diupdate oleh taskReadIMU dan taskReadPPG)
 extern portMUX_TYPE g_stateMux;

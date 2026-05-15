@@ -50,7 +50,7 @@
 #include <esp_now.h>
 #include <WiFi.h>
 #include "MeshPackets.h"
-#include "Config.h"
+#include "../../include/Config.h"
 
 // Queue global — didefinisikan di EspNowMesh.cpp
 // Dibuat di main.cpp sebelum mesh.begin() dipanggil

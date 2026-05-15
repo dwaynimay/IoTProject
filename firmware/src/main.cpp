@@ -1,40 +1,44 @@
-// File: src/main.cpp
+// File: firmware/src/main.cpp
 
 // =============================================================================
 // main.cpp — Orkestrator: Inisialisasi & Registrasi FreeRTOS Task
 // =============================================================================
 //
+// PERUBAHAN v2 (refactor):
+//   - taskSendEspNow (non-CS) dihapus dari sensor node. Mode CS adalah
+//     satu-satunya mode yang didukung. Jika perlu mode non-CS kembali,
+//     tambahkan #define USE_CS_MODE di features.h dan wrap dengan #ifdef.
+//   - g_mqttQueue dipindah ke EspNowMesh.cpp (tidak didefinisikan di sini).
+//     main.cpp hanya membuat queue via xQueueCreate dan assign ke extern.
+//
 // ATURAN FILE INI:
 //   ✓ Deklarasi instance global (sensor, network, dsb.)
 //   ✓ setup(): inisialisasi semua modul, buat queue, registrasi task
-//   ✓ loop(): hanya vTaskDelay — semua kerja ada di task
-//   ✗ JANGAN taruh logika task di sini → task_cs_sender.cpp / task_mesh_handler.cpp
-//   ✗ JANGAN taruh logika bisnis di sini → modul di lib/
+//   ✓ loop(): hanya vTaskDelay
+//   ✗ JANGAN taruh logika task di sini
+//   ✗ JANGAN taruh logika bisnis di sini
 //
-// URUTAN INISIALISASI (penting, jangan diubah):
+// URUTAN INISIALISASI (jangan diubah):
 //   Sensor:
-//     1. IMU (Wire1)       → tidak bergantung apapun
-//     2. ESP-NOW           → harus sebelum Wire (PPG)
-//     3. PPG (Wire)        → harus setelah ESP-NOW
-//
+//     1. IMU (Wire1)  → tidak bergantung apapun
+//     2. ESP-NOW      → harus sebelum Wire (PPG)
+//     3. PPG (Wire)   → harus setelah ESP-NOW
 //   Gateway:
-//     1. Buat queue        → harus sebelum mesh.begin() (ISR butuh g_rawQueue)
-//     2. MQTT + WiFi       → harus sebelum esp_now_init
-//     3. ESP-NOW           → setelah WiFi konek
+//     1. Buat queue   → harus sebelum mesh.begin() (ISR butuh g_rawQueue)
+//     2. MQTT + WiFi  → harus sebelum esp_now_init
+//     3. ESP-NOW      → setelah WiFi konek
 // =============================================================================
 
 #include <Arduino.h>
 #include "Config.h"
-#include "DataModels.h"
+#include "MeshPackets.h"
 
-// Modul dari lib/
-#include "Watchdog/Watchdog.h"
-#include "HealthSensors/Sensor_MPU.h"
-#include "HealthSensors/Sensor_PPG.h"
-#include "EspNowMesh/EspNowMesh.h"
-#include "Network_Mqtt/Network_Mqtt.h"
+#include "Watchdog.h"
+#include "Sensor_MPU.h"
+#include "Sensor_PPG.h"
+#include "EspNowMesh.h"
+#include "Network_Mqtt.h"
 
-// Deklarasi task functions (definisi ada di src/ masing-masing)
 extern void taskCSSender    (void* param);
 extern void taskMeshHandler (void* param);
 extern void taskMqttPublish (void* param);
@@ -44,36 +48,24 @@ static constexpr char TAG[] = "MAIN";
 
 // =============================================================================
 // Instance & Shared State Global
-//
-// Semua variabel di bawah ini di-extern di task file yang membutuhkannya.
-// Pisah deklarasi (di sini) dari penggunaan (di task file) agar tidak ada
-// coupling tersembunyi antar file.
 // =============================================================================
 
-// ── Shared antara sensor tasks ────────────────────────────────────────────────
-// g_stateMux  : critical section untuk baca/tulis g_latestImu & g_latestPpg
-// g_latestImu : snapshot IMU terbaru (diupdate taskReadIMU, dibaca taskCSSender)
-// g_latestPpg : snapshot PPG terbaru (diupdate taskReadPPG, dibaca taskCSSender)
 portMUX_TYPE g_stateMux  = portMUX_INITIALIZER_UNLOCKED;
 ImuSample    g_latestImu = {};
 PpgSample    g_latestPpg = {};
 
-// ── Mutex untuk bus I2C ───────────────────────────────────────────────────────
-// Wire  (bus 1, pin 18/19) → MAX30102 → g_wire0Mutex
-// Wire1 (bus 2, pin 21/22) → MPU6050  → g_wire1Mutex
-SemaphoreHandle_t g_wire0Mutex = nullptr;
-SemaphoreHandle_t g_wire1Mutex = nullptr;
+SemaphoreHandle_t g_wire0Mutex = nullptr;  // Wire  — MAX30102 (pin 18/19)
+SemaphoreHandle_t g_wire1Mutex = nullptr;  // Wire1 — MPU6050  (pin 21/22)
 
-// ── Instance modul ────────────────────────────────────────────────────────────
 #if NODE_ROLE == ROLE_SENSOR
     static SensorMPU   g_imu;
     static SensorPPG   g_ppg;
-    EspNowMesh         g_mesh; // extern di task_cs_sender.cpp
+    EspNowMesh         g_mesh;
 #endif
 
 #if NODE_ROLE == ROLE_GATEWAY
     static EspNowMesh  g_mesh;
-    NetworkMqtt        g_mqtt; // extern di task_mesh_handler.cpp
+    NetworkMqtt        g_mqtt;
 #endif
 
 
@@ -84,8 +76,6 @@ SemaphoreHandle_t g_wire1Mutex = nullptr;
 
 // ---------------------------------------------------------------------------
 // taskReadPPG — Core 1, prioritas tertinggi
-// Alasan prioritas tinggi: polling PPG harus secepat mungkin agar
-// algoritma checkForBeat() tidak kehilangan beat.
 // ---------------------------------------------------------------------------
 static void taskReadPPG(void* param)
 {
@@ -159,7 +149,6 @@ static void taskReadIMU(void* param)
                 failCount++;
                 LOG_EVERY_N(10, LOG_WARN, "IMU",
                             "Read gagal %d kali berturut-turut", failCount);
-
                 if (failCount > 50)
                     g_watchdog.triggerRestart("IMU read fail 50x berturut-turut");
             }
@@ -173,65 +162,6 @@ static void taskReadIMU(void* param)
                     uxTaskGetStackHighWaterMark(NULL));
 
         vTaskDelay(pdMS_TO_TICKS(1));
-    }
-}
-
-// ---------------------------------------------------------------------------
-// taskSendEspNow — Core 0 (mode non-CS: kirim CombinedPacket)
-// Hanya aktif jika tidak menggunakan CS sender.
-// Untuk mode CS, gunakan taskCSSender.
-// ---------------------------------------------------------------------------
-static void taskSendEspNow(void* param)
-{
-    g_watchdog.registerTask();
-
-    TickType_t xLastWake   = xTaskGetTickCount();
-    uint32_t   lastHbMs    = 0;
-
-    vTaskDelay(pdMS_TO_TICKS(1000)); // tunggu sensor stabil
-    LOG_INFO(TAG, "taskSendEspNow dimulai");
-
-    for (;;)
-    {
-        g_watchdog.feed();
-
-        ImuSample imu{};
-        PpgSample ppg{};
-        taskENTER_CRITICAL(&g_stateMux);
-        imu = g_latestImu;
-        ppg = g_latestPpg;
-        taskEXIT_CRITICAL(&g_stateMux);
-
-        const bool fingerOn = (ppg.irRaw >= EdgeConfig::IR_FINGER_THRESHOLD);
-        const bool shouldSend = !EdgeConfig::ENABLE_FINGER_GATE || fingerOn;
-
-        if (shouldSend)
-        {
-            CombinedPacket pkt{};
-            pkt.header  = { PacketType::COMBINED_DATA, NODE_ID,
-                            static_cast<uint32_t>(millis()) };
-            pkt.imu     = imu;
-            pkt.ppg     = ppg;
-            pkt.edge    = { fingerOn, 0 };
-
-            g_mesh.sendCombined(pkt);
-
-            LOG_EVERY_N(10, LOG_DEBUG, TAG,
-                        "TX CombinedPacket | IR=%lu finger=%s HR=%d",
-                        (unsigned long)ppg.irRaw,
-                        fingerOn ? "Y" : "N",
-                        ppg.heartRate);
-        }
-
-        // Heartbeat periodik
-        if (millis() - lastHbMs >= Timing::HEARTBEAT_MS)
-        {
-            g_mesh.sendHeartbeat(NODE_ID, millis() / 1000);
-            lastHbMs = millis();
-            LOG_DEBUG(TAG, "Heartbeat dikirim | uptime=%lu s", millis() / 1000);
-        }
-
-        vTaskDelayUntil(&xLastWake, pdMS_TO_TICKS(Timing::SEND_INTERVAL_MS));
     }
 }
 
@@ -264,7 +194,6 @@ static void taskMonitorGateway(void* param)
     {
         g_watchdog.healthCheck();
 
-        // Pantau fill level kedua queue
         const UBaseType_t rawUsed  = uxQueueMessagesWaiting(g_rawQueue);
         const UBaseType_t rawFree  = uxQueueSpacesAvailable(g_rawQueue);
         const UBaseType_t mqttUsed = uxQueueMessagesWaiting(g_mqttQueue);
@@ -272,23 +201,16 @@ static void taskMonitorGateway(void* param)
         const float       mqttPct  = 100.0f * mqttUsed / (mqttUsed + mqttFree);
 
         if (mqttPct > 80.0f)
-        {
             LOG_WARN(TAG, "g_mqttQueue %.0f%% penuh (%u/%u)",
                      mqttPct, mqttUsed, mqttUsed + mqttFree);
-        }
 
         if (rawUsed > 5)
-        {
-            LOG_WARN(TAG, "g_rawQueue menumpuk: %u/%u",
-                     rawUsed, rawUsed + rawFree);
-        }
+            LOG_WARN(TAG, "g_rawQueue menumpuk: %u/%u", rawUsed, rawUsed + rawFree);
 
-        // WiFi RSSI
         const int8_t rssi = WiFi.RSSI();
         if (rssi < -85)
             LOG_WARN(TAG, "WiFi RSSI lemah: %d dBm", rssi);
 
-        // WiFi down timeout → restart
         if (!g_mqtt.isWifiConnected())
         {
             static uint32_t wifiDownSince = 0;
@@ -313,14 +235,13 @@ static void taskMonitorGateway(void* param)
 
 
 // =============================================================================
-// setup() — Inisialisasi & Registrasi Task
+// setup()
 // =============================================================================
 void setup()
 {
     Serial.begin(115200);
     delay(500);
 
-    // Banner startup
     LOG_INFO(TAG, "================================================");
     LOG_INFO(TAG, "  Health Monitor Mesh — Node %d | Role: %s",
              NODE_ID,
@@ -334,7 +255,6 @@ void setup()
 // ── SENSOR NODE ──────────────────────────────────────────────────────────────
 #if NODE_ROLE == ROLE_SENSOR
 
-    // Buat mutex bus I2C
     g_wire0Mutex = xSemaphoreCreateMutex();
     g_wire1Mutex = xSemaphoreCreateMutex();
     if (!g_wire0Mutex || !g_wire1Mutex)
@@ -356,7 +276,6 @@ void setup()
              EdgeConfig::ENABLE_FINGER_GATE ? "AKTIF" : "NONAKTIF",
              (unsigned long)EdgeConfig::IR_FINGER_THRESHOLD);
 
-    // Registrasi FreeRTOS task
     xTaskCreatePinnedToCore(taskReadPPG,      "PPG",     StackSize::SENSOR_PPG,
                             nullptr, TaskPrio::SENSOR_PPG, nullptr, 1);
     xTaskCreatePinnedToCore(taskReadIMU,      "IMU",     StackSize::SENSOR_IMU,
@@ -391,15 +310,6 @@ void setup()
     if (!g_mesh.begin(false))
         g_watchdog.triggerRestart("ESP-NOW init gagal");
 
-    LOG_INFO(TAG, "Batching: %s%s",
-             BatchConfig::BATCHING_ENABLED ? "AKTIF" : "NONAKTIF",
-             BatchConfig::BATCHING_ENABLED
-                 ? " (belum diimplementasikan di MeshRouting)"
-                 : "");
-
-    // Registrasi FreeRTOS task
-    // taskMeshHandler di Core 1, prioritas lebih tinggi dari taskMqttPublish
-    // agar g_rawQueue tidak overflow saat broker lambat
     xTaskCreatePinnedToCore(taskMeshHandler,    "HANDLER", StackSize::MQTT_PUB,
                             nullptr, TaskPrio::MQTT_PUB + 1, nullptr, 1);
     xTaskCreatePinnedToCore(taskMqttPublish,    "MQTT",    StackSize::MQTT_PUB,
@@ -415,10 +325,7 @@ void setup()
 
 
 // =============================================================================
-// loop() — Sengaja dikosongkan
-//
-// Semua kerja ada di FreeRTOS task. loop() hanya tidur agar idle task
-// ESP32 bisa berjalan dan feed hardware WDT.
+// loop() — sengaja kosong, semua kerja di FreeRTOS task
 // =============================================================================
 void loop()
 {

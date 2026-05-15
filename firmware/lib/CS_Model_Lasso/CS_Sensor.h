@@ -23,7 +23,7 @@
 // =============================================================================
 
 #include <Arduino.h>
-#include "config/tuning.h"  // tidak dipakai langsung, tapi untuk konsistensi include
+#include "../../include/config/tuning.h"  // tidak dipakai langsung, tapi untuk konsistensi include
 
 // ── Parameter utama ──────────────────────────────────────────────────────────
 static constexpr uint8_t  CS_N        = 64;

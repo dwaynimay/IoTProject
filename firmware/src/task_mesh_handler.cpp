@@ -1,40 +1,34 @@
-// File: src/task_mesh_handler.cpp
+// File: firmware/src/task_mesh_handler.cpp
 
 // =============================================================================
 // task_mesh_handler.cpp — Task Handler untuk Gateway Node
 // =============================================================================
 //
-// File ini berisi dua FreeRTOS task yang bekerja bersama di gateway:
+// PERUBAHAN v2 (refactor):
+//   - g_mqttQueue DIDEFINISIKAN di sini (bukan di EspNowMesh.cpp).
+//     Ini adalah layer app (routing + MQTT), bukan transport.
+//   - g_rawQueue di-extern dari EspNowMesh.cpp (transport layer).
 //
-//   taskMeshHandler   (Core 1, prioritas lebih tinggi)
-//     Ambil RawPacket dari g_rawQueue → MeshRouting::route() → push g_mqttQueue
-//     Ini adalah "otak" gateway: decode packet dan tentukan topic MQTT.
-//
-//   taskMqttPublish   (Core 0, prioritas normal)
-//     Ambil MqttMessage dari g_mqttQueue → g_mqtt.publish()
-//     Juga handle reconnect MQTT via tryReconnect().
-//
-// Kenapa dipisah dari main.cpp?
-//   main.cpp seharusnya hanya orkestrator (setup + task registration).
-//   Logika task yang panjang di main.cpp membuat file sulit dibaca dan
-//   sulit di-test secara independen.
-//
-// Dependency:
-//   - EspNowMesh  : g_rawQueue, g_mqttQueue (extern)
-//   - MeshRouting : route()
-//   - Network_Mqtt: g_mqtt (extern)
-//   - Watchdog    : g_watchdog (extern)
+// KEPEMILIKAN QUEUE:
+//   g_rawQueue  → extern dari EspNowMesh.cpp
+//   g_mqttQueue → didefinisikan di sini, di-extern oleh main.cpp dan
+//                 taskMqttPublish untuk monitoring
 // =============================================================================
 
 #include <Arduino.h>
 #include "Config.h"
-#include "DataModels.h"
-#include "EspNowMesh/MeshPackets.h"
-#include "EspNowMesh/MeshRouting.h"
-#include "Network_Mqtt/Network_Mqtt.h"
-#include "Watchdog/Watchdog.h"
+#include "MeshPackets.h"
+#include "MeshRouting.h"
+#include "Network_Mqtt.h"
+#include "Watchdog.h"
 
-// Referensi ke instance global yang didefinisikan di main.cpp
+// g_mqttQueue dimiliki oleh file ini
+QueueHandle_t g_mqttQueue = nullptr;
+
+// g_rawQueue dimiliki oleh EspNowMesh.cpp
+extern QueueHandle_t g_rawQueue;
+
+// g_mqtt didefinisikan di main.cpp
 extern NetworkMqtt g_mqtt;
 
 static constexpr char TAG_HANDLER[] = "HANDLER";
@@ -43,15 +37,6 @@ static constexpr char TAG_PUBLISH[] = "PUBLISH";
 
 // =============================================================================
 // taskMeshHandler — Core 1
-// =============================================================================
-//
-// Pipeline per iterasi:
-//   1. Block di xQueueReceive(g_rawQueue) — hemat CPU saat tidak ada data
-//   2. Panggil MeshRouting::route() untuk decode + serialize ke JSON
-//   3. Push MqttMessage ke g_mqttQueue
-//
-// Jika g_mqttQueue penuh, paket dibuang dan drop counter dinaikkan.
-// Drop rate bisa dipantau via log periodik setiap 10 detik.
 // =============================================================================
 void taskMeshHandler(void* param)
 {
@@ -70,24 +55,17 @@ void taskMeshHandler(void* param)
     {
         g_watchdog.feed();
 
-        // ── Tunggu packet dari ISR ────────────────────────────────────────────
-        // Timeout 500ms: jika tidak ada data, kembali ke atas untuk feed WDT
         if (xQueueReceive(g_rawQueue, &raw, pdMS_TO_TICKS(500)) != pdTRUE)
             continue;
 
         receivedCount++;
 
-        // ── Route packet ke MqttMessage ───────────────────────────────────────
         if (!MeshRouting::route(raw, msg))
         {
-            // route() sudah LOG_WARN untuk packet tidak dikenal
             droppedCount++;
             continue;
         }
 
-        // ── Push ke MQTT queue ────────────────────────────────────────────────
-        // Tidak blocking (timeout=0): lebih baik drop satu paket daripada
-        // block task ini dan biarkan g_rawQueue overflow di sisi ISR.
         if (xQueueSend(g_mqttQueue, &msg, 0) != pdTRUE)
         {
             droppedCount++;
@@ -96,7 +74,6 @@ void taskMeshHandler(void* param)
                         droppedCount);
         }
 
-        // ── Log throughput setiap 10 detik ───────────────────────────────────
         if (millis() - lastLogMs >= 10000)
         {
             lastLogMs = millis();
@@ -107,7 +84,6 @@ void taskMeshHandler(void* param)
                      uxQueueMessagesWaiting(g_mqttQueue));
         }
 
-        // Stack check setiap 500 iterasi
         LOG_EVERY_N(500, LOG_DEBUG, TAG_HANDLER,
                     "Stack watermark: %u bytes",
                     uxTaskGetStackHighWaterMark(NULL));
@@ -117,16 +93,6 @@ void taskMeshHandler(void* param)
 
 // =============================================================================
 // taskMqttPublish — Core 0
-// =============================================================================
-//
-// Pipeline per iterasi:
-//   1. Cek koneksi MQTT — jika putus, coba reconnect via tryReconnect()
-//   2. Block di xQueueReceive(g_mqttQueue) dengan timeout MQTT_PUBLISH_MS
-//   3. Publish ke broker via g_mqtt.publish()
-//   4. Panggil g_mqtt.loop() untuk jaga keepalive
-//
-// Reconnect tidak blocking — tryReconnect() menggunakan exponential backoff
-// sehingga task ini tidak freeze saat broker sedang down.
 // =============================================================================
 void taskMqttPublish(void* param)
 {
@@ -141,7 +107,6 @@ void taskMqttPublish(void* param)
     {
         g_watchdog.feed();
 
-        // ── Status log setiap 10 detik ────────────────────────────────────────
         if (millis() - lastStatusLogMs >= 10000)
         {
             lastStatusLogMs = millis();
@@ -154,13 +119,10 @@ void taskMqttPublish(void* param)
                      uxQueueMessagesWaiting(g_mqttQueue));
         }
 
-        // ── Handle koneksi putus ──────────────────────────────────────────────
         if (!g_mqtt.isConnected())
         {
-            g_mqtt.tryReconnect(); // non-blocking, pakai exponential backoff
+            g_mqtt.tryReconnect();
 
-            // Buang antrian saat offline agar tidak stale saat reconnect
-            // Hanya buang jika queue > 50% penuh untuk hindari data loss berlebihan
             if (uxQueueMessagesWaiting(g_mqttQueue) > QueueLen::MQTT_MSG / 2)
             {
                 xQueueReceive(g_mqttQueue, &msg, 0);
@@ -173,17 +135,14 @@ void taskMqttPublish(void* param)
             continue;
         }
 
-        // ── Ambil dan publish pesan ───────────────────────────────────────────
         if (xQueueReceive(g_mqttQueue, &msg,
                           pdMS_TO_TICKS(Timing::MQTT_PUBLISH_MS)) == pdTRUE)
         {
             g_mqtt.publish(msg.topic, msg.payload);
-            // publish() sudah handle logging sukses/gagal di dalam Network_Mqtt
         }
 
         g_mqtt.loop();
 
-        // Stack check setiap 100 iterasi
         LOG_EVERY_N(100, LOG_DEBUG, TAG_PUBLISH,
                     "Stack watermark: %u bytes",
                     uxTaskGetStackHighWaterMark(NULL));
