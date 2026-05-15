@@ -5,7 +5,7 @@ Pengganti cs_reconstruct_server.py
 Subscribe ke 7 topic CS per node, rekonstruksi sinyal tiap window penuh.
 
 Jalankan dari root project:
-    python -m server.apps.reconstruct_server
+    python -m apps.reconstruct_server
 """
 
 import json
@@ -20,11 +20,11 @@ try:
 except ImportError:
     _PAHO_V2 = False
 
-from server.core.config import (
+from core.config import (
     CS_N, CS_M, MQTT_BROKER, MQTT_PORT, MQTT_KEEPALIVE,
     TOPIC_BASE, SIGNALS, UNITS, TS_SPREAD_TOLERANCE_MS,
 )
-from server.core.cs_utils import reconstruct_default
+from core.cs_router import reconstruct
 
 
 # =============================================================================
@@ -63,7 +63,7 @@ class NodeState:
         for sig in SIGNALS:
             y = buf[sig].get("y", [])
             if len(y) == CS_M:
-                results[sig] = reconstruct_default(y)
+                results[sig] = reconstruct(y)
             else:
                 print(f"[Node {self.node_id}] WARN: {sig} len={len(y)}, expected {CS_M}")
         elapsed_ms = (time.time() - t0) * 1000

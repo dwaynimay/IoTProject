@@ -13,7 +13,7 @@ Metrik yang ditampilkan (tanpa ground truth x_asli):
         Harusnya jauh lebih kecil dari N (sparse).
 
 Jalankan dari root project:
-    python -m server.apps.test_single_signal
+    python -m apps.test_single_signal
 """
 
 import json
@@ -35,11 +35,11 @@ try:
 except ImportError:
     _PAHO_V2 = False
 
-from server.core.config import (
+from core.config import (
     CS_N, CS_M, CS_PHI_SEED, OMP_K,
     MQTT_BROKER, MQTT_PORT, MQTT_KEEPALIVE, TOPIC_BASE,
 )
-from server.core.cs_utils import PHI, THETA_REAL, PSI_C, reconstruct
+from core.cs_router import PHI, THETA, PSI, reconstruct
 
 # ── Konfigurasi test ──────────────────────────────────────────────────────────
 NODE_ID    = 1
@@ -93,8 +93,8 @@ def _get_omp_coeffs(y_arr: np.ndarray) -> tuple[np.ndarray, list[int]]:
         s_hat   : np.ndarray (N,)   koefisien DCT
         support : list[int]         index koefisien aktif (|s| > threshold)
     """
-    from server.core.cs_utils import omp
-    s_hat   = omp(y_arr, THETA_REAL, OMP_K)          # (N,) — bukan (2N,)
+    from core.cs_gaussian import omp
+    s_hat   = omp(y_arr, THETA, OMP_K)          # (N,) — bukan (2N,)
     support = [i for i in range(CS_N) if abs(s_hat[i]) > 1e-8]
     return s_hat, support
 
@@ -115,7 +115,7 @@ def _process(data: dict):
 
     # ── Rekonstruksi ─────────────────────────────────────────────────────────
     try:
-        x_hat          = reconstruct(y_arr, THETA_REAL, PSI_C, OMP_K)
+        x_hat          = reconstruct(y_arr)
         s_hat, support = _get_omp_coeffs(y_arr)
     except Exception as e:
         print(f"[ERROR] Rekonstruksi: {e}")

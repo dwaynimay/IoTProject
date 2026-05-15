@@ -7,7 +7,7 @@ Jalankan BERSAMAAN dengan reconstruct_server.py di terminal berbeda,
 atau jalankan standalone (juga subscribe sendiri ke MQTT).
 
 Jalankan dari root project:
-    python -m server.apps.live_visualizer
+    python -m apps.live_visualizer
 """
 
 import json
@@ -31,12 +31,12 @@ try:
 except ImportError:
     _PAHO_V2 = False
 
-from server.core.config import (
+from core.config import (
     CS_N, CS_M, MQTT_BROKER, MQTT_PORT, MQTT_KEEPALIVE,
     TOPIC_BASE, SIGNALS, UNITS, COLORS,
     HISTORY_WINDOWS, MAX_HIST, TOTAL_SAMPLES,
 )
-from server.core.cs_utils import reconstruct_default
+from core.cs_router import reconstruct
 
 NODE_ID = 1  # ubah sesuai node yang ingin divisualisasi
 
@@ -87,7 +87,7 @@ def _on_message(client, userdata, msg):
             for sig in SIGNALS:
                 y = buf_copy[sig].get("y", [])
                 if len(y) == CS_M:
-                    results[sig] = reconstruct_default(y)
+                    results[sig] = reconstruct(y)
 
             ir_meta  = buf_copy.get("ir", {})
             meta["win"] += 1

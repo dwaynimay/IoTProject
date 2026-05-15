@@ -10,8 +10,8 @@ saat boot (tambahkan Serial.printf di CS_Sensor.h _generate() jika perlu).
 """
 
 import numpy as np
-from server.core.cs_utils import generate_phi
-from server.core.config   import CS_N, CS_M, CS_PHI_SEED
+from core.cs_utils import generate_phi
+from core.config   import CS_N, CS_M, CS_PHI_SEED
 
 phi = generate_phi()
 
