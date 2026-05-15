@@ -1,0 +1,28 @@
+
+# =============================================================================
+# .gitignore — Health Monitor ESP32
+# =============================================================================
+
+# Kredensial — JANGAN pernah commit file ini
+include/config/credentials.h
+
+# PlatformIO build output
+.pio/
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+server/__pycache__/
+server/core/__pycache__/
+server/apps/__pycache__/
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jangan exclude archive
+!archive/
