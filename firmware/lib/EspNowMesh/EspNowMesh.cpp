@@ -113,7 +113,10 @@ bool EspNowMesh::begin(bool senderMode)
         if (!_addPeer(MacAddr::NODE_A)) return false;
         if (!_addPeer(MacAddr::NODE_B)) return false;
 
-        LOG_INFO(TAG, "Mode: GATEWAY | Node A & B terdaftar | MAC: %s",
+        // Broadcast MAC untuk sendBeacon() — WAJIB didaftarkan
+        if (!_addPeer(BROADCAST_MAC)) return false;
+
+        LOG_INFO(TAG, "Mode: GATEWAY | Node A & B + broadcast terdaftar | MAC: %s",
                  WiFi.macAddress().c_str());
     }
 
@@ -346,7 +349,26 @@ void EspNowMesh::_onDataSent(const uint8_t* mac, esp_now_send_status_t status)
 // =============================================================================
 void EspNowMesh::_onDataRecv(const uint8_t* mac, const uint8_t* data, int len)
 {
-    if (len < 1 || !g_rawQueue) return;
+    if (len < 1) return;
+
+    const uint8_t pktType = data[0];
+
+    // ── RSSI_REPORT: proses langsung di sensor node (tidak lewat queue) ──────
+    // Di sensor node g_rawQueue == nullptr, tapi kita tetap perlu update router.
+    if (pktType == static_cast<uint8_t>(PacketType::RSSI_REPORT))
+    {
+        if (len >= static_cast<int>(sizeof(RssiReportPacket)) && g_routerPtr)
+        {
+            const auto* pkt = reinterpret_cast<const RssiReportPacket*>(data);
+            g_routerPtr->updateNeighborRssi(pkt->header.nodeId,
+                                            pkt->rssiToGateway);
+        }
+        // Jangan push ke rawQueue — tidak perlu diproses lebih lanjut
+        return;
+    }
+
+    // ── Semua tipe lain: push ke rawQueue (gateway) atau abaikan (sensor) ────
+    if (!g_rawQueue) return;
 
     RawPacket raw{};
     raw.len = static_cast<uint8_t>(len <= 250 ? len : 250);

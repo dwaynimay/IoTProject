@@ -39,9 +39,13 @@
 #include <WiFi.h>
 #include "MeshPackets.h"
 #include "../../include/Config.h"
+#include "../Routing/DynamicRouter.h"
 
 extern QueueHandle_t g_rawQueue;
 extern QueueHandle_t g_mqttQueue;
+
+// Pointer ke router sensor node — nullptr di gateway
+extern DynamicRouter* g_routerPtr;
 
 
 class EspNowMesh

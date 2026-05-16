@@ -63,6 +63,7 @@ SemaphoreHandle_t g_wire1Mutex = nullptr;
 #if NODE_ROLE == ROLE_GATEWAY
     static EspNowMesh  g_mesh;
     NetworkMqtt        g_mqtt;
+    DynamicRouter*     g_routerPtr = nullptr; // gateway tidak punya router
 #endif
 
 
@@ -188,7 +189,11 @@ static void taskBeacon(void* param)
         LOG_EVERY_N(10, LOG_DEBUG, BTAG,
                     "Beacon sent | ok=%s", ok ? "Y" : "N");
 
-        vTaskDelay(pdMS_TO_TICKS(RoutingCfg::BEACON_INTERVAL_MS));
+        // Tambahkan ini — beri ESP-NOW waktu proses sebelum delay panjang
+        vTaskDelay(pdMS_TO_TICKS(20));
+
+        if (RoutingCfg::BEACON_INTERVAL_MS > 20)
+            vTaskDelay(pdMS_TO_TICKS(RoutingCfg::BEACON_INTERVAL_MS - 20));
     }
 }
 

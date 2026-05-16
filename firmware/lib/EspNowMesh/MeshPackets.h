@@ -236,7 +236,7 @@ static constexpr uint8_t IMU_ALL_RECEIVED = 0x3F;
 struct MqttMessage
 {
     char topic[80];
-    char payload[950];
+    char payload[1800]; // cs_imu: 6 axis × 32 float × "0.12345," ≈ 1600 byte
 };
 
 // =============================================================================

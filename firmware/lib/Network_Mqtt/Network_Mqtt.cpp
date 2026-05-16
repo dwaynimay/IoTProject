@@ -24,7 +24,7 @@ bool NetworkMqtt::begin()
     _mqttClient.setKeepAlive(Mqtt::KEEPALIVE);
 
     // Buffer 1200 byte — cukup untuk payload CS (~900 byte) + margin
-    _mqttClient.setBufferSize(1200);
+    _mqttClient.setBufferSize(1900);
 
     if (!_connectWifi())
     {
@@ -62,7 +62,7 @@ bool NetworkMqtt::publish(const char* topic, const char* payload, bool retain)
     size_t payloadLen = strlen(payload);
     size_t topicLen   = strlen(topic);
     
-    if (payloadLen + topicLen + 5 > 1200) // 5 = MQTT fixed header overhead
+    if (payloadLen + topicLen + 5 > 1900) // 5 = MQTT fixed header overhead
     {
         LOG_WARN(TAG, "Payload terlalu besar: topic=%d payload=%d total=%d bytes",
                  topicLen, payloadLen, topicLen + payloadLen + 5);

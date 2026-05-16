@@ -23,6 +23,8 @@
 
 #include <Arduino.h>
 #include "Config.h"
+
+#if NODE_ROLE == ROLE_SENSOR
 #include "CS_Sensor.h"
 #include "EspNowMesh.h"
 #include "MeshPackets.h"
@@ -239,3 +241,5 @@ void taskCSSender(void* param)
         vTaskDelay(pdMS_TO_TICKS(Timing::IMU_SAMPLE_MS));
     }
 }
+
+#endif // NODE_ROLE == ROLE_SENSOR

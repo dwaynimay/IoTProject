@@ -97,6 +97,6 @@ namespace QueueLen
     // Hybrid: 2 pesan/window/node × 2 node = 4 pesan/window
     // Buffer 10 detik = 4 × (1000/640) × 10 = ~63 pesan
     // Pakai 40 sebagai angka aman dengan RAM terjangkau
-    // RAM: 40 × (80+950) = 41.200 byte = ~40 KB — heap gateway 140KB, aman
+    // RAM: 40 × (80 + 1800) = 75.200 byte — heap gateway 140KB, masih aman
     constexpr uint8_t MQTT_MSG = 40;
 }

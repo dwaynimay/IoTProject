@@ -379,6 +379,13 @@ RouteResult MeshRouting::_routeCsAxis(const RawPacket& raw, MqttMessage& out)
     }
     snprintf(p, rem, "}");
 
+    // Guard: jika payload mendekati batas, log warning
+    const size_t used = strlen(out.payload);
+    if (used > 1700)
+    {
+        LOG_WARN(TAG, "cs_imu payload besar: %d bytes — pertimbangkan kurangi presisi", used);
+    }
+
     return RouteResult::PUBLISHED;
 }
 
@@ -442,7 +449,7 @@ int MeshRouting::_writeFloatArray(char* dst, int rem,
     int total = 0;
     for (uint8_t i = 0; i < len && rem > 15; i++)
     {
-        const int w = snprintf(dst, rem, i ? ",%.5f" : "%.5f", arr[i]);
+        const int w = snprintf(dst, rem, i ? ",%.4f" : "%.4f", arr[i]);
         dst += w; rem -= w; total += w;
     }
     return total;
