@@ -1,0 +1,74 @@
+﻿C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\src\main.cpp:32: #include <Arduino.h>
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\src\main.cpp:33: #include "../include/Config.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\src\main.cpp:34: #include "../lib/EspNowMesh/MeshPackets.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\src\main.cpp:36: #include "../lib/Watchdog/Watchdog.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\src\main.cpp:37: #include "../lib/HealthSensors/Sensor_MPU.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\src\main.cpp:38: #include "../lib/HealthSensors/Sensor_PPG.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\src\main.cpp:39: #include "../lib/EspNowMesh/EspNowMesh.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\src\main.cpp:40: #include "../lib/Network_Mqtt/Network_Mqtt.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\src\task_cs_sender.cpp:21: #include <Arduino.h>
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\src\task_cs_sender.cpp:22: #include "Config.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\src\task_cs_sender.cpp:23: #include "DataModels.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\src\task_cs_sender.cpp:24: #include "CS_Sensor.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\src\task_cs_sender.cpp:25: #include "../lib/EspNowMesh/EspNowMesh.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\src\task_cs_sender.cpp:26: #include "../lib/EspNowMesh/MeshPackets.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\src\task_cs_sender.cpp:27: #include "../lib/Watchdog/Watchdog.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\src\task_mesh_handler.cpp:18: #include <Arduino.h>
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\src\task_mesh_handler.cpp:19: #include "Config.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\src\task_mesh_handler.cpp:20: #include "../lib/EspNowMesh/MeshPackets.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\src\task_mesh_handler.cpp:21: #include "../lib/EspNowMesh/MeshRouting.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\src\task_mesh_handler.cpp:22: #include "../lib/Network_Mqtt/Network_Mqtt.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\src\task_mesh_handler.cpp:23: #include "../lib/Watchdog/Watchdog.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\include\config\hardware.h:11: #include <Arduino.h>
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\include\config\tuning.h:12: #include <Arduino.h>
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\include\utils\Logger.h:31: #include <Arduino.h>
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\include\Config.h:29: #include "config/features.h"    // (1) Flag fitur & LOG_LEVEL — HARUS PERTAMA
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\include\Config.h:30: #include "utils/Logger.h"       // (2) Makro LOG_* — butuh LOG_LEVEL dari (1)
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\include\Config.h:32: #include "config/credentials.h" // (3) WiFi & MQTT credentials
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\include\Config.h:33: #include "config/hardware.h"    // (4) Pin, MAC address, alamat I2C
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\include\Config.h:34: #include "config/tuning.h"      // (5) Timing, priority, stack size
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\include\DataModels.h:18: #include "../lib/EspNowMesh/MeshPackets.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\include\DataModels_CS.h:21: #include <Arduino.h>
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\include\DataModels_CS.h:22: #include "DataModels.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\include\DataModels_CS.h:23: #include "CS_Sensor.h"  // CS_N, CS_M
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\CS_Model_Gaussian\CS_Sensor.cpp:11: #include "CS_Sensor.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\CS_Model_Gaussian\CS_Sensor.h:29: #include <Arduino.h>
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\CS_Model_Lasso\CS_Sensor.cpp:11: #include "CS_Sensor.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\CS_Model_Lasso\CS_Sensor.h:25: #include <Arduino.h>
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\CS_Model_Lasso\CS_Sensor.h:26: #include "config/tuning.h"  // tidak dipakai langsung, tapi untuk konsistensi include
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\EspNowMesh\EspNowMesh.cpp:24: #include "EspNowMesh.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\EspNowMesh\EspNowMesh.h:49: #include <Arduino.h>
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\EspNowMesh\EspNowMesh.h:50: #include <esp_now.h>
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\EspNowMesh\EspNowMesh.h:51: #include <WiFi.h>
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\EspNowMesh\EspNowMesh.h:52: #include "MeshPackets.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\EspNowMesh\EspNowMesh.h:53: #include "Config.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\EspNowMesh\MeshPackets.h:32: #include <Arduino.h>
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\EspNowMesh\MeshPackets.h:33: #include "CS_Sensor.h"  // CS_N, CS_M
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\EspNowMesh\MeshRouting.cpp:21: #include "MeshRouting.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\EspNowMesh\MeshRouting.cpp:22: #include "Config.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\EspNowMesh\MeshRouting.h:33: #include "MeshPackets.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\EspNowMesh\MeshRouting.h:34: #include "DataModels.h"  // MqttMessage
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\HealthSensors\Sensor_MPU.cpp:10: #include "Sensor_MPU.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\HealthSensors\Sensor_MPU.cpp:11: #include "Config.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\HealthSensors\Sensor_MPU.h:32: #include <Arduino.h>
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\HealthSensors\Sensor_MPU.h:33: #include <Wire.h>
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\HealthSensors\Sensor_MPU.h:34: #include "DataModels.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\HealthSensors\Sensor_PPG.cpp:10: #include "Sensor_PPG.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\HealthSensors\Sensor_PPG.cpp:11: #include "Config.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\HealthSensors\Sensor_PPG.cpp:12: #include <Wire.h>
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\HealthSensors\Sensor_PPG.cpp:13: #include "heartRate.h" // algoritma beat detection dari library SparkFun
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\HealthSensors\Sensor_PPG.h:39: #include <Arduino.h>
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\HealthSensors\Sensor_PPG.h:40: #include <MAX30105.h>
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\HealthSensors\Sensor_PPG.h:41: #include "DataModels.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\Network_Mqtt\Network_Mqtt.cpp:10: #include "Network_Mqtt.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\Network_Mqtt\Network_Mqtt.cpp:11: #include <esp_wifi.h>
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\Network_Mqtt\Network_Mqtt.h:32: #include <Arduino.h>
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\Network_Mqtt\Network_Mqtt.h:33: #include <WiFi.h>
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\Network_Mqtt\Network_Mqtt.h:34: #include <PubSubClient.h>
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\Network_Mqtt\Network_Mqtt.h:35: #include "DataModels.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\Network_Mqtt\Network_Mqtt.h:36: #include "Config.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\Watchdog\Watchdog.cpp:10: #include "Watchdog.h"
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\Watchdog\Watchdog.h:33: #include <Arduino.h>
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\Watchdog\Watchdog.h:34: #include <esp_task_wdt.h>
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\Watchdog\Watchdog.h:35: #include <esp_system.h>
+C:\Users\Administrator\Documents\GitHub\IoTProjectRefactor\firmware\lib\Watchdog\Watchdog.h:36: #include "Config.h"

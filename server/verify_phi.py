@@ -6,14 +6,18 @@ Jalankan:
     python -m server.verify_phi
 
 Lalu bandingkan output dengan yang tercetak di Serial Monitor ESP32
-saat boot (tambahkan Serial.printf di CS_Sensor.h _generate() jika perlu).
+saat boot (lihat output CSPhiMatrix::printSyncDebug() di task_cs_sender.cpp).
+
+PERUBAHAN v2:
+  Import dari cs_gaussian (bukan cs_utils lama) agar konsisten
+  dengan cs_router yang aktif.
 """
 
 import numpy as np
-from server.core.cs_utils import generate_phi
-from server.core.config   import CS_N, CS_M, CS_PHI_SEED
+from core.cs_gaussian import generate_phi
+from core.config      import CS_N, CS_M, CS_PHI_SEED
 
-phi = generate_phi()
+phi = generate_phi(seed=CS_PHI_SEED, m=CS_M, n=CS_N)
 
 print(f"Φ shape  : {phi.shape}  (M×N = {CS_M}×{CS_N})")
 print(f"Seed     : {CS_PHI_SEED}")
@@ -24,11 +28,10 @@ print("Φ[0, 0:8] =", phi[0, :8].round(6))
 print("Φ[1, 0:8] =", phi[1, :8].round(6))
 print("Φ[2, 0:8] =", phi[2, :8].round(6))
 print()
-print("Tambahkan ke CS_Sensor.h _generate() setelah selesai build Φ:")
-print("  Serial.printf(\"PHI[0][0..3]: %.6f %.6f %.6f %.6f\\n\",")
-print("    _phi[0][0], _phi[0][1], _phi[0][2], _phi[0][3]);")
+print("Bandingkan dengan output Serial Monitor ESP32 saat boot:")
+print("  [PHI SYNC] PHI[0][0..7]: x.xxxxxx x.xxxxxx ...")
+print("  [PHI SYNC] PHI[1][0..7]: x.xxxxxx x.xxxxxx ...")
 print()
-print("Lalu bandingkan dengan baris 'Φ[0, 0:8]' di atas.")
 print("Jika cocok → sinkronisasi OK. Jika beda → cek LCG / Fisher-Yates.")
 
 # Sanity check: Φ harus memenuhi RIP — cek ortogonalitas approx

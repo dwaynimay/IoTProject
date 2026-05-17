@@ -1,11 +1,14 @@
+# File: server/apps/reconstruct_server.py
+
 """
-server/apps/reconstruct_server.py
-Pengganti cs_reconstruct_server.py
+reconstruct_server.py — Server rekonstruksi CS (Hybrid Topic)
 
-Subscribe ke 7 topic CS per node, rekonstruksi sinyal tiap window penuh.
+Subscribe 2 topic per node:
+  health_monitor/node_N/cs_imu  → rekonstruksi ax,ay,az,gx,gy,gz sekaligus
+  health_monitor/node_N/cs_ppg  → rekonstruksi ir + metadata HR
 
-Jalankan dari root project:
-    python -m server.apps.reconstruct_server
+Jalankan dari folder server/:
+    python -m apps.reconstruct_server
 """
 
 import json
@@ -20,52 +23,95 @@ try:
 except ImportError:
     _PAHO_V2 = False
 
-from server.core.config import (
+from core.config import (
     CS_N, CS_M, MQTT_BROKER, MQTT_PORT, MQTT_KEEPALIVE,
-    TOPIC_BASE, SIGNALS, UNITS, TS_SPREAD_TOLERANCE_MS,
+    TOPIC_BASE, SIGNALS, IMU_SIGNALS, PPG_SIGNALS,
+    UNITS, TS_SPREAD_TOLERANCE_MS,
 )
-from server.core.cs_utils import reconstruct_default
+from core.cs_router import reconstruct
 
 
 # =============================================================================
-# NodeState — buffer per node, thread-safe
+# NodeState — buffer per node, tunggu cs_imu DAN cs_ppg
 # =============================================================================
 class NodeState:
     def __init__(self, node_id: int):
         self.node_id       = node_id
-        self._buffer       = {}
+        self._imu_buf      = None   # payload cs_imu terakhir
+        self._ppg_buf      = None   # payload cs_ppg terakhir
         self._lock         = threading.Lock()
         self.windows_done  = 0
         self._last_win_t   = 0.0
         self._total_rec_ms = 0.0
 
-    def on_signal(self, signal: str, payload: dict):
+    def on_imu(self, payload: dict):
+        """Dipanggil saat cs_imu diterima."""
         with self._lock:
-            self._buffer[signal] = payload
-            if all(s in self._buffer for s in SIGNALS):
-                self._process()
+            self._imu_buf = payload
+            self._try_reconstruct()
 
-    def _process(self):
-        buf = dict(self._buffer)
-        self._buffer.clear()
+    def on_ppg(self, payload: dict):
+        """Dipanggil saat cs_ppg diterima."""
+        with self._lock:
+            self._ppg_buf = payload
+            self._try_reconstruct()
 
-        # Cek timestamp spread
-        timestamps = [buf[s]["ts"] for s in SIGNALS if "ts" in buf.get(s, {})]
-        if timestamps:
-            spread = max(timestamps) - min(timestamps)
-            if spread > TS_SPREAD_TOLERANCE_MS:
-                print(f"[Node {self.node_id}] WARN: timestamp spread {spread}ms "
-                      f"(toleransi {TS_SPREAD_TOLERANCE_MS}ms)")
+    def _try_reconstruct(self):
+        """Rekonstruksi hanya jika kedua buffer sudah terisi."""
+        if self._imu_buf is None or self._ppg_buf is None:
+            return
 
-        # Rekonstruksi semua sinyal
+        # Cek timestamp spread antara cs_imu dan cs_ppg
+        ts_imu = self._imu_buf.get("ts", 0)
+        ts_ppg = self._ppg_buf.get("ts", 0)
+        spread = abs(ts_imu - ts_ppg)
+
+        if spread > TS_SPREAD_TOLERANCE_MS:
+            # Timestamp terlalu jauh — kemungkinan dari window berbeda
+            # Buang yang lebih lama, tunggu pasangannya
+            if ts_imu < ts_ppg:
+                print(f"[Node {self.node_id}] WARN: cs_imu ts={ts_imu} "
+                      f"terlalu lama vs cs_ppg ts={ts_ppg} "
+                      f"(spread={spread}ms) — reset imu buf")
+                self._imu_buf = None
+            else:
+                print(f"[Node {self.node_id}] WARN: cs_ppg ts={ts_ppg} "
+                      f"terlalu lama vs cs_imu ts={ts_imu} "
+                      f"(spread={spread}ms) — reset ppg buf")
+                self._ppg_buf = None
+            return
+
+        # Ambil payload lalu reset buffer
+        imu_data = self._imu_buf
+        ppg_data = self._ppg_buf
+        self._imu_buf = None
+        self._ppg_buf = None
+
+        # Jalankan rekonstruksi
+        self._reconstruct(imu_data, ppg_data)
+
+    def _reconstruct(self, imu_data: dict, ppg_data: dict):
+        """Rekonstruksi semua 7 sinyal dari payload hybrid."""
         results = {}
         t0 = time.time()
-        for sig in SIGNALS:
-            y = buf[sig].get("y", [])
+
+        # Rekonstruksi 6 sinyal IMU dari cs_imu
+        for sig in IMU_SIGNALS:
+            y = imu_data.get(sig, [])
             if len(y) == CS_M:
-                results[sig] = reconstruct_default(y)
+                results[sig] = reconstruct(y)
             else:
-                print(f"[Node {self.node_id}] WARN: {sig} len={len(y)}, expected {CS_M}")
+                print(f"[Node {self.node_id}] WARN: {sig} len={len(y)}, "
+                      f"expected {CS_M}")
+
+        # Rekonstruksi IR dari cs_ppg
+        y_ir = ppg_data.get("ir", [])
+        if len(y_ir) == CS_M:
+            results["ir"] = reconstruct(y_ir)
+        else:
+            print(f"[Node {self.node_id}] WARN: ir len={len(y_ir)}, "
+                  f"expected {CS_M}")
+
         elapsed_ms = (time.time() - t0) * 1000
 
         self.windows_done  += 1
@@ -74,15 +120,20 @@ class NodeState:
         gap_ms = (now - self._last_win_t) * 1000 if self._last_win_t else 0
         self._last_win_t = now
 
-        hr     = buf["ir"].get("hr", -1)
-        finger = buf["ir"].get("finger", False)
-        ts     = buf["ax"].get("ts", 0)
+        # Metadata dari cs_ppg
+        hr     = ppg_data.get("hr", -1)
+        finger = ppg_data.get("finger", False)
+        ts     = imu_data.get("ts", 0)
+
+        avg_ms = self._total_rec_ms / self.windows_done
 
         print(f"\n[Node {self.node_id}] Window #{self.windows_done} "
-              f"| ts={ts}ms | gap={gap_ms:.0f}ms | HR={hr} | finger={finger} "
-              f"| rekon={elapsed_ms:.1f}ms | avg={self._total_rec_ms/self.windows_done:.1f}ms")
+              f"| ts={ts}ms | gap={gap_ms:.0f}ms "
+              f"| HR={hr} | finger={'Y' if finger else 'N'} "
+              f"| rekon={elapsed_ms:.1f}ms | avg={avg_ms:.1f}ms")
 
-        for sig in ["ax", "ay", "az", "gx", "gy", "gz"]:
+        # Print hasil rekonstruksi
+        for sig in IMU_SIGNALS:
             if sig in results:
                 x    = results[sig]
                 unit = UNITS[sig]
@@ -92,10 +143,10 @@ class NodeState:
             x = results["ir"]
             print(f"  ir: [{x.min():.0f} … {x.max():.0f}] ADC")
 
-        # ── TODO: simpan ke database / kirim ke ML model ─────────────────────
-        # Contoh:
-        #   write_influx(node_id, ts, results, hr, finger)
-        #   prediction = model.predict(np.concatenate([results[s] for s in SIGNALS]))
+        # ── TODO: simpan ke database / kirim ke ML model ──────────────────
+        # import numpy as np
+        # features = np.concatenate([results[s] for s in SIGNALS])
+        # prediction = model.predict(features.reshape(1, -1))
 
 
 # =============================================================================
@@ -116,26 +167,31 @@ def _on_message(client, userdata, message):
         print(f"[ERROR] JSON parse: {e}")
         return
 
+    # Parse topic: health_monitor/node_1/cs_imu
     parts = message.topic.split("/")
     if len(parts) < 3:
         return
+
     try:
         node_id = int(parts[1].split("_")[1])
     except (IndexError, ValueError):
         return
 
-    signal = parts[2].replace("cs_", "")
-    if signal not in SIGNALS:
-        return
+    sig_type = parts[2]  # "cs_imu" atau "cs_ppg"
+    node     = _get_node(node_id)
 
-    _get_node(node_id).on_signal(signal, payload)
+    if sig_type == "cs_imu":
+        node.on_imu(payload)
+    elif sig_type == "cs_ppg":
+        node.on_ppg(payload)
 
 def _on_connect(client, userdata, flags, rc, properties=None):
     rc_val = rc if isinstance(rc, int) else rc.value
     if rc_val == 0:
         print(f"[MQTT] Terhubung ke {MQTT_BROKER}:{MQTT_PORT}")
-        for sig in SIGNALS:
-            topic = f"{TOPIC_BASE}/+/cs_{sig}"
+        # Subscribe 2 topic per node, wildcard + untuk semua node
+        for topic_type in ["cs_imu", "cs_ppg"]:
+            topic = f"{TOPIC_BASE}/+/{topic_type}"
             client.subscribe(topic)
             print(f"[MQTT] Subscribe: {topic}")
     else:
@@ -149,15 +205,17 @@ if __name__ == "__main__":
     warnings.filterwarnings("ignore", category=RuntimeWarning)
 
     print("=" * 55)
-    print("  CS Reconstruction Server")
-    print(f"  N={CS_N} M={CS_M} ({CS_M*100//CS_N}%)")
+    print("  CS Reconstruction Server (Hybrid Topic)")
+    print(f"  N={CS_N} M={CS_M} ({CS_M*100//CS_N}%) | OMP K=20")
     print(f"  Broker: {MQTT_BROKER}:{MQTT_PORT}")
-    print(f"  Sinyal: {', '.join(SIGNALS)}")
-    print(f"  TS spread tolerance: {TS_SPREAD_TOLERANCE_MS}ms")
+    print(f"  Subscribe: {TOPIC_BASE}/+/cs_imu")
+    print(f"           : {TOPIC_BASE}/+/cs_ppg")
+    print(f"  TS tolerance: {TS_SPREAD_TOLERANCE_MS}ms")
     print("=" * 55)
 
     if _PAHO_V2:
-        client = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2)
+        client = mqtt.Client(
+            callback_api_version=CallbackAPIVersion.VERSION2)
     else:
         client = mqtt.Client()
 
@@ -169,7 +227,6 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"\n[ERROR] Tidak bisa konek ke {MQTT_BROKER}:{MQTT_PORT}")
         print(f"  → {e}")
-        print("\nCek: Mosquitto running? ('mosquitto -v')")
         exit(1)
 
     print("\nMenunggu data dari sensor node...\n")

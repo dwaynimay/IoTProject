@@ -3,26 +3,87 @@
 # .gitignore — Health Monitor ESP32
 # =============================================================================
 
-# Kredensial — JANGAN pernah commit file ini
+# =============================================================================
+# ⛔ CREDENTIALS — JANGAN PERNAH COMMIT FILE INI
+# =============================================================================
+# Path sebelumnya salah (include/config/) — sekarang diperbaiki
+firmware/include/config/credentials.h
+firmware/include/config/credentials.h.bak
+
+# Jaga-jaga jika dipindah ke root
 include/config/credentials.h
+credentials.h
 
-# PlatformIO build output
+# Pola umum secrets
+*.secret
+*.key
+*.pem
+*.env
+.env
+.env.*
+secrets.h
+secrets.json
+config.local.*
+
+# =============================================================================
+# PlatformIO
+# =============================================================================
 .pio/
-.vscode/
+.pioenvs/
+.piolibdeps/
 
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# =============================================================================
 # Python
+# =============================================================================
 __pycache__/
 *.pyc
 *.pyo
+*.pyd
+*.so
 server/__pycache__/
 server/core/__pycache__/
 server/apps/__pycache__/
 .venv/
 venv/
+env/
+*.egg-info/
+dist/
+build/
 
+# Jupyter
+.ipynb_checkpoints/
+
+# =============================================================================
 # OS
+# =============================================================================
 .DS_Store
 Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
 
-# Jangan exclude archive
+# =============================================================================
+# Graphify — knowledge graph (SENGAJA di-track, bukan diabaikan)
+# =============================================================================
+# graphify-out/ → JANGAN tambahkan ke .gitignore
+# Folder ini berisi graph.json, graph.html, GRAPH_REPORT.md
+# yang berguna untuk seluruh tim tanpa perlu rebuild
+# Cache AST dikecualikan — besar (500+ file) dan bisa di-rebuild otomatis
+graphify-out/cache/
+
+# =============================================================================
+# Node / npm (jika ada tooling)
+# =============================================================================
+node_modules/
+npm-debug.log*
+
+# =============================================================================
+# Archive — tetap di-track
+# =============================================================================
 !archive/
