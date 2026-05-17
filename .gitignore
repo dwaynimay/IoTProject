@@ -74,6 +74,8 @@ desktop.ini
 # graphify-out/ → JANGAN tambahkan ke .gitignore
 # Folder ini berisi graph.json, graph.html, GRAPH_REPORT.md
 # yang berguna untuk seluruh tim tanpa perlu rebuild
+# Cache AST dikecualikan — besar (500+ file) dan bisa di-rebuild otomatis
+graphify-out/cache/
 
 # =============================================================================
 # Node / npm (jika ada tooling)
