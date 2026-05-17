@@ -27,7 +27,7 @@
 #include "EspNowMesh.h"
 
 static constexpr char TAG[]             = "MESH";
-static constexpr uint8_t ESPNOW_CHANNEL = 1;
+static uint8_t s_channel = 1; // diisi dinamis saat begin()
 
 // Broadcast MAC untuk beacon (semua node terima)
 static const uint8_t BROADCAST_MAC[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
@@ -53,29 +53,42 @@ bool EspNowMesh::begin(bool senderMode)
         WiFi.disconnect();
         delay(100);
 
+        // Reset sentinel — _promiscuousRxCb akan mengisi saat beacon terdeteksi
+        s_channel = 0;
+
         esp_wifi_set_promiscuous(true);
-        esp_wifi_set_channel(ESPNOW_CHANNEL, WIFI_SECOND_CHAN_NONE);
-
-        // Aktifkan promiscuous callback SEBELUM nonaktifkan promiscuous mode
-        // agar bisa baca RSSI dari beacon
         esp_wifi_set_promiscuous_rx_cb(_promiscuousRxCb);
-        // Tetap aktifkan promiscuous — kita butuh untuk RSSI measurement
-        // (overhead minimal karena kita filter di callback)
 
-        uint8_t ch; wifi_second_chan_t sch;
-        esp_wifi_get_channel(&ch, &sch);
-        LOG_INFO(TAG, "Sensor channel: %d | promiscuous=ON (RSSI mode)", ch);
+        // Channel sweep: coba ch 1-13 sampai beacon gateway terdeteksi.
+        // Gateway broadcast beacon setiap 1000 ms; dwell 400 ms/ch.
+        // Worst-case: 13 × 400 ms = 5.2 s (masih di dalam discovery phase 6 s).
+        LOG_INFO(TAG, "Channel sweep dimulai (ch 1-13, dwell=400 ms/ch)...");
+
+        for (uint8_t tryC = 1; tryC <= 13 && s_channel == 0; tryC++)
+        {
+            esp_wifi_set_channel(tryC, WIFI_SECOND_CHAN_NONE);
+            delay(400); // _promiscuousRxCb isi s_channel jika beacon terdeteksi
+        }
+
+        if (s_channel == 0)
+        {
+            // Gateway tidak ditemukan — fallback, sync terjadi saat beacon pertama
+            s_channel = 6;
+            esp_wifi_set_channel(s_channel, WIFI_SECOND_CHAN_NONE);
+            LOG_WARN(TAG, "Sweep selesai, beacon tidak ditemukan — fallback ch=%d", s_channel);
+        }
+
+        LOG_INFO(TAG, "Sensor channel: %d | promiscuous=ON (RSSI mode)", s_channel);
     }
     else
     {
         // ── Gateway node: tidak butuh promiscuous ─────────────────────────────
         uint8_t ch; wifi_second_chan_t sch;
         esp_wifi_get_channel(&ch, &sch);
-        LOG_INFO(TAG, "Gateway channel (ikut router): %d", ch);
+        s_channel = (ch > 0 && ch <= 13) ? ch : 6;
 
-        if (ch != ESPNOW_CHANNEL)
-            LOG_WARN(TAG, "Channel gateway=%d ≠ sensor=%d — pastikan AP hidden aktif",
-                     ch, ESPNOW_CHANNEL);
+        LOG_INFO(TAG, "Gateway channel: %d (dinamis, ikut router)", s_channel);
+        // Tidak ada warning mismatch lagi
     }
 
     if (esp_now_init() != ESP_OK)
@@ -291,7 +304,7 @@ bool EspNowMesh::_addPeer(const uint8_t* mac)
 
     esp_now_peer_info_t peer{};
     memcpy(peer.peer_addr, mac, 6);
-    peer.channel = ESPNOW_CHANNEL;
+    peer.channel = s_channel;
     peer.encrypt = false;
 
     if (esp_now_add_peer(&peer) != ESP_OK)
@@ -421,6 +434,14 @@ void EspNowMesh::_promiscuousRxCb(void* buf, wifi_promiscuous_pkt_type_t type)
     const uint8_t firstByte = payload[ESPNOW_PAYLOAD_OFFSET];
     if (firstByte != static_cast<uint8_t>(PacketType::BEACON)) return;
 
-    // Ini beacon! Baca RSSI
+    // Sync channel jika beacon datang dari channel berbeda
+    const uint8_t beaconCh = pkt->rx_ctrl.channel;
+    if (beaconCh > 0 && beaconCh <= 13 && beaconCh != s_channel)
+    {
+        s_channel = beaconCh;
+        esp_wifi_set_channel(s_channel, WIFI_SECOND_CHAN_NONE);
+        LOG_INFO("MESH", "Channel sync via beacon: %d", s_channel);
+    }
+
     _instance->_lastBeaconRssi = static_cast<int8_t>(pkt->rx_ctrl.rssi);
 }

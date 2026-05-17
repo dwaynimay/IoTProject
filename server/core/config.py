@@ -36,7 +36,7 @@ LASSO_MAX_ITER = 5000
 LASSO_TOL      = 1e-5
 
 # ── MQTT ──────────────────────────────────────────────────────────────────
-MQTT_BROKER    = "192.168.1.7"
+MQTT_BROKER    = "10.129.25.254"
 MQTT_PORT      = 1883
 MQTT_KEEPALIVE = 60
 TOPIC_BASE     = "health_monitor"

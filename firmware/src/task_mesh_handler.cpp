@@ -146,6 +146,11 @@ void taskMqttPublish(void* param)
     {
         g_watchdog.feed();
 
+        // ── Keep-alive MQTT — dipanggil SETIAP iterasi, SEBELUM apapun ────────
+        // PubSubClient butuh loop() tiap <keepalive detik agar PINGREQ terkirim.
+        // Sebelumnya loop() hanya dipanggil di akhir → terlewat saat queue idle.
+        g_mqtt.loop();
+
         // Status log setiap 10 detik
         if (millis() - lastStatusLogMs >= 10000)
         {
@@ -163,7 +168,6 @@ void taskMqttPublish(void* param)
         if (!g_mqtt.isConnected())
         {
             g_mqtt.tryReconnect();
-            g_mqtt.loop();
 
             // Buang hanya jika queue benar-benar kritis (< 5 slot tersisa)
             if (uxQueueSpacesAvailable(g_mqttQueue) < 5)
@@ -178,7 +182,6 @@ void taskMqttPublish(void* param)
         }
 
         // DRAIN LOOP — publish sampai queue kosong atau max 10 per iterasi
-        // Ini yang menyelesaikan masalah rate mismatch
         uint8_t published = 0;
         while (published < 10 &&
                xQueueReceive(g_mqttQueue, &msg, 0) == pdTRUE)
@@ -190,24 +193,25 @@ void taskMqttPublish(void* param)
             else
             {
                 // Publish gagal — kemungkinan koneksi putus di tengah drain
-                // Kembalikan pesan ke depan queue tidak bisa di FreeRTOS,
-                // jadi log saja dan lanjut — akan di-reconnect di iterasi berikut
                 LOG_WARN(TAG_PUBLISH, "Publish gagal di tengah drain — skip");
                 break;
             }
         }
 
-        // Kalau tidak ada yang di-publish, tunggu sampai ada pesan baru
+        // Queue kosong — tunggu pesan baru dengan timeout pendek.
+        // loop() akan dipanggil lagi di iterasi berikutnya (atas) sehingga
+        // keepalive tetap terjaga meski tidak ada data masuk.
         if (published == 0)
         {
-            xQueueReceive(g_mqttQueue, &msg,
-                          pdMS_TO_TICKS(100)); // timeout pendek = lebih responsif
-            if (g_mqtt.publish(msg.topic, msg.payload))
-                published++;
+            if (xQueueReceive(g_mqttQueue, &msg, pdMS_TO_TICKS(100)) == pdTRUE)
+            {
+                // Pesan valid diterima — publish langsung
+                if (!g_mqtt.publish(msg.topic, msg.payload))
+                    LOG_WARN(TAG_PUBLISH, "Publish gagal saat idle drain");
+            }
+            // Jika timeout (pdFALSE), tidak ada pesan — lanjut iterasi berikutnya.
+            // loop() di atas akan dipanggil lagi untuk keepalive.
         }
-
-        // loop() wajib dipanggil agar PubSubClient jaga keepalive
-        g_mqtt.loop();
 
         LOG_EVERY_N(200, LOG_DEBUG, TAG_PUBLISH,
                     "Stack watermark: %u bytes",

@@ -160,10 +160,7 @@ bool NetworkMqtt::_connectWifi()
     // Mode AP_STA: STA untuk router, AP untuk kunci channel ESP-NOW
     WiFi.mode(WIFI_AP_STA);
 
-    // AP tersembunyi di channel 1 — tidak ada yang perlu konek ke sini
-    WiFi.softAP("gw_ch_lock", "12345678", 1 /*channel*/, 1 /*hidden SSID*/);
-    delay(100);
-
+    // STA konek dulu — channel ditentukan oleh router
     LOG_INFO(TAG, "Konek ke WiFi '%s'...", Wifi::SSID);
     WiFi.begin(Wifi::SSID, Wifi::PASSWORD);
 
@@ -178,19 +175,16 @@ bool NetworkMqtt::_connectWifi()
         delay(500);
     }
 
-    // Verifikasi channel aktual setelah konek
     uint8_t ch;
     wifi_second_chan_t sch;
     esp_wifi_get_channel(&ch, &sch);
 
-    LOG_INFO(TAG, "WiFi terhubung | IP=%s | channel=%d",
-             WiFi.localIP().toString().c_str(), ch);
+    // AP hidden di channel SAMA dengan STA agar ESP-NOW tidak mismatch
+    WiFi.softAP("gw_ch_lock", "12345678", ch, 1 /*hidden*/);
+    delay(100);
 
-    if (ch != 1)
-    {
-        LOG_WARN(TAG, "Channel aktual=%d, bukan 1. "
-                 "Kompile ulang sensor dengan ESPNOW_CHANNEL=%d", ch, ch);
-    }
+    LOG_INFO(TAG, "WiFi terhubung | IP=%s | channel=%d (AP hidden sama channel)",
+             WiFi.localIP().toString().c_str(), ch);
 
     return true;
 }

@@ -307,7 +307,7 @@ void setup()
         g_watchdog.triggerRestart("ESP-NOW init gagal");
 
     // BARU: task beacon untuk RSSI discovery
-    xTaskCreatePinnedToCore(taskBeacon,         "BEACON",  2048,
+    xTaskCreatePinnedToCore(taskBeacon,         "BEACON",  4096,
                             nullptr, 1,                      nullptr, 0);
 
     xTaskCreatePinnedToCore(taskMeshHandler,    "HANDLER", StackSize::MQTT_PUB,
