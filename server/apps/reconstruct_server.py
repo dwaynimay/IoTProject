@@ -7,12 +7,11 @@ Subscribe 2 topic per node:
   health_monitor/node_N/cs_imu  → rekonstruksi ax,ay,az,gx,gy,gz sekaligus
   health_monitor/node_N/cs_ppg  → rekonstruksi ir + metadata HR
 
-Perubahan v2 (F1 + F3 + F6):
-  - Setiap payload divalidasi dulu via ValidatorRegistry (F1)
-  - Setiap window di-assess kualitasnya via QualityAssessor (F3)
-  - Setiap window disimpan ke SQLite via StorageManager (F6)
-  - Event LOW_QUALITY / CRITICAL / VALIDATION_ERROR dicatat ke tabel events
-  - Purge otomatis setiap PURGE_EVERY_WINDOWS window
+Fitur aktif:
+  F1 — Validasi payload (ValidatorRegistry)
+  F3 — Quality assessment per window (QualityAssessor)
+  F4 — Push ke dashboard WebSocket (notify_window, notify_event)
+  F6 — Simpan ke SQLite (StorageManager)
 
 Jalankan dari root project:
     python -m apps.reconstruct_server
@@ -33,40 +32,39 @@ except ImportError:
 from core.config import (
     CS_N, CS_M, MQTT_BROKER, MQTT_PORT, MQTT_KEEPALIVE,
     TOPIC_BASE, SIGNALS, IMU_SIGNALS, PPG_SIGNALS,
-    UNITS, TS_SPREAD_TOLERANCE_MS,
+    TS_SPREAD_TOLERANCE_MS, DB_PATH, RETENTION_HOURS,
 )
-from core.cs_router  import reconstruct, PHI
-from core.validator  import ValidatorRegistry          # F1
-from core.quality    import QualityAssessor            # F3
-from core.storage    import StorageManager             # F6
+from core.cs_router import reconstruct, PHI
+from core.validator import ValidatorRegistry          # F1
+from core.quality   import QualityAssessor            # F3
+from core.storage   import StorageManager             # F6
+
+# F4 — import notifier dashboard (opsional, tidak crash jika belum jalan)
+try:
+    from apps.dashboard_server import notify_window as _notify_window
+    from apps.dashboard_server import notify_event  as _notify_event
+    _DASHBOARD_AVAILABLE = True
+except ImportError:
+    _DASHBOARD_AVAILABLE = False
+    def _notify_window(*args, **kwargs): pass
+    def _notify_event(*args, **kwargs):  pass
 
 
 # =============================================================================
 # Konfigurasi
 # =============================================================================
 
-# Path file SQLite — relatif dari root project
-DB_PATH = "health_monitor.db"
-
-# Purge data lama setiap N window (semua node gabungan)
 PURGE_EVERY_WINDOWS = 100
 
-# Retention data di DB (jam)
-RETENTION_HOURS = 24
-
 
 # =============================================================================
-# Instance modul-level — stateful, dibuat sekali
+# Instance modul-level
 # =============================================================================
 
-_validator = ValidatorRegistry()          # F1 — track ts per node
-_assessor  = QualityAssessor(phi=PHI)     # F3 — hitung residual
-_storage   = StorageManager(             # F6 — SQLite
-    db_path         = DB_PATH,
-    retention_hours = RETENTION_HOURS,
-)
+_validator = ValidatorRegistry()
+_assessor  = QualityAssessor(phi=PHI)
+_storage   = StorageManager(db_path=DB_PATH, retention_hours=RETENTION_HOURS)
 
-# Counter window global untuk trigger purge
 _global_window_count = 0
 _global_lock         = threading.Lock()
 
@@ -86,35 +84,27 @@ class NodeState:
         self._total_rec_ms = 0.0
 
     def on_imu(self, payload: dict):
-        # ── F1: Validasi sebelum buffer ───────────────────────────────────────
         ok, errors = _validator.validate_imu(node_id=self.node_id, payload=payload)
         if not ok:
-            print(f"[Node {self.node_id}] VALIDATION ERROR (cs_imu): "
-                  f"{'; '.join(errors)}")
-            _storage.log_event(
-                node_id    = self.node_id,
-                event_type = "VALIDATION_ERROR",
-                detail     = f"cs_imu: {'; '.join(errors)[:400]}",
-            )
+            msg = '; '.join(errors)
+            print(f"[Node {self.node_id}] VALIDATION ERROR (cs_imu): {msg}")
+            _storage.log_event(self.node_id, "VALIDATION_ERROR",
+                               f"cs_imu: {msg[:400]}")
+            _notify_event(self.node_id, "VALIDATION_ERROR", f"cs_imu: {msg[:200]}")
             return
-
         with self._lock:
             self._imu_buf = payload
             self._try_reconstruct()
 
     def on_ppg(self, payload: dict):
-        # ── F1: Validasi sebelum buffer ───────────────────────────────────────
         ok, errors = _validator.validate_ppg(node_id=self.node_id, payload=payload)
         if not ok:
-            print(f"[Node {self.node_id}] VALIDATION ERROR (cs_ppg): "
-                  f"{'; '.join(errors)}")
-            _storage.log_event(
-                node_id    = self.node_id,
-                event_type = "VALIDATION_ERROR",
-                detail     = f"cs_ppg: {'; '.join(errors)[:400]}",
-            )
+            msg = '; '.join(errors)
+            print(f"[Node {self.node_id}] VALIDATION ERROR (cs_ppg): {msg}")
+            _storage.log_event(self.node_id, "VALIDATION_ERROR",
+                               f"cs_ppg: {msg[:400]}")
+            _notify_event(self.node_id, "VALIDATION_ERROR", f"cs_ppg: {msg[:200]}")
             return
-
         with self._lock:
             self._ppg_buf = payload
             self._try_reconstruct()
@@ -123,7 +113,6 @@ class NodeState:
         if self._imu_buf is None or self._ppg_buf is None:
             return
 
-        # Cek timestamp spread antara cs_imu dan cs_ppg
         ts_imu = self._imu_buf.get("ts", 0)
         ts_ppg = self._ppg_buf.get("ts", 0)
         spread = abs(ts_imu - ts_ppg)
@@ -151,7 +140,6 @@ class NodeState:
         measurements = {}
         t0 = time.time()
 
-        # Rekonstruksi 6 sinyal IMU
         for sig in IMU_SIGNALS:
             y = imu_data.get(sig, [])
             if len(y) == CS_M:
@@ -160,13 +148,10 @@ class NodeState:
             else:
                 print(f"[Node {self.node_id}] WARN: {sig} len={len(y)}, expected {CS_M}")
 
-        # Rekonstruksi IR dari cs_ppg
         y_ir = ppg_data.get("ir", [])
         if len(y_ir) == CS_M:
             results["ir"]      = reconstruct(y_ir)
             measurements["ir"] = y_ir
-        else:
-            print(f"[Node {self.node_id}] WARN: ir len={len(y_ir)}, expected {CS_M}")
 
         elapsed_ms = (time.time() - t0) * 1000
 
@@ -183,7 +168,7 @@ class NodeState:
         ts     = imu_data.get("ts", 0)
 
         # ── F3: Quality assessment ────────────────────────────────────────────
-        report   = _assessor.assess_window(
+        report = _assessor.assess_window(
             results      = results,
             measurements = measurements,
             node_id      = self.node_id,
@@ -202,31 +187,38 @@ class NodeState:
             finger     = finger,
         )
 
-        # Log event jika kualitas buruk
+        # ── F4: Push ke dashboard WebSocket ──────────────────────────────────
+        _notify_window(
+            node_id    = self.node_id,
+            window_num = self.windows_done,
+            ts         = ts,
+            hr         = hr if hr is not None else -1,
+            spo2       = spo2,
+            finger     = finger,
+            report     = report,
+            elapsed_ms = elapsed_ms,
+        )
+
+        # Log event anomali ke storage DAN push ke dashboard
         if report.has_critical():
             sigs = " ".join(report.critical_signals())
-            _storage.log_event(
-                node_id    = self.node_id,
-                event_type = "CRITICAL",
-                detail     = f"win={self.windows_done} signals={sigs}",
-            )
+            detail = f"win={self.windows_done} signals={sigs}"
+            _storage.log_event(self.node_id, "CRITICAL", detail)
+            _notify_event(self.node_id, "CRITICAL", detail)
         elif report.has_low_quality():
             sigs = " ".join(report.low_quality_signals())
-            _storage.log_event(
-                node_id    = self.node_id,
-                event_type = "LOW_QUALITY",
-                detail     = f"win={self.windows_done} signals={sigs}",
-            )
+            detail = f"win={self.windows_done} signals={sigs}"
+            _storage.log_event(self.node_id, "LOW_QUALITY", detail)
+            _notify_event(self.node_id, "LOW_QUALITY", detail)
 
-        # ── Purge periodik ────────────────────────────────────────────────────
+        # Purge periodik
         with _global_lock:
             _global_window_count += 1
             do_purge = (_global_window_count % PURGE_EVERY_WINDOWS == 0)
-
         if do_purge:
             _storage.purge_old()
 
-        # ── Print ke console ──────────────────────────────────────────────────
+        # ── Console output ────────────────────────────────────────────────────
         spo2_str = f" | SpO2={spo2:.1f}%" if spo2 is not None else ""
         q_tag    = ""
         if report.has_critical():
@@ -239,22 +231,15 @@ class NodeState:
               f"| HR={hr}{spo2_str} | finger={'Y' if finger else 'N'} "
               f"| rekon={elapsed_ms:.1f}ms | avg={avg_ms:.1f}ms"
               f"{q_tag}")
-
-        # Print ringkasan kualitas F3
         print(f"  {report.summary()}")
         for line in report.detail_lines():
             print(line)
 
-        # Print statistik rekonstruksi F3 setiap 20 window
         if self.windows_done % 20 == 0:
             print(f"  {_assessor.stats_summary()}")
-
-        # Print statistik validasi F1 setiap 20 window
         if self.windows_done % 20 == 0:
             vstats = _validator.get_stats()
             print(f"  [Validator] {vstats}")
-
-        # Print ukuran DB F6 setiap 50 window
         if self.windows_done % 50 == 0:
             size_kb = _storage.db_size_bytes() / 1024
             print(f"  [Storage] DB size={size_kb:.1f} KB | "
@@ -271,11 +256,8 @@ def _get_node(node_id: int) -> NodeState:
     if node_id not in _nodes:
         _nodes[node_id] = NodeState(node_id)
         print(f"[INFO] Node {node_id} terdaftar")
-        _storage.log_event(
-            node_id    = node_id,
-            event_type = "NODE_REGISTERED",
-            detail     = f"node_id={node_id}",
-        )
+        _storage.log_event(node_id, "NODE_REGISTERED", f"node_id={node_id}")
+        _notify_event(node_id, "NODE_REGISTERED", f"node_id={node_id}")
     return _nodes[node_id]
 
 def _on_message(client, userdata, message):
@@ -321,15 +303,14 @@ def _on_connect(client, userdata, flags, rc, properties=None):
 if __name__ == "__main__":
     warnings.filterwarnings("ignore", category=RuntimeWarning)
 
-    # Buka DB sebelum apapun
     _storage.open()
 
     print("=" * 60)
-    print("  CS Reconstruction Server v2 (F1 + F3 + F6)")
+    print("  CS Reconstruction Server (F1 + F3 + F4 + F6)")
     print(f"  N={CS_N} M={CS_M} ({CS_M*100//CS_N}%) | OMP K=20")
     print(f"  Broker : {MQTT_BROKER}:{MQTT_PORT}")
     print(f"  DB     : {DB_PATH} (retention={RETENTION_HOURS}h)")
-    print(f"  Purge  : setiap {PURGE_EVERY_WINDOWS} window")
+    print(f"  F4 Dashboard: {'aktif' if _DASHBOARD_AVAILABLE else 'tidak tersedia (jalankan dashboard_server terpisah)'}")
     print("=" * 60)
 
     if _PAHO_V2:

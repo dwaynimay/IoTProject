@@ -74,3 +74,7 @@ COLORS = {
 # ── Derived ───────────────────────────────────────────────────────────────
 WINDOW_MS     = CS_N * 10
 TOTAL_SAMPLES = CS_N * HISTORY_WINDOWS
+
+# ── Storage ───────────────────────────────────────────────────────────────────
+DB_PATH         = "health_monitor.db"
+RETENTION_HOURS = 24
