@@ -7,7 +7,14 @@ Subscribe 2 topic per node:
   health_monitor/node_N/cs_imu  → rekonstruksi ax,ay,az,gx,gy,gz sekaligus
   health_monitor/node_N/cs_ppg  → rekonstruksi ir + metadata HR
 
-Jalankan dari folder server/:
+Perubahan v2 (F1 + F3 + F6):
+  - Setiap payload divalidasi dulu via ValidatorRegistry (F1)
+  - Setiap window di-assess kualitasnya via QualityAssessor (F3)
+  - Setiap window disimpan ke SQLite via StorageManager (F6)
+  - Event LOW_QUALITY / CRITICAL / VALIDATION_ERROR dicatat ke tabel events
+  - Purge otomatis setiap PURGE_EVERY_WINDOWS window
+
+Jalankan dari root project:
     python -m apps.reconstruct_server
 """
 
@@ -28,52 +35,91 @@ from core.config import (
     TOPIC_BASE, SIGNALS, IMU_SIGNALS, PPG_SIGNALS,
     UNITS, TS_SPREAD_TOLERANCE_MS,
 )
-from core.cs_router import reconstruct, PHI
-from core.validator import validate_imu, validate_ppg, reset_node_state
-from core.quality import assess_window, window_summary
+from core.cs_router  import reconstruct, PHI
+from core.validator  import ValidatorRegistry          # F1
+from core.quality    import QualityAssessor            # F3
+from core.storage    import StorageManager             # F6
+
+
+# =============================================================================
+# Konfigurasi
+# =============================================================================
+
+# Path file SQLite — relatif dari root project
+DB_PATH = "health_monitor.db"
+
+# Purge data lama setiap N window (semua node gabungan)
+PURGE_EVERY_WINDOWS = 100
+
+# Retention data di DB (jam)
+RETENTION_HOURS = 24
+
+
+# =============================================================================
+# Instance modul-level — stateful, dibuat sekali
+# =============================================================================
+
+_validator = ValidatorRegistry()          # F1 — track ts per node
+_assessor  = QualityAssessor(phi=PHI)     # F3 — hitung residual
+_storage   = StorageManager(             # F6 — SQLite
+    db_path         = DB_PATH,
+    retention_hours = RETENTION_HOURS,
+)
+
+# Counter window global untuk trigger purge
+_global_window_count = 0
+_global_lock         = threading.Lock()
 
 
 # =============================================================================
 # NodeState — buffer per node, tunggu cs_imu DAN cs_ppg
 # =============================================================================
+
 class NodeState:
     def __init__(self, node_id: int):
         self.node_id       = node_id
-        self._imu_buf      = None   # payload cs_imu terakhir
-        self._ppg_buf      = None   # payload cs_ppg terakhir
+        self._imu_buf      = None
+        self._ppg_buf      = None
         self._lock         = threading.Lock()
         self.windows_done  = 0
         self._last_win_t   = 0.0
         self._total_rec_ms = 0.0
-        self._val_errors   = 0      # jumlah payload ditolak validator
-        self._low_quality  = 0      # jumlah window LOW_QUALITY
 
     def on_imu(self, payload: dict):
-        """Dipanggil saat cs_imu diterima — validasi dulu sebelum buffer."""
-        ok, errors = validate_imu(payload, node_id=self.node_id)
+        # ── F1: Validasi sebelum buffer ───────────────────────────────────────
+        ok, errors = _validator.validate_imu(node_id=self.node_id, payload=payload)
         if not ok:
             print(f"[Node {self.node_id}] VALIDATION ERROR (cs_imu): "
                   f"{'; '.join(errors)}")
-            self._val_errors += 1
+            _storage.log_event(
+                node_id    = self.node_id,
+                event_type = "VALIDATION_ERROR",
+                detail     = f"cs_imu: {'; '.join(errors)[:400]}",
+            )
             return
+
         with self._lock:
             self._imu_buf = payload
             self._try_reconstruct()
 
     def on_ppg(self, payload: dict):
-        """Dipanggil saat cs_ppg diterima — validasi dulu sebelum buffer."""
-        ok, errors = validate_ppg(payload, node_id=self.node_id)
+        # ── F1: Validasi sebelum buffer ───────────────────────────────────────
+        ok, errors = _validator.validate_ppg(node_id=self.node_id, payload=payload)
         if not ok:
             print(f"[Node {self.node_id}] VALIDATION ERROR (cs_ppg): "
                   f"{'; '.join(errors)}")
-            self._val_errors += 1
+            _storage.log_event(
+                node_id    = self.node_id,
+                event_type = "VALIDATION_ERROR",
+                detail     = f"cs_ppg: {'; '.join(errors)[:400]}",
+            )
             return
+
         with self._lock:
             self._ppg_buf = payload
             self._try_reconstruct()
 
     def _try_reconstruct(self):
-        """Rekonstruksi hanya jika kedua buffer sudah terisi."""
         if self._imu_buf is None or self._ppg_buf is None:
             return
 
@@ -83,44 +129,36 @@ class NodeState:
         spread = abs(ts_imu - ts_ppg)
 
         if spread > TS_SPREAD_TOLERANCE_MS:
-            # Timestamp terlalu jauh — kemungkinan dari window berbeda
-            # Buang yang lebih lama, tunggu pasangannya
             if ts_imu < ts_ppg:
-                print(f"[Node {self.node_id}] WARN: cs_imu ts={ts_imu} "
-                      f"terlalu lama vs cs_ppg ts={ts_ppg} "
-                      f"(spread={spread}ms) — reset imu buf")
+                print(f"[Node {self.node_id}] WARN: ts spread={spread}ms — reset imu buf")
                 self._imu_buf = None
             else:
-                print(f"[Node {self.node_id}] WARN: cs_ppg ts={ts_ppg} "
-                      f"terlalu lama vs cs_imu ts={ts_imu} "
-                      f"(spread={spread}ms) — reset ppg buf")
+                print(f"[Node {self.node_id}] WARN: ts spread={spread}ms — reset ppg buf")
                 self._ppg_buf = None
             return
 
-        # Ambil payload lalu reset buffer
         imu_data = self._imu_buf
         ppg_data = self._ppg_buf
         self._imu_buf = None
         self._ppg_buf = None
 
-        # Jalankan rekonstruksi
         self._reconstruct(imu_data, ppg_data)
 
     def _reconstruct(self, imu_data: dict, ppg_data: dict):
-        """Rekonstruksi semua 7 sinyal dari payload hybrid."""
+        global _global_window_count
+
         results      = {}
-        measurements = {}   # simpan y vector untuk quality assessment
+        measurements = {}
         t0 = time.time()
 
-        # Rekonstruksi 6 sinyal IMU dari cs_imu
+        # Rekonstruksi 6 sinyal IMU
         for sig in IMU_SIGNALS:
             y = imu_data.get(sig, [])
             if len(y) == CS_M:
                 results[sig]      = reconstruct(y)
                 measurements[sig] = y
             else:
-                print(f"[Node {self.node_id}] WARN: {sig} len={len(y)}, "
-                      f"expected {CS_M}")
+                print(f"[Node {self.node_id}] WARN: {sig} len={len(y)}, expected {CS_M}")
 
         # Rekonstruksi IR dari cs_ppg
         y_ir = ppg_data.get("ir", [])
@@ -128,73 +166,116 @@ class NodeState:
             results["ir"]      = reconstruct(y_ir)
             measurements["ir"] = y_ir
         else:
-            print(f"[Node {self.node_id}] WARN: ir len={len(y_ir)}, "
-                  f"expected {CS_M}")
+            print(f"[Node {self.node_id}] WARN: ir len={len(y_ir)}, expected {CS_M}")
 
         elapsed_ms = (time.time() - t0) * 1000
 
         self.windows_done  += 1
         self._total_rec_ms += elapsed_ms
-        now = time.time()
+        now    = time.time()
         gap_ms = (now - self._last_win_t) * 1000 if self._last_win_t else 0
         self._last_win_t = now
+        avg_ms = self._total_rec_ms / self.windows_done
 
-        # Metadata dari cs_ppg
         hr     = ppg_data.get("hr", -1)
         spo2   = ppg_data.get("spo2", None)
         finger = ppg_data.get("finger", False)
         ts     = imu_data.get("ts", 0)
-        avg_ms = self._total_rec_ms / self.windows_done
 
-        # ── Quality Assessment ─────────────────────────────────────────────────
-        quality_map = assess_window(measurements, results, PHI)
-        q_summary   = window_summary(quality_map)
-        if q_summary["any_low_quality"]:
-            self._low_quality += 1
+        # ── F3: Quality assessment ────────────────────────────────────────────
+        report   = _assessor.assess_window(
+            results      = results,
+            measurements = measurements,
+            node_id      = self.node_id,
+            window_num   = self.windows_done,
+        )
 
-        # ── Print Header ──────────────────────────────────────────────────────
-        q_tag = "⚠ LOW_Q" if q_summary["any_low_quality"] else "OK"
+        # ── F6: Simpan ke SQLite ──────────────────────────────────────────────
+        _storage.save_window(
+            node_id    = self.node_id,
+            window_num = self.windows_done,
+            ts_sensor  = ts,
+            results    = results,
+            report     = report,
+            hr         = hr if hr is not None else -1,
+            spo2       = spo2 if spo2 is not None else 0.0,
+            finger     = finger,
+        )
+
+        # Log event jika kualitas buruk
+        if report.has_critical():
+            sigs = " ".join(report.critical_signals())
+            _storage.log_event(
+                node_id    = self.node_id,
+                event_type = "CRITICAL",
+                detail     = f"win={self.windows_done} signals={sigs}",
+            )
+        elif report.has_low_quality():
+            sigs = " ".join(report.low_quality_signals())
+            _storage.log_event(
+                node_id    = self.node_id,
+                event_type = "LOW_QUALITY",
+                detail     = f"win={self.windows_done} signals={sigs}",
+            )
+
+        # ── Purge periodik ────────────────────────────────────────────────────
+        with _global_lock:
+            _global_window_count += 1
+            do_purge = (_global_window_count % PURGE_EVERY_WINDOWS == 0)
+
+        if do_purge:
+            _storage.purge_old()
+
+        # ── Print ke console ──────────────────────────────────────────────────
         spo2_str = f" | SpO2={spo2:.1f}%" if spo2 is not None else ""
+        q_tag    = ""
+        if report.has_critical():
+            q_tag = " ⚠ CRITICAL"
+        elif report.has_low_quality():
+            q_tag = " ⚠ LOW_Q"
+
         print(f"\n[Node {self.node_id}] Window #{self.windows_done} "
               f"| ts={ts}ms | gap={gap_ms:.0f}ms "
               f"| HR={hr}{spo2_str} | finger={'Y' if finger else 'N'} "
-              f"| rekon={elapsed_ms:.1f}ms | avg={avg_ms:.1f}ms "
-              f"| quality={q_tag} "
-              f"| val_err={self._val_errors} | low_q={self._low_quality}")
+              f"| rekon={elapsed_ms:.1f}ms | avg={avg_ms:.1f}ms"
+              f"{q_tag}")
 
-        # ── Print rekonstruksi + quality per sinyal ───────────────────────────
-        for sig in IMU_SIGNALS:
-            if sig in results:
-                x    = results[sig]
-                unit = UNITS[sig]
-                q    = quality_map.get(sig)
-                q_info = f" rel_err={q.relative_error:.3f}" if q else ""
-                print(f"  {sig}: [{x.min():.3f} … {x.max():.3f}] {unit}{q_info}")
+        # Print ringkasan kualitas F3
+        print(f"  {report.summary()}")
+        for line in report.detail_lines():
+            print(line)
 
-        if "ir" in results:
-            x = results["ir"]
-            q = quality_map.get("ir")
-            q_info = f" rel_err={q.relative_error:.3f}" if q else ""
-            print(f"  ir: [{x.min():.0f} … {x.max():.0f}] ADC{q_info}")
+        # Print statistik rekonstruksi F3 setiap 20 window
+        if self.windows_done % 20 == 0:
+            print(f"  {_assessor.stats_summary()}")
 
-        # Print quality warnings jika ada
-        for w in q_summary.get("warnings", []):
-            print(f"  [QUALITY WARN] {w}")
+        # Print statistik validasi F1 setiap 20 window
+        if self.windows_done % 20 == 0:
+            vstats = _validator.get_stats()
+            print(f"  [Validator] {vstats}")
 
-        # ── Hook: storage / ML model (Phase 2 & 3) ────────────────────────────
-        # Phase 2: storage.save_window(self.node_id, ts, results, q_summary)
-        # Phase 3: ml_inference.predict(results, hr=hr, spo2=spo2)
+        # Print ukuran DB F6 setiap 50 window
+        if self.windows_done % 50 == 0:
+            size_kb = _storage.db_size_bytes() / 1024
+            print(f"  [Storage] DB size={size_kb:.1f} KB | "
+                  f"node_stats={_storage.get_node_stats(self.node_id)}")
 
 
 # =============================================================================
 # MQTT
 # =============================================================================
+
 _nodes: dict = {}
 
 def _get_node(node_id: int) -> NodeState:
     if node_id not in _nodes:
         _nodes[node_id] = NodeState(node_id)
         print(f"[INFO] Node {node_id} terdaftar")
+        _storage.log_event(
+            node_id    = node_id,
+            event_type = "NODE_REGISTERED",
+            detail     = f"node_id={node_id}",
+        )
     return _nodes[node_id]
 
 def _on_message(client, userdata, message):
@@ -204,7 +285,6 @@ def _on_message(client, userdata, message):
         print(f"[ERROR] JSON parse: {e}")
         return
 
-    # Parse topic: health_monitor/node_1/cs_imu
     parts = message.topic.split("/")
     if len(parts) < 3:
         return
@@ -214,7 +294,7 @@ def _on_message(client, userdata, message):
     except (IndexError, ValueError):
         return
 
-    sig_type = parts[2]  # "cs_imu" atau "cs_ppg"
+    sig_type = parts[2]
     node     = _get_node(node_id)
 
     if sig_type == "cs_imu":
@@ -226,7 +306,6 @@ def _on_connect(client, userdata, flags, rc, properties=None):
     rc_val = rc if isinstance(rc, int) else rc.value
     if rc_val == 0:
         print(f"[MQTT] Terhubung ke {MQTT_BROKER}:{MQTT_PORT}")
-        # Subscribe 2 topic per node, wildcard + untuk semua node
         for topic_type in ["cs_imu", "cs_ppg"]:
             topic = f"{TOPIC_BASE}/+/{topic_type}"
             client.subscribe(topic)
@@ -238,21 +317,23 @@ def _on_connect(client, userdata, flags, rc, properties=None):
 # =============================================================================
 # Main
 # =============================================================================
+
 if __name__ == "__main__":
     warnings.filterwarnings("ignore", category=RuntimeWarning)
 
-    print("=" * 55)
-    print("  CS Reconstruction Server (Hybrid Topic)")
+    # Buka DB sebelum apapun
+    _storage.open()
+
+    print("=" * 60)
+    print("  CS Reconstruction Server v2 (F1 + F3 + F6)")
     print(f"  N={CS_N} M={CS_M} ({CS_M*100//CS_N}%) | OMP K=20")
-    print(f"  Broker: {MQTT_BROKER}:{MQTT_PORT}")
-    print(f"  Subscribe: {TOPIC_BASE}/+/cs_imu")
-    print(f"           : {TOPIC_BASE}/+/cs_ppg")
-    print(f"  TS tolerance: {TS_SPREAD_TOLERANCE_MS}ms")
-    print("=" * 55)
+    print(f"  Broker : {MQTT_BROKER}:{MQTT_PORT}")
+    print(f"  DB     : {DB_PATH} (retention={RETENTION_HOURS}h)")
+    print(f"  Purge  : setiap {PURGE_EVERY_WINDOWS} window")
+    print("=" * 60)
 
     if _PAHO_V2:
-        client = mqtt.Client(
-            callback_api_version=CallbackAPIVersion.VERSION2)
+        client = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2)
     else:
         client = mqtt.Client()
 
@@ -264,7 +345,13 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"\n[ERROR] Tidak bisa konek ke {MQTT_BROKER}:{MQTT_PORT}")
         print(f"  → {e}")
+        _storage.close()
         exit(1)
 
     print("\nMenunggu data dari sensor node...\n")
-    client.loop_forever()
+
+    try:
+        client.loop_forever()
+    finally:
+        _storage.close()
+        print("[INFO] Storage ditutup.")

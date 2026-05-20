@@ -1,223 +1,385 @@
 # File: server/core/quality.py
 
 # =============================================================================
-# quality.py — Metrik Kualitas Rekonstruksi CS
+# quality.py — Reconstruction Quality Assessment (F3)
 # =============================================================================
 #
-# Dihitung SETELAH rekonstruksi selesai (x_hat sudah tersedia).
-# Tidak membutuhkan sinyal asli — semua metrik berbasis measurement residual.
+# Hitung metrik kualitas SETELAH rekonstruksi CS selesai.
+# Dipanggil dari reconstruct_server.py._reconstruct() per window.
 #
-# CARA PAKAI:
-#   from core.quality import ReconQuality, assess
+# METRIK PER SINYAL:
 #
-#   report = assess(y=y_vector, x_hat=x_hat, phi=PHI)
-#   if report.is_low_quality:
-#       print(f"WARNING: {report.summary}")
+#   relative_error  = ||y - Φ·x̂||₂ / ||y||₂
+#       → Seberapa baik x̂ "menjelaskan" measurement y.
+#         0.0 = sempurna, > 0.25 = buruk (flag LOW_QUALITY)
+#         Rumus ini sudah familiar dari test_single_signal.py.
 #
-# METRIK:
-#   residual_norm     : ||y - Φx̂||₂  (semakin kecil semakin baik)
-#   measurement_norm  : ||y||₂
-#   relative_error    : residual_norm / measurement_norm  (0.0 = sempurna)
-#   sparsity_ratio    : fraksi koefisien DCT ≠ 0  (harusnya kecil, < 0.5)
-#   is_low_quality    : True jika relative_error > threshold
+#   sparsity_ratio  = jumlah koefisien DCT ≠ 0 / N
+#       → Fraksi koefisien yang dipakai OMP.
+#         Harusnya kecil (sinyal sparse). Jika mendekati 1.0,
+#         OMP membutuhkan hampir semua koefisien → sinyal tidak sparse
+#         → rekonstruksi tidak optimal.
 #
-# THRESHOLD default di config.py dapat di-override via parameter.
+#   snr_db          = 20 · log10(||x̂||₂ / ||y - Φ·x̂||₂)
+#       → Estimasi SNR dalam dB. Lebih tinggi = lebih baik.
+#         Hanya informatif, bukan dipakai untuk flag.
+#
+# FLAG KUALITAS:
+#   LOW_QUALITY  → relative_error > THRESHOLD_LOW_QUALITY (default 0.25)
+#   ZERO_SIGNAL  → ||y||₂ < 1e-9 (sinyal hampir nol, tidak bisa dinilai)
+#
+# CARA PAKAI di reconstruct_server.py:
+#
+#   from core.quality import QualityAssessor, QualityFlag
+#
+#   assessor = QualityAssessor(phi=PHI)   # PHI dari cs_router
+#
+#   # setelah reconstruct semua sinyal:
+#   report = assessor.assess_window(
+#       results      = {"ax": x_hat_ax, "gx": x_hat_gx, ...},
+#       measurements = {"ax": y_ax,     "gx": y_gx,     ...},
+#   )
+#
+#   print(report.summary())       # satu baris ringkasan
+#   if report.has_low_quality():
+#       print(report.low_quality_signals())
+#
+# CARA PAKAI PER SINYAL:
+#
+#   metric = assessor.assess_signal(signal="ax", x_hat=x_hat, y=y_arr)
+#   print(metric.relative_error, metric.flag)
 # =============================================================================
 
 from __future__ import annotations
 
 import math
-import numpy as np
 from dataclasses import dataclass, field
+from enum import Enum
 from typing import Optional
 
-# Threshold default — bisa di-override di config.py
-DEFAULT_RELATIVE_ERROR_THRESHOLD = 0.25   # > 25% residual = LOW_QUALITY
-DEFAULT_SPARSITY_WARN_THRESHOLD  = 0.60   # > 60% koefisien ≠ 0 = suspiciously dense
+import numpy as np
 
-# Nilai minimum ||y|| untuk menghindari divisi by zero
-_MIN_NORM = 1e-8
+try:
+    from .config import CS_M, CS_N, IMU_SIGNALS, PPG_SIGNALS
+except ImportError:
+    CS_M        = 32
+    CS_N        = 64
+    IMU_SIGNALS = ["ax", "ay", "az", "gx", "gy", "gz"]
+    PPG_SIGNALS = ["ir"]
+
+SIGNALS = IMU_SIGNALS + PPG_SIGNALS
 
 
-# ---------------------------------------------------------------------------
-# Data class hasil assessment
-# ---------------------------------------------------------------------------
+# =============================================================================
+# Konfigurasi threshold
+# =============================================================================
+
+# relative_error di atas ini → flag LOW_QUALITY
+THRESHOLD_LOW_QUALITY: float = 0.25
+
+# relative_error di atas ini → flag sangat buruk (untuk logging lebih keras)
+THRESHOLD_CRITICAL: float = 0.50
+
+# Koefisien dianggap nol jika |s_hat[i]| < nilai ini
+SPARSITY_EPSILON: float = 1e-8
+
+# ||y||₂ di bawah ini → sinyal dianggap nol (tidak dinilai)
+ZERO_SIGNAL_THRESHOLD: float = 1e-9
+
+
+# =============================================================================
+# QualityFlag
+# =============================================================================
+
+class QualityFlag(str, Enum):
+    OK           = "OK"           # relative_error <= 0.25
+    LOW_QUALITY  = "LOW_QUALITY"  # relative_error > 0.25
+    CRITICAL     = "CRITICAL"     # relative_error > 0.50
+    ZERO_SIGNAL  = "ZERO_SIGNAL"  # ||y|| hampir nol, tidak bisa dinilai
+
+
+# =============================================================================
+# SignalMetric — hasil per sinyal
+# =============================================================================
 
 @dataclass
-class ReconQuality:
-    signal_name       : str
-    residual_norm     : float
-    measurement_norm  : float
-    relative_error    : float          # residual / measurement norm
-    sparsity_ratio    : float          # fraksi koef ≠ 0
-    n_nonzero         : int
-    n_total           : int
-    is_low_quality    : bool
-    warnings          : list[str] = field(default_factory=list)
+class SignalMetric:
+    """Metrik kualitas untuk satu sinyal dalam satu window."""
 
-    @property
-    def summary(self) -> str:
-        tag = "LOW_QUALITY" if self.is_low_quality else "OK"
+    signal:          str
+    relative_error:  float          # ||y - Φx̂|| / ||y||
+    sparsity_ratio:  float          # fraksi koefisien ≠ 0
+    snr_db:          float          # estimasi SNR dalam dB
+    flag:            QualityFlag
+    residual_norm:   float          # ||y - Φx̂||₂
+    signal_norm:     float          # ||y||₂
+
+    def is_ok(self) -> bool:
+        return self.flag == QualityFlag.OK
+
+    def is_low_quality(self) -> bool:
+        return self.flag in (QualityFlag.LOW_QUALITY, QualityFlag.CRITICAL)
+
+    def is_critical(self) -> bool:
+        return self.flag == QualityFlag.CRITICAL
+
+    def short_str(self) -> str:
+        """Ringkasan satu baris untuk logging."""
+        flag_tag = "" if self.flag == QualityFlag.OK else f" [{self.flag.value}]"
         return (
-            f"[{self.signal_name}] {tag} | "
-            f"rel_err={self.relative_error:.3f} | "
-            f"sparsity={self.sparsity_ratio:.2f} ({self.n_nonzero}/{self.n_total}) | "
-            f"resid={self.residual_norm:.4f} / meas={self.measurement_norm:.4f}"
+            f"{self.signal}: "
+            f"err={self.relative_error:.4f} "
+            f"sparse={self.sparsity_ratio:.2f} "
+            f"snr={self.snr_db:+.1f}dB"
+            f"{flag_tag}"
         )
 
-    @property
-    def as_dict(self) -> dict:
+
+# =============================================================================
+# WindowReport — hasil seluruh window
+# =============================================================================
+
+@dataclass
+class WindowReport:
+    """
+    Kumpulan SignalMetric untuk semua sinyal dalam satu window.
+    Dibuat oleh QualityAssessor.assess_window().
+    """
+
+    node_id:    int
+    window_num: int
+    metrics:    dict[str, SignalMetric] = field(default_factory=dict)
+
+    # ── Query helpers ─────────────────────────────────────────────────────────
+
+    def has_low_quality(self) -> bool:
+        return any(m.is_low_quality() for m in self.metrics.values())
+
+    def has_critical(self) -> bool:
+        return any(m.is_critical() for m in self.metrics.values())
+
+    def low_quality_signals(self) -> list[str]:
+        return [s for s, m in self.metrics.items() if m.is_low_quality()]
+
+    def critical_signals(self) -> list[str]:
+        return [s for s, m in self.metrics.items() if m.is_critical()]
+
+    def mean_relative_error(self) -> float:
+        """Rata-rata relative_error semua sinyal yang bisa dinilai."""
+        vals = [
+            m.relative_error
+            for m in self.metrics.values()
+            if m.flag != QualityFlag.ZERO_SIGNAL
+        ]
+        return float(np.mean(vals)) if vals else 0.0
+
+    def mean_sparsity(self) -> float:
+        vals = [
+            m.sparsity_ratio
+            for m in self.metrics.values()
+            if m.flag != QualityFlag.ZERO_SIGNAL
+        ]
+        return float(np.mean(vals)) if vals else 0.0
+
+    # ── Formatting ────────────────────────────────────────────────────────────
+
+    def summary(self) -> str:
+        """
+        Satu baris ringkasan untuk console log.
+
+        Contoh output:
+          [Q] Win#5 Node1 | avg_err=0.0821 sparse=0.31 | OK
+          [Q] Win#8 Node1 | avg_err=0.3102 sparse=0.45 | LOW_QUALITY: gx gz
+        """
+        avg_err   = self.mean_relative_error()
+        avg_spar  = self.mean_sparsity()
+
+        if self.has_critical():
+            status = f"CRITICAL: {' '.join(self.critical_signals())}"
+        elif self.has_low_quality():
+            status = f"LOW_QUALITY: {' '.join(self.low_quality_signals())}"
+        else:
+            status = "OK"
+
+        return (
+            f"[Q] Win#{self.window_num} Node{self.node_id} | "
+            f"avg_err={avg_err:.4f} sparse={avg_spar:.2f} | "
+            f"{status}"
+        )
+
+    def detail_lines(self) -> list[str]:
+        """Satu baris per sinyal untuk log verbose."""
+        return [f"  {m.short_str()}" for m in self.metrics.values()]
+
+
+# =============================================================================
+# QualityAssessor
+# =============================================================================
+
+class QualityAssessor:
+    """
+    Hitung metrik kualitas rekonstruksi CS.
+
+    Args:
+        phi : np.ndarray (M × N) — measurement matrix Φ dari cs_router.PHI
+              Dipakai untuk menghitung residual y - Φ·x̂.
+
+    Contoh:
+        from core.cs_router import PHI
+        from core.quality   import QualityAssessor
+
+        assessor = QualityAssessor(phi=PHI)
+    """
+
+    def __init__(self, phi: np.ndarray) -> None:
+        if phi.ndim != 2:
+            raise ValueError(f"PHI harus 2D, dapat shape {phi.shape}")
+        self._phi = phi  # (M × N)
+
+        # Counter statistik akumulatif
+        self._total_windows:     int   = 0
+        self._total_low_quality: int   = 0
+        self._total_critical:    int   = 0
+        self._sum_rel_error:     float = 0.0
+
+    # ── Public API ────────────────────────────────────────────────────────────
+
+    def assess_signal(
+        self,
+        signal: str,
+        x_hat:  np.ndarray,
+        y:      "list | np.ndarray",
+    ) -> SignalMetric:
+        """
+        Hitung metrik kualitas untuk satu sinyal.
+
+        Args:
+            signal : nama sinyal, misalnya "ax" atau "ir"
+            x_hat  : (N,) sinyal rekonstruksi dari OMP/LASSO
+            y      : (M,) measurement vector asli dari sensor
+
+        Returns:
+            SignalMetric dengan semua field terisi
+        """
+        y_arr   = np.asarray(y,     dtype=np.float64)
+        x_arr   = np.asarray(x_hat, dtype=np.float64)
+
+        y_norm  = float(np.linalg.norm(y_arr))
+
+        # Sinyal nol — tidak bisa dinilai
+        if y_norm < ZERO_SIGNAL_THRESHOLD:
+            return SignalMetric(
+                signal         = signal,
+                relative_error = 0.0,
+                sparsity_ratio = 0.0,
+                snr_db         = 0.0,
+                flag           = QualityFlag.ZERO_SIGNAL,
+                residual_norm  = 0.0,
+                signal_norm    = y_norm,
+            )
+
+        # Residual: y - Φ·x̂
+        y_hat         = self._phi @ x_arr          # (M,)
+        residual      = y_arr - y_hat
+        residual_norm = float(np.linalg.norm(residual))
+
+        relative_error = residual_norm / y_norm
+
+        # Sparsity: fraksi koefisien DCT yang dipakai OMP
+        n_nonzero     = int(np.sum(np.abs(x_arr) > SPARSITY_EPSILON))
+        sparsity_ratio = n_nonzero / max(len(x_arr), 1)
+
+        # SNR estimasi
+        if residual_norm > ZERO_SIGNAL_THRESHOLD:
+            snr_db = 20.0 * math.log10(y_norm / residual_norm)
+        else:
+            snr_db = float("inf")
+
+        # Flag
+        if relative_error > THRESHOLD_CRITICAL:
+            flag = QualityFlag.CRITICAL
+        elif relative_error > THRESHOLD_LOW_QUALITY:
+            flag = QualityFlag.LOW_QUALITY
+        else:
+            flag = QualityFlag.OK
+
+        return SignalMetric(
+            signal         = signal,
+            relative_error = relative_error,
+            sparsity_ratio = sparsity_ratio,
+            snr_db         = snr_db,
+            flag           = flag,
+            residual_norm  = residual_norm,
+            signal_norm    = y_norm,
+        )
+
+    def assess_window(
+        self,
+        results:      dict[str, np.ndarray],
+        measurements: dict[str, "list | np.ndarray"],
+        node_id:      int = 0,
+        window_num:   int = 0,
+    ) -> WindowReport:
+        """
+        Hitung metrik untuk semua sinyal dalam satu window sekaligus.
+
+        Args:
+            results      : {"ax": x_hat_ax, "gx": x_hat_gx, ...}
+                           (output dari reconstruct() per sinyal)
+            measurements : {"ax": y_ax, "gx": y_gx, ...}
+                           (measurement vector asli dari payload MQTT)
+            node_id      : untuk label di WindowReport
+            window_num   : nomor window untuk label
+
+        Returns:
+            WindowReport berisi SignalMetric per sinyal
+        """
+        report = WindowReport(node_id=node_id, window_num=window_num)
+
+        for sig, x_hat in results.items():
+            y = measurements.get(sig)
+            if y is None:
+                continue
+            report.metrics[sig] = self.assess_signal(sig, x_hat, y)
+
+        # Update statistik internal
+        self._total_windows += 1
+        if report.has_critical():
+            self._total_critical += 1
+        elif report.has_low_quality():
+            self._total_low_quality += 1
+        self._sum_rel_error += report.mean_relative_error()
+
+        return report
+
+    # ── Statistik akumulatif ──────────────────────────────────────────────────
+
+    def global_stats(self) -> dict:
+        """
+        Statistik akumulatif sejak assessor dibuat.
+        Berguna untuk print ke console setiap N window.
+        """
+        n = max(self._total_windows, 1)
         return {
-            "signal"          : self.signal_name,
-            "relative_error"  : round(self.relative_error, 4),
-            "sparsity_ratio"  : round(self.sparsity_ratio, 4),
-            "n_nonzero"       : self.n_nonzero,
-            "n_total"         : self.n_total,
-            "residual_norm"   : round(self.residual_norm, 6),
-            "measurement_norm": round(self.measurement_norm, 6),
-            "is_low_quality"  : self.is_low_quality,
-            "warnings"        : self.warnings,
+            "total_windows":     self._total_windows,
+            "low_quality_count": self._total_low_quality,
+            "critical_count":    self._total_critical,
+            "ok_count":          self._total_windows
+                                 - self._total_low_quality
+                                 - self._total_critical,
+            "low_quality_rate":  self._total_low_quality / n,
+            "critical_rate":     self._total_critical / n,
+            "avg_relative_error": self._sum_rel_error / n,
         }
 
-
-# ---------------------------------------------------------------------------
-# Core assessment function
-# ---------------------------------------------------------------------------
-
-def assess(
-    y          : "list | np.ndarray",
-    x_hat      : np.ndarray,
-    phi        : np.ndarray,
-    signal_name: str = "signal",
-    err_thresh : float = DEFAULT_RELATIVE_ERROR_THRESHOLD,
-    sparsity_thresh: float = DEFAULT_SPARSITY_WARN_THRESHOLD,
-    zero_eps   : float = 1e-6,
-) -> ReconQuality:
-    """
-    Hitung metrik kualitas rekonstruksi satu sinyal.
-
-    Args:
-        y           : measurement vector (m,) — dari sensor
-        x_hat       : sinyal rekonstruksi (n,) — output reconstruct()
-        phi         : matriks pengukuran Φ (m × n)
-        signal_name : nama sinyal untuk logging
-        err_thresh  : batas relative_error untuk flag LOW_QUALITY
-        sparsity_thresh: batas sparsity_ratio untuk warning
-        zero_eps    : threshold anggap koefisien = 0
-
-    Returns:
-        ReconQuality dataclass
-    """
-    y_arr = np.asarray(y, dtype=np.float64)
-    x_arr = np.asarray(x_hat, dtype=np.float64)
-
-    # Residual: y - Φx̂
-    y_hat = phi @ x_arr
-    residual = y_arr - y_hat
-
-    residual_norm    = float(np.linalg.norm(residual))
-    measurement_norm = float(np.linalg.norm(y_arr))
-
-    # Hindari div-by-zero
-    if measurement_norm < _MIN_NORM:
-        relative_error = 0.0 if residual_norm < _MIN_NORM else float("inf")
-    else:
-        relative_error = residual_norm / measurement_norm
-
-    # Sparsity (dalam domain DCT — x_hat adalah koefisien sparse)
-    n_total   = len(x_arr)
-    n_nonzero = int(np.sum(np.abs(x_arr) > zero_eps))
-    sparsity_ratio = n_nonzero / n_total if n_total > 0 else 0.0
-
-    # Kumpulkan warnings
-    warnings: list[str] = []
-
-    if not math.isfinite(relative_error):
-        warnings.append("measurement_norm mendekati 0 — sinyal mungkin nol")
-
-    if sparsity_ratio > sparsity_thresh:
-        warnings.append(
-            f"sparsity_ratio={sparsity_ratio:.2f} > {sparsity_thresh} "
-            f"— sinyal tidak sparse, kualitas OMP mungkin rendah"
+    def stats_summary(self) -> str:
+        """Satu baris ringkasan statistik global."""
+        s = self.global_stats()
+        return (
+            f"[Q-Stats] "
+            f"windows={s['total_windows']} | "
+            f"ok={s['ok_count']} "
+            f"low={s['low_quality_count']} "
+            f"crit={s['critical_count']} | "
+            f"avg_err={s['avg_relative_error']:.4f}"
         )
-
-    if relative_error > 0.5:
-        warnings.append(
-            f"relative_error={relative_error:.3f} sangat tinggi — "
-            "periksa sinkronisasi matriks Φ antara firmware dan server"
-        )
-
-    is_low_quality = relative_error > err_thresh
-
-    return ReconQuality(
-        signal_name      = signal_name,
-        residual_norm    = residual_norm,
-        measurement_norm = measurement_norm,
-        relative_error   = relative_error,
-        sparsity_ratio   = sparsity_ratio,
-        n_nonzero        = n_nonzero,
-        n_total          = n_total,
-        is_low_quality   = is_low_quality,
-        warnings         = warnings,
-    )
-
-
-# ---------------------------------------------------------------------------
-# Batch assessment untuk window penuh (semua sinyal sekaligus)
-# ---------------------------------------------------------------------------
-
-def assess_window(
-    measurements : dict[str, "list | np.ndarray"],
-    reconstructed: dict[str, np.ndarray],
-    phi          : np.ndarray,
-    err_thresh   : float = DEFAULT_RELATIVE_ERROR_THRESHOLD,
-    sparsity_thresh: float = DEFAULT_SPARSITY_WARN_THRESHOLD,
-) -> dict[str, ReconQuality]:
-    """
-    Assess kualitas semua sinyal dalam satu window sekaligus.
-
-    Args:
-        measurements  : {signal_name: y_vector}  — measurement vectors
-        reconstructed : {signal_name: x_hat}     — hasil reconstruct()
-        phi           : matriks Φ yang digunakan
-
-    Returns:
-        dict {signal_name: ReconQuality}
-    """
-    results: dict[str, ReconQuality] = {}
-    for sig, x_hat in reconstructed.items():
-        y = measurements.get(sig)
-        if y is None:
-            continue
-        results[sig] = assess(
-            y=y,
-            x_hat=x_hat,
-            phi=phi,
-            signal_name=sig,
-            err_thresh=err_thresh,
-            sparsity_thresh=sparsity_thresh,
-        )
-    return results
-
-
-def window_summary(quality_map: dict[str, ReconQuality]) -> dict:
-    """
-    Ringkasan window: avg relative_error, flag any LOW_QUALITY, total warnings.
-    """
-    if not quality_map:
-        return {"ok": True, "signals": {}, "avg_relative_error": 0.0}
-
-    errors = [q.relative_error for q in quality_map.values()
-              if math.isfinite(q.relative_error)]
-    avg_err = sum(errors) / len(errors) if errors else 0.0
-    any_low = any(q.is_low_quality for q in quality_map.values())
-    all_warnings = [w for q in quality_map.values() for w in q.warnings]
-
-    return {
-        "ok"                 : not any_low,
-        "avg_relative_error" : round(avg_err, 4),
-        "any_low_quality"    : any_low,
-        "low_quality_signals": [s for s, q in quality_map.items() if q.is_low_quality],
-        "warnings"           : all_warnings,
-        "signals"            : {s: q.as_dict for s, q in quality_map.items()},
-    }

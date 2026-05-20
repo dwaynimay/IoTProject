@@ -1,219 +1,382 @@
 # File: server/core/validator.py
 
 # =============================================================================
-# validator.py — Payload Validator untuk MQTT CS Data
+# validator.py — Payload Validator (F1)
 # =============================================================================
 #
-# Validasi setiap MQTT payload SEBELUM direkonstruksi.
-# Semua validasi bersifat strict: gagal 1 field = payload ditolak.
+# 5 layer validasi sebelum payload diteruskan ke rekonstruksi CS:
 #
-# CARA PAKAI di apps/:
-#   from core.validator import validate_imu, validate_ppg, ValidationError
+#   Layer 1 — Schema   : field wajib ada di payload
+#   Layer 2 — Length   : len(y) == CS_M untuk setiap sinyal
+#   Layer 3 — Finite   : tidak ada NaN / Inf dalam measurement vector
+#   Layer 4 — Monotonicity : ts tidak boleh mundur per node (anti-replay)
+#   Layer 5 — Whitelist: node_id harus ada di ALLOWED_NODE_IDS (opsional)
 #
-#   ok, errors = validate_imu(payload, node_id=1)
+# CARA PAKAI di reconstruct_server.py:
+#
+#   from core.validator import ValidatorRegistry, ValidationError
+#
+#   registry = ValidatorRegistry()
+#
+#   # saat terima cs_imu:
+#   ok, errors = registry.validate_imu(node_id=1, payload=imu_payload)
 #   if not ok:
-#       log_and_skip(errors)
+#       print(errors)  # list string deskriptif
 #       return
 #
-# SCHEMA YANG DIVALIDASI:
-#   IMU payload  : ts, ax, ay, az, gx, gy, gz  (masing-masing list[float] len=CS_M)
-#   PPG payload  : ts, ir (list[float] len=CS_M), hr (int), finger (bool)
+#   # saat terima cs_ppg:
+#   ok, errors = registry.validate_ppg(node_id=1, payload=ppg_payload)
 #
-# VALIDASI:
-#   1. Schema      : field wajib ada, tipe benar
-#   2. Length      : len(signal) == CS_M
-#   3. Finite      : tidak ada NaN / Inf dalam measurement vector
-#   4. Monotonicity: ts tidak boleh < ts sebelumnya (per-node state)
-#   5. Node whitelist: node_id harus terdaftar (opsional)
+# KONFIGURASI:
+#   ALLOWED_NODE_IDS  → set node ID yang diizinkan, None = nonaktif (terima semua)
+#   TS_MAX_JUMP_MS    → toleransi loncat ts ke depan (reboot / clock skew)
+#   MEASUREMENT_ABS_MAX → batas absolut nilai y[i] sebelum dianggap corrupt
 # =============================================================================
 
 from __future__ import annotations
 
 import math
-import time
 from typing import Optional
 
-from .config import CS_M, IMU_SIGNALS, PPG_SIGNALS
+# =============================================================================
+# Konfigurasi
+# =============================================================================
 
-# ---------------------------------------------------------------------------
-# State global: last timestamp per node, per signal type
-# ---------------------------------------------------------------------------
-_last_ts: dict[tuple[int, str], int] = {}  # key: (node_id, sig_type)
+# Set berisi node ID yang diizinkan.
+# Isi dengan int, contoh: {1, 2}. Set ke None untuk menerima semua node.
+ALLOWED_NODE_IDS: Optional[set[int]] = None  # None = nonaktif
 
-# ---------------------------------------------------------------------------
-# Konfigurasi whitelist node (kosong = terima semua node)
-# ---------------------------------------------------------------------------
-ALLOWED_NODE_IDS: set[int] = set()  # set() = allow all
+# Jika ts melompat lebih dari nilai ini ke DEPAN, dianggap reboot atau
+# clock skew — tetap diterima tapi dicatat.
+# Jika ts mundur lebih dari TS_BACKWARD_TOLERANCE_MS, paket ditolak.
+TS_MAX_JUMP_MS: int        = 60_000   # 60 detik ke depan = toleransi
+TS_BACKWARD_TOLERANCE_MS: int = 100   # 100 ms ke belakang = masih oke (jitter)
+
+# Batas absolut nilai elemen measurement vector y[i].
+# Nilai di luar range ini hampir pasti corrupt (overflow, NaN propagation).
+MEASUREMENT_ABS_MAX: float = 1e6
+
+# Jumlah M pengukuran per sinyal — harus sinkron dengan config.py CS_M
+# Di-import dari config agar tidak ada duplikasi konstanta.
+try:
+    from .config import CS_M, IMU_SIGNALS, PPG_SIGNALS
+except ImportError:
+    # Fallback jika dijalankan standalone (misalnya untuk unit test)
+    CS_M        = 32
+    IMU_SIGNALS = ["ax", "ay", "az", "gx", "gy", "gz"]
+    PPG_SIGNALS = ["ir"]
 
 
-# ---------------------------------------------------------------------------
-# Helper
-# ---------------------------------------------------------------------------
+# =============================================================================
+# Field wajib per topic type
+# =============================================================================
 
-def _check_finite(values: list, field: str) -> list[str]:
-    """Return list error jika ada NaN/Inf dalam vector."""
+# cs_imu: timestamp + finger flag + 6 sinyal IMU
+_IMU_REQUIRED_FIELDS: tuple[str, ...] = ("ts", "finger") + tuple(IMU_SIGNALS)
+
+# cs_ppg: timestamp + metadata HR + finger flag + sinyal IR
+_PPG_REQUIRED_FIELDS: tuple[str, ...] = ("ts", "hr", "finger") + tuple(PPG_SIGNALS)
+
+
+# =============================================================================
+# ValidationError — exception opsional (bisa diabaikan, cukup cek ok/errors)
+# =============================================================================
+
+class ValidationError(Exception):
+    """
+    Dilempar jika ingin validasi gagal menghentikan eksekusi secara eksplisit.
+    Gunakan pattern ok, errors = registry.validate_*() untuk flow normal.
+    """
+    def __init__(self, errors: list[str]):
+        self.errors = errors
+        super().__init__("; ".join(errors))
+
+
+# =============================================================================
+# _MonotonicityTracker — state per node untuk cek ts
+# =============================================================================
+
+class _MonotonicityTracker:
+    """
+    Simpan ts terakhir yang valid per node.
+    Instance ini dimiliki oleh ValidatorRegistry — tidak perlu dibuat manual.
+    """
+
+    def __init__(self) -> None:
+        # key: node_id (int), value: ts terakhir yang valid (int, ms)
+        self._last_ts: dict[int, int] = {}
+
+    def check(self, node_id: int, ts: int) -> tuple[bool, str]:
+        """
+        Cek apakah ts valid dibandingkan ts terakhir untuk node ini.
+
+        Returns:
+            (True, "")           → ts valid, state diupdate
+            (False, pesan_error) → ts mundur, state TIDAK diupdate
+        """
+        if node_id not in self._last_ts:
+            # Node baru — langsung diterima
+            self._last_ts[node_id] = ts
+            return True, ""
+
+        prev = self._last_ts[node_id]
+        diff = ts - prev  # positif = maju, negatif = mundur
+
+        if diff < -TS_BACKWARD_TOLERANCE_MS:
+            # Ts mundur signifikan — tolak
+            return False, (
+                f"ts mundur: node={node_id} "
+                f"prev={prev}ms current={ts}ms diff={diff}ms "
+                f"(tolerance={TS_BACKWARD_TOLERANCE_MS}ms)"
+            )
+
+        if diff > TS_MAX_JUMP_MS:
+            # Lompat jauh ke depan — kemungkinan reboot, tetap diterima
+            # tapi update state dan beri warning (bukan error)
+            self._last_ts[node_id] = ts
+            return True, f"[WARN] ts lompat besar: node={node_id} diff={diff}ms (kemungkinan reboot)"
+
+        # Normal
+        self._last_ts[node_id] = ts
+        return True, ""
+
+    def reset(self, node_id: int) -> None:
+        """Reset state node tertentu (misalnya saat reboot terdeteksi)."""
+        self._last_ts.pop(node_id, None)
+
+    def reset_all(self) -> None:
+        """Reset semua state — berguna saat server restart."""
+        self._last_ts.clear()
+
+
+# =============================================================================
+# Layer validator functions — murni fungsi, tidak ada state
+# =============================================================================
+
+def _layer1_schema(payload: dict, required: tuple[str, ...]) -> list[str]:
+    """Layer 1: cek field wajib ada."""
+    missing = [f for f in required if f not in payload]
+    return [f"schema: field wajib tidak ada: {missing}"] if missing else []
+
+
+def _layer2_length(payload: dict, signals: list[str]) -> list[str]:
+    """Layer 2: cek panjang measurement vector == CS_M."""
     errors = []
-    for i, v in enumerate(values):
-        if not math.isfinite(v):
-            errors.append(f"{field}[{i}]={v} tidak finite (NaN/Inf)")
-            break  # cukup lapor 1x per sinyal
+    for sig in signals:
+        val = payload.get(sig)
+        if not isinstance(val, (list, tuple)):
+            errors.append(f"length: '{sig}' bukan list (type={type(val).__name__})")
+            continue
+        if len(val) != CS_M:
+            errors.append(
+                f"length: '{sig}' panjang {len(val)}, diharapkan {CS_M}"
+            )
     return errors
 
 
-def _check_length(values: list, field: str, expected: int) -> list[str]:
-    if len(values) != expected:
-        return [f"{field}: panjang {len(values)}, diharapkan {expected}"]
-    return []
+def _layer3_finite(payload: dict, signals: list[str]) -> list[str]:
+    """
+    Layer 3: cek setiap elemen y[i] finite (tidak NaN / Inf) dan dalam batas.
+
+    Berhenti setelah temukan elemen pertama yang invalid per sinyal
+    agar error message tidak membanjiri log.
+    """
+    errors = []
+    for sig in signals:
+        val = payload.get(sig)
+        if not isinstance(val, (list, tuple)):
+            continue  # sudah ditangani layer 2
+
+        for i, v in enumerate(val):
+            try:
+                fv = float(v)
+            except (TypeError, ValueError):
+                errors.append(f"finite: '{sig}[{i}]' tidak bisa dikonversi ke float: {v!r}")
+                break
+
+            if not math.isfinite(fv):
+                errors.append(f"finite: '{sig}[{i}]' = {fv} (NaN atau Inf)")
+                break
+
+            if abs(fv) > MEASUREMENT_ABS_MAX:
+                errors.append(
+                    f"finite: '{sig}[{i}]' = {fv:.3e} "
+                    f"melebihi batas absolut ±{MEASUREMENT_ABS_MAX:.0e}"
+                )
+                break
+
+    return errors
 
 
-def _check_ts_monotonic(node_id: int, sig_type: str, ts: int) -> list[str]:
-    """Cek ts tidak mundur. Update state jika valid."""
-    key = (node_id, sig_type)
-    last = _last_ts.get(key, -1)
-    if ts < last:
+def _layer5_whitelist(node_id: int) -> list[str]:
+    """Layer 5: cek node_id ada di whitelist (jika whitelist aktif)."""
+    if ALLOWED_NODE_IDS is None:
+        return []
+    if node_id not in ALLOWED_NODE_IDS:
         return [
-            f"ts={ts} mundur dari ts sebelumnya {last} "
-            f"(diff={last - ts}ms) — kemungkinan replay/reboot"
+            f"whitelist: node_id={node_id} tidak diizinkan "
+            f"(allowed={sorted(ALLOWED_NODE_IDS)})"
         ]
-    _last_ts[key] = ts
     return []
 
 
-def _check_node_whitelist(node_id: int) -> list[str]:
-    if ALLOWED_NODE_IDS and node_id not in ALLOWED_NODE_IDS:
-        return [f"Node ID {node_id} tidak ada dalam whitelist {ALLOWED_NODE_IDS}"]
-    return []
+# =============================================================================
+# ValidatorRegistry — state + semua layer dalam satu objek
+# =============================================================================
 
-
-# ---------------------------------------------------------------------------
-# Public API
-# ---------------------------------------------------------------------------
-
-def validate_imu(payload: dict, node_id: int = -1) -> tuple[bool, list[str]]:
+class ValidatorRegistry:
     """
-    Validasi payload cs_imu.
+    Registry validasi dengan state per-node untuk monotonicity check.
 
-    Args:
-        payload  : dict hasil json.loads() dari MQTT
-        node_id  : ID node pengirim (untuk monotonicity check)
+    Buat satu instance di level modul/app, lalu pakai terus.
+    Thread-safety: _MonotonicityTracker tidak thread-safe.
+    Jika dipanggil dari multiple thread, bungkus dengan threading.Lock() di luar.
 
-    Returns:
-        (True, [])           jika valid
-        (False, [str, ...])  jika invalid, errors berisi deskripsi masalah
+    Contoh:
+        registry = ValidatorRegistry()
+        ok, errors = registry.validate_imu(node_id=1, payload=data)
     """
-    errors: list[str] = []
 
-    # 0. Node whitelist
-    if node_id >= 0:
-        errors += _check_node_whitelist(node_id)
+    def __init__(self) -> None:
+        self._tracker = _MonotonicityTracker()
 
-    # 1. Schema: field wajib
-    required_fields = {"ts"} | set(IMU_SIGNALS)
-    missing = required_fields - payload.keys()
-    if missing:
-        errors.append(f"Field wajib tidak ada: {sorted(missing)}")
-        return False, errors  # tidak bisa lanjut tanpa field
+        # Counter statistik untuk monitoring
+        self.stats: dict[str, int] = {
+            "imu_ok":      0,
+            "imu_invalid": 0,
+            "ppg_ok":      0,
+            "ppg_invalid": 0,
+        }
 
-    # 2. Timestamp: harus int/float positif
-    ts = payload.get("ts", 0)
-    if not isinstance(ts, (int, float)) or ts < 0:
-        errors.append(f"ts={ts!r} bukan angka positif")
+    # ── Public API ────────────────────────────────────────────────────────────
 
-    # 3. Validasi setiap sinyal IMU
-    for sig in IMU_SIGNALS:
-        values = payload.get(sig, [])
-        if not isinstance(values, list):
-            errors.append(f"{sig} bukan list, dapat {type(values).__name__}")
-            continue
-        errors += _check_length(values, sig, CS_M)
-        if not errors:  # cek finite hanya jika panjang benar
-            errors += _check_finite(values, sig)
+    def validate_imu(
+        self,
+        node_id: int,
+        payload: dict,
+    ) -> tuple[bool, list[str]]:
+        """
+        Validasi payload cs_imu.
 
-    # 4. Timestamp monotonicity (per node)
-    if node_id >= 0 and isinstance(ts, (int, float)) and ts >= 0:
-        errors += _check_ts_monotonic(node_id, "imu", int(ts))
+        Args:
+            node_id : ID node pengirim (dari MQTT topic)
+            payload : dict hasil json.loads(message.payload)
 
-    ok = len(errors) == 0
-    return ok, errors
+        Returns:
+            (True, [])           → valid, siap rekonstruksi
+            (False, list[str])   → invalid, list pesan error
+        """
+        errors, warnings = self._run_layers(
+            node_id   = node_id,
+            payload   = payload,
+            required  = _IMU_REQUIRED_FIELDS,
+            signals   = list(IMU_SIGNALS),
+        )
 
+        if warnings:
+            # Warning dicetak tapi tidak menghentikan proses
+            for w in warnings:
+                print(f"[Validator][Node {node_id}] {w}")
 
-def validate_ppg(payload: dict, node_id: int = -1) -> tuple[bool, list[str]]:
-    """
-    Validasi payload cs_ppg.
+        if errors:
+            self.stats["imu_invalid"] += 1
+            return False, errors
 
-    Args:
-        payload  : dict hasil json.loads() dari MQTT
-        node_id  : ID node pengirim
+        self.stats["imu_ok"] += 1
+        return True, []
 
-    Returns:
-        (True, [])           jika valid
-        (False, [str, ...])  jika invalid
-    """
-    errors: list[str] = []
+    def validate_ppg(
+        self,
+        node_id: int,
+        payload: dict,
+    ) -> tuple[bool, list[str]]:
+        """
+        Validasi payload cs_ppg.
 
-    # 0. Node whitelist
-    if node_id >= 0:
-        errors += _check_node_whitelist(node_id)
+        Args:
+            node_id : ID node pengirim
+            payload : dict hasil json.loads(message.payload)
 
-    # 1. Schema: field wajib
-    required_fields = {"ts", "ir", "hr", "finger"}
-    missing = required_fields - payload.keys()
-    if missing:
-        errors.append(f"Field wajib tidak ada: {sorted(missing)}")
-        return False, errors
+        Returns:
+            (True, [])           → valid
+            (False, list[str])   → invalid
+        """
+        errors, warnings = self._run_layers(
+            node_id   = node_id,
+            payload   = payload,
+            required  = _PPG_REQUIRED_FIELDS,
+            signals   = list(PPG_SIGNALS),
+        )
 
-    # 2. Timestamp
-    ts = payload.get("ts", 0)
-    if not isinstance(ts, (int, float)) or ts < 0:
-        errors.append(f"ts={ts!r} bukan angka positif")
+        if warnings:
+            for w in warnings:
+                print(f"[Validator][Node {node_id}] {w}")
 
-    # 3. IR measurement vector
-    ir = payload.get("ir", [])
-    if not isinstance(ir, list):
-        errors.append(f"ir bukan list, dapat {type(ir).__name__}")
-    else:
-        errors += _check_length(ir, "ir", CS_M)
-        if not errors:
-            errors += _check_finite(ir, "ir")
+        if errors:
+            self.stats["ppg_invalid"] += 1
+            return False, errors
 
-    # 4. HR: int, range 0-300 (0 = tidak terdeteksi)
-    hr = payload.get("hr", -1)
-    if not isinstance(hr, (int, float)):
-        errors.append(f"hr={hr!r} bukan angka")
-    elif not (0 <= hr <= 300):
-        errors.append(f"hr={hr} di luar range [0, 300] BPM")
+        self.stats["ppg_ok"] += 1
+        return True, []
 
-    # 5. finger: bool
-    finger = payload.get("finger", None)
-    if not isinstance(finger, bool):
-        errors.append(f"finger={finger!r} bukan bool")
+    def get_stats(self) -> dict[str, int]:
+        """Kembalikan salinan counter statistik."""
+        return dict(self.stats)
 
-    # 6. SpO2 (opsional): jika ada, range 0.0-100.0
-    spo2 = payload.get("spo2", None)
-    if spo2 is not None:
-        if not isinstance(spo2, (int, float)):
-            errors.append(f"spo2={spo2!r} bukan angka")
-        elif not (0.0 <= float(spo2) <= 100.0):
-            errors.append(f"spo2={spo2} di luar range [0, 100]%")
+    def reset_node(self, node_id: int) -> None:
+        """Reset state monotonicity untuk node tertentu."""
+        self._tracker.reset(node_id)
 
-    # 7. Timestamp monotonicity
-    if node_id >= 0 and isinstance(ts, (int, float)) and ts >= 0:
-        errors += _check_ts_monotonic(node_id, "ppg", int(ts))
+    # ── Internal ──────────────────────────────────────────────────────────────
 
-    ok = len(errors) == 0
-    return ok, errors
+    def _run_layers(
+        self,
+        node_id: int,
+        payload: dict,
+        required: tuple[str, ...],
+        signals: list[str],
+    ) -> tuple[list[str], list[str]]:
+        """
+        Jalankan semua layer validasi secara berurutan.
+        Berhenti lebih awal jika layer sebelumnya sudah gagal
+        (menghindari error cascade yang membingungkan).
 
+        Returns:
+            (errors, warnings) — keduanya list[str]
+        """
+        errors:   list[str] = []
+        warnings: list[str] = []
 
-def reset_node_state(node_id: int) -> None:
-    """Reset timestamp state untuk node tertentu (misal: setelah reboot terdeteksi)."""
-    for sig_type in ("imu", "ppg"):
-        _last_ts.pop((node_id, sig_type), None)
+        # Layer 5 — whitelist (cek node_id dulu, paling murah)
+        errors += _layer5_whitelist(node_id)
+        if errors:
+            return errors, warnings
 
+        # Layer 1 — schema (field wajib ada sebelum akses field lain)
+        errors += _layer1_schema(payload, required)
+        if errors:
+            return errors, warnings
 
-def get_validation_stats() -> dict:
-    """Return info state validator saat ini (untuk debugging)."""
-    return {
-        "tracked_nodes": len({k[0] for k in _last_ts}),
-        "last_ts": {f"node{k[0]}_{k[1]}": v for k, v in _last_ts.items()},
-        "whitelist": sorted(ALLOWED_NODE_IDS) if ALLOWED_NODE_IDS else "all",
-    }
+        # Layer 4 — monotonicity (ts ada di payload, baru bisa dicek)
+        ts = payload.get("ts")
+        if not isinstance(ts, (int, float)):
+            errors.append(f"monotonicity: 'ts' bukan angka (type={type(ts).__name__})")
+            return errors, warnings
+
+        ts_int = int(ts)
+        mono_ok, mono_msg = self._tracker.check(node_id, ts_int)
+        if not mono_ok:
+            errors.append(f"monotonicity: {mono_msg}")
+            return errors, warnings
+        elif mono_msg:  # warning dari lompat besar
+            warnings.append(mono_msg)
+
+        # Layer 2 — length
+        errors += _layer2_length(payload, signals)
+        if errors:
+            return errors, warnings
+
+        # Layer 3 — finite (paling mahal, jalankan paling akhir)
+        errors += _layer3_finite(payload, signals)
+
+        return errors, warnings
