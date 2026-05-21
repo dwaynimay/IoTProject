@@ -51,7 +51,7 @@ if CS_ALGORITHM not in _SUPPORTED_ALGORITHMS:
 # =============================================================================
 print(f"[cs_router] Algoritma: {CS_ALGORITHM.upper()} | "
       f"M={CS_M} N={CS_N} seed={CS_PHI_SEED}",
-      end=" ... ", flush=True)
+      end=" ... ", flush=True)  # noqa: T201
 
 if CS_ALGORITHM == "omp":
     from . import cs_gaussian as _algo
@@ -99,4 +99,4 @@ elif CS_ALGORITHM == "lasso":
 import numpy as np  # noqa: E402 — import setelah branch agar tidak unused
 print("OK")
 print(f"[cs_router] {ALGORITHM_NAME} | "
-      f"Φ shape: {PHI.shape} | Θ shape: {THETA.shape}")
+      f"PHI={PHI.shape} | THETA={THETA.shape}")
