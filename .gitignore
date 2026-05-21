@@ -8,11 +8,6 @@
 # =============================================================================
 # Path sebelumnya salah (include/config/) — sekarang diperbaiki
 firmware/include/config/credentials.h
-firmware/include/config/credentials.h.bak
-
-# Jaga-jaga jika dipindah ke root
-include/config/credentials.h
-credentials.h
 
 # Pola umum secrets
 *.secret
@@ -21,6 +16,8 @@ credentials.h
 *.env
 .env
 .env.*
+server/.env
+!*.env.example
 secrets.h
 secrets.json
 config.local.*
@@ -31,6 +28,11 @@ config.local.*
 .pio/
 .pioenvs/
 .piolibdeps/
+firmware/.pio/
+firmware/.vscode/.browse.c_cpp.db*
+firmware/.vscode/c_cpp_properties.json
+firmware/.vscode/launch.json
+firmware/.vscode/ipch
 
 # IDE
 .vscode/
@@ -54,6 +56,17 @@ env/
 *.egg-info/
 dist/
 build/
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Type Checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
 
 # Jupyter
 .ipynb_checkpoints/
@@ -94,5 +107,10 @@ npm-debug.log*
 *.db
 *.db-shm
 *.db-wal
+!server/tests/fixtures/*.db
 new_feature/
+
+# Logs
+*.log
+logs/
 
