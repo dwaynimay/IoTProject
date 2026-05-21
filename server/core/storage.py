@@ -77,6 +77,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import sqlite3
 import threading
 import time
@@ -84,6 +85,8 @@ from pathlib import Path
 from typing import Optional
 
 import numpy as np
+
+logger = logging.getLogger(__name__)
 
 try:
     from .quality import WindowReport, QualityFlag
@@ -140,7 +143,8 @@ class StorageManager:
         self._conn.execute("PRAGMA journal_mode=WAL")   # concurrent read
         self._conn.execute("PRAGMA synchronous=NORMAL") # balance speed/safety
         self._create_tables()
-        print(f"[Storage] DB: {self._path.resolve()} | retention={self._retention_hours}h")
+        logger.info("DB: %s | retention=%dh",
+                    self._path.resolve(), self._retention_hours)
 
     def close(self) -> None:
         """Tutup koneksi. Panggil saat shutdown server."""
@@ -414,7 +418,7 @@ class StorageManager:
 
         deleted = cur_w.rowcount + cur_e.rowcount
         if deleted > 0:
-            print(f"[Storage] Purge: {deleted} baris dihapus (> {age_h}h)")
+            logger.info("Purge: %d baris dihapus (>%dh)", deleted, age_h)
         return deleted
 
     def db_size_bytes(self) -> int:

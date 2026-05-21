@@ -27,11 +27,15 @@
 #   Edit server/core/config.py → ubah CS_ALGORITHM = "lasso" atau "omp"
 # =============================================================================
 
+import logging
+
 from .config import (
     CS_N, CS_M, CS_PHI_SEED, OMP_K,
     LASSO_ALPHA, LASSO_MAX_ITER, LASSO_TOL,
     CS_ALGORITHM,
 )
+
+_logger = logging.getLogger(__name__)
 
 
 # =============================================================================
@@ -49,9 +53,8 @@ if CS_ALGORITHM not in _SUPPORTED_ALGORITHMS:
 # =============================================================================
 # Build singleton Φ, Θ, Ψ sesuai algoritma yang dikonfigurasi
 # =============================================================================
-print(f"[cs_router] Algoritma: {CS_ALGORITHM.upper()} | "
-      f"M={CS_M} N={CS_N} seed={CS_PHI_SEED}",
-      end=" ... ", flush=True)  # noqa: T201
+_logger.info("Algoritma: %s | M=%d N=%d seed=%d",
+             CS_ALGORITHM.upper(), CS_M, CS_N, CS_PHI_SEED)
 
 if CS_ALGORITHM == "omp":
     from . import cs_gaussian as _algo
@@ -97,6 +100,4 @@ elif CS_ALGORITHM == "lasso":
         )
 
 import numpy as np  # noqa: E402 — import setelah branch agar tidak unused
-print("OK")
-print(f"[cs_router] {ALGORITHM_NAME} | "
-      f"PHI={PHI.shape} | THETA={THETA.shape}")
+_logger.info("%s | PHI=%s | THETA=%s", ALGORITHM_NAME, PHI.shape, THETA.shape)

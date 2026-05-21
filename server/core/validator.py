@@ -35,8 +35,11 @@
 
 from __future__ import annotations
 
+import logging
 import math
 from typing import Optional
+
+logger = logging.getLogger(__name__)
 
 # =============================================================================
 # Konfigurasi
@@ -274,9 +277,8 @@ class ValidatorRegistry:
         )
 
         if warnings:
-            # Warning dicetak tapi tidak menghentikan proses
             for w in warnings:
-                print(f"[Validator][Node {node_id}] {w}")
+                logger.warning("Node %d | %s", node_id, w)
 
         if errors:
             self.stats["imu_invalid"] += 1
@@ -310,7 +312,7 @@ class ValidatorRegistry:
 
         if warnings:
             for w in warnings:
-                print(f"[Validator][Node {node_id}] {w}")
+                logger.warning("Node %d | %s", node_id, w)
 
         if errors:
             self.stats["ppg_invalid"] += 1
