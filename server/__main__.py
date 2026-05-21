@@ -1,31 +1,31 @@
 """
 server/__main__.py
 
-Dijalankan saat seseorang mengetik: python -m server
-Menampilkan petunjuk cara menjalankan masing-masing app.
+Entry point tunggal untuk seluruh sistem server.
+
+Jalankan dari root project:
+    python -m server
+
+Menjalankan dalam SATU proses:
+    - FastAPI REST API + WebSocket dashboard  (port 8000)
+    - MQTT worker thread (subscribe + rekonstruksi CS)
+    - SQLite storage
+    - WebSocket push real-time ke semua client
+
+Untuk debugging komponen individual:
+    python -m apps.reconstruct         # hanya MQTT + rekonstruksi
+    uvicorn apps.dashboard_server:app  # hanya dashboard
+    python -m apps.live_visualizer     # hanya visualisasi matplotlib
+    python -m apps.test_single_signal  # test satu sinyal
 """
 
-print("""
-╔══════════════════════════════════════════════════════╗
-║   ESP32 Health Monitor — Server                      ║
-╚══════════════════════════════════════════════════════╝
+import sys
+import os
 
-Cara menjalankan (dari root folder project):
+# Pastikan server/ ada di sys.path saat dijalankan dari root
+sys.path.insert(0, os.path.dirname(__file__))
 
-  python -m apps.reconstruct_server
-      → Subscribe MQTT, rekonstruksi semua sinyal CS, print hasil.
+from apps.main_app import main
 
-  python -m apps.live_visualizer
-      → Visualisasi real-time (matplotlib). Jalankan bersamaan
-        dengan reconstruct_server di terminal terpisah.
-
-  python -m apps.test_single_signal
-      → Test rekonstruksi 1 sinyal (default: gx).
-        Berguna untuk tuning LASSO_ALPHA.
-
-Konfigurasi:
-  Edit core/config.py → ubah MQTT_BROKER, CS_M, LASSO_ALPHA, dll.
-
-Install dependencies (sekali saja):
-  pip install -r server/requirements.txt
-""")
+if __name__ == "__main__":
+    main()
