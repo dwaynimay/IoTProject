@@ -1,9 +1,12 @@
 """
-server/verify_phi.py
-Verifikasi bahwa Φ di Python identik dengan Φ di firmware ESP32.
+server/tools/verify_phi.py
 
-Jalankan:
-    python -m server.verify_phi
+Tool debugging: Verifikasi bahwa Φ di Python identik dengan Φ di firmware ESP32.
+
+⚠️  Ini BUKAN bagian server production. Ini tool development/debug.
+
+Jalankan dari server/:
+    python -m tools.verify_phi
 
 Lalu bandingkan output dengan yang tercetak di Serial Monitor ESP32
 saat boot (lihat output CSPhiMatrix::printSyncDebug() di task_cs_sender.cpp).

@@ -1,13 +1,13 @@
 """
-server/apps/live_visualizer.py
-Pengganti cs_live_visualizer.py
+server/tools/live_visualizer.py
 
-Visualisasi real-time hasil rekonstruksi CS.
-Jalankan BERSAMAAN dengan reconstruct_server.py di terminal berbeda,
-atau jalankan standalone (juga subscribe sendiri ke MQTT).
+Tool debugging: Visualisasi real-time hasil rekonstruksi CS via matplotlib.
+Jalankan standalone — subscribe sendiri ke MQTT.
 
-Jalankan dari root project:
-    python -m apps.live_visualizer
+⚠️  Ini BUKAN bagian server production. Ini tool development/debug.
+
+Jalankan dari server/:
+    python -m tools.live_visualizer
 """
 
 import json

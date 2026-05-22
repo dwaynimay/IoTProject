@@ -1,8 +1,10 @@
 """
-server/apps/test_single_signal.py
+server/tools/test_single_signal.py
 
-Test rekonstruksi 1 sinyal dengan metrik akurasi yang bermakna.
+Tool debugging: test rekonstruksi 1 sinyal dengan metrik akurasi yang bermakna.
 Berguna untuk tuning OMP_K dan verifikasi Φ identik dengan firmware.
+
+⚠️  Ini BUKAN bagian server production. Ini tool development/debug.
 
 PERUBAHAN v2 (sesuai refactor gateway):
   - Firmware sekarang publish HYBRID TOPIC:
@@ -22,8 +24,8 @@ Metrik yang ditampilkan (tanpa ground truth x_asli):
       → Berapa komponen frekuensi yang dipakai OMP.
         Harusnya jauh lebih kecil dari N (sparse).
 
-Jalankan dari root project:
-    python -m apps.test_single_signal
+Jalankan dari server/:
+    python -m tools.test_single_signal
 """
 
 import json

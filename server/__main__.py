@@ -15,8 +15,11 @@ Menjalankan dalam SATU proses:
 Untuk debugging komponen individual:
     python -m apps.reconstruct         # hanya MQTT + rekonstruksi
     uvicorn apps.dashboard_server:app  # hanya dashboard
-    python -m apps.live_visualizer     # hanya visualisasi matplotlib
-    python -m apps.test_single_signal  # test satu sinyal
+
+Development/debug tools (bukan bagian server production):
+    python -m tools.live_visualizer    # visualisasi matplotlib real-time
+    python -m tools.test_single_signal # test rekonstruksi satu sinyal
+    python -m tools.verify_phi         # verifikasi matriks Φ vs firmware
 """
 
 import sys
