@@ -49,10 +49,11 @@ def test_reconstruct_list_input():
 
 
 def test_reconstruct_residual_reasonable():
-    """Residual dari sinyal sparse harus kecil (< 0.5)."""
+    """Residual dari sinyal sparse (di domain DCT) harus kecil (< 0.5)."""
     rng = np.random.default_rng(42)
-    x_true = np.zeros(CS_N)
-    x_true[rng.choice(CS_N, 5, replace=False)] = rng.standard_normal(5)
+    s_true = np.zeros(CS_N)
+    s_true[rng.choice(CS_N, 5, replace=False)] = rng.standard_normal(5)
+    x_true = PSI @ s_true
     y = PHI @ x_true
     x_hat = reconstruct(y)
     residual = np.linalg.norm(y - PHI @ x_hat) / (np.linalg.norm(y) + 1e-9)

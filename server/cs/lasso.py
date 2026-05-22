@@ -25,6 +25,7 @@
 # =============================================================================
 
 import warnings
+
 import numpy as np
 from scipy.fftpack import idct
 
@@ -138,6 +139,10 @@ def reconstruct(
         )
 
     y_arr = np.array(y, dtype=np.float64)
+    y_norm = np.linalg.norm(y_arr)
+
+    if y_norm < 1e-9:
+        return np.zeros(psi.shape[0])
 
     lasso = _SklearnLasso(
         alpha       = alpha,
@@ -145,6 +150,6 @@ def reconstruct(
         fit_intercept = False,
         tol         = tol,
     )
-    lasso.fit(theta, y_arr)
+    lasso.fit(theta, y_arr / y_norm)
 
-    return psi @ lasso.coef_
+    return (psi @ lasso.coef_) * y_norm

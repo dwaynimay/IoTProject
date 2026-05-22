@@ -21,8 +21,9 @@ def test_integration_full_pipeline():
     tmp_db = tempfile.mktemp(suffix="_test.db")
 
     # Override storage in dashboard hub to use our temp DB
+    from pathlib import Path
     storage.close()
-    storage._db_path = tmp_db
+    storage._path = Path(tmp_db)
     storage.open()
 
     client = TestClient(app)

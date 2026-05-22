@@ -1,16 +1,16 @@
 # Graph Report - server  (2026-05-22)
 
 ## Corpus Check
-- 50 files · ~20,522 words
+- 50 files · ~20,539 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 478 nodes · 731 edges · 33 communities (22 shown, 11 thin omitted)
-- Extraction: 92% EXTRACTED · 8% INFERRED · 0% AMBIGUOUS · INFERRED: 55 edges (avg confidence: 0.77)
+- 484 nodes · 737 edges · 33 communities (22 shown, 11 thin omitted)
+- Extraction: 93% EXTRACTED · 7% INFERRED · 0% AMBIGUOUS · INFERRED: 55 edges (avg confidence: 0.77)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `6fb28661`
+- Built from commit: `33222865`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -59,14 +59,14 @@
 ## Surprising Connections (you probably didn't know these)
 - `BroadcastHub` --uses--> `StorageManager`  [INFERRED]
   apps/dashboard/hub.py → core/storage.py
-- `main()` --calls--> `setup_logging()`  [INFERRED]
-  apps/reconstruct/__main__.py → core/logger.py
 - `main()` --calls--> `ValidatorRegistry`  [INFERRED]
   apps/reconstruct/__main__.py → core/validator.py
+- `main()` --calls--> `QualityAssessor`  [INFERRED]
+  apps/reconstruct/__main__.py → core/quality.py
 - `main()` --calls--> `StorageManager`  [INFERRED]
   apps/reconstruct/__main__.py → core/storage.py
-- `_make_assessor()` --calls--> `QualityAssessor`  [INFERRED]
-  tests/test_quality.py → core/quality.py
+- `test_integration_full_pipeline()` --calls--> `QualityAssessor`  [INFERRED]
+  tests/test_full_pipeline.py → core/quality.py
 
 ## Communities (33 total, 11 thin omitted)
 
@@ -83,8 +83,8 @@ Cohesion: 0.1
 Nodes (40): _encode(), _make_assessor(), _make_full_results_and_measurements(), _make_phi(), _make_sparse_signal(), Jika x_hat salah (noise), residual besar → LOW_QUALITY atau CRITICAL., Rekonstruksi sangat buruk → CRITICAL.     Paksa dengan x_hat = 0 sehingga resid, sparsity_ratio = fraksi elemen non-nol. (+32 more)
 
 ### Community 3 - "Community 3"
-Cohesion: 0.06
-Nodes (23): QualityAssessor, Hitung metrik kualitas rekonstruksi CS.      Args:         phi : np.ndarray (, Statistik akumulatif sejak assessor dibuat.         Berguna untuk print ke cons, Satu baris ringkasan statistik global., listener.py — MQTT subscribe + dispatch ke NodeState.  Tanggung jawab tunggal:, Jalankan MQTT listener (blocking — panggil dari thread atau main).      Args:, run(), main() (+15 more)
+Cohesion: 0.12
+Nodes (11): listener.py — MQTT subscribe + dispatch ke NodeState.  Tanggung jawab tunggal:, Jalankan MQTT listener (blocking — panggil dari thread atau main).      Args:, run(), NodeState, node_state.py — State management per node: buffer imu/ppg, timestamp spread chec, Buffer dan state per node sensor.      Args:         node_id      : ID node (dar, Terima payload cs_imu, validasi, simpan ke buffer., Terima payload cs_ppg, validasi, simpan ke buffer. (+3 more)
 
 ### Community 4 - "Community 4"
 Cohesion: 0.16
@@ -103,28 +103,28 @@ Cohesion: 0.11
 Nodes (14): ABC, BaseInferenceEngine, FeatureVector, InferenceEngine, PredictionResult, core/inference.py — Interface untuk ML inference engine.  Modul ini menyediakan, Placeholder ML engine.      Mengembalikan prediksi rule-based sederhana berdasar, Placeholder: akan load model ONNX/TFLite di sini.          TODO: Implementasi ak (+6 more)
 
 ### Community 8 - "Community 8"
-Cohesion: 0.13
-Nodes (10): Metrik kualitas untuk satu sinyal dalam satu window., Ringkasan satu baris untuk logging., Kumpulan SignalMetric untuk semua sinyal dalam satu window.     Dibuat oleh Qua, Rata-rata relative_error semua sinyal yang bisa dinilai., Satu baris ringkasan untuk console log.          Contoh output:           [Q], Satu baris per sinyal untuk log verbose., Hitung metrik kualitas untuk satu sinyal.          Args:             signal :, Hitung metrik untuk semua sinyal dalam satu window sekaligus.          Args: (+2 more)
+Cohesion: 0.09
+Nodes (16): QualityAssessor, Metrik kualitas untuk satu sinyal dalam satu window., Ringkasan satu baris untuk logging., Kumpulan SignalMetric untuk semua sinyal dalam satu window.     Dibuat oleh Qua, Rata-rata relative_error semua sinyal yang bisa dinilai., Satu baris ringkasan untuk console log.          Contoh output:           [Q], Satu baris per sinyal untuk log verbose., Hitung metrik kualitas rekonstruksi CS.      Args:         phi : np.ndarray ( (+8 more)
 
 ### Community 9 - "Community 9"
 Cohesion: 0.12
 Nodes (18): _build_hadamard(), build_psi(), build_theta(), generate_phi(), _lcg_generator(), omp(), Matrix IDCT orthonormal Ψ (n × n).      Kenapa DCT bukan DFT kompleks?       Sin, Θ = Φ · Ψ  (m × n), murni real.      Returns:         theta : np.ndarray (m × n) (+10 more)
 
 ### Community 10 - "Community 10"
-Cohesion: 0.1
-Nodes (19): Test konsistensi CS encoder: router, gaussian, lasso., Φ harus berukuran (M, N)., Θ = Φ·Ψ harus berukuran (M, N)., Ψ (basis DCT) harus berukuran (N, N)., Rekonstruksi dari y(M,) harus menghasilkan x_hat(N,)., Input nol harus menghasilkan output nol., Harus menerima list Python, bukan hanya ndarray., Residual dari sinyal sparse harus kecil (< 0.5). (+11 more)
+Cohesion: 0.09
+Nodes (21): Test konsistensi CS encoder: router, gaussian, lasso., Φ harus berukuran (M, N)., Θ = Φ·Ψ harus berukuran (M, N)., Ψ (basis DCT) harus berukuran (N, N)., Rekonstruksi dari y(M,) harus menghasilkan x_hat(N,)., Input nol harus menghasilkan output nol., Harus menerima list Python, bukan hanya ndarray., Residual dari sinyal sparse (di domain DCT) harus kecil (< 0.5). (+13 more)
 
 ### Community 11 - "Community 11"
 Cohesion: 0.13
 Nodes (6): BroadcastHub, Thread-safe hub untuk push pesan ke semua WebSocket client., Simpan referensi event loop., Kirim data ke semua client, hapus yang sudah disconnect., Dipanggil dari MQTT thread., Dipanggil dari MQTT thread.
 
 ### Community 12 - "Community 12"
-Cohesion: 0.14
-Nodes (12): _combined_lifespan(), main(), main_app.py — Orkestrator satu proses: FastAPI + MQTT worker dalam satu perintah, Jalankan semua sistem server dalam satu proses., Blocking MQTT loop — dijalankan di background thread., Ganti lifespan dashboard_server dengan versi yang juga start MQTT thread., _run_mqtt_thread(), get_logger() (+4 more)
+Cohesion: 0.09
+Nodes (18): _combined_lifespan(), main(), main_app.py — Orkestrator satu proses: FastAPI + MQTT worker dalam satu perintah, Jalankan semua sistem server dalam satu proses., Blocking MQTT loop — dijalankan di background thread., Ganti lifespan dashboard_server dengan versi yang juga start MQTT thread., _run_mqtt_thread(), get_logger() (+10 more)
 
 ### Community 13 - "Community 13"
-Cohesion: 0.25
-Nodes (8): build_psi(), build_theta(), generate_phi(), Rekonstruksi sinyal x̂ dari measurement y menggunakan LASSO.      Args:, Bangkitkan matrix pengukuran Φ (m × n) menggunakan LCG + Box-Muller.      Identi, Matrix IDCT orthonormal Ψ (n × n)., Θ = Φ · Ψ      Returns:         theta : np.ndarray (m × n)         psi   : np.nd, reconstruct()
+Cohesion: 0.17
+Nodes (12): build_psi(), build_theta(), generate_phi(), Rekonstruksi sinyal x̂ dari measurement y menggunakan LASSO.      Args:, Rekonstruksi sinyal x̂ dari measurement y menggunakan LASSO.      Args:, Bangkitkan matrix pengukuran Φ (m × n) menggunakan LCG + Box-Muller.      Identi, Bangkitkan matrix pengukuran Φ (m × n) menggunakan LCG + Box-Muller.      Identi, Matrix IDCT orthonormal Ψ (n × n). (+4 more)
 
 ### Community 14 - "Community 14"
 Cohesion: 0.48
@@ -144,17 +144,17 @@ Nodes (4): notify_event(), notify_window(), Dipanggil setelah window selesai dir
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `StorageManager` connect `Community 1` to `Community 8`, `Community 3`, `Community 11`, `Community 5`?**
-  _High betweenness centrality (0.208) - this node is a cross-community bridge._
-- **Why does `main()` connect `Community 3` to `Community 0`, `Community 1`, `Community 12`?**
-  _High betweenness centrality (0.158) - this node is a cross-community bridge._
-- **Why does `QualityAssessor` connect `Community 3` to `Community 8`, `Community 1`, `Community 2`?**
+- **Why does `StorageManager` connect `Community 1` to `Community 8`, `Community 11`, `Community 12`, `Community 5`?**
+  _High betweenness centrality (0.203) - this node is a cross-community bridge._
+- **Why does `main()` connect `Community 12` to `Community 0`, `Community 8`, `Community 1`?**
   _High betweenness centrality (0.154) - this node is a cross-community bridge._
+- **Why does `QualityAssessor` connect `Community 8` to `Community 1`, `Community 2`, `Community 3`, `Community 12`?**
+  _High betweenness centrality (0.151) - this node is a cross-community bridge._
 - **Are the 10 inferred relationships involving `StorageManager` (e.g. with `BroadcastHub` and `WindowReport`) actually correct?**
   _`StorageManager` has 10 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 9 inferred relationships involving `ValidatorRegistry` (e.g. with `main()` and `test_integration_full_pipeline()`) actually correct?**
   _`ValidatorRegistry` has 9 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `server/__main__.py  Entry point tunggal untuk seluruh sistem server.  Jalankan d`, `main_app.py — Orkestrator satu proses: FastAPI + MQTT worker dalam satu perintah`, `Blocking MQTT loop — dijalankan di background thread.` to the rest of the system?**
-  _156 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _162 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.05 - nodes in this community are weakly interconnected._
