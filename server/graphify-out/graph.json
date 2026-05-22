@@ -724,6 +724,339 @@
       "norm_label": "__init__.py"
     },
     {
+      "label": "anomaly.py",
+      "file_type": "code",
+      "source_file": "apps/ml_inference/anomaly.py",
+      "source_location": "L1",
+      "id": "apps_ml_inference_anomaly_py",
+      "community": 35,
+      "norm_label": "anomaly.py"
+    },
+    {
+      "label": "detect_anomaly()",
+      "file_type": "code",
+      "source_file": "apps/ml_inference/anomaly.py",
+      "source_location": "L4",
+      "id": "ml_inference_anomaly_detect_anomaly",
+      "community": 35,
+      "norm_label": "detect_anomaly()"
+    },
+    {
+      "label": "Stub for Anomaly Detection",
+      "file_type": "rationale",
+      "source_file": "apps/ml_inference/anomaly.py",
+      "source_location": "L1",
+      "id": "ml_inference_anomaly_rationale_1",
+      "community": 35,
+      "norm_label": "stub for anomaly detection"
+    },
+    {
+      "label": "inference.py",
+      "file_type": "code",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L1",
+      "id": "apps_ml_inference_inference_py",
+      "community": 33,
+      "norm_label": "inference.py"
+    },
+    {
+      "label": "PredictionResult",
+      "file_type": "code",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L42",
+      "id": "ml_inference_inference_predictionresult",
+      "community": 33,
+      "norm_label": "predictionresult"
+    },
+    {
+      "label": "FeatureVector",
+      "file_type": "code",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L50",
+      "id": "ml_inference_inference_featurevector",
+      "community": 33,
+      "norm_label": "featurevector"
+    },
+    {
+      "label": "BaseInferenceEngine",
+      "file_type": "code",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L64",
+      "id": "ml_inference_inference_baseinferenceengine",
+      "community": 33,
+      "norm_label": "baseinferenceengine"
+    },
+    {
+      "label": "ABC",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "id": "abc",
+      "community": 7,
+      "norm_label": "abc"
+    },
+    {
+      "label": "load_model()",
+      "file_type": "code",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L75",
+      "id": "ml_inference_inference_load_model",
+      "community": 33,
+      "norm_label": "load_model()"
+    },
+    {
+      "label": "_extract_features()",
+      "file_type": "code",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L80",
+      "id": "ml_inference_inference_extract_features",
+      "community": 33,
+      "norm_label": "_extract_features()"
+    },
+    {
+      "label": "_infer()",
+      "file_type": "code",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L85",
+      "id": "ml_inference_inference_infer",
+      "community": 33,
+      "norm_label": "_infer()"
+    },
+    {
+      "label": ".predict()",
+      "file_type": "code",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L89",
+      "id": "ml_inference_inference_baseinferenceengine_predict",
+      "community": 33,
+      "norm_label": ".predict()"
+    },
+    {
+      "label": "is_loaded()",
+      "file_type": "code",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L111",
+      "id": "ml_inference_inference_is_loaded",
+      "community": 33,
+      "norm_label": "is_loaded()"
+    },
+    {
+      "label": "InferenceEngine",
+      "file_type": "code",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L118",
+      "id": "ml_inference_inference_inferenceengine",
+      "community": 33,
+      "norm_label": "inferenceengine"
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L126",
+      "id": "ml_inference_inference_inferenceengine_init",
+      "community": 33,
+      "norm_label": ".__init__()"
+    },
+    {
+      "label": ".load_model()",
+      "file_type": "code",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L130",
+      "id": "ml_inference_inference_inferenceengine_load_model",
+      "community": 33,
+      "norm_label": ".load_model()"
+    },
+    {
+      "label": "._extract_features()",
+      "file_type": "code",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L141",
+      "id": "ml_inference_inference_inferenceengine_extract_features",
+      "community": 33,
+      "norm_label": "._extract_features()"
+    },
+    {
+      "label": "._infer()",
+      "file_type": "code",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L171",
+      "id": "ml_inference_inference_inferenceengine_infer",
+      "community": 33,
+      "norm_label": "._infer()"
+    },
+    {
+      "label": "core/inference.py \u2014 Interface untuk ML inference engine.  Modul ini menyediakan",
+      "file_type": "rationale",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L1",
+      "id": "ml_inference_inference_rationale_1",
+      "community": 33,
+      "norm_label": "core/inference.py \u2014 interface untuk ml inference engine.  modul ini menyediakan"
+    },
+    {
+      "label": "Hasil prediksi dari ML model.",
+      "file_type": "rationale",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L43",
+      "id": "ml_inference_inference_rationale_43",
+      "community": 33,
+      "norm_label": "hasil prediksi dari ml model."
+    },
+    {
+      "label": "Fitur yang diekstrak dari window rekonstruksi untuk ML inference.",
+      "file_type": "rationale",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L51",
+      "id": "ml_inference_inference_rationale_51",
+      "community": 33,
+      "norm_label": "fitur yang diekstrak dari window rekonstruksi untuk ml inference."
+    },
+    {
+      "label": "Abstract base class untuk ML inference.      Subclass harus mengimplementasikan:",
+      "file_type": "rationale",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L65",
+      "id": "ml_inference_inference_rationale_65",
+      "community": 33,
+      "norm_label": "abstract base class untuk ml inference.      subclass harus mengimplementasikan:"
+    },
+    {
+      "label": "Load ML model dari disk.",
+      "file_type": "rationale",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L76",
+      "id": "ml_inference_inference_rationale_76",
+      "community": 40,
+      "norm_label": "load ml model dari disk."
+    },
+    {
+      "label": "Ekstrak fitur dari data window rekonstruksi.",
+      "file_type": "rationale",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L81",
+      "id": "ml_inference_inference_rationale_81",
+      "community": 41,
+      "norm_label": "ekstrak fitur dari data window rekonstruksi."
+    },
+    {
+      "label": "Jalankan inferensi pada fitur yang sudah diekstrak.",
+      "file_type": "rationale",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L86",
+      "id": "ml_inference_inference_rationale_86",
+      "community": 42,
+      "norm_label": "jalankan inferensi pada fitur yang sudah diekstrak."
+    },
+    {
+      "label": "Pipeline lengkap: extract features \u2192 infer \u2192 return result.          Args:",
+      "file_type": "rationale",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L90",
+      "id": "ml_inference_inference_rationale_90",
+      "community": 33,
+      "norm_label": "pipeline lengkap: extract features \u2192 infer \u2192 return result.          args:"
+    },
+    {
+      "label": "True jika model sudah di-load dan siap inferensi.",
+      "file_type": "rationale",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L112",
+      "id": "ml_inference_inference_rationale_112",
+      "community": 39,
+      "norm_label": "true jika model sudah di-load dan siap inferensi."
+    },
+    {
+      "label": "Placeholder ML engine.      Mengembalikan prediksi rule-based sederhana berdasar",
+      "file_type": "rationale",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L119",
+      "id": "ml_inference_inference_rationale_119",
+      "community": 33,
+      "norm_label": "placeholder ml engine.      mengembalikan prediksi rule-based sederhana berdasar"
+    },
+    {
+      "label": "Placeholder: akan load model ONNX/TFLite di sini.          TODO: Implementasi ak",
+      "file_type": "rationale",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L131",
+      "id": "ml_inference_inference_rationale_131",
+      "community": 33,
+      "norm_label": "placeholder: akan load model onnx/tflite di sini.          todo: implementasi ak"
+    },
+    {
+      "label": "Ekstrak fitur dasar dari data window.",
+      "file_type": "rationale",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L142",
+      "id": "ml_inference_inference_rationale_142",
+      "community": 33,
+      "norm_label": "ekstrak fitur dasar dari data window."
+    },
+    {
+      "label": "Rule-based placeholder inference.          TODO: Ganti dengan model inference ak",
+      "file_type": "rationale",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L172",
+      "id": "ml_inference_inference_rationale_172",
+      "community": 33,
+      "norm_label": "rule-based placeholder inference.          todo: ganti dengan model inference ak"
+    },
+    {
+      "label": "predictor.py",
+      "file_type": "code",
+      "source_file": "apps/ml_inference/predictor.py",
+      "source_location": "L1",
+      "id": "apps_ml_inference_predictor_py",
+      "community": 36,
+      "norm_label": "predictor.py"
+    },
+    {
+      "label": "predict()",
+      "file_type": "code",
+      "source_file": "apps/ml_inference/predictor.py",
+      "source_location": "L4",
+      "id": "ml_inference_predictor_predict",
+      "community": 36,
+      "norm_label": "predict()"
+    },
+    {
+      "label": "Stub for HR/SpO2 Prediction",
+      "file_type": "rationale",
+      "source_file": "apps/ml_inference/predictor.py",
+      "source_location": "L1",
+      "id": "ml_inference_predictor_rationale_1",
+      "community": 36,
+      "norm_label": "stub for hr/spo2 prediction"
+    },
+    {
+      "label": "__init__.py",
+      "file_type": "code",
+      "source_file": "apps/ml_inference/__init__.py",
+      "source_location": "L1",
+      "id": "apps_ml_inference_init_py",
+      "community": 38,
+      "norm_label": "__init__.py"
+    },
+    {
+      "label": "__main__.py",
+      "file_type": "code",
+      "source_file": "apps/ml_inference/__main__.py",
+      "source_location": "L1",
+      "id": "apps_ml_inference_main_py",
+      "community": 37,
+      "norm_label": "__main__.py"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "apps/ml_inference/__main__.py",
+      "source_location": "L3",
+      "id": "ml_inference_main_main",
+      "community": 37,
+      "norm_label": "main()"
+    },
+    {
       "label": "listener.py",
       "file_type": "code",
       "source_file": "apps/reconstruct/listener.py",
@@ -994,15 +1327,6 @@
       "norm_label": "setup logging, singleton, lalu jalankan listener (blocking)."
     },
     {
-      "label": "config.example.py",
-      "file_type": "code",
-      "source_file": "core/config.example.py",
-      "source_location": "L1",
-      "id": "core_config_example_py",
-      "community": 28,
-      "norm_label": "config.example.py"
-    },
-    {
       "label": "config.py",
       "file_type": "code",
       "source_file": "core/config.py",
@@ -1064,258 +1388,6 @@
       "id": "core_config_rationale_53",
       "community": 1,
       "norm_label": "ambil env var sebagai float."
-    },
-    {
-      "label": "inference.py",
-      "file_type": "code",
-      "source_file": "core/inference.py",
-      "source_location": "L1",
-      "id": "core_inference_py",
-      "community": 7,
-      "norm_label": "inference.py"
-    },
-    {
-      "label": "PredictionResult",
-      "file_type": "code",
-      "source_file": "core/inference.py",
-      "source_location": "L42",
-      "id": "core_inference_predictionresult",
-      "community": 7,
-      "norm_label": "predictionresult"
-    },
-    {
-      "label": "FeatureVector",
-      "file_type": "code",
-      "source_file": "core/inference.py",
-      "source_location": "L50",
-      "id": "core_inference_featurevector",
-      "community": 7,
-      "norm_label": "featurevector"
-    },
-    {
-      "label": "BaseInferenceEngine",
-      "file_type": "code",
-      "source_file": "core/inference.py",
-      "source_location": "L64",
-      "id": "core_inference_baseinferenceengine",
-      "community": 7,
-      "norm_label": "baseinferenceengine"
-    },
-    {
-      "label": "ABC",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "id": "abc",
-      "community": 7,
-      "norm_label": "abc"
-    },
-    {
-      "label": "load_model()",
-      "file_type": "code",
-      "source_file": "core/inference.py",
-      "source_location": "L75",
-      "id": "core_inference_load_model",
-      "community": 7,
-      "norm_label": "load_model()"
-    },
-    {
-      "label": "_extract_features()",
-      "file_type": "code",
-      "source_file": "core/inference.py",
-      "source_location": "L80",
-      "id": "core_inference_extract_features",
-      "community": 7,
-      "norm_label": "_extract_features()"
-    },
-    {
-      "label": "_infer()",
-      "file_type": "code",
-      "source_file": "core/inference.py",
-      "source_location": "L85",
-      "id": "core_inference_infer",
-      "community": 7,
-      "norm_label": "_infer()"
-    },
-    {
-      "label": ".predict()",
-      "file_type": "code",
-      "source_file": "core/inference.py",
-      "source_location": "L89",
-      "id": "core_inference_baseinferenceengine_predict",
-      "community": 7,
-      "norm_label": ".predict()"
-    },
-    {
-      "label": "is_loaded()",
-      "file_type": "code",
-      "source_file": "core/inference.py",
-      "source_location": "L111",
-      "id": "core_inference_is_loaded",
-      "community": 7,
-      "norm_label": "is_loaded()"
-    },
-    {
-      "label": "InferenceEngine",
-      "file_type": "code",
-      "source_file": "core/inference.py",
-      "source_location": "L118",
-      "id": "core_inference_inferenceengine",
-      "community": 7,
-      "norm_label": "inferenceengine"
-    },
-    {
-      "label": ".__init__()",
-      "file_type": "code",
-      "source_file": "core/inference.py",
-      "source_location": "L126",
-      "id": "core_inference_inferenceengine_init",
-      "community": 7,
-      "norm_label": ".__init__()"
-    },
-    {
-      "label": ".load_model()",
-      "file_type": "code",
-      "source_file": "core/inference.py",
-      "source_location": "L130",
-      "id": "core_inference_inferenceengine_load_model",
-      "community": 7,
-      "norm_label": ".load_model()"
-    },
-    {
-      "label": "._extract_features()",
-      "file_type": "code",
-      "source_file": "core/inference.py",
-      "source_location": "L141",
-      "id": "core_inference_inferenceengine_extract_features",
-      "community": 7,
-      "norm_label": "._extract_features()"
-    },
-    {
-      "label": "._infer()",
-      "file_type": "code",
-      "source_file": "core/inference.py",
-      "source_location": "L171",
-      "id": "core_inference_inferenceengine_infer",
-      "community": 7,
-      "norm_label": "._infer()"
-    },
-    {
-      "label": "core/inference.py \u2014 Interface untuk ML inference engine.  Modul ini menyediakan",
-      "file_type": "rationale",
-      "source_file": "core/inference.py",
-      "source_location": "L1",
-      "id": "core_inference_rationale_1",
-      "community": 7,
-      "norm_label": "core/inference.py \u2014 interface untuk ml inference engine.  modul ini menyediakan"
-    },
-    {
-      "label": "Hasil prediksi dari ML model.",
-      "file_type": "rationale",
-      "source_file": "core/inference.py",
-      "source_location": "L43",
-      "id": "core_inference_rationale_43",
-      "community": 7,
-      "norm_label": "hasil prediksi dari ml model."
-    },
-    {
-      "label": "Fitur yang diekstrak dari window rekonstruksi untuk ML inference.",
-      "file_type": "rationale",
-      "source_file": "core/inference.py",
-      "source_location": "L51",
-      "id": "core_inference_rationale_51",
-      "community": 7,
-      "norm_label": "fitur yang diekstrak dari window rekonstruksi untuk ml inference."
-    },
-    {
-      "label": "Abstract base class untuk ML inference.      Subclass harus mengimplementasikan:",
-      "file_type": "rationale",
-      "source_file": "core/inference.py",
-      "source_location": "L65",
-      "id": "core_inference_rationale_65",
-      "community": 7,
-      "norm_label": "abstract base class untuk ml inference.      subclass harus mengimplementasikan:"
-    },
-    {
-      "label": "Load ML model dari disk.",
-      "file_type": "rationale",
-      "source_file": "core/inference.py",
-      "source_location": "L76",
-      "id": "core_inference_rationale_76",
-      "community": 29,
-      "norm_label": "load ml model dari disk."
-    },
-    {
-      "label": "Ekstrak fitur dari data window rekonstruksi.",
-      "file_type": "rationale",
-      "source_file": "core/inference.py",
-      "source_location": "L81",
-      "id": "core_inference_rationale_81",
-      "community": 30,
-      "norm_label": "ekstrak fitur dari data window rekonstruksi."
-    },
-    {
-      "label": "Jalankan inferensi pada fitur yang sudah diekstrak.",
-      "file_type": "rationale",
-      "source_file": "core/inference.py",
-      "source_location": "L86",
-      "id": "core_inference_rationale_86",
-      "community": 31,
-      "norm_label": "jalankan inferensi pada fitur yang sudah diekstrak."
-    },
-    {
-      "label": "Pipeline lengkap: extract features \u2192 infer \u2192 return result.          Args:",
-      "file_type": "rationale",
-      "source_file": "core/inference.py",
-      "source_location": "L90",
-      "id": "core_inference_rationale_90",
-      "community": 7,
-      "norm_label": "pipeline lengkap: extract features \u2192 infer \u2192 return result.          args:"
-    },
-    {
-      "label": "True jika model sudah di-load dan siap inferensi.",
-      "file_type": "rationale",
-      "source_file": "core/inference.py",
-      "source_location": "L112",
-      "id": "core_inference_rationale_112",
-      "community": 32,
-      "norm_label": "true jika model sudah di-load dan siap inferensi."
-    },
-    {
-      "label": "Placeholder ML engine.      Mengembalikan prediksi rule-based sederhana berdasar",
-      "file_type": "rationale",
-      "source_file": "core/inference.py",
-      "source_location": "L119",
-      "id": "core_inference_rationale_119",
-      "community": 7,
-      "norm_label": "placeholder ml engine.      mengembalikan prediksi rule-based sederhana berdasar"
-    },
-    {
-      "label": "Placeholder: akan load model ONNX/TFLite di sini.          TODO: Implementasi ak",
-      "file_type": "rationale",
-      "source_file": "core/inference.py",
-      "source_location": "L131",
-      "id": "core_inference_rationale_131",
-      "community": 7,
-      "norm_label": "placeholder: akan load model onnx/tflite di sini.          todo: implementasi ak"
-    },
-    {
-      "label": "Ekstrak fitur dasar dari data window.",
-      "file_type": "rationale",
-      "source_file": "core/inference.py",
-      "source_location": "L142",
-      "id": "core_inference_rationale_142",
-      "community": 7,
-      "norm_label": "ekstrak fitur dasar dari data window."
-    },
-    {
-      "label": "Rule-based placeholder inference.          TODO: Ganti dengan model inference ak",
-      "file_type": "rationale",
-      "source_file": "core/inference.py",
-      "source_location": "L172",
-      "id": "core_inference_rationale_172",
-      "community": 7,
-      "norm_label": "rule-based placeholder inference.          todo: ganti dengan model inference ak"
     },
     {
       "label": "logger.py",
@@ -4306,6 +4378,366 @@
       "norm_label": "server/tools/ \u2014 development & debugging utilities.  script di folder ini bukan b"
     },
     {
+      "label": "README.md",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L1",
+      "id": "readme_md",
+      "community": 34,
+      "norm_label": "readme.md"
+    },
+    {
+      "label": "Health Monitor Server",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L1",
+      "id": "server_readme_health_monitor_server",
+      "community": 34,
+      "norm_label": "health monitor server"
+    },
+    {
+      "label": "Architecture",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L5",
+      "id": "server_readme_architecture",
+      "community": 34,
+      "norm_label": "architecture"
+    },
+    {
+      "label": "Setup",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L17",
+      "id": "server_readme_setup",
+      "community": 34,
+      "norm_label": "setup"
+    },
+    {
+      "label": "code:bash (python -m venv .venv)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L20",
+      "id": "server_readme_codeblock_1",
+      "community": 34,
+      "norm_label": "code:bash (python -m venv .venv)"
+    },
+    {
+      "label": "code:bash (pip install -r requirements.txt)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L29",
+      "id": "server_readme_codeblock_2",
+      "community": 34,
+      "norm_label": "code:bash (pip install -r requirements.txt)"
+    },
+    {
+      "label": "code:bash (cp .env.example .env)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L35",
+      "id": "server_readme_codeblock_3",
+      "community": 34,
+      "norm_label": "code:bash (cp .env.example .env)"
+    },
+    {
+      "label": "Running the Server",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L40",
+      "id": "server_readme_running_the_server",
+      "community": 34,
+      "norm_label": "running the server"
+    },
+    {
+      "label": "code:bash (python -m server)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L43",
+      "id": "server_readme_codeblock_4",
+      "community": 34,
+      "norm_label": "code:bash (python -m server)"
+    },
+    {
+      "label": "code:bash (python -m server.apps.reconstruct)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L48",
+      "id": "server_readme_codeblock_5",
+      "community": 34,
+      "norm_label": "code:bash (python -m server.apps.reconstruct)"
+    },
+    {
+      "label": "Testing",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L53",
+      "id": "server_readme_testing",
+      "community": 34,
+      "norm_label": "testing"
+    },
+    {
+      "label": "code:bash (pytest tests/)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L56",
+      "id": "server_readme_codeblock_6",
+      "community": 34,
+      "norm_label": "code:bash (pytest tests/)"
+    },
+    {
+      "label": "config.example.py",
+      "file_type": "code",
+      "source_file": "core/config.example.py",
+      "source_location": "L1",
+      "community": 28,
+      "norm_label": "config.example.py",
+      "id": "core_config_example_py"
+    },
+    {
+      "label": "inference.py",
+      "file_type": "code",
+      "source_file": "core/inference.py",
+      "source_location": "L1",
+      "community": 7,
+      "norm_label": "inference.py",
+      "id": "core_inference_py"
+    },
+    {
+      "label": "PredictionResult",
+      "file_type": "code",
+      "source_file": "core/inference.py",
+      "source_location": "L42",
+      "community": 7,
+      "norm_label": "predictionresult",
+      "id": "core_inference_predictionresult"
+    },
+    {
+      "label": "FeatureVector",
+      "file_type": "code",
+      "source_file": "core/inference.py",
+      "source_location": "L50",
+      "community": 7,
+      "norm_label": "featurevector",
+      "id": "core_inference_featurevector"
+    },
+    {
+      "label": "BaseInferenceEngine",
+      "file_type": "code",
+      "source_file": "core/inference.py",
+      "source_location": "L64",
+      "community": 7,
+      "norm_label": "baseinferenceengine",
+      "id": "core_inference_baseinferenceengine"
+    },
+    {
+      "label": "load_model()",
+      "file_type": "code",
+      "source_file": "core/inference.py",
+      "source_location": "L75",
+      "community": 7,
+      "norm_label": "load_model()",
+      "id": "core_inference_load_model"
+    },
+    {
+      "label": "_extract_features()",
+      "file_type": "code",
+      "source_file": "core/inference.py",
+      "source_location": "L80",
+      "community": 7,
+      "norm_label": "_extract_features()",
+      "id": "core_inference_extract_features"
+    },
+    {
+      "label": "_infer()",
+      "file_type": "code",
+      "source_file": "core/inference.py",
+      "source_location": "L85",
+      "community": 7,
+      "norm_label": "_infer()",
+      "id": "core_inference_infer"
+    },
+    {
+      "label": ".predict()",
+      "file_type": "code",
+      "source_file": "core/inference.py",
+      "source_location": "L89",
+      "community": 7,
+      "norm_label": ".predict()",
+      "id": "core_inference_baseinferenceengine_predict"
+    },
+    {
+      "label": "is_loaded()",
+      "file_type": "code",
+      "source_file": "core/inference.py",
+      "source_location": "L111",
+      "community": 7,
+      "norm_label": "is_loaded()",
+      "id": "core_inference_is_loaded"
+    },
+    {
+      "label": "InferenceEngine",
+      "file_type": "code",
+      "source_file": "core/inference.py",
+      "source_location": "L118",
+      "community": 7,
+      "norm_label": "inferenceengine",
+      "id": "core_inference_inferenceengine"
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "core/inference.py",
+      "source_location": "L126",
+      "community": 7,
+      "norm_label": ".__init__()",
+      "id": "core_inference_inferenceengine_init"
+    },
+    {
+      "label": ".load_model()",
+      "file_type": "code",
+      "source_file": "core/inference.py",
+      "source_location": "L130",
+      "community": 7,
+      "norm_label": ".load_model()",
+      "id": "core_inference_inferenceengine_load_model"
+    },
+    {
+      "label": "._extract_features()",
+      "file_type": "code",
+      "source_file": "core/inference.py",
+      "source_location": "L141",
+      "community": 7,
+      "norm_label": "._extract_features()",
+      "id": "core_inference_inferenceengine_extract_features"
+    },
+    {
+      "label": "._infer()",
+      "file_type": "code",
+      "source_file": "core/inference.py",
+      "source_location": "L171",
+      "community": 7,
+      "norm_label": "._infer()",
+      "id": "core_inference_inferenceengine_infer"
+    },
+    {
+      "label": "core/inference.py \u2014 Interface untuk ML inference engine.  Modul ini menyediakan",
+      "file_type": "rationale",
+      "source_file": "core/inference.py",
+      "source_location": "L1",
+      "community": 7,
+      "norm_label": "core/inference.py \u2014 interface untuk ml inference engine.  modul ini menyediakan",
+      "id": "core_inference_rationale_1"
+    },
+    {
+      "label": "Hasil prediksi dari ML model.",
+      "file_type": "rationale",
+      "source_file": "core/inference.py",
+      "source_location": "L43",
+      "community": 7,
+      "norm_label": "hasil prediksi dari ml model.",
+      "id": "core_inference_rationale_43"
+    },
+    {
+      "label": "Fitur yang diekstrak dari window rekonstruksi untuk ML inference.",
+      "file_type": "rationale",
+      "source_file": "core/inference.py",
+      "source_location": "L51",
+      "community": 7,
+      "norm_label": "fitur yang diekstrak dari window rekonstruksi untuk ml inference.",
+      "id": "core_inference_rationale_51"
+    },
+    {
+      "label": "Abstract base class untuk ML inference.      Subclass harus mengimplementasikan:",
+      "file_type": "rationale",
+      "source_file": "core/inference.py",
+      "source_location": "L65",
+      "community": 7,
+      "norm_label": "abstract base class untuk ml inference.      subclass harus mengimplementasikan:",
+      "id": "core_inference_rationale_65"
+    },
+    {
+      "label": "Load ML model dari disk.",
+      "file_type": "rationale",
+      "source_file": "core/inference.py",
+      "source_location": "L76",
+      "community": 29,
+      "norm_label": "load ml model dari disk.",
+      "id": "core_inference_rationale_76"
+    },
+    {
+      "label": "Ekstrak fitur dari data window rekonstruksi.",
+      "file_type": "rationale",
+      "source_file": "core/inference.py",
+      "source_location": "L81",
+      "community": 30,
+      "norm_label": "ekstrak fitur dari data window rekonstruksi.",
+      "id": "core_inference_rationale_81"
+    },
+    {
+      "label": "Jalankan inferensi pada fitur yang sudah diekstrak.",
+      "file_type": "rationale",
+      "source_file": "core/inference.py",
+      "source_location": "L86",
+      "community": 31,
+      "norm_label": "jalankan inferensi pada fitur yang sudah diekstrak.",
+      "id": "core_inference_rationale_86"
+    },
+    {
+      "label": "Pipeline lengkap: extract features \u2192 infer \u2192 return result.          Args:",
+      "file_type": "rationale",
+      "source_file": "core/inference.py",
+      "source_location": "L90",
+      "community": 7,
+      "norm_label": "pipeline lengkap: extract features \u2192 infer \u2192 return result.          args:",
+      "id": "core_inference_rationale_90"
+    },
+    {
+      "label": "True jika model sudah di-load dan siap inferensi.",
+      "file_type": "rationale",
+      "source_file": "core/inference.py",
+      "source_location": "L112",
+      "community": 32,
+      "norm_label": "true jika model sudah di-load dan siap inferensi.",
+      "id": "core_inference_rationale_112"
+    },
+    {
+      "label": "Placeholder ML engine.      Mengembalikan prediksi rule-based sederhana berdasar",
+      "file_type": "rationale",
+      "source_file": "core/inference.py",
+      "source_location": "L119",
+      "community": 7,
+      "norm_label": "placeholder ml engine.      mengembalikan prediksi rule-based sederhana berdasar",
+      "id": "core_inference_rationale_119"
+    },
+    {
+      "label": "Placeholder: akan load model ONNX/TFLite di sini.          TODO: Implementasi ak",
+      "file_type": "rationale",
+      "source_file": "core/inference.py",
+      "source_location": "L131",
+      "community": 7,
+      "norm_label": "placeholder: akan load model onnx/tflite di sini.          todo: implementasi ak",
+      "id": "core_inference_rationale_131"
+    },
+    {
+      "label": "Ekstrak fitur dasar dari data window.",
+      "file_type": "rationale",
+      "source_file": "core/inference.py",
+      "source_location": "L142",
+      "community": 7,
+      "norm_label": "ekstrak fitur dasar dari data window.",
+      "id": "core_inference_rationale_142"
+    },
+    {
+      "label": "Rule-based placeholder inference.          TODO: Ganti dengan model inference ak",
+      "file_type": "rationale",
+      "source_file": "core/inference.py",
+      "source_location": "L172",
+      "community": 7,
+      "norm_label": "rule-based placeholder inference.          todo: ganti dengan model inference ak",
+      "id": "core_inference_rationale_172"
+    },
+    {
       "label": "Bangkitkan matrix pengukuran \u03a6 (m \u00d7 n) menggunakan LCG + Box-Muller.      Identi",
       "file_type": "rationale",
       "source_file": "cs/lasso.py",
@@ -5266,6 +5698,372 @@
       "target": "routes_windows_get_windows"
     },
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/anomaly.py",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "apps_ml_inference_anomaly_py",
+      "target": "ml_inference_anomaly_detect_anomaly",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/anomaly.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "ml_inference_anomaly_rationale_1",
+      "target": "apps_ml_inference_anomaly_py",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L30",
+      "weight": 1.0,
+      "source": "apps_ml_inference_inference_py",
+      "target": "abc",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L42",
+      "weight": 1.0,
+      "source": "apps_ml_inference_inference_py",
+      "target": "ml_inference_inference_predictionresult",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L50",
+      "weight": 1.0,
+      "source": "apps_ml_inference_inference_py",
+      "target": "ml_inference_inference_featurevector",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L64",
+      "weight": 1.0,
+      "source": "apps_ml_inference_inference_py",
+      "target": "ml_inference_inference_baseinferenceengine",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L75",
+      "weight": 1.0,
+      "source": "apps_ml_inference_inference_py",
+      "target": "ml_inference_inference_load_model",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L80",
+      "weight": 1.0,
+      "source": "apps_ml_inference_inference_py",
+      "target": "ml_inference_inference_extract_features",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L85",
+      "weight": 1.0,
+      "source": "apps_ml_inference_inference_py",
+      "target": "ml_inference_inference_infer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L214",
+      "weight": 1.0,
+      "source": "apps_ml_inference_inference_py",
+      "target": "ml_inference_inference_is_loaded",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L118",
+      "weight": 1.0,
+      "source": "apps_ml_inference_inference_py",
+      "target": "ml_inference_inference_inferenceengine",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "ml_inference_inference_rationale_1",
+      "target": "apps_ml_inference_inference_py",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L184",
+      "weight": 1.0,
+      "source": "ml_inference_inference_inferenceengine_infer",
+      "target": "ml_inference_inference_predictionresult",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L43",
+      "weight": 1.0,
+      "source": "ml_inference_inference_rationale_43",
+      "target": "ml_inference_inference_predictionresult",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L160",
+      "weight": 1.0,
+      "source": "ml_inference_inference_inferenceengine_extract_features",
+      "target": "ml_inference_inference_featurevector",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L51",
+      "weight": 1.0,
+      "source": "ml_inference_inference_rationale_51",
+      "target": "ml_inference_inference_featurevector",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L64",
+      "weight": 1.0,
+      "source": "ml_inference_inference_baseinferenceengine",
+      "target": "abc",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L89",
+      "weight": 1.0,
+      "source": "ml_inference_inference_baseinferenceengine",
+      "target": "ml_inference_inference_baseinferenceengine_predict",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L118",
+      "weight": 1.0,
+      "source": "ml_inference_inference_inferenceengine",
+      "target": "ml_inference_inference_baseinferenceengine",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L65",
+      "weight": 1.0,
+      "source": "ml_inference_inference_rationale_65",
+      "target": "ml_inference_inference_baseinferenceengine",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "core/inference.py",
+      "source_location": "L30",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_inference_py",
+      "target": "abc"
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "core/inference.py",
+      "source_location": "L64",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_inference_baseinferenceengine",
+      "target": "abc"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L100",
+      "weight": 1.0,
+      "source": "ml_inference_inference_baseinferenceengine_predict",
+      "target": "ml_inference_inference_inferenceengine_extract_features",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L101",
+      "weight": 1.0,
+      "source": "ml_inference_inference_baseinferenceengine_predict",
+      "target": "ml_inference_inference_inferenceengine_infer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L90",
+      "weight": 1.0,
+      "source": "ml_inference_inference_rationale_90",
+      "target": "ml_inference_inference_baseinferenceengine_predict",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L126",
+      "weight": 1.0,
+      "source": "ml_inference_inference_inferenceengine",
+      "target": "ml_inference_inference_inferenceengine_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L130",
+      "weight": 1.0,
+      "source": "ml_inference_inference_inferenceengine",
+      "target": "ml_inference_inference_inferenceengine_load_model",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L141",
+      "weight": 1.0,
+      "source": "ml_inference_inference_inferenceengine",
+      "target": "ml_inference_inference_inferenceengine_extract_features",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L171",
+      "weight": 1.0,
+      "source": "ml_inference_inference_inferenceengine",
+      "target": "ml_inference_inference_inferenceengine_infer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L119",
+      "weight": 1.0,
+      "source": "ml_inference_inference_rationale_119",
+      "target": "ml_inference_inference_inferenceengine",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L131",
+      "weight": 1.0,
+      "source": "ml_inference_inference_rationale_131",
+      "target": "ml_inference_inference_inferenceengine_load_model",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L142",
+      "weight": 1.0,
+      "source": "ml_inference_inference_rationale_142",
+      "target": "ml_inference_inference_inferenceengine_extract_features",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/inference.py",
+      "source_location": "L172",
+      "weight": 1.0,
+      "source": "ml_inference_inference_rationale_172",
+      "target": "ml_inference_inference_inferenceengine_infer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/predictor.py",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "apps_ml_inference_predictor_py",
+      "target": "ml_inference_predictor_predict",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/predictor.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "ml_inference_predictor_rationale_1",
+      "target": "apps_ml_inference_predictor_py",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/ml_inference/__main__.py",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "apps_ml_inference_main_py",
+      "target": "ml_inference_main_main",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -5751,312 +6549,6 @@
       "weight": 1.0,
       "source": "core_config_get_float",
       "target": "str"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "core/inference.py",
-      "source_location": "L30",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_inference_py",
-      "target": "abc"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "core/inference.py",
-      "source_location": "L42",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_inference_py",
-      "target": "core_inference_predictionresult"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "core/inference.py",
-      "source_location": "L50",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_inference_py",
-      "target": "core_inference_featurevector"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "core/inference.py",
-      "source_location": "L64",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_inference_py",
-      "target": "core_inference_baseinferenceengine"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "core/inference.py",
-      "source_location": "L75",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_inference_py",
-      "target": "core_inference_load_model"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "core/inference.py",
-      "source_location": "L80",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_inference_py",
-      "target": "core_inference_extract_features"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "core/inference.py",
-      "source_location": "L85",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_inference_py",
-      "target": "core_inference_infer"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "core/inference.py",
-      "source_location": "L214",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_inference_py",
-      "target": "core_inference_is_loaded"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "core/inference.py",
-      "source_location": "L118",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_inference_py",
-      "target": "core_inference_inferenceengine"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "core/inference.py",
-      "source_location": "L1",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_inference_rationale_1",
-      "target": "core_inference_py"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "core/__init__.py",
-      "source_location": "L15",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_init_py",
-      "target": "core_inference_py"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "core/inference.py",
-      "source_location": "L184",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_inference_inferenceengine_infer",
-      "target": "core_inference_predictionresult"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "core/inference.py",
-      "source_location": "L43",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_inference_rationale_43",
-      "target": "core_inference_predictionresult"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "core/inference.py",
-      "source_location": "L160",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_inference_inferenceengine_extract_features",
-      "target": "core_inference_featurevector"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "core/inference.py",
-      "source_location": "L51",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_inference_rationale_51",
-      "target": "core_inference_featurevector"
-    },
-    {
-      "relation": "inherits",
-      "confidence": "EXTRACTED",
-      "source_file": "core/inference.py",
-      "source_location": "L64",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_inference_baseinferenceengine",
-      "target": "abc"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "core/inference.py",
-      "source_location": "L89",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_inference_baseinferenceengine",
-      "target": "core_inference_baseinferenceengine_predict"
-    },
-    {
-      "relation": "inherits",
-      "confidence": "EXTRACTED",
-      "source_file": "core/inference.py",
-      "source_location": "L118",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_inference_inferenceengine",
-      "target": "core_inference_baseinferenceengine"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "core/inference.py",
-      "source_location": "L65",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_inference_rationale_65",
-      "target": "core_inference_baseinferenceengine"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "core/inference.py",
-      "source_location": "L100",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_inference_baseinferenceengine_predict",
-      "target": "core_inference_inferenceengine_extract_features"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "core/inference.py",
-      "source_location": "L101",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_inference_baseinferenceengine_predict",
-      "target": "core_inference_inferenceengine_infer"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "core/inference.py",
-      "source_location": "L90",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_inference_rationale_90",
-      "target": "core_inference_baseinferenceengine_predict"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "core/inference.py",
-      "source_location": "L126",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_inference_inferenceengine",
-      "target": "core_inference_inferenceengine_init"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "core/inference.py",
-      "source_location": "L130",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_inference_inferenceengine",
-      "target": "core_inference_inferenceengine_load_model"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "core/inference.py",
-      "source_location": "L141",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_inference_inferenceengine",
-      "target": "core_inference_inferenceengine_extract_features"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "core/inference.py",
-      "source_location": "L171",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_inference_inferenceengine",
-      "target": "core_inference_inferenceengine_infer"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "core/inference.py",
-      "source_location": "L119",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_inference_rationale_119",
-      "target": "core_inference_inferenceengine"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "core/inference.py",
-      "source_location": "L131",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_inference_rationale_131",
-      "target": "core_inference_inferenceengine_load_model"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "core/inference.py",
-      "source_location": "L142",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_inference_rationale_142",
-      "target": "core_inference_inferenceengine_extract_features"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "core/inference.py",
-      "source_location": "L172",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "core_inference_rationale_172",
-      "target": "core_inference_inferenceengine_infer"
     },
     {
       "relation": "contains",
@@ -8127,6 +8619,17 @@
       "target": "core_init_py"
     },
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "core/__init__.py",
+      "source_location": "L15",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_init_py",
+      "target": "core_inference_py"
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "cs/gaussian.py",
@@ -8367,9 +8870,9 @@
       "source_file": "cs/lasso.py",
       "source_location": "L44",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "cs_lasso_rationale_44",
-      "target": "cs_lasso_generate_phi",
-      "confidence_score": 1.0
+      "target": "cs_lasso_generate_phi"
     },
     {
       "relation": "rationale_for",
@@ -8398,9 +8901,9 @@
       "source_file": "cs/lasso.py",
       "source_location": "L90",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "cs_lasso_rationale_90",
-      "target": "cs_lasso_build_psi",
-      "confidence_score": 1.0
+      "target": "cs_lasso_build_psi"
     },
     {
       "relation": "rationale_for",
@@ -8418,9 +8921,9 @@
       "source_file": "cs/lasso.py",
       "source_location": "L95",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "cs_lasso_rationale_95",
-      "target": "cs_lasso_build_theta",
-      "confidence_score": 1.0
+      "target": "cs_lasso_build_theta"
     },
     {
       "relation": "rationale_for",
@@ -8438,9 +8941,9 @@
       "source_file": "cs/lasso.py",
       "source_location": "L118",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "cs_lasso_rationale_118",
-      "target": "cs_lasso_reconstruct",
-      "confidence_score": 1.0
+      "target": "cs_lasso_reconstruct"
     },
     {
       "relation": "rationale_for",
@@ -9609,9 +10112,9 @@
       "source_file": "tests/test_cs_gaussian.py",
       "source_location": "L64",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_test_cs_gaussian_rationale_64",
-      "target": "tests_test_cs_gaussian_test_phi_deterministic",
-      "confidence_score": 1.0
+      "target": "tests_test_cs_gaussian_test_phi_deterministic"
     },
     {
       "relation": "rationale_for",
@@ -9629,9 +10132,9 @@
       "source_file": "tests/test_cs_gaussian.py",
       "source_location": "L73",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_test_cs_gaussian_rationale_73",
-      "target": "tests_test_cs_gaussian_test_core_public_api_importable",
-      "confidence_score": 1.0
+      "target": "tests_test_cs_gaussian_test_core_public_api_importable"
     },
     {
       "relation": "rationale_for",
@@ -12031,8 +12534,392 @@
       "confidence_score": 1.0,
       "source": "tools_init_rationale_1",
       "target": "tools_init_py"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "readme_md",
+      "target": "server_readme_health_monitor_server",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "server_readme_health_monitor_server",
+      "target": "server_readme_architecture",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "server_readme_health_monitor_server",
+      "target": "server_readme_setup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "server_readme_health_monitor_server",
+      "target": "server_readme_running_the_server",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L53",
+      "weight": 1.0,
+      "source": "server_readme_health_monitor_server",
+      "target": "server_readme_testing",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "server_readme_setup",
+      "target": "server_readme_codeblock_1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L29",
+      "weight": 1.0,
+      "source": "server_readme_setup",
+      "target": "server_readme_codeblock_2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L35",
+      "weight": 1.0,
+      "source": "server_readme_setup",
+      "target": "server_readme_codeblock_3",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L43",
+      "weight": 1.0,
+      "source": "server_readme_running_the_server",
+      "target": "server_readme_codeblock_4",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L48",
+      "weight": 1.0,
+      "source": "server_readme_running_the_server",
+      "target": "server_readme_codeblock_5",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L56",
+      "weight": 1.0,
+      "source": "server_readme_testing",
+      "target": "server_readme_codeblock_6",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "core/inference.py",
+      "source_location": "L42",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_inference_py",
+      "target": "core_inference_predictionresult"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "core/inference.py",
+      "source_location": "L50",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_inference_py",
+      "target": "core_inference_featurevector"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "core/inference.py",
+      "source_location": "L64",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_inference_py",
+      "target": "core_inference_baseinferenceengine"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "core/inference.py",
+      "source_location": "L75",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_inference_py",
+      "target": "core_inference_load_model"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "core/inference.py",
+      "source_location": "L80",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_inference_py",
+      "target": "core_inference_extract_features"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "core/inference.py",
+      "source_location": "L85",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_inference_py",
+      "target": "core_inference_infer"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "core/inference.py",
+      "source_location": "L214",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_inference_py",
+      "target": "core_inference_is_loaded"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "core/inference.py",
+      "source_location": "L118",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_inference_py",
+      "target": "core_inference_inferenceengine"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "core/inference.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_inference_rationale_1",
+      "target": "core_inference_py"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "core/inference.py",
+      "source_location": "L184",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_inference_inferenceengine_infer",
+      "target": "core_inference_predictionresult"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "core/inference.py",
+      "source_location": "L43",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_inference_rationale_43",
+      "target": "core_inference_predictionresult"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "core/inference.py",
+      "source_location": "L160",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_inference_inferenceengine_extract_features",
+      "target": "core_inference_featurevector"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "core/inference.py",
+      "source_location": "L51",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_inference_rationale_51",
+      "target": "core_inference_featurevector"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "core/inference.py",
+      "source_location": "L89",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_inference_baseinferenceengine",
+      "target": "core_inference_baseinferenceengine_predict"
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "core/inference.py",
+      "source_location": "L118",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_inference_inferenceengine",
+      "target": "core_inference_baseinferenceengine"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "core/inference.py",
+      "source_location": "L65",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_inference_rationale_65",
+      "target": "core_inference_baseinferenceengine"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "core/inference.py",
+      "source_location": "L100",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_inference_baseinferenceengine_predict",
+      "target": "core_inference_inferenceengine_extract_features"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "core/inference.py",
+      "source_location": "L101",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_inference_baseinferenceengine_predict",
+      "target": "core_inference_inferenceengine_infer"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "core/inference.py",
+      "source_location": "L90",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_inference_rationale_90",
+      "target": "core_inference_baseinferenceengine_predict"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "core/inference.py",
+      "source_location": "L126",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_inference_inferenceengine",
+      "target": "core_inference_inferenceengine_init"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "core/inference.py",
+      "source_location": "L130",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_inference_inferenceengine",
+      "target": "core_inference_inferenceengine_load_model"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "core/inference.py",
+      "source_location": "L141",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_inference_inferenceengine",
+      "target": "core_inference_inferenceengine_extract_features"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "core/inference.py",
+      "source_location": "L171",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_inference_inferenceengine",
+      "target": "core_inference_inferenceengine_infer"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "core/inference.py",
+      "source_location": "L119",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_inference_rationale_119",
+      "target": "core_inference_inferenceengine"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "core/inference.py",
+      "source_location": "L131",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_inference_rationale_131",
+      "target": "core_inference_inferenceengine_load_model"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "core/inference.py",
+      "source_location": "L142",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_inference_rationale_142",
+      "target": "core_inference_inferenceengine_extract_features"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "core/inference.py",
+      "source_location": "L172",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_inference_rationale_172",
+      "target": "core_inference_inferenceengine_infer"
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "3322286540e754e2c717bc96862bcee85ad36f8d"
+  "built_at_commit": "a2fac016b547120f670858057ba024295e032e88"
 }

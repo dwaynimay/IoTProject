@@ -1,16 +1,16 @@
 # Graph Report - server  (2026-05-22)
 
 ## Corpus Check
-- 50 files · ~20,539 words
+- 54 files · ~20,384 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 484 nodes · 737 edges · 33 communities (22 shown, 11 thin omitted)
+- 532 nodes · 782 edges · 43 communities (26 shown, 17 thin omitted)
 - Extraction: 93% EXTRACTED · 7% INFERRED · 0% AMBIGUOUS · INFERRED: 55 edges (avg confidence: 0.77)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `33222865`
+- Built from commit: `a2fac016`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -43,6 +43,14 @@
 - [[_COMMUNITY_Community 30|Community 30]]
 - [[_COMMUNITY_Community 31|Community 31]]
 - [[_COMMUNITY_Community 32|Community 32]]
+- [[_COMMUNITY_Community 33|Community 33]]
+- [[_COMMUNITY_Community 34|Community 34]]
+- [[_COMMUNITY_Community 35|Community 35]]
+- [[_COMMUNITY_Community 36|Community 36]]
+- [[_COMMUNITY_Community 39|Community 39]]
+- [[_COMMUNITY_Community 40|Community 40]]
+- [[_COMMUNITY_Community 41|Community 41]]
+- [[_COMMUNITY_Community 42|Community 42]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `StorageManager` - 27 edges
@@ -68,7 +76,7 @@
 - `test_integration_full_pipeline()` --calls--> `QualityAssessor`  [INFERRED]
   tests/test_full_pipeline.py → core/quality.py
 
-## Communities (33 total, 11 thin omitted)
+## Communities (43 total, 17 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.05
@@ -138,23 +146,33 @@ Nodes (4): Public API for Compressive Sensing package. Other modules should impo
 Cohesion: 0.4
 Nodes (4): notify_event(), notify_window(), Dipanggil setelah window selesai direkonstruksi.     Push payload ke semua /ws/s, Dipanggil saat ada event anomali atau validasi gagal.     Push ke semua /ws/even
 
+### Community 33 - "Community 33"
+Cohesion: 0.11
+Nodes (13): BaseInferenceEngine, FeatureVector, InferenceEngine, PredictionResult, core/inference.py — Interface untuk ML inference engine.  Modul ini menyediakan, Placeholder ML engine.      Mengembalikan prediksi rule-based sederhana berdasar, Placeholder: akan load model ONNX/TFLite di sini.          TODO: Implementasi ak, Ekstrak fitur dasar dari data window. (+5 more)
+
+### Community 34 - "Community 34"
+Cohesion: 0.17
+Nodes (11): Architecture, code:bash (python -m venv .venv), code:bash (pip install -r requirements.txt), code:bash (cp .env.example .env), code:bash (python -m server), code:bash (python -m server.apps.reconstruct), code:bash (pytest tests/), Health Monitor Server (+3 more)
+
 ## Knowledge Gaps
-- **11 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **7 isolated node(s):** `Architecture`, `code:bash (python -m venv .venv)`, `code:bash (pip install -r requirements.txt)`, `code:bash (cp .env.example .env)`, `code:bash (python -m server)` (+2 more)
+  These have ≤1 connection - possible missing edges or undocumented components.
+- **17 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `StorageManager` connect `Community 1` to `Community 8`, `Community 11`, `Community 12`, `Community 5`?**
-  _High betweenness centrality (0.203) - this node is a cross-community bridge._
-- **Why does `main()` connect `Community 12` to `Community 0`, `Community 8`, `Community 1`?**
-  _High betweenness centrality (0.154) - this node is a cross-community bridge._
+  _High betweenness centrality (0.181) - this node is a cross-community bridge._
 - **Why does `QualityAssessor` connect `Community 8` to `Community 1`, `Community 2`, `Community 3`, `Community 12`?**
-  _High betweenness centrality (0.151) - this node is a cross-community bridge._
+  _High betweenness centrality (0.135) - this node is a cross-community bridge._
+- **Why does `main()` connect `Community 12` to `Community 0`, `Community 8`, `Community 1`?**
+  _High betweenness centrality (0.130) - this node is a cross-community bridge._
 - **Are the 10 inferred relationships involving `StorageManager` (e.g. with `BroadcastHub` and `WindowReport`) actually correct?**
   _`StorageManager` has 10 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 9 inferred relationships involving `ValidatorRegistry` (e.g. with `main()` and `test_integration_full_pipeline()`) actually correct?**
   _`ValidatorRegistry` has 9 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `server/__main__.py  Entry point tunggal untuk seluruh sistem server.  Jalankan d`, `main_app.py — Orkestrator satu proses: FastAPI + MQTT worker dalam satu perintah`, `Blocking MQTT loop — dijalankan di background thread.` to the rest of the system?**
-  _162 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _184 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.05 - nodes in this community are weakly interconnected._
