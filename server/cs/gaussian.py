@@ -1,7 +1,7 @@
-# File: server/core/cs_gaussian.py
+# File: server/cs/gaussian.py
 
 # =============================================================================
-# cs_gaussian.py — Algoritma CS: Hadamard-Gaussian Φ + DCT Ψ + OMP
+# gaussian.py — Algoritma CS: Hadamard-Gaussian Φ + DCT Ψ + OMP
 # =============================================================================
 #
 # Ini adalah implementasi CS versi saat ini (aktif dipakai).

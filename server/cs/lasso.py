@@ -1,7 +1,7 @@
-# File: server/core/cs_lasso.py
+# File: server/cs/lasso.py
 
 # =============================================================================
-# cs_lasso.py — Algoritma CS: Gaussian Random Φ + DCT Ψ + LASSO
+# lasso.py — Algoritma CS: Gaussian Random Φ + DCT Ψ + LASSO
 # =============================================================================
 #
 # Ini adalah implementasi CS versi pertama (lama).

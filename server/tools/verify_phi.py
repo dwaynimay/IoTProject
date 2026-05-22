@@ -17,7 +17,7 @@ PERUBAHAN v2:
 """
 
 import numpy as np
-from core.cs_gaussian import generate_phi
+from cs.gaussian import generate_phi
 from core.config      import CS_N, CS_M, CS_PHI_SEED
 
 phi = generate_phi(seed=CS_PHI_SEED, m=CS_M, n=CS_N)

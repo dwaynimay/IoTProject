@@ -52,7 +52,7 @@ from core.config import (
     MQTT_BROKER, MQTT_PORT, MQTT_KEEPALIVE, TOPIC_BASE,
     IMU_SIGNALS, PPG_SIGNALS,
 )
-from core.cs_router import PHI, THETA, PSI, reconstruct
+from cs import PHI, THETA, PSI, reconstruct
 
 # ── Konfigurasi test ──────────────────────────────────────────────────────────
 NODE_ID = 1
@@ -106,7 +106,7 @@ fig.suptitle(
 
 # ── Helper: ambil koefisien DCT sparse dari OMP ──────────────────────────────
 def _get_omp_coeffs(y_arr: np.ndarray) -> tuple[np.ndarray, list[int]]:
-    from core.cs_gaussian import omp
+    from cs.gaussian import omp
     s_hat   = omp(y_arr, THETA, OMP_K)
     support = [i for i in range(CS_N) if abs(s_hat[i]) > 1e-8]
     return s_hat, support

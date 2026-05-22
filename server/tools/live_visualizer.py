@@ -36,7 +36,7 @@ from core.config import (
     TOPIC_BASE, SIGNALS, IMU_SIGNALS, UNITS, COLORS,
     HISTORY_WINDOWS, MAX_HIST, TOTAL_SAMPLES,
 )
-from core.cs_router import reconstruct
+from cs import reconstruct
 
 NODE_ID = 1  # ubah sesuai node yang ingin divisualisasi
 

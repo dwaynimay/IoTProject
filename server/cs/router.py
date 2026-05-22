@@ -1,11 +1,11 @@
-# File: server/core/cs_router.py
+# File: server/cs/router.py
 
 # =============================================================================
-# cs_router.py — Router Algoritma CS
+# router.py — Router Algoritma CS
 # =============================================================================
 #
 # Modul ini adalah SATU-SATUNYA interface yang perlu dipakai oleh apps/.
-# apps/ tidak boleh import langsung dari cs_lasso.py atau cs_gaussian.py.
+# apps/ tidak boleh import langsung dari lasso.py atau gaussian.py.
 #
 # Keuntungan:
 #   - Ganti algoritma cukup ubah CS_ALGORITHM di config.py
@@ -20,7 +20,7 @@
 #   ALGORITHM_NAME  → str
 #
 # CARA PAKAI di apps/:
-#   from server.core.cs_router import reconstruct, PHI, THETA, PSI
+#   from cs.router import reconstruct, PHI, THETA, PSI
 #   x_hat = reconstruct(y)   # langsung, tanpa tahu algoritmanya apa
 #
 # CARA GANTI ALGORITMA:
@@ -29,7 +29,7 @@
 
 import logging
 
-from .config import (
+from core.config import (
     CS_N, CS_M, CS_PHI_SEED, OMP_K,
     LASSO_ALPHA, LASSO_MAX_ITER, LASSO_TOL,
     CS_ALGORITHM,
@@ -57,7 +57,7 @@ _logger.info("Algoritma: %s | M=%d N=%d seed=%d",
              CS_ALGORITHM.upper(), CS_M, CS_N, CS_PHI_SEED)
 
 if CS_ALGORITHM == "omp":
-    from . import cs_gaussian as _algo
+    from . import gaussian as _algo
 
     PHI             = _algo.generate_phi(CS_PHI_SEED, CS_M, CS_N)
     THETA, PSI      = _algo.build_theta(PHI, CS_N)
@@ -76,7 +76,7 @@ if CS_ALGORITHM == "omp":
         return _algo.reconstruct(y, THETA, PSI, OMP_K)
 
 elif CS_ALGORITHM == "lasso":
-    from . import cs_lasso as _algo
+    from . import lasso as _algo
 
     PHI             = _algo.generate_phi(CS_PHI_SEED, CS_M, CS_N)
     THETA, PSI      = _algo.build_theta(PHI, CS_N)

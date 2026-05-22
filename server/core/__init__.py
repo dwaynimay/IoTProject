@@ -8,7 +8,7 @@ Contoh penggunaan:
     from server.core import QualityAssessor, ValidatorRegistry, StorageManager
 """
 
-from .cs_router import reconstruct, PHI, THETA, PSI, ALGORITHM_NAME
+from cs import reconstruct, PHI, THETA, PSI, ALGORITHM_NAME
 from .quality   import QualityAssessor, QualityFlag, SignalMetric, WindowReport
 from .validator import ValidatorRegistry, ValidationError
 from .storage    import StorageManager
