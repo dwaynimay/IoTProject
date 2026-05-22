@@ -10,7 +10,7 @@ Arsitektur:
                 │       └── Thread(target=_run_mqtt_thread).start()
                 │
                 ├── FastAPI routes (REST API + WebSocket)
-                │       sama persis dengan dashboard_server.py
+                │       sama persis dengan apps/dashboard/app.py
                 │
                 └── [background] mqtt-worker thread
                         ├── listener.run() → blocking loop_forever()
@@ -117,7 +117,7 @@ async def _combined_lifespan(app: FastAPI):
 
 # ── Buat app dengan lifespan override ────────────────────────────────────────
 
-# Salin routes dari dashboard_server, ganti lifespan saja
+# Salin routes dari dashboard app, ganti lifespan saja
 app = FastAPI(
     title       = _dashboard_app.title,
     description = _dashboard_app.description,
@@ -125,11 +125,11 @@ app = FastAPI(
     lifespan    = _combined_lifespan,
 )
 
-# Copy semua middleware dari dashboard_server
+# Copy semua middleware dari dashboard app
 for middleware in _dashboard_app.user_middleware:
     app.add_middleware(middleware.cls, **middleware.kwargs)
 
-# Copy semua routes dari dashboard_server
+# Copy semua routes dari dashboard app
 for route in _dashboard_app.routes:
     app.routes.append(route)
 

@@ -12,14 +12,14 @@ Menjalankan dalam SATU proses:
     - SQLite storage
     - WebSocket push real-time ke semua client
 
-Untuk debugging komponen individual:
-    python -m apps.reconstruct         # hanya MQTT + rekonstruksi
-    uvicorn apps.dashboard_server:app  # hanya dashboard
+Untuk debugging komponen/aplikasi individual:
+    python -m server.apps.reconstruct    # hanya MQTT + rekonstruksi
+    python -m server.apps.dashboard      # hanya dashboard
 
 Development/debug tools (bukan bagian server production):
-    python -m tools.live_visualizer    # visualisasi matplotlib real-time
-    python -m tools.test_single_signal # test rekonstruksi satu sinyal
-    python -m tools.verify_phi         # verifikasi matriks Φ vs firmware
+    python -m server.tools.live_visualizer    # visualisasi matplotlib real-time
+    python -m server.tools.test_single_signal # test rekonstruksi satu sinyal
+    python -m server.tools.verify_phi         # verifikasi matriks Φ vs firmware
 """
 
 import sys
