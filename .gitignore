@@ -43,6 +43,7 @@ firmware/.vscode/ipch
 # Python
 # =============================================================================
 __pycache__/
+.ruff_cache/
 *.pyc
 *.pyo
 *.pyd
