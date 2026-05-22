@@ -220,83 +220,148 @@
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\__main__.py": {
-    "mtime": 1779359064.673134,
-    "ast_hash": "f9a8fce9a52dec8e8a222b9218b312fc",
-    "semantic_hash": ""
-  },
-  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\dashboard_server.py": {
-    "mtime": 1779326689.7619557,
-    "ast_hash": "7bb2c4a698754b85194fe17f6bf4e5bf",
+    "mtime": 1779457244.872997,
+    "ast_hash": "14df034d42868dd748cd28c553565093",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\main_app.py": {
-    "mtime": 1779330501.767671,
-    "ast_hash": "fb0c15c9eeae4159c8b453330f620860",
+    "mtime": 1779457244.8886795,
+    "ast_hash": "992bd366e3d725feddbc2411cbab248e",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\__init__.py": {
-    "mtime": 1779326689.7619557,
-    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "mtime": 1779457244.8736353,
+    "ast_hash": "5ef7491abd7671438762bcba5c6e302e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\__main__.py": {
+    "mtime": 1779457244.874637,
+    "ast_hash": "3337a46c0ade55c8d39a80f1379c81e3",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\dashboard\\app.py": {
+    "mtime": 1779457244.878153,
+    "ast_hash": "43c73216aaeafd45227f436147be9a10",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\dashboard\\hub.py": {
+    "mtime": 1779457244.8800654,
+    "ast_hash": "1bc636640c3c47684f63e5325cc58954",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\dashboard\\websocket.py": {
+    "mtime": 1779457244.8878708,
+    "ast_hash": "5a136ad05c6d487fe190612bf37fadea",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\dashboard\\__init__.py": {
+    "mtime": 1779457244.876297,
+    "ast_hash": "0eb74a277548c5aefe5eabb2fd3ffa7b",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\dashboard\\__main__.py": {
+    "mtime": 1779457244.876297,
+    "ast_hash": "6f578cf76e157abcb077c5226ac2571f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\dashboard\\routes\\events.py": {
+    "mtime": 1779457244.882062,
+    "ast_hash": "14f6daf97dbbc67d17c702b303bd0985",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\dashboard\\routes\\maintenance.py": {
+    "mtime": 1779457244.883999,
+    "ast_hash": "1d6ba0005416453fdad218ec4b936b01",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\dashboard\\routes\\metrics.py": {
+    "mtime": 1779457244.8852262,
+    "ast_hash": "5ca63ec7ff87c39c1956e46c1f399117",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\dashboard\\routes\\nodes.py": {
+    "mtime": 1779457244.886058,
+    "ast_hash": "7269871e515c003da2be7867ac733f07",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\dashboard\\routes\\status.py": {
+    "mtime": 1779457244.8865857,
+    "ast_hash": "ce901ed5c150613db358f8bd34fee657",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\dashboard\\routes\\windows.py": {
+    "mtime": 1779457244.887582,
+    "ast_hash": "4acf817b3af72ba492616d3629d10d51",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\dashboard\\routes\\__init__.py": {
+    "mtime": 1779457244.881078,
+    "ast_hash": "813cc446a76e90236c0f28b5a390f54d",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\ml_inference\\anomaly.py": {
+    "mtime": 1779457244.8917294,
+    "ast_hash": "dc124164590dcfb717e8013fd7190b18",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\ml_inference\\inference.py": {
+    "mtime": 1779457244.892073,
+    "ast_hash": "a9cd336e58048652045c75f186ed5223",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\ml_inference\\predictor.py": {
+    "mtime": 1779457244.8948543,
+    "ast_hash": "7301712cde8241a69624be29fd2e4437",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\ml_inference\\__init__.py": {
+    "mtime": 1779457244.889898,
+    "ast_hash": "f2cc47f0774e0ba8c2b868c75fda2e43",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\ml_inference\\__main__.py": {
+    "mtime": 1779457244.89073,
+    "ast_hash": "834c8cb6e7a9ccbf770ac99b5f716c15",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\reconstruct\\listener.py": {
-    "mtime": 1779328903.1487932,
-    "ast_hash": "139444550e6b543292998c50358e517c",
+    "mtime": 1779457244.8989341,
+    "ast_hash": "a63515dd0fdef7b2b346a2da76340a58",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\reconstruct\\node_state.py": {
-    "mtime": 1779328880.5231013,
-    "ast_hash": "85ef48d3aa6e793ae631102c997b3e88",
+    "mtime": 1779457244.900684,
+    "ast_hash": "2a8e1dab3cf44d95423ad6bf3e0dd34e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\reconstruct\\notifier.py": {
+    "mtime": 1779457244.9019277,
+    "ast_hash": "5383d51a1a748001d126fbcd739cd9da",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\reconstruct\\processor.py": {
-    "mtime": 1779328855.8971918,
-    "ast_hash": "359010b4f0e524c926c206bdf2fdfaf4",
+    "mtime": 1779457244.9039214,
+    "ast_hash": "8ec2163a3f596a8a8819394835c7d74e",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\reconstruct\\__init__.py": {
-    "mtime": 1779328818.4094791,
-    "ast_hash": "d9f93f462a4d84243310240cf56fee24",
+    "mtime": 1779457244.895872,
+    "ast_hash": "a49cbceb01a8e017b6cabafdb0ade3bf",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\reconstruct\\__main__.py": {
-    "mtime": 1779328921.5954604,
-    "ast_hash": "fc3d47b338d37db36fddadebb05f943f",
-    "semantic_hash": ""
-  },
-  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\core\\config.example.py": {
-    "mtime": 1779328227.5940964,
-    "ast_hash": "da4ac360fa504257d41d264411885f07",
+    "mtime": 1779457244.8979294,
+    "ast_hash": "b24d2a6f3c4b8536b888e7bc05471161",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\core\\config.py": {
-    "mtime": 1779361750.0965154,
-    "ast_hash": "2d32db3ccc24f77e0ee552a3c0dc9393",
-    "semantic_hash": ""
-  },
-  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\core\\cs_gaussian.py": {
-    "mtime": 1779326689.7619557,
-    "ast_hash": "2b99260275f98de32dcc8de22a888994",
-    "semantic_hash": ""
-  },
-  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\core\\cs_lasso.py": {
-    "mtime": 1779326689.7619557,
-    "ast_hash": "60d416c714f62ce2ac92fab15782b3e4",
-    "semantic_hash": ""
-  },
-  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\core\\cs_router.py": {
-    "mtime": 1779329506.5090408,
-    "ast_hash": "d3f589845f0a09d4047cd030c565da72",
-    "semantic_hash": ""
-  },
-  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\core\\inference.py": {
-    "mtime": 1779359153.6366646,
-    "ast_hash": "c8adfb3a5ce4111f63d8e55ddf94254a",
+    "mtime": 1779457244.905921,
+    "ast_hash": "366453c257c28b5d9e97e4248a34f302",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\core\\logger.py": {
-    "mtime": 1779328934.7407265,
-    "ast_hash": "bb6c8e16a492673ba1f0a8f7b747681b",
+    "mtime": 1779457244.9070783,
+    "ast_hash": "fae2355afce62ecc28e31bc33c1d8265",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\core\\quality.py": {
@@ -305,53 +370,78 @@
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\core\\storage.py": {
-    "mtime": 1779361750.094514,
+    "mtime": 1779457244.9083383,
     "ast_hash": "29a61b9c633653eb376f98be5cbd2cb2",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\core\\validator.py": {
-    "mtime": 1779329518.3350368,
+    "mtime": 1779457244.9103398,
     "ast_hash": "19d07ad5c94486331840f5ad947d64f1",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\core\\__init__.py": {
-    "mtime": 1779359169.26113,
-    "ast_hash": "a0eca4c3c2e84fcd37925cbed0a3f697",
+    "mtime": 1779457244.9049225,
+    "ast_hash": "24e0af9753751b4c1657d01779d672c8",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\cs\\gaussian.py": {
+    "mtime": 1779457244.9143398,
+    "ast_hash": "fadf58d50d157a02a8275535d6271f63",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\cs\\lasso.py": {
+    "mtime": 1779457244.9155216,
+    "ast_hash": "db4cc0bd9a5c4e9f1fd887bdf846f1c0",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\cs\\router.py": {
+    "mtime": 1779457244.9185631,
+    "ast_hash": "6fb1d021cf6ebbac1680a0dd81cba5ef",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\cs\\__init__.py": {
+    "mtime": 1779457244.9123392,
+    "ast_hash": "fcf5c2aa12636c94e38a8283b85fa903",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\static\\js\\api.js": {
-    "mtime": 1779450376.408273,
-    "ast_hash": "b36855e491e2638c6eb31dcf25de3727",
+    "mtime": 1779457244.9276612,
+    "ast_hash": "7ae210769e4d4383a1acefea97f72f94",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\static\\js\\app.js": {
-    "mtime": 1779450456.2568092,
-    "ast_hash": "dbb03506b780194e4264948fa91012c1",
+    "mtime": 1779457244.9295695,
+    "ast_hash": "b332ad6b3e838f4739490c88ba15c0a5",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\static\\js\\chart.js": {
-    "mtime": 1779450424.9179053,
-    "ast_hash": "baf6772777f2785ee8ff303aa9654ae7",
+    "mtime": 1779457244.9305747,
+    "ast_hash": "80fb8cb30fe34b804eefc11d6c7eec0d",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\static\\js\\state.js": {
-    "mtime": 1779450358.5246925,
-    "ast_hash": "daeae097cc30de49ba90df85250418f4",
+    "mtime": 1779457244.9315724,
+    "ast_hash": "29400593c3afed85e14ea0e45c7f568a",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\static\\js\\ui.js": {
-    "mtime": 1779450407.2543855,
-    "ast_hash": "22ab0e6cacaa446070661af15916478b",
+    "mtime": 1779457244.9327512,
+    "ast_hash": "3a17c483363c125b70346cca8e230b9c",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\static\\js\\ws.js": {
-    "mtime": 1779450438.9371865,
-    "ast_hash": "7531b61e72803d1e117bffd16c2bb53d",
+    "mtime": 1779457244.9339044,
+    "ast_hash": "e4b7b5d2c9f9deeb64301ea752d48625",
     "semantic_hash": ""
   },
-  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\tests\\test_cs_encoder.py": {
-    "mtime": 1779328468.121886,
-    "ast_hash": "86de3f465c0fa87517d0ec6430970a3c",
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\tests\\test_cs_gaussian.py": {
+    "mtime": 1779457244.9349205,
+    "ast_hash": "680a8ec640e7042995ed342fa65e9117",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\tests\\test_full_pipeline.py": {
+    "mtime": 1779457244.9359257,
+    "ast_hash": "57e3e04ab25738df41011d8af1bcfffa",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\tests\\test_quality.py": {
@@ -370,28 +460,28 @@
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\tools\\live_visualizer.py": {
-    "mtime": 1779359112.4415019,
-    "ast_hash": "d4a39ffcb6ab45f9288ad0dd80d21862",
+    "mtime": 1779457244.9386847,
+    "ast_hash": "64c350b81939ad948983c0653083f2e7",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\tools\\test_single_signal.py": {
-    "mtime": 1779359108.287087,
-    "ast_hash": "787561be9d981b60343f5d819a8834cb",
+    "mtime": 1779457244.9398718,
+    "ast_hash": "ee9b6ed48c899bf4881f1f2982790a47",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\tools\\verify_phi.py": {
-    "mtime": 1779359113.3583987,
-    "ast_hash": "83a896fd801d99b102dc08ed48ccb3ed",
+    "mtime": 1779457244.9408736,
+    "ast_hash": "a7beffaad62c049a5b651c41512fd321",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\tools\\__init__.py": {
-    "mtime": 1779359037.3913953,
-    "ast_hash": "07299f2bdb7cf717ff6975f370417e87",
+    "mtime": 1779457244.9370809,
+    "ast_hash": "fc02efdb796d57d655059d579f224235",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\README.md": {
-    "mtime": 1779452131.8437307,
-    "ast_hash": "5ff5cefd644f2ffcc7c36d094f03ffe7",
+    "mtime": 1779457244.7900655,
+    "ast_hash": "ea414d90bfa746abc3466826af659535",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\rules\\graphify.md": {
@@ -489,18 +579,23 @@
     "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
     "semantic_hash": ""
   },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\README.md": {
+    "mtime": 1779457244.8711538,
+    "ast_hash": "39797bbe6a10a97d07cfffe3b5c7c8eb",
+    "semantic_hash": ""
+  },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\requirements-dev.txt": {
-    "mtime": 1779329563.4774039,
-    "ast_hash": "020b725695fabd5ac79bae4d5ab52964",
+    "mtime": 1779457244.9215553,
+    "ast_hash": "73eab390078161408239aa48dd846aa8",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\requirements.txt": {
-    "mtime": 1779328252.2723246,
-    "ast_hash": "3612e67ae350d8a97d5940f225aa6c20",
+    "mtime": 1779457244.9237015,
+    "ast_hash": "fa9d3b9e408ce9e2ed9868590025d77b",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\static\\index.html": {
-    "mtime": 1779450533.2733743,
+    "mtime": 1779457244.9266615,
     "ast_hash": "741e731a370ddd811b2b31fc0cd6577c",
     "semantic_hash": ""
   },
