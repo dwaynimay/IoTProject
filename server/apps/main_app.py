@@ -42,10 +42,10 @@ from core import (
 )
 from core.logger import setup_logging
 
-# Reuse hub dan storage dari dashboard_server — tidak buat instance baru
-from apps.dashboard_server import app as _dashboard_app
-from apps.dashboard_server import hub, storage
-from apps.dashboard_server import notify_window, notify_event
+# Reuse hub dan storage dari dashboard app — tidak buat instance baru
+from apps.dashboard.app import app as _dashboard_app
+from apps.dashboard.hub import hub, storage
+from apps.reconstruct.notifier import notify_window, notify_event
 
 from apps.reconstruct.processor  import process_window
 from apps.reconstruct.listener   import run as run_listener
