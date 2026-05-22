@@ -14,10 +14,10 @@ import time
 import numpy as np
 
 from core import (
-    reconstruct, PHI,
     QualityAssessor, StorageManager,
     CS_M, IMU_SIGNALS,
 )
+from cs import reconstruct, PHI
 
 logger = logging.getLogger(__name__)
 
@@ -30,16 +30,10 @@ import threading
 _global_lock = threading.Lock()
 
 
-# ── Dashboard notifier (opsional) ─────────────────────────────────────────────
+# ── Dashboard notifier ────────────────────────────────────────────────────────
 
-try:
-    from apps.dashboard_server import notify_window as _notify_window
-    from apps.dashboard_server import notify_event  as _notify_event
-    _DASHBOARD_AVAILABLE = True
-except ImportError:
-    _DASHBOARD_AVAILABLE = False
-    def _notify_window(*args, **kwargs): pass  # noqa: E301
-    def _notify_event(*args, **kwargs):  pass  # noqa: E301
+from apps.reconstruct.notifier import notify_window as _notify_window
+from apps.reconstruct.notifier import notify_event  as _notify_event
 
 
 # ── Public API ────────────────────────────────────────────────────────────────
