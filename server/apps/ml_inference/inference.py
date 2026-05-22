@@ -11,7 +11,7 @@ Saat ini berisi interface dan placeholder. Implementasi aktual akan ditambahkan
 setelah model ML selesai di-train.
 
 Contoh penggunaan (setelah model ready):
-    from core.inference import InferenceEngine
+    from apps.ml_inference.inference import InferenceEngine
 
     engine = InferenceEngine()
     engine.load_model("models/health_classifier_v1.onnx")
