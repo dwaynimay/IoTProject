@@ -1,0 +1,78 @@
+{
+    "_comment": "Config untuk fall_detection_svm_wrapper.pkl. 44 fitur IMU-only (ax/ay/az + SMV derived + cross corr). Classes: duduk/jalan/jatuh/tidur.",
+
+    "model_name": "fall_detection_svm",
+    "model_version": "1.0.0",
+    "description": "Klasifikasi aktivitas + deteksi jatuh dari sinyal IMU (accelerometer 3-axis). Dilatih dengan SVM + SMOTE + StandardScaler. Window size asli 100 sample (fs=20Hz), dijalankan pada rekonstruksi CS 64 sample.",
+    "author": "tim-health-monitor",
+    "trained_at": "2025-05",
+    "note_window_mismatch": "Model dilatih window_size=100, CS rekonstruksi ke 64. Fitur statistik (mean/std/rms) relatif stabil terhadap panjang array. Monitor skip_rate dan confidence untuk validasi.",
+
+    "labels": [
+        "duduk",
+        "jalan",
+        "jatuh",
+        "tidur"
+    ],
+
+    "features": [
+        {"name": "AX_mean",  "type": "stat", "signal": "ax", "stat": "mean"},
+        {"name": "AX_std",   "type": "stat", "signal": "ax", "stat": "std"},
+        {"name": "AX_min",   "type": "stat", "signal": "ax", "stat": "min"},
+        {"name": "AX_max",   "type": "stat", "signal": "ax", "stat": "max"},
+        {"name": "AX_range", "type": "stat", "signal": "ax", "stat": "range"},
+        {"name": "AX_skew",  "type": "stat", "signal": "ax", "stat": "skew"},
+        {"name": "AX_kurt",  "type": "stat", "signal": "ax", "stat": "kurt"},
+        {"name": "AX_rms",   "type": "stat", "signal": "ax", "stat": "rms"},
+        {"name": "AX_Q1",    "type": "stat", "signal": "ax", "stat": "q1"},
+        {"name": "AX_Q3",    "type": "stat", "signal": "ax", "stat": "q3"},
+
+        {"name": "AY_mean",  "type": "stat", "signal": "ay", "stat": "mean"},
+        {"name": "AY_std",   "type": "stat", "signal": "ay", "stat": "std"},
+        {"name": "AY_min",   "type": "stat", "signal": "ay", "stat": "min"},
+        {"name": "AY_max",   "type": "stat", "signal": "ay", "stat": "max"},
+        {"name": "AY_range", "type": "stat", "signal": "ay", "stat": "range"},
+        {"name": "AY_skew",  "type": "stat", "signal": "ay", "stat": "skew"},
+        {"name": "AY_kurt",  "type": "stat", "signal": "ay", "stat": "kurt"},
+        {"name": "AY_rms",   "type": "stat", "signal": "ay", "stat": "rms"},
+        {"name": "AY_Q1",    "type": "stat", "signal": "ay", "stat": "q1"},
+        {"name": "AY_Q3",    "type": "stat", "signal": "ay", "stat": "q3"},
+
+        {"name": "AZ_mean",  "type": "stat", "signal": "az", "stat": "mean"},
+        {"name": "AZ_std",   "type": "stat", "signal": "az", "stat": "std"},
+        {"name": "AZ_min",   "type": "stat", "signal": "az", "stat": "min"},
+        {"name": "AZ_max",   "type": "stat", "signal": "az", "stat": "max"},
+        {"name": "AZ_range", "type": "stat", "signal": "az", "stat": "range"},
+        {"name": "AZ_skew",  "type": "stat", "signal": "az", "stat": "skew"},
+        {"name": "AZ_kurt",  "type": "stat", "signal": "az", "stat": "kurt"},
+        {"name": "AZ_rms",   "type": "stat", "signal": "az", "stat": "rms"},
+        {"name": "AZ_Q1",    "type": "stat", "signal": "az", "stat": "q1"},
+        {"name": "AZ_Q3",    "type": "stat", "signal": "az", "stat": "q3"},
+
+        {"name": "SMV_mean",  "type": "derived", "formula": "smv", "stat": "mean"},
+        {"name": "SMV_std",   "type": "derived", "formula": "smv", "stat": "std"},
+        {"name": "SMV_max",   "type": "derived", "formula": "smv", "stat": "max"},
+        {"name": "SMV_min",   "type": "derived", "formula": "smv", "stat": "min"},
+        {"name": "SMV_range", "type": "derived", "formula": "smv", "stat": "range"},
+        {"name": "SMV_skew",  "type": "derived", "formula": "smv", "stat": "skew"},
+        {"name": "SMV_kurt",  "type": "derived", "formula": "smv", "stat": "kurt"},
+        {"name": "SMV_rms",   "type": "derived", "formula": "smv", "stat": "rms"},
+
+        {"name": "AX_zcr", "type": "stat", "signal": "ax", "stat": "zcr"},
+        {"name": "AY_zcr", "type": "stat", "signal": "ay", "stat": "zcr"},
+        {"name": "AZ_zcr", "type": "stat", "signal": "az", "stat": "zcr"},
+
+        {"name": "corr_XY", "type": "cross", "signal_a": "ax", "signal_b": "ay", "cross_type": "corr", "default": 0.0},
+        {"name": "corr_XZ", "type": "cross", "signal_a": "ax", "signal_b": "az", "cross_type": "corr", "default": 0.0},
+        {"name": "corr_YZ", "type": "cross", "signal_a": "ay", "signal_b": "az", "cross_type": "corr", "default": 0.0}
+    ],
+
+    "skip_if": {
+        "finger_required": false,
+        "require_signals": ["ax", "ay", "az"]
+    },
+
+    "output": {
+        "confidence_threshold": 0.0
+    }
+}

@@ -1,0 +1,75 @@
+{
+    "_comment": "Contoh manifest untuk engine. Salin dan sesuaikan untuk model Anda.",
+
+    "model_name": "activity_classifier_v1",
+    "model_version": "1.0.0",
+    "description": "Klasifikasi kondisi kesehatan dari sinyal IMU + PPG rekonstruksi CS.",
+    "author": "tim-health-monitor",
+    "trained_at": "2025-05-01",
+
+    "labels": [
+        "normal",
+        "tachycardia",
+        "bradycardia",
+        "low_spo2",
+        "motion_artifact"
+    ],
+
+    "features": [
+        {"name": "ax_mean",   "type": "stat", "signal": "ax", "stat": "mean"},
+        {"name": "ax_std",    "type": "stat", "signal": "ax", "stat": "std"},
+        {"name": "ax_rms",    "type": "stat", "signal": "ax", "stat": "rms"},
+        {"name": "ax_range",  "type": "stat", "signal": "ax", "stat": "range"},
+        {"name": "ax_zcr",    "type": "stat", "signal": "ax", "stat": "zcr"},
+
+        {"name": "ay_mean",   "type": "stat", "signal": "ay", "stat": "mean"},
+        {"name": "ay_std",    "type": "stat", "signal": "ay", "stat": "std"},
+        {"name": "ay_rms",    "type": "stat", "signal": "ay", "stat": "rms"},
+        {"name": "ay_range",  "type": "stat", "signal": "ay", "stat": "range"},
+        {"name": "ay_zcr",    "type": "stat", "signal": "ay", "stat": "zcr"},
+
+        {"name": "az_mean",   "type": "stat", "signal": "az", "stat": "mean"},
+        {"name": "az_std",    "type": "stat", "signal": "az", "stat": "std"},
+        {"name": "az_rms",    "type": "stat", "signal": "az", "stat": "rms"},
+        {"name": "az_range",  "type": "stat", "signal": "az", "stat": "range"},
+        {"name": "az_zcr",    "type": "stat", "signal": "az", "stat": "zcr"},
+
+        {"name": "gx_mean",   "type": "stat", "signal": "gx", "stat": "mean"},
+        {"name": "gx_std",    "type": "stat", "signal": "gx", "stat": "std"},
+        {"name": "gx_rms",    "type": "stat", "signal": "gx", "stat": "rms"},
+        {"name": "gx_energy", "type": "stat", "signal": "gx", "stat": "energy"},
+
+        {"name": "gy_mean",   "type": "stat", "signal": "gy", "stat": "mean"},
+        {"name": "gy_std",    "type": "stat", "signal": "gy", "stat": "std"},
+        {"name": "gy_rms",    "type": "stat", "signal": "gy", "stat": "rms"},
+        {"name": "gy_energy", "type": "stat", "signal": "gy", "stat": "energy"},
+
+        {"name": "gz_mean",   "type": "stat", "signal": "gz", "stat": "mean"},
+        {"name": "gz_std",    "type": "stat", "signal": "gz", "stat": "std"},
+        {"name": "gz_rms",    "type": "stat", "signal": "gz", "stat": "rms"},
+        {"name": "gz_energy", "type": "stat", "signal": "gz", "stat": "energy"},
+
+        {"name": "ir_mean",          "type": "stat", "signal": "ir", "stat": "mean",           "default": 0.0},
+        {"name": "ir_std",           "type": "stat", "signal": "ir", "stat": "std",            "default": 0.0},
+        {"name": "ir_rms",           "type": "stat", "signal": "ir", "stat": "rms",            "default": 0.0},
+        {"name": "ir_peak_freq",     "type": "stat", "signal": "ir", "stat": "peak_freq",      "default": 0.0},
+        {"name": "ir_spectral_energy","type": "stat", "signal": "ir", "stat": "spectral_energy","default": 0.0},
+
+        {"name": "ax_az_corr", "type": "cross", "signal_a": "ax", "signal_b": "az", "cross_type": "corr", "default": 0.0},
+        {"name": "ax_ay_corr", "type": "cross", "signal_a": "ax", "signal_b": "ay", "cross_type": "corr", "default": 0.0},
+
+        {"name": "hr",     "type": "meta", "field": "hr",     "default": -1},
+        {"name": "spo2",   "type": "meta", "field": "spo2",   "default": 0.0},
+        {"name": "finger", "type": "meta", "field": "finger", "cast": "int", "default": 0}
+    ],
+
+    "skip_if": {
+        "finger_required": false,
+        "min_hr": 0,
+        "require_signals": ["ax", "ay", "az", "gx", "gy", "gz"]
+    },
+
+    "output": {
+        "confidence_threshold": 0.0
+    }
+}
