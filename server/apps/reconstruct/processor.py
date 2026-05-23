@@ -118,6 +118,24 @@ def process_window(
         finger     = finger,
     )
 
+    # ── ML Inference ──────────────────────────────────────────────────────────
+    from apps.dashboard.hub import registry
+    from apps.ml_inference.adapter import from_processor
+
+    try:
+        window_input = from_processor(
+            node_id=node_id,
+            window_num=window_num,
+            imu_data=imu_data,
+            ppg_data=ppg_data,
+            results=results,
+        )
+        ml_result = registry.predict_all(window_input)
+        ml_results_dict = ml_result.to_dict()["models"] if ml_result else {}
+    except Exception as e:
+        logger.error("ML Inference error: %s", e)
+        ml_results_dict = {}
+
     # ── F4: Push ke dashboard WebSocket ──────────────────────────────────────
     _notify_window(
         node_id    = node_id,
@@ -128,6 +146,7 @@ def process_window(
         finger     = finger,
         report     = report,
         elapsed_ms = elapsed_ms,
+        ml_results = ml_results_dict,
     )
 
     # ── Log anomali ke storage + dashboard ───────────────────────────────────

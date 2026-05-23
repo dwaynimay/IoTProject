@@ -25,6 +25,7 @@ def notify_window(
     finger:     bool,
     report,                         # WindowReport dari quality.py
     elapsed_ms: float,
+    ml_results: dict = None,
 ) -> None:
     """
     Dipanggil setelah window selesai direkonstruksi.
@@ -60,6 +61,7 @@ def notify_window(
             "any_critical":    report.has_critical()    if report else False,
             "signals":         signals_quality,
         },
+        "ml_results": ml_results if ml_results is not None else {},
     }
 
     # Update statistik server

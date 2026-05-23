@@ -1,16 +1,16 @@
 # Graph Report - IoTProject  (2026-05-23)
 
 ## Corpus Check
-- 135 files · ~126,923 words
+- 144 files · ~134,415 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 3286 nodes · 5155 edges · 315 communities (236 shown, 79 thin omitted)
-- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 184 edges (avg confidence: 0.74)
+- 3421 nodes · 5341 edges · 320 communities (241 shown, 79 thin omitted)
+- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 185 edges (avg confidence: 0.74)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `28d36136`
+- Built from commit: `5d128fd7`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -264,6 +264,11 @@
 - [[_COMMUNITY_Community 312|Community 312]]
 - [[_COMMUNITY_Community 313|Community 313]]
 - [[_COMMUNITY_Community 314|Community 314]]
+- [[_COMMUNITY_Community 315|Community 315]]
+- [[_COMMUNITY_Community 316|Community 316]]
+- [[_COMMUNITY_Community 317|Community 317]]
+- [[_COMMUNITY_Community 318|Community 318]]
+- [[_COMMUNITY_Community 319|Community 319]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `MLInferenceEngine` - 60 edges
@@ -289,7 +294,7 @@
 - `BroadcastHub` --uses--> `StorageManager`  [INFERRED]
   new_feature/dashboard_server.py → server/core/storage.py
 
-## Communities (315 total, 79 thin omitted)
+## Communities (320 total, 79 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.08
@@ -372,15 +377,15 @@ Cohesion: 0.3
 Nodes (8): canConvertFromJson(), checkJson(), convertFromJson(), convertToJson(), fromJson(), StringBuilderPrint, copier_, toJson()
 
 ### Community 23 - "Community 23"
-Cohesion: 0.05
-Nodes (56): QualityAssessor, Metrik kualitas untuk satu sinyal dalam satu window., Ringkasan satu baris untuk logging., Kumpulan SignalMetric untuk semua sinyal dalam satu window.     Dibuat oleh Qua, Rata-rata relative_error semua sinyal yang bisa dinilai., Satu baris ringkasan untuk console log.          Contoh output:           [Q], Satu baris per sinyal untuk log verbose., Hitung metrik kualitas rekonstruksi CS.      Args:         phi : np.ndarray ( (+48 more)
+Cohesion: 0.13
+Nodes (10): Metrik kualitas untuk satu sinyal dalam satu window., Ringkasan satu baris untuk logging., Kumpulan SignalMetric untuk semua sinyal dalam satu window.     Dibuat oleh Qua, Rata-rata relative_error semua sinyal yang bisa dinilai., Satu baris ringkasan untuk console log.          Contoh output:           [Q], Satu baris per sinyal untuk log verbose., Hitung metrik kualitas untuk satu sinyal.          Args:             signal :, Hitung metrik untuk semua sinyal dalam satu window sekaligus.          Args: (+2 more)
 
 ### Community 24 - "Community 24"
 Cohesion: 0.23
 Nodes (6): AllocatorAdapter, _allocator, ARDUINOJSON_DEPRECATED, capacity(), createNestedObject(), garbageCollect()
 
 ### Community 25 - "Community 25"
-Cohesion: 0.29
+Cohesion: 0.23
 Nodes (8): begin(), _connectMqtt(), _connectWifi(), initNTP(), _mqttStateStr(), publish(), _publishOnlineStatus(), tryReconnect()
 
 ### Community 26 - "Community 26"
@@ -408,7 +413,7 @@ Cohesion: 0.13
 Nodes (14): author, _comment, description, features, labels, model_name, model_version, note_window_mismatch (+6 more)
 
 ### Community 32 - "Community 32"
-Cohesion: 0.21
+Cohesion: 0.25
 Nodes (6): begin(), healthCheck(), _initHardwareWdt(), _printRestartHistory(), restartCount(), triggerRestart()
 
 ### Community 34 - "Community 34"
@@ -648,8 +653,8 @@ Cohesion: 0.4
 Nodes (4): Auto-Clarity, Boundaries, Examples, Rules
 
 ### Community 203 - "Community 203"
-Cohesion: 0.16
-Nodes (27): api(), fetchDB(), fetchEvents(), fetchMetrics(), fetchNodeWindows(), fetchStatus(), fetchAll(), init() (+19 more)
+Cohesion: 0.07
+Nodes (52): initTimelineChart(), loadTimeline(), initEKGChart(), initMLPanel(), mlCharts, initVitalsChart(), playAlertTone(), triggerAlert() (+44 more)
 
 ### Community 204 - "Community 204"
 Cohesion: 0.1
@@ -664,12 +669,12 @@ Cohesion: 0.08
 Nodes (30): _make_valid_imu(), _make_valid_ppg(), Lompat besar ke depan = kemungkinan reboot, diterima dengan warning., Monotonicity tracking harus per-node, tidak saling pengaruh., Whitelist None = terima semua., Simulasi beberapa window berturut-turut — ts maju terus., Jika schema gagal, layer length/finite tidak dijalankan., Buat payload cs_imu yang valid. (+22 more)
 
 ### Community 207 - "Community 207"
-Cohesion: 0.14
-Nodes (26): _layer2_length(), _layer3_finite(), Layer 2: cek panjang measurement vector == CS_M., Layer 2: cek panjang measurement vector == CS_M., Layer 3: cek setiap elemen y[i] finite (tidak NaN / Inf) dan dalam batas., Layer 3: cek setiap elemen y[i] finite (tidak NaN / Inf) dan dalam batas., _make_valid_imu(), Simulasi beberapa window berturut-turut — ts maju terus. (+18 more)
+Cohesion: 0.13
+Nodes (27): _layer1_schema(), _layer2_length(), _layer3_finite(), Layer 1: cek field wajib ada., Layer 1: cek field wajib ada., Layer 2: cek panjang measurement vector == CS_M., Layer 2: cek panjang measurement vector == CS_M., Layer 3: cek setiap elemen y[i] finite (tidak NaN / Inf) dan dalam batas. (+19 more)
 
 ### Community 208 - "Community 208"
-Cohesion: 0.09
-Nodes (17): QualityFlag, Enum, QualityAssessor, QualityFlag, Metrik kualitas untuk satu sinyal dalam satu window., Ringkasan satu baris untuk logging., Kumpulan SignalMetric untuk semua sinyal dalam satu window.     Dibuat oleh Qual, Rata-rata relative_error semua sinyal yang bisa dinilai. (+9 more)
+Cohesion: 0.1
+Nodes (14): QualityAssessor, Metrik kualitas untuk satu sinyal dalam satu window., Ringkasan satu baris untuk logging., Kumpulan SignalMetric untuk semua sinyal dalam satu window.     Dibuat oleh Qual, Rata-rata relative_error semua sinyal yang bisa dinilai., Satu baris ringkasan untuk console log.          Contoh output:           [Q] Wi, Satu baris per sinyal untuk log verbose., Hitung metrik kualitas rekonstruksi CS.      Args:         phi : np.ndarray (M × (+6 more)
 
 ### Community 209 - "Community 209"
 Cohesion: 0.07
@@ -680,20 +685,20 @@ Cohesion: 0.53
 Nodes (4): _imuInRange(), _resetAllEncoders(), _selectDstMac(), taskCSSender()
 
 ### Community 211 - "Community 211"
-Cohesion: 0.15
-Nodes (28): _FakeReport, _make_db(), _make_results(), Nilai ndarray harus bisa dibaca kembali dari DB., Metrik dari WindowReport harus tersimpan., Tanpa report, kolom metrik harus NULL., get_last_windows harus filter signal dengan benar., DB di file temporer — diisolasi per test. (+20 more)
+Cohesion: 0.14
+Nodes (29): _FakeReport, _make_db(), _make_results(), Nilai ndarray harus bisa dibaca kembali dari DB., Metrik dari WindowReport harus tersimpan., Tanpa report, kolom metrik harus NULL., get_last_windows harus filter signal dengan benar., DB di file temporer — diisolasi per test. (+21 more)
 
 ### Community 212 - "Community 212"
-Cohesion: 0.13
-Nodes (17): _get_node(), NodeState, _notify_event(), _notify_window(), _on_message(), Rekonstruksi semua 7 sinyal dari payload hybrid., Rekonstruksi semua 7 sinyal dari payload hybrid., Dipanggil saat cs_imu diterima. (+9 more)
+Cohesion: 0.11
+Nodes (19): _get_node(), NodeState, _notify_event(), _notify_window(), _on_message(), Rekonstruksi semua 7 sinyal dari payload hybrid., Rekonstruksi semua 7 sinyal dari payload hybrid., Dipanggil saat cs_imu diterima. (+11 more)
 
 ### Community 213 - "Community 213"
 Cohesion: 0.21
 Nodes (14): _check_finite(), _check_length(), _check_node_whitelist(), _check_ts_monotonic(), get_validation_stats(), Validasi payload cs_ppg.      Args:         payload  : dict hasil json.loads() d, Reset timestamp state untuk node tertentu (misal: setelah reboot terdeteksi)., Return info state validator saat ini (untuk debugging). (+6 more)
 
 ### Community 214 - "Community 214"
-Cohesion: 0.11
-Nodes (15): _MonotonicityTracker, Simpan ts terakhir yang valid per node.     Instance ini dimiliki oleh Validato, Simpan ts terakhir yang valid per node.     Instance ini dimiliki oleh Validato, Cek apakah ts valid dibandingkan ts terakhir untuk node ini.          Returns:, Cek apakah ts valid dibandingkan ts terakhir untuk node ini.          Returns:, Reset semua state — berguna saat server restart., Reset semua state — berguna saat server restart., Lompat besar ke depan = kemungkinan reboot, diterima dengan warning. (+7 more)
+Cohesion: 0.13
+Nodes (13): _MonotonicityTracker, Simpan ts terakhir yang valid per node.     Instance ini dimiliki oleh Validato, Simpan ts terakhir yang valid per node.     Instance ini dimiliki oleh Validato, Reset semua state — berguna saat server restart., Reset semua state — berguna saat server restart., Lompat besar ke depan = kemungkinan reboot, diterima dengan warning., Monotonicity tracking harus per-node, tidak saling pengaruh., test_monotonicity_backward_ts() (+5 more)
 
 ### Community 215 - "Community 215"
 Cohesion: 0.4
@@ -705,7 +710,7 @@ Nodes (16): build_psi(), build_theta(), generate_phi(), _hadamard(), _lcg_rng(),
 
 ### Community 217 - "Community 217"
 Cohesion: 0.12
-Nodes (14): _get(), _get_float(), _get_int(), Ambil env var dengan fallback ke default yang aman untuk lokal., Ambil env var sebagai int., Ambil env var sebagai float., Public API server core.  apps/ HANYA boleh import dari sini, bukan dari submod, assess() (+6 more)
+Nodes (15): _get(), _get_float(), _get_int(), Ambil env var dengan fallback ke default yang aman untuk lokal., Ambil env var sebagai int., Ambil env var sebagai float., Public API server core.  apps/ HANYA boleh import dari sini, bukan dari submod, assess() (+7 more)
 
 ### Community 218 - "Community 218"
 Cohesion: 0.36
@@ -724,8 +729,8 @@ Cohesion: 0.29
 Nodes (7): _layer5_whitelist(), Layer 5: cek node_id ada di whitelist (jika whitelist aktif)., Layer 5: cek node_id ada di whitelist (jika whitelist aktif)., Whitelist None = terima semua., test_whitelist_allowed(), test_whitelist_denied(), test_whitelist_disabled()
 
 ### Community 222 - "Community 222"
-Cohesion: 0.08
-Nodes (25): get_all_events(), get_node_events(), _node_or_404(), Event log untuk satu node, opsional filter per tipe., Semua event terbaru dari semua node, opsional filter per tipe., delete_node_data(), purge_old(), Hapus baris windows dan events yang lebih lama dari `max_age_hours`.     Defaul (+17 more)
+Cohesion: 0.07
+Nodes (29): get_all_events(), get_node_events(), _node_or_404(), Event log untuk satu node, opsional filter per tipe., Semua event terbaru dari semua node, opsional filter per tipe., delete_node_data(), purge_old(), Hapus baris windows dan events yang lebih lama dari `max_age_hours`.     Defaul (+21 more)
 
 ### Community 223 - "Community 223"
 Cohesion: 0.17
@@ -736,8 +741,8 @@ Cohesion: 0.1
 Nodes (19): Test konsistensi CS encoder: router, gaussian, lasso., Φ harus berukuran (M, N)., Θ = Φ·Ψ harus berukuran (M, N)., Ψ (basis DCT) harus berukuran (N, N)., Rekonstruksi dari y(M,) harus menghasilkan x_hat(N,)., Input nol harus menghasilkan output nol., Harus menerima list Python, bukan hanya ndarray., Residual dari sinyal sparse (di domain DCT) harus kecil (< 0.5). (+11 more)
 
 ### Community 225 - "Community 225"
-Cohesion: 0.13
-Nodes (6): BroadcastHub, Thread-safe hub untuk push pesan ke semua WebSocket client., Simpan referensi event loop., Kirim data ke semua client, hapus yang sudah disconnect., Dipanggil dari MQTT thread., Dipanggil dari MQTT thread.
+Cohesion: 0.1
+Nodes (11): BroadcastHub, Thread-safe hub untuk push pesan ke semua WebSocket client., Thread-safe hub untuk push pesan ke semua WebSocket client., Simpan referensi event loop., Simpan referensi event loop., Kirim data ke semua client, hapus yang sudah disconnect., Kirim data ke semua client, hapus yang sudah disconnect., Dipanggil dari MQTT thread. (+3 more)
 
 ### Community 226 - "Community 226"
 Cohesion: 0.08
@@ -784,8 +789,8 @@ Cohesion: 0.07
 Nodes (50): _make_model_files(), _make_window(), tests/test_ml_engine.py — Unit test untuk ML Inference Engine.  Jalankan dari ro, WindowInput dengan sinyal dummy., Engine berhasil load model dan config yang valid., FileNotFoundError jika model tidak ada., ValueError jika config tidak punya 'labels'., Predict sebelum load → skipped=True. (+42 more)
 
 ### Community 238 - "Community 238"
-Cohesion: 0.08
-Nodes (19): Kelola koneksi SQLite dan semua operasi baca-tulis.      Args:         db_pat, Kelola koneksi SQLite dan semua operasi baca-tulis.      Args:         db_pat, Tutup koneksi. Panggil saat shutdown server., Tutup koneksi. Panggil saat shutdown server., Ambil N event terakhir, opsional filter node_id dan/atau event_type., Ambil N event terakhir, opsional filter node_id dan/atau event_type., Statistik ringkas untuk satu node (berguna untuk dashboard).          Returns, Statistik ringkas untuk satu node (berguna untuk dashboard).          Returns (+11 more)
+Cohesion: 0.12
+Nodes (11): Kelola koneksi SQLite dan semua operasi baca-tulis.      Args:         db_pat, Kelola koneksi SQLite dan semua operasi baca-tulis.      Args:         db_pat, Tutup koneksi. Panggil saat shutdown server., Tutup koneksi. Panggil saat shutdown server., Ukuran file DB dalam byte., Ukuran file DB dalam byte., StorageManager, open() dua kali tidak crash — tabel CREATE IF NOT EXISTS. (+3 more)
 
 ### Community 239 - "Community 239"
 Cohesion: 0.5
@@ -793,19 +798,19 @@ Nodes (4): 1. Konteks & Tujuan, Latar belakang, Masalah yang ditemukan, Tujuan r
 
 ### Community 240 - "Community 240"
 Cohesion: 0.05
-Nodes (32): _combined_lifespan(), main(), main_app.py — Orkestrator satu proses: FastAPI + MQTT worker dalam satu perintah, Jalankan semua sistem server dalam satu proses., Blocking MQTT loop — dijalankan di background thread., Ganti lifespan dashboard_server dengan versi yang juga start MQTT thread., _run_mqtt_thread(), get_logger() (+24 more)
+Nodes (33): _combined_lifespan(), main(), main_app.py — Orkestrator satu proses: FastAPI + MQTT worker dalam satu perintah, Jalankan semua sistem server dalam satu proses., Jalankan semua sistem server dalam satu proses., Blocking MQTT loop — dijalankan di background thread., Ganti lifespan dashboard_server dengan versi yang juga start MQTT thread., _run_mqtt_thread() (+25 more)
 
 ### Community 242 - "Community 242"
-Cohesion: 0.18
-Nodes (9): _now_ms(), Simpan satu window rekonstruksi ke tabel `windows`.         Satu window → beber, Simpan satu window rekonstruksi ke tabel `windows`.         Satu window → beber, Catat satu event ke tabel `events`.          event_type contoh:           "NO, Catat satu event ke tabel `events`.          event_type contoh:           "NO, Epoch time dalam milidetik., Epoch time dalam milidetik., _sanitize_node_id() (+1 more)
+Cohesion: 0.09
+Nodes (16): _now_ms(), Simpan satu window rekonstruksi ke tabel `windows`.         Satu window → beber, Simpan satu window rekonstruksi ke tabel `windows`.         Satu window → beber, Catat satu event ke tabel `events`.          event_type contoh:           "NO, Catat satu event ke tabel `events`.          event_type contoh:           "NO, Ambil N event terakhir, opsional filter node_id dan/atau event_type., Ambil N event terakhir, opsional filter node_id dan/atau event_type., Statistik ringkas untuk satu node (berguna untuk dashboard).          Returns (+8 more)
 
 ### Community 243 - "Community 243"
 Cohesion: 0.4
 Nodes (4): Catatan Fitur PPG, PPG Models, Rencana Model, Sinyal Input
 
 ### Community 244 - "Community 244"
-Cohesion: 0.14
-Nodes (12): Registry validasi dengan state per-node untuk monotonicity check.      Buat sa, Registry validasi dengan state per-node untuk monotonicity check.      Buat sa, Validasi payload cs_imu.          Args:             node_id : ID node pengiri, Validasi payload cs_imu.          Args:             node_id : ID node pengiri, Validasi payload cs_ppg.          Args:             node_id : ID node pengiri, Validasi payload cs_ppg.          Args:             node_id : ID node pengiri, Kembalikan salinan counter statistik., Kembalikan salinan counter statistik. (+4 more)
+Cohesion: 0.17
+Nodes (8): Cek apakah ts valid dibandingkan ts terakhir untuk node ini.          Returns:, Cek apakah ts valid dibandingkan ts terakhir untuk node ini.          Returns:, Validasi payload cs_imu.          Args:             node_id : ID node pengiri, Validasi payload cs_imu.          Args:             node_id : ID node pengiri, Validasi payload cs_ppg.          Args:             node_id : ID node pengiri, Validasi payload cs_ppg.          Args:             node_id : ID node pengiri, Jalankan semua layer validasi secara berurutan.         Berhenti lebih awal jik, Jalankan semua layer validasi secara berurutan.         Berhenti lebih awal jik
 
 ### Community 245 - "Community 245"
 Cohesion: 0.17
@@ -836,8 +841,8 @@ Cohesion: 0.33
 Nodes (4): Public API for Compressive Sensing package. Other modules should import CS conc, Rekonstruksi sinyal menggunakan OMP.          Args:             y : (m,) meas, Rekonstruksi sinyal menggunakan LASSO.          Args:             y : (m,) me, reconstruct()
 
 ### Community 261 - "Community 261"
-Cohesion: 0.4
-Nodes (4): notify_event(), notify_window(), Dipanggil setelah window selesai direkonstruksi.     Push payload ke semua /ws/, Dipanggil saat ada event anomali atau validasi gagal.     Push ke semua /ws/eve
+Cohesion: 0.29
+Nodes (6): notify_event(), notify_window(), Dipanggil setelah window selesai direkonstruksi.     Push payload ke semua /ws/, Dipanggil setelah window selesai direkonstruksi.     Push payload ke semua /ws/, Dipanggil saat ada event anomali atau validasi gagal.     Push ke semua /ws/eve, Dipanggil saat ada event anomali atau validasi gagal.     Push ke semua /ws/eve
 
 ### Community 273 - "Community 273"
 Cohesion: 0.14
@@ -936,8 +941,8 @@ Cohesion: 0.2
 Nodes (9): FeatureExtractor, Ekstrak feature vector dari WindowInput berdasarkan schema di config.      Args:, Ekstrak feature vector dari WindowInput berdasarkan schema di config.      Args:, Meta field dengan cast=int: finger (bool) → 0.0 atau 1.0., Raw feature harus ambil elemen ke-index dari sinyal., Sinyal None → pakai default, masuk ke missing list., test_feature_extractor_meta_cast_int(), test_feature_extractor_missing_signal_uses_default() (+1 more)
 
 ### Community 305 - "Community 305"
-Cohesion: 0.25
-Nodes (8): _layer1_schema(), Layer 1: cek field wajib ada., Layer 1: cek field wajib ada., _make_valid_ppg(), Buat payload cs_ppg yang valid., test_layer1_missing_multiple(), test_layer1_ppg_missing_hr(), test_registry_valid_ppg()
+Cohesion: 0.05
+Nodes (43): Catatan untuk Agent, code:python (# GET /api/ml/status), code:block10 (TASK-04 (registry singleton)), code:block2 (1. Ambil semua row dari tabel `windows` WHERE node_id=? AND ), code:python (# Setelah quality assessment, tambah ML inference:), code:python (# Tambah field ml_results ke payload WebSocket), code:css (--ekg-bg: #060809;), code:html (<header id="commandBar">...</header>) (+35 more)
 
 ### Community 306 - "Community 306"
 Cohesion: 0.25
@@ -971,20 +976,40 @@ Nodes (4): Hot-reload model tertentu tanpa menyentuh model lain.         Berguna
 Cohesion: 0.4
 Nodes (5): code:json ({), code:json ({), Kontrak Config JSON, Struktur Lengkap, Struktur Minimal
 
+### Community 315 - "Community 315"
+Cohesion: 0.05
+Nodes (39): 1. Command Bar, 2. Node Cards (Sidebar Kiri), 3. EKG Strip (Detail Panel — Atas), 4. ML Inference Panel (Detail Panel — Tengah Kiri), 5. Vitals Trend Chart (Detail Panel — Tengah Kanan), 6. Activity Timeline (Detail Panel — Tengah Bawah), 7. Reconstruction Quality Grid, 8. Event Log (+31 more)
+
+### Community 316 - "Community 316"
+Cohesion: 0.2
+Nodes (20): _make_assessor(), _make_full_results_and_measurements(), _make_phi(), Buat results (x_hat) dan measurements (y) untuk beberapa sinyal.     noise_scal, Jika satu sinyal rekonstruksinya buruk, report.has_low_quality() = True., mean_relative_error harus rata-rata dari semua sinyal., Tanpa window apapun, tidak crash., PHI acak ternormalisasi — cukup untuk test residual. (+12 more)
+
+### Community 317 - "Community 317"
+Cohesion: 0.13
+Nodes (20): _encode(), _make_sparse_signal(), Jika x_hat salah (noise), residual besar → LOW_QUALITY atau CRITICAL., Rekonstruksi sangat buruk → CRITICAL.     Paksa dengan x_hat = 0 sehingga resid, sparsity_ratio = fraksi elemen non-nol., SNR harus positif untuk rekonstruksi bagus., short_str harus mengandung nama sinyal dan angka., y boleh berupa list Python, bukan hanya ndarray. (+12 more)
+
+### Community 318 - "Community 318"
+Cohesion: 0.14
+Nodes (13): Registry validasi dengan state per-node untuk monotonicity check.      Buat sa, Registry validasi dengan state per-node untuk monotonicity check.      Buat sa, Kembalikan salinan counter statistik., Kembalikan salinan counter statistik., ValidatorRegistry, Simulasi beberapa window berturut-turut — ts maju terus., Jika schema gagal, layer length/finite tidak dijalankan., test_registry_invalid_counts() (+5 more)
+
+### Community 319 - "Community 319"
+Cohesion: 0.25
+Nodes (6): QualityAssessor, Hitung metrik kualitas rekonstruksi CS.      Args:         phi : np.ndarray (, Statistik akumulatif sejak assessor dibuat.         Berguna untuk print ke cons, Satu baris ringkasan statistik global., PHI 1D harus raise ValueError., test_assessor_invalid_phi_shape()
+
 ## Knowledge Gaps
-- **430 isolated node(s):** `version`, `source`, `sourceType`, `skillPath`, `computedHash` (+425 more)
+- **482 isolated node(s):** `version`, `source`, `sourceType`, `skillPath`, `computedHash` (+477 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **79 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `StorageManager` connect `Community 238` to `Community 178`, `Community 225`, `Community 226`, `Community 66`, `Community 208`, `Community 240`, `Community 242`, `Community 274`, `Community 211`, `Community 309`, `Community 212`, `Community 23`, `Community 275`, `Community 217`, `Community 218`, `Community 219`?**
-  _High betweenness centrality (0.030) - this node is a cross-community bridge._
+- **Why does `StorageManager` connect `Community 238` to `Community 178`, `Community 225`, `Community 226`, `Community 66`, `Community 240`, `Community 242`, `Community 274`, `Community 211`, `Community 309`, `Community 212`, `Community 23`, `Community 275`, `Community 217`, `Community 218`, `Community 219`?**
+  _High betweenness centrality (0.033) - this node is a cross-community bridge._
 - **Why does `MLInferenceEngine` connect `Community 247` to `Community 226`, `Community 290`, `Community 294`, `Community 295`, `Community 237`, `Community 304`, `Community 273`, `Community 311`, `Community 281`, `Community 283`?**
-  _High betweenness centrality (0.013) - this node is a cross-community bridge._
-- **Why does `QualityAssessor` connect `Community 23` to `Community 240`, `Community 275`, `Community 212`, `Community 217`, `Community 218`?**
-  _High betweenness centrality (0.013) - this node is a cross-community bridge._
+  _High betweenness centrality (0.016) - this node is a cross-community bridge._
+- **Why does `ValidatorRegistry` connect `Community 318` to `Community 207`, `Community 240`, `Community 275`, `Community 244`, `Community 213`, `Community 246`, `Community 215`, `Community 212`, `Community 218`?**
+  _High betweenness centrality (0.014) - this node is a cross-community bridge._
 - **Are the 49 inferred relationships involving `MLInferenceEngine` (e.g. with `FeatureExtractor` and `InferenceResult`) actually correct?**
   _`MLInferenceEngine` has 49 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 17 inferred relationships involving `StorageManager` (e.g. with `BroadcastHub` and `WindowReport`) actually correct?**
@@ -992,4 +1017,4 @@ _Questions this graph is uniquely positioned to answer:_
 - **Are the 24 inferred relationships involving `str` (e.g. with `get_db_info()` and `.load()`) actually correct?**
   _`str` has 24 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `version`, `source`, `sourceType` to the rest of the system?**
-  _953 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _1015 weakly-connected nodes found - possible documentation gaps or missing edges._

@@ -44,7 +44,7 @@ from core.logger import setup_logging
 
 # Reuse hub dan storage dari dashboard app — tidak buat instance baru
 from apps.dashboard.app import app as _dashboard_app
-from apps.dashboard.hub import hub, storage
+from apps.dashboard.hub import hub, storage, registry
 from apps.reconstruct.notifier import notify_window, notify_event
 
 from apps.reconstruct.processor  import process_window
@@ -91,6 +91,7 @@ async def _combined_lifespan(app: FastAPI):
     # Startup
     storage.open()
     hub.set_loop(asyncio.get_running_loop())
+    registry.scan("server/apps/ml_inference/models/", recursive=True)
 
     mqtt_thread = threading.Thread(
         target  = _run_mqtt_thread,
