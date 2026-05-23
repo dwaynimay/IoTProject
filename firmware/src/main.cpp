@@ -1,31 +1,29 @@
 // File: firmware/src/main.cpp
 
 // =============================================================================
-// main.cpp — Orkestrator v3.0 (Multi-Hop Dynamic Routing)
+// main.cpp — Orkestrator v3.1
 // =============================================================================
 //
-// PERUBAHAN v3.0:
-//   SENSOR NODE:
-//     + taskRssiExchange  → kirim RSSI ke neighbor setiap RSSI_EXCHANGE_MS
-//     + g_routerPtr (extern) → diakses EspNowMesh saat terima RssiReport
-//       dan saat node berperan sebagai RELAY (forward paket neighbor)
+// PERBAIKAN v3.1:
+//   [FIX-1] Gateway: g_mesh.setGatewayChannel(ch) dipanggil setelah
+//           g_mqtt.begin() agar peer ESP-NOW menggunakan channel WiFi
+//           yang benar. Sebelumnya channel = 0 → LoadProhibited crash.
 //
-//   GATEWAY NODE:
-//     + taskBeacon → broadcast beacon setiap BEACON_INTERVAL_MS
-//       agar sensor node bisa mengukur RSSI ke gateway
+// URUTAN INISIALISASI GATEWAY:
+//   1. g_mesh.begin(false)            ← ESP-NOW init, peer ch=1 (sementara)
+//   2. xTaskCreatePinnedToCore(BEACON)← beacon dimulai di ch 1 (sementara)
+//   3. g_mqtt.begin()                 ← WiFi connect → dapat channel asli
+//   4. g_mesh.setGatewayChannel(ch)   ← update semua peer ke channel WiFi asli
+//   5. xTaskCreatePinnedToCore(HANDLER, MQTT, MONITOR)
 //
-// RELAY OPERATION (sensor node):
-//   Saat sensor node terima CS packet dari neighbor (bukan dari gateway),
-//   EspNowMesh._onDataRecv() mendeteksi src MAC = neighbor, bukan gateway,
-//   lalu otomatis memanggil g_mesh.forwardRoutedCs() → wrap + kirim ke gateway.
-//   Ini terjadi di ISR context, sangat cepat.
-//
-// URUTAN INISIALISASI (tidak berubah dari v2):
-//   Sensor: IMU → ESP-NOW → PPG
-//   Gateway: queue → WiFi/MQTT → ESP-NOW
+// URUTAN INISIALISASI SENSOR:
+//   1. g_imu.begin()
+//   2. g_mesh.begin(true)   ← sweep channel + tunggu beacon dari gateway
+//   3. g_ppg.begin()
 // =============================================================================
 
 #include <Arduino.h>
+#include <esp_wifi.h>
 #include "Config.h"
 #include "MeshPackets.h"
 
@@ -35,44 +33,42 @@
 #include "EspNowMesh.h"
 #include "Network_Mqtt.h"
 
-extern void taskCSSender     (void* param);
-extern void taskRssiExchange (void* param);   // ← BARU (sensor)
-extern void taskMeshHandler  (void* param);
-extern void taskMqttPublish  (void* param);
+extern void taskCSSender(void *param);
+extern void taskRssiExchange(void *param);
+extern void taskMeshHandler(void *param);
+extern void taskMqttPublish(void *param);
 
 static constexpr char TAG[] = "MAIN";
-
 
 // =============================================================================
 // Instance & Shared State Global
 // =============================================================================
 
-portMUX_TYPE g_stateMux  = portMUX_INITIALIZER_UNLOCKED;
-ImuSample    g_latestImu = {};
-PpgSample    g_latestPpg = {};
+portMUX_TYPE g_stateMux = portMUX_INITIALIZER_UNLOCKED;
+ImuSample g_latestImu = {};
+PpgSample g_latestPpg = {};
 
 SemaphoreHandle_t g_wire0Mutex = nullptr;
 SemaphoreHandle_t g_wire1Mutex = nullptr;
 
 #if NODE_ROLE == ROLE_SENSOR
-    static SensorMPU   g_imu;
-    static SensorPPG   g_ppg;
-    EspNowMesh         g_mesh;
+static SensorMPU g_imu;
+static SensorPPG g_ppg;
+EspNowMesh g_mesh;
 #endif
 
 #if NODE_ROLE == ROLE_GATEWAY
-    static EspNowMesh  g_mesh;
-    NetworkMqtt        g_mqtt;
-    DynamicRouter*     g_routerPtr = nullptr; // gateway tidak punya router
+static EspNowMesh g_mesh;
+NetworkMqtt g_mqtt;
+DynamicRouter *g_routerPtr = nullptr; // gateway tidak punya router
 #endif
-
 
 // =============================================================================
 // SENSOR NODE — Tasks
 // =============================================================================
 #if NODE_ROLE == ROLE_SENSOR
 
-static void taskReadPPG(void* param)
+static void taskReadPPG(void *param)
 {
     g_watchdog.registerTask();
 
@@ -101,12 +97,12 @@ static void taskReadPPG(void* param)
     }
 }
 
-static void taskReadIMU(void* param)
+static void taskReadIMU(void *param)
 {
     g_watchdog.registerTask();
 
     uint32_t lastReadMs = 0;
-    uint8_t  failCount  = 0;
+    uint8_t failCount = 0;
 
     for (;;)
     {
@@ -144,7 +140,7 @@ static void taskReadIMU(void* param)
     }
 }
 
-static void taskMonitorSensor(void* param)
+static void taskMonitorSensor(void *param)
 {
     for (;;)
     {
@@ -159,23 +155,12 @@ static void taskMonitorSensor(void* param)
 
 #endif // ROLE_SENSOR
 
-
 // =============================================================================
-// GATEWAY NODE — taskBeacon (BARU) + taskMonitor
+// GATEWAY NODE — Tasks
 // =============================================================================
 #if NODE_ROLE == ROLE_GATEWAY
 
-// ---------------------------------------------------------------------------
-// taskBeacon — Broadcast beacon periodik untuk RSSI discovery sensor node
-//
-// Sensor node mengukur RSSI dari beacon ini untuk menentukan seberapa
-// dekat mereka ke gateway. Beacon dikirim via ESP-NOW broadcast.
-//
-// Interval: BEACON_INTERVAL_MS (default 1000ms = 1 Hz)
-// Core: 0 (ringan, tidak butuh core dedicated)
-// Prioritas: rendah — tidak boleh ganggu MQTT publish
-// ---------------------------------------------------------------------------
-static void taskBeacon(void* param)
+static void taskBeacon(void *param)
 {
     static constexpr char BTAG[] = "BEACON";
 
@@ -189,7 +174,6 @@ static void taskBeacon(void* param)
         LOG_EVERY_N(10, LOG_DEBUG, BTAG,
                     "Beacon sent | ok=%s", ok ? "Y" : "N");
 
-        // Tambahkan ini — beri ESP-NOW waktu proses sebelum delay panjang
         vTaskDelay(pdMS_TO_TICKS(20));
 
         if (RoutingCfg::BEACON_INTERVAL_MS > 20)
@@ -197,17 +181,17 @@ static void taskBeacon(void* param)
     }
 }
 
-static void taskMonitorGateway(void* param)
+static void taskMonitorGateway(void *param)
 {
     for (;;)
     {
         g_watchdog.healthCheck();
 
-        const UBaseType_t rawUsed  = uxQueueMessagesWaiting(g_rawQueue);
-        const UBaseType_t rawFree  = uxQueueSpacesAvailable(g_rawQueue);
+        const UBaseType_t rawUsed = uxQueueMessagesWaiting(g_rawQueue);
+        const UBaseType_t rawFree = uxQueueSpacesAvailable(g_rawQueue);
         const UBaseType_t mqttUsed = uxQueueMessagesWaiting(g_mqttQueue);
         const UBaseType_t mqttFree = uxQueueSpacesAvailable(g_mqttQueue);
-        const float       mqttPct  = 100.0f * mqttUsed / (mqttUsed + mqttFree);
+        const float mqttPct = 100.0f * mqttUsed / (mqttUsed + mqttFree);
 
         if (mqttPct > 80.0f)
             LOG_WARN(TAG, "mqttQueue %.0f%% penuh", mqttPct);
@@ -215,14 +199,15 @@ static void taskMonitorGateway(void* param)
         if (!g_mqtt.isWifiConnected())
         {
             static uint32_t wifiDownSince = 0;
-            if (wifiDownSince == 0) wifiDownSince = millis();
+            if (wifiDownSince == 0)
+                wifiDownSince = millis();
             if (millis() - wifiDownSince > 30000)
                 g_watchdog.triggerRestart("WiFi down > 30s");
         }
 
         LOG_INFO(TAG,
                  "rawQ=%u/%u | mqttQ=%u/%u (%.0f%%) | WiFi=%s | heap=%lu KB",
-                 rawUsed,  rawUsed  + rawFree,
+                 rawUsed, rawUsed + rawFree,
                  mqttUsed, mqttUsed + mqttFree, mqttPct,
                  g_mqtt.isWifiConnected() ? "OK" : "DOWN",
                  esp_get_free_heap_size() / 1024);
@@ -233,7 +218,6 @@ static void taskMonitorGateway(void* param)
 
 #endif // ROLE_GATEWAY
 
-
 // =============================================================================
 // setup()
 // =============================================================================
@@ -243,7 +227,7 @@ void setup()
     delay(500);
 
     LOG_INFO(TAG, "================================================");
-    LOG_INFO(TAG, "  Health Monitor Mesh v3.0 — Multi-Hop Routing");
+    LOG_INFO(TAG, "  Health Monitor Mesh v3.1 — Multi-Hop Routing");
     LOG_INFO(TAG, "  Node %d | Role: %s",
              NODE_ID,
              (NODE_ROLE == ROLE_SENSOR) ? "SENSOR" : "GATEWAY");
@@ -266,28 +250,26 @@ void setup()
     if (!g_imu.begin())
         g_watchdog.triggerRestart("MPU6050 init gagal");
 
+    // ESP-NOW: sweep channel untuk temukan gateway
+    // begin(true) akan block sampai beacon ditemukan atau timeout 8s
     if (!g_mesh.begin(true))
         g_watchdog.triggerRestart("ESP-NOW init gagal");
 
     if (!g_ppg.begin())
         LOG_WARN(TAG, "MAX30102 gagal — lanjut tanpa PPG");
 
-    // Sensor tasks
-    xTaskCreatePinnedToCore(taskReadPPG,      "PPG",     StackSize::SENSOR_PPG,
+    xTaskCreatePinnedToCore(taskReadPPG, "PPG", StackSize::SENSOR_PPG,
                             nullptr, TaskPrio::SENSOR_PPG, nullptr, 1);
-    xTaskCreatePinnedToCore(taskReadIMU,      "IMU",     StackSize::SENSOR_IMU,
+    xTaskCreatePinnedToCore(taskReadIMU, "IMU", StackSize::SENSOR_IMU,
                             nullptr, TaskPrio::SENSOR_IMU, nullptr, 1);
-    xTaskCreatePinnedToCore(taskCSSender,     "CS_TX",   StackSize::ESPNOW_TX,
-                            nullptr, TaskPrio::ESPNOW_TX,  nullptr, 0);
-
-    // BARU: task kirim RSSI ke neighbor
+    xTaskCreatePinnedToCore(taskCSSender, "CS_TX", StackSize::ESPNOW_TX,
+                            nullptr, TaskPrio::ESPNOW_TX, nullptr, 0);
     xTaskCreatePinnedToCore(taskRssiExchange, "RSSI_EX", 4096,
-                            nullptr, 1,                    nullptr, 0);
+                            nullptr, 1, nullptr, 0);
+    xTaskCreatePinnedToCore(taskMonitorSensor, "MONITOR", StackSize::MONITOR,
+                            nullptr, 1, nullptr, 0);
 
-    xTaskCreatePinnedToCore(taskMonitorSensor,"MONITOR", StackSize::MONITOR,
-                            nullptr, 1,                    nullptr, 0);
-
-    LOG_INFO(TAG, "Sensor node siap — 5 task terdaftar (termasuk RSSI_EX)");
+    LOG_INFO(TAG, "Sensor node siap — 5 task terdaftar");
 
 // ── GATEWAY NODE ─────────────────────────────────────────────────────────────
 #elif NODE_ROLE == ROLE_GATEWAY
@@ -300,42 +282,63 @@ void setup()
     if (!g_mqttQueue)
         g_watchdog.triggerRestart("Gagal buat g_mqttQueue");
 
-    // === PHASE 2: Early Gateway Beacon Broadcast ===
-    // Inisialisasi ESP-NOW SEBELUM WiFi/MQTT fully ready
-    // Tujuan: mulai broadcast beacon sesegera mungkin agar sensor boot asinkron
-    // dapat mendeteksinya selama sweep window ~8 detik.
-    // WiFi akan diinit di g_mqtt.begin() — ESP-NOW bisa live bersama WiFi.
+    // ── Step 1: Inisialisasi ESP-NOW (WiFi belum aktif) ───────────────────────
+    // begin(false) menggunakan channel sementara (1).
+    // Beacon mulai broadcast di ch 1 — akan diupdate setelah WiFi connect.
     if (!g_mesh.begin(false))
         g_watchdog.triggerRestart("ESP-NOW init gagal");
 
-    // Buat taskBeacon IMMEDIATELY setelah ESP-NOW siap
-    // Jangan tunggu WiFi/MQTT fully connected — beacon penting untuk sensor sync
-    xTaskCreatePinnedToCore(taskBeacon,         "BEACON",  4096,
-                            nullptr, 1,                      nullptr, 0);
-    LOG_DEBUG(TAG, "Beacon task created | gateway channel discovery in progress...");
+    // ── Step 2: Mulai beacon SEBELUM WiFi/MQTT init ───────────────────────────
+    // Tujuan: sensor node yang boot lebih dulu bisa mulai terima beacon
+    // selama proses WiFi connect gateway (bisa 3-10 detik).
+    xTaskCreatePinnedToCore(taskBeacon, "BEACON", 4096,
+                            nullptr, 1, nullptr, 0);
+    LOG_INFO(TAG, "Beacon task dimulai (ch=1 sementara)");
 
-    // Sekarang init WiFi/MQTT (bisa parallel dengan beacon yang sudah broadcasting)
+    // ── Step 3: Inisialisasi WiFi + MQTT ─────────────────────────────────────
     if (!g_mqtt.begin())
         g_watchdog.triggerRestart("WiFi/MQTT init gagal");
 
-    xTaskCreatePinnedToCore(taskMeshHandler,    "HANDLER", StackSize::MQTT_PUB,
-                            nullptr, TaskPrio::MQTT_PUB + 1, nullptr, 1);
-    xTaskCreatePinnedToCore(taskMqttPublish,    "MQTT",    StackSize::MQTT_PUB,
-                            nullptr, TaskPrio::MQTT_PUB,     nullptr, 0);
-    xTaskCreatePinnedToCore(taskMonitorGateway, "MONITOR", StackSize::MONITOR,
-                            nullptr, 1,                      nullptr, 0);
+    // ── Step 4: [FIX-1] Update channel ESP-NOW ke channel WiFi yang asli ─────
+    // Setelah WiFi connect, kita tahu channel yang dipakai router.
+    // Update semua peer (NODE_A, NODE_B, BROADCAST) ke channel ini.
+    {
+        uint8_t ch = 0;
+        wifi_second_chan_t sch;
 
-    LOG_INFO(TAG, "Gateway siap — 4 task (+ BEACON)");
+        if (esp_wifi_get_channel(&ch, &sch) != ESP_OK || ch == 0)
+        {
+            // Fallback: baca dari WiFi object
+            ch = static_cast<uint8_t>(WiFi.channel());
+        }
+
+        if (ch > 0 && ch <= 13)
+        {
+            g_mesh.setGatewayChannel(ch);
+            LOG_INFO(TAG, "Gateway channel dikunci ke ch=%d setelah WiFi connect", ch);
+        }
+        else
+        {
+            LOG_WARN(TAG, "Tidak bisa baca channel WiFi (ch=%d) — peer tetap di ch=1", ch);
+        }
+    }
+
+    // ── Step 5: Task pipeline ─────────────────────────────────────────────────
+    xTaskCreatePinnedToCore(taskMeshHandler, "HANDLER", StackSize::MQTT_PUB,
+                            nullptr, TaskPrio::MQTT_PUB + 1, nullptr, 1);
+    xTaskCreatePinnedToCore(taskMqttPublish, "MQTT", StackSize::MQTT_PUB,
+                            nullptr, TaskPrio::MQTT_PUB, nullptr, 0);
+    xTaskCreatePinnedToCore(taskMonitorGateway, "MONITOR", StackSize::MONITOR,
+                            nullptr, 1, nullptr, 0);
+
+    LOG_INFO(TAG, "Gateway siap — 4 task aktif (+ BEACON)");
     LOG_INFO(TAG, "Pipeline: ISR → rawQ → HANDLER → mqttQ → MQTT");
-    LOG_INFO(TAG, "Beacon: broadcast setiap %lu ms (dimulai saat ESP-NOW ready)",
-             (unsigned long)RoutingCfg::BEACON_INTERVAL_MS);
 
 #endif
 }
 
-
 // =============================================================================
-// loop() — kosong
+// loop() — kosong, semua di FreeRTOS task
 // =============================================================================
 void loop()
 {

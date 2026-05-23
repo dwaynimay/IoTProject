@@ -22,15 +22,15 @@
 // ---------------------------------------------------------------------------
 namespace Timing
 {
-    constexpr uint32_t SEND_INTERVAL_MS  = 200;   // ← UBAH INI untuk kontrol kecepatan kirim
+    constexpr uint32_t SEND_INTERVAL_MS = 200; // ← UBAH INI untuk kontrol kecepatan kirim
 
     // Internal — jangan diubah kecuali ada alasan hardware
-    constexpr uint32_t PPG_POLL_MS       = 0;     // PPG polling secepat mungkin
-    constexpr uint32_t IMU_SAMPLE_MS     = 10;    // 100 Hz internal IMU
-    constexpr uint32_t MQTT_PUBLISH_MS   = 500;   // timeout tunggu queue
-    constexpr uint32_t WIFI_TIMEOUT_MS   = 10000; // batas waktu konek WiFi
-    constexpr uint32_t HEARTBEAT_MS      = 30000; // interval heartbeat node → gateway
-    constexpr uint32_t TIME_SYNC_MS      = 60000; // 1 menit sekali gateway kirim sync
+    constexpr uint32_t PPG_POLL_MS = 0;         // PPG polling secepat mungkin
+    constexpr uint32_t IMU_SAMPLE_MS = 10;      // 100 Hz internal IMU
+    constexpr uint32_t MQTT_PUBLISH_MS = 500;   // timeout tunggu queue
+    constexpr uint32_t WIFI_TIMEOUT_MS = 10000; // batas waktu konek WiFi
+    constexpr uint32_t HEARTBEAT_MS = 30000;    // interval heartbeat node → gateway
+    constexpr uint32_t TIME_SYNC_MS = 60000;    // 1 menit sekali gateway kirim sync
 }
 
 // ---------------------------------------------------------------------------
@@ -57,9 +57,9 @@ namespace TaskPrio
 {
     constexpr uint8_t SENSOR_PPG = 4;
     constexpr uint8_t SENSOR_IMU = 3;
-    constexpr uint8_t ESPNOW_TX  = 2;
-    constexpr uint8_t MQTT_PUB   = 2;
-    constexpr uint8_t MONITOR    = 1;
+    constexpr uint8_t ESPNOW_TX = 2;
+    constexpr uint8_t MQTT_PUB = 2;
+    constexpr uint8_t MONITOR = 1;
 }
 
 // ---------------------------------------------------------------------------
@@ -76,9 +76,9 @@ namespace StackSize
 {
     constexpr uint32_t SENSOR_PPG = 4096;
     constexpr uint32_t SENSOR_IMU = 4096;
-    constexpr uint32_t ESPNOW_TX  = 12288; // CS TX butuh stack besar
-    constexpr uint32_t MQTT_PUB   = 8192;
-    constexpr uint32_t MONITOR    = 4096;
+    constexpr uint32_t ESPNOW_TX = 12288; // CS TX butuh stack besar
+    constexpr uint32_t MQTT_PUB = 8192;
+    constexpr uint32_t MONITOR = 4096;
 }
 
 // ---------------------------------------------------------------------------
@@ -136,9 +136,9 @@ namespace MeshTopology
 
     // Untuk sistem 2-node (saat ini):
     static constexpr uint8_t nodeNeighbors[3][1] = {
-        {0},  // Node 0 (GATEWAY): no neighbors
-        {0},  // Node 1 (SENSOR_A): only gateway (no relay)
-        {0}   // Node 2 (SENSOR_B): only gateway (no relay)
+        {0}, // Node 0 (GATEWAY): no neighbors
+        {0}, // Node 1 (SENSOR_A): only gateway (no relay)
+        {0}  // Node 2 (SENSOR_B): only gateway (no relay)
     };
 
     // Ukuran neighbors per node (untuk bounds checking)

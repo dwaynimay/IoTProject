@@ -19,7 +19,6 @@
 // Mock macros for testing
 #define TEST_TAG "MESH_TEST"
 
-
 // =============================================================================
 // TEST SUITE 1: Channel Sweep Timeout (Phase 1)
 // =============================================================================
@@ -56,7 +55,6 @@ void test_phase1_channel_range_valid()
     }
 }
 
-
 // =============================================================================
 // TEST SUITE 2: Gateway Beacon Timing (Phase 2)
 // =============================================================================
@@ -77,7 +75,6 @@ void test_phase2_beacon_before_discovery_phase()
 
     TEST_ASSERT_LESS_THAN_UINT32(discoveryWindow, firstBeaconArrive);
 }
-
 
 // =============================================================================
 // TEST SUITE 3: N-Node Routing Table (Phase 3)
@@ -142,7 +139,6 @@ void test_phase3_dynamic_router_rssi_update()
     TEST_ASSERT_NOT_NULL((&router));
 }
 
-
 // =============================================================================
 // TEST SUITE 4: Mid-Op Channel Sync (Phase 4)
 // =============================================================================
@@ -172,7 +168,6 @@ void test_phase4_channel_valid_range()
         }
     }
 }
-
 
 // =============================================================================
 // INTEGRATION TEST: Boot Timing Scenario
@@ -234,7 +229,6 @@ void test_integration_3node_mesh()
     TEST_ASSERT_EQUAL(3, MeshTopology::totalNodes);
     TEST_PASS();
 }
-
 
 // =============================================================================
 // SETUP & RUNNER

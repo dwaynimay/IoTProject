@@ -5,33 +5,23 @@
 // EspNowMesh.h — Transport Layer ESP-NOW dengan Multi-Hop Support
 // =============================================================================
 //
-// PERUBAHAN v3.0 (Multi-Hop Dynamic Routing):
-//   BARU:
-//     sendBeacon()      → Gateway kirim beacon periodik
-//     sendRssiReport()  → Node kirim info RSSI ke neighbor
-//     forwardRoutedCs() → Node relay forward paket ke gateway
-//     getRssiFromLastRecv() → Baca RSSI dari paket terakhir diterima
+// PERBAIKAN v3.1:
+//   [FIX-1] begin(false) di gateway tidak lagi memanggil esp_wifi_get_channel()
+//           sebelum WiFi diinisialisasi. Channel sementara = 1.
 //
-//   ARSITEKTUR (Sensor Node):
-//     1. Boot → discovery phase (DISCOVERY_PHASE_MS)
-//        - Terima beacon → ukur RSSI self ke gateway
-//        - Kirim/terima RssiReport dengan neighbor
-//     2. Setiap window:
-//        - DynamicRouter::decide() → DIRECT atau RELAYED
-//        - DIRECT  : sendCsAxis/sendCsPpg → GATEWAY
-//        - RELAYED : sendCsAxis/sendCsPpg → NEIGHBOR
-//                    (neighbor akan forwardRoutedCs → GATEWAY)
+//   [FIX-2] setGatewayChannel(ch) ditambahkan — dipanggil dari main.cpp
+//           setelah g_mqtt.begin() untuk update semua peer ke channel WiFi asli.
 //
-//   ARSITEKTUR (Gateway Node):
-//     1. taskBeacon → sendBeacon() setiap BEACON_INTERVAL_MS
-//     2. _onDataRecv → terima RoutedCsPacket → unwrap → push ke rawQueue
-//        (RoutedCsPacket ditangani transparan, routing info disimpan di header)
+//   [FIX-3] _promiscuousRxCb debounce diperbaiki (lihat EspNowMesh.cpp).
 //
-// CATATAN RSSI:
-//   ESP-NOW tidak expose RSSI di recv callback secara langsung.
-//   Kita pakai workaround: promiscuous mode filter + wifi_pkt_rx_ctrl_t
-//   untuk baca RSSI dari beacon packet.
-//   Lihat _promiscuousRxCb() di EspNowMesh.cpp.
+// URUTAN INISIALISASI GATEWAY (penting):
+//   1. g_mesh.begin(false)         ← ESP-NOW init, channel sementara = 1
+//   2. taskBeacon created          ← mulai broadcast di ch 1 (sementara)
+//   3. g_mqtt.begin()              ← WiFi connect, dapat channel asli (mis. 11)
+//   4. g_mesh.setGatewayChannel(ch)← update semua peer ke ch 11
+//
+// Sensor node tidak perlu setGatewayChannel() karena channel dideteksi
+// via promiscuous callback dari beacon gateway.
 // =============================================================================
 
 #include <Arduino.h>
@@ -57,55 +47,52 @@ public:
 
     // senderMode = true  → sensor node (kirim ke gateway / neighbor)
     // senderMode = false → gateway node (terima dari semua node)
+    // [FIX-1] Gateway: WiFi BELUM harus aktif saat begin() dipanggil.
     bool begin(bool senderMode);
+
+    // ── Channel Management (Gateway Only) ─────────────────────────────────────
+
+    // [FIX-2] Update channel ESP-NOW setelah WiFi gateway terkoneksi.
+    // Panggil SEKALI dari main.cpp setelah g_mqtt.begin() berhasil.
+    // Parameter: channel WiFi yang aktif (dari esp_wifi_get_channel atau WiFi.channel())
+    void setGatewayChannel(uint8_t channel);
 
     // ── Beacon API (Gateway Node Only) ────────────────────────────────────────
 
     // Broadcast beacon ke semua node untuk RSSI discovery.
-    // Panggil setiap BEACON_INTERVAL_MS dari taskBeacon.
     bool sendBeacon();
 
     // ── RSSI Exchange API (Sensor Node) ───────────────────────────────────────
 
-    // Kirim RssiReportPacket ke neighbor node.
-    // rssiToGateway: hasil pengukuran RSSI self ke gateway dari beacon.
     bool sendRssiReport(uint8_t selfNodeId, int8_t rssiToGateway);
 
     // ── CS Send API (Sensor Node) ─────────────────────────────────────────────
-    // Sama seperti v2, tapi sekarang dst bisa GATEWAY atau NEIGHBOR MAC.
-    // Caller (taskCSSender) yang menentukan tujuan berdasarkan RouteDecision.
 
     bool sendCsAxis(uint8_t pktType, uint8_t nodeId,
                     const float y[CS_M], bool fingerOn,
                     uint32_t timestamp,
-                    const uint8_t* dstMac);   // ← NEWпараметер dst MAC
+                    const uint8_t* dstMac);
 
     bool sendCsPpg(uint8_t nodeId, const float yIr[CS_M],
                    int8_t heartRate, bool ppgValid,
                    float spo2, bool fingerOn,
                    uint32_t timestamp,
-                   const uint8_t* dstMac);    // ← NEW parameter dst MAC
+                   const uint8_t* dstMac);
 
-    // ── Relay API (Sensor Node sebagai Relay) ─────────────────────────────────
+    // ── Relay API ─────────────────────────────────────────────────────────────
 
-    // Bungkus inner payload dalam RoutedCsPacket lalu kirim ke gateway.
-    // Dipanggil saat node menerima CS packet dari neighbor (bukan dari gateway).
-    // innerData : pointer ke CS1AxisPacket atau CSPpgPacket yang diterima
-    // innerLen  : panjang inner payload (sizeof(CS1AxisPacket) atau sizeof(CSPpgPacket))
     bool forwardRoutedCs(uint8_t relayNodeId,
                          uint8_t originalNodeId,
                          const uint8_t* innerData,
                          uint8_t innerLen);
 
-    // ── Existing API (tidak berubah) ──────────────────────────────────────────
+    // ── Existing API ──────────────────────────────────────────────────────────
 
     bool sendCombined(const CombinedPacket& pkt);
     bool sendHeartbeat(uint8_t nodeId, uint32_t uptimeS);
 
     // ── RSSI Measurement ──────────────────────────────────────────────────────
 
-    // Baca RSSI dari beacon terakhir yang diterima.
-    // Return RSSI_UNKNOWN jika belum pernah terima beacon.
     int8_t getLastBeaconRssi() const { return _lastBeaconRssi; }
 
     // ── Status ────────────────────────────────────────────────────────────────
@@ -115,21 +102,16 @@ public:
 private:
     bool    _senderMode    = true;
     bool    _lastSendOk    = false;
-    uint8_t _beaconSeqNum  = 0;         // counter untuk gateway beacon
+    uint8_t _beaconSeqNum  = 0;
 
-    // RSSI dari beacon terakhir (diupdate di promiscuous callback)
     volatile int8_t _lastBeaconRssi = RoutingCfg::RSSI_UNKNOWN;
 
     bool _send(const void* data, size_t len, const uint8_t* dstMac);
     bool _addPeer(const uint8_t* mac);
     bool _isPeerRegistered(const uint8_t* mac);
 
-    // Callback ESP-NOW standar
     static void _onDataSent(const uint8_t* mac, esp_now_send_status_t status);
     static void _onDataRecv(const uint8_t* mac, const uint8_t* data, int len);
-
-    // Promiscuous callback untuk baca RSSI dari beacon
-    // ESP-NOW recv callback tidak expose RSSI — workaround via promiscuous mode
     static void _promiscuousRxCb(void* buf, wifi_promiscuous_pkt_type_t type);
 
     static EspNowMesh* _instance;

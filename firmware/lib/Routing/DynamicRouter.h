@@ -36,18 +36,16 @@
 #include <Arduino.h>
 #include "MeshPackets.h"
 
-
 // =============================================================================
 // RouteDecision — Hasil keputusan routing
 // =============================================================================
 struct RouteDecision
 {
-    bool    isDirect;       // true = kirim ke gateway langsung
+    bool isDirect;         // true = kirim ke gateway langsung
     uint8_t nextHopNodeId; // jika !isDirect: node ID relay yang dipakai
-    int8_t  rssiSelf;      // RSSI self ke gateway saat ini (untuk logging)
-    int8_t  rssiNeighbor;  // RSSI neighbor ke gateway saat ini (untuk logging)
+    int8_t rssiSelf;       // RSSI self ke gateway saat ini (untuk logging)
+    int8_t rssiNeighbor;   // RSSI neighbor ke gateway saat ini (untuk logging)
 };
-
 
 // =============================================================================
 // DynamicRouter
@@ -74,32 +72,32 @@ public:
 
     // ── Status ────────────────────────────────────────────────────────────────
 
-    bool    isSelfRssiValid()     const;
-    bool    isNeighborRssiValid() const;
-    bool    isDiscoveryDone()     const;
-    int8_t  selfRssi()            const { return _rssiSelf; }
-    int8_t  neighborRssi()        const { return _rssiNeighbor; }
-    uint8_t neighborNodeId()      const { return _neighborNodeId; }
+    bool isSelfRssiValid() const;
+    bool isNeighborRssiValid() const;
+    bool isDiscoveryDone() const;
+    int8_t selfRssi() const { return _rssiSelf; }
+    int8_t neighborRssi() const { return _rssiNeighbor; }
+    uint8_t neighborNodeId() const { return _neighborNodeId; }
 
     // Print status routing ke Serial (untuk LOG_INFO)
     void printStatus() const;
 
 private:
-    uint8_t  _selfNodeId;
-    uint8_t  _neighborNodeId;   // ID primary neighbor (dari routing table)
-    
+    uint8_t _selfNodeId;
+    uint8_t _neighborNodeId; // ID primary neighbor (dari routing table)
+
     // === PHASE 3: N-Node Mesh Support ===
     // Daftar semua valid neighbors dari routing table
     // Routing engine bisa kemudian pick yang terbaik dari list ini
-    uint8_t  _validNeighbors[4];      // Array neighbor yang valid (dari MeshTopology)
-    uint8_t  _validNeighborCount;     // Jumlah neighbors yang valid
+    uint8_t _validNeighbors[4];  // Array neighbor yang valid (dari MeshTopology)
+    uint8_t _validNeighborCount; // Jumlah neighbors yang valid
 
     // Nilai RSSI terbaru (dBm)
-    int8_t   _rssiSelf     = RoutingCfg::RSSI_UNKNOWN;
-    int8_t   _rssiNeighbor = RoutingCfg::RSSI_UNKNOWN;
+    int8_t _rssiSelf = RoutingCfg::RSSI_UNKNOWN;
+    int8_t _rssiNeighbor = RoutingCfg::RSSI_UNKNOWN;
 
     // Timestamp terakhir update (untuk deteksi stale)
-    uint32_t _lastSelfUpdateMs     = 0;
+    uint32_t _lastSelfUpdateMs = 0;
     uint32_t _lastNeighborUpdateMs = 0;
 
     // Waktu boot — untuk deteksi discovery phase
