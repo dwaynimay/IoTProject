@@ -300,15 +300,23 @@ void setup()
     if (!g_mqttQueue)
         g_watchdog.triggerRestart("Gagal buat g_mqttQueue");
 
-    if (!g_mqtt.begin())
-        g_watchdog.triggerRestart("WiFi/MQTT init gagal");
-
+    // === PHASE 2: Early Gateway Beacon Broadcast ===
+    // Inisialisasi ESP-NOW SEBELUM WiFi/MQTT fully ready
+    // Tujuan: mulai broadcast beacon sesegera mungkin agar sensor boot asinkron
+    // dapat mendeteksinya selama sweep window ~8 detik.
+    // WiFi akan diinit di g_mqtt.begin() — ESP-NOW bisa live bersama WiFi.
     if (!g_mesh.begin(false))
         g_watchdog.triggerRestart("ESP-NOW init gagal");
 
-    // BARU: task beacon untuk RSSI discovery
+    // Buat taskBeacon IMMEDIATELY setelah ESP-NOW siap
+    // Jangan tunggu WiFi/MQTT fully connected — beacon penting untuk sensor sync
     xTaskCreatePinnedToCore(taskBeacon,         "BEACON",  4096,
                             nullptr, 1,                      nullptr, 0);
+    LOG_DEBUG(TAG, "Beacon task created | gateway channel discovery in progress...");
+
+    // Sekarang init WiFi/MQTT (bisa parallel dengan beacon yang sudah broadcasting)
+    if (!g_mqtt.begin())
+        g_watchdog.triggerRestart("WiFi/MQTT init gagal");
 
     xTaskCreatePinnedToCore(taskMeshHandler,    "HANDLER", StackSize::MQTT_PUB,
                             nullptr, TaskPrio::MQTT_PUB + 1, nullptr, 1);
@@ -319,7 +327,7 @@ void setup()
 
     LOG_INFO(TAG, "Gateway siap — 4 task (+ BEACON)");
     LOG_INFO(TAG, "Pipeline: ISR → rawQ → HANDLER → mqttQ → MQTT");
-    LOG_INFO(TAG, "Beacon: broadcast setiap %lu ms",
+    LOG_INFO(TAG, "Beacon: broadcast setiap %lu ms (dimulai saat ESP-NOW ready)",
              (unsigned long)RoutingCfg::BEACON_INTERVAL_MS);
 
 #endif

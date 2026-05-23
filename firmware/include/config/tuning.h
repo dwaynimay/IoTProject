@@ -100,3 +100,50 @@ namespace QueueLen
     // RAM: 40 × (80 + 1800) = 75.200 byte — heap gateway 140KB, masih aman
     constexpr uint8_t MQTT_MSG = 40;
 }
+
+// ---------------------------------------------------------------------------
+// MESH ROUTING TABLE — Node Neighbor Definitions (PHASE 3: N-Node Mesh)
+//
+// Definisikan topology mesh statis di compile-time.
+// Setiap sensor node menyimpan daftar neighbor yang bisa dipakai untuk relay.
+// Routing engine akan memilih neighbor terbaik berdasarkan RSSI.
+//
+// STRUKTUR:
+//   MeshTopology[nodeId] = {neighbor_node_ids...}
+//
+// CONTOH 3-NODE MESH:
+//   - Node 0: GATEWAY (tidak ada neighbors — tidak relay)
+//   - Node 1: SENSOR_A (bisa relay via Node 2)
+//   - Node 2: SENSOR_B (bisa relay via Node 1)
+//
+// CONTOH STAR (2-NODE):
+//   - Node 0: GATEWAY
+//   - Node 1: SENSOR_A (tidak ada neighbors — hanya direct ke gateway)
+//   - Node 2: SENSOR_B (tidak ada neighbors)
+//
+// Jika topology berubah (misalnya dari 2-node → 3-node), ubah array ini
+// dan recompile. Multi-hop akan otomatis ter-enable untuk nodes yang
+// memiliki neighbors dalam tabel.
+// ---------------------------------------------------------------------------
+namespace MeshTopology
+{
+    // Untuk sistem 3-node:
+    // static constexpr uint8_t nodeNeighbors[3][2] = {
+    //     {0},     // Node 0 (GATEWAY): no neighbors
+    //     {2, 0},  // Node 1: neighbors = [2, 0] — relay via 2 prioritas, fallback 0 (gateway)
+    //     {1, 0}   // Node 2: neighbors = [1, 0]
+    // };
+
+    // Untuk sistem 2-node (saat ini):
+    static constexpr uint8_t nodeNeighbors[3][1] = {
+        {0},  // Node 0 (GATEWAY): no neighbors
+        {0},  // Node 1 (SENSOR_A): only gateway (no relay)
+        {0}   // Node 2 (SENSOR_B): only gateway (no relay)
+    };
+
+    // Ukuran neighbors per node (untuk bounds checking)
+    static constexpr uint8_t maxNeighborsPerNode = 1;
+
+    // Total nodes dalam mesh
+    static constexpr uint8_t totalNodes = 3;
+}

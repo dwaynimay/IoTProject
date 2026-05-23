@@ -264,6 +264,11 @@ namespace RoutingCfg
     // Node ID khusus untuk gateway
     static constexpr uint8_t GATEWAY_NODE_ID   = 0;
 
+    // Timeout untuk channel sweep pada sensor node boot (ms)
+    // Extended dari default ~5.2s (13ch × 400ms) untuk mengakomodasi
+    // startup asinkron: sensor dan gateway bisa boot dengan delay 1-5s
+    static constexpr uint32_t CHANNEL_SWEEP_TIMEOUT_MS = 8000;
+
     // Interval gateway kirim beacon (ms)
     static constexpr uint32_t BEACON_INTERVAL_MS = 1000;
 

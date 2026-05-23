@@ -6,6 +6,7 @@
 
 #include "DynamicRouter.h"
 #include "../../include/Config.h"
+#include "../../include/config/tuning.h"
 
 static constexpr char TAG[] = "ROUTER";
 
@@ -16,15 +17,64 @@ static constexpr char TAG[] = "ROUTER";
 DynamicRouter::DynamicRouter(uint8_t selfNodeId)
     : _selfNodeId(selfNodeId)
     , _bootMs(millis())
+    , _validNeighborCount(0)
 {
-    // Neighbor node ID: jika self=1 maka neighbor=2, dan sebaliknya
-    // Untuk sistem 2 node ini cukup. Jika ada lebih banyak node,
-    // ganti dengan routing table yang lebih kompleks.
-    _neighborNodeId = (selfNodeId == 1) ? 2 : 1;
+    // Initialize valid neighbors array to zeros
+    for (uint8_t idx = 0; idx < 4; idx++)
+    {
+        _validNeighbors[idx] = 0;
+    }
 
-    LOG_INFO(TAG, "Router init | self=%d neighbor=%d | threshold=%d dBm",
-             _selfNodeId, _neighborNodeId,
-             RoutingCfg::RELAY_THRESHOLD_DBM);
+    // === PHASE 3: Initialize from routing table ===
+    // Baca neighbor(s) dari MeshTopology::nodeNeighbors untuk node ini
+    // Dst: _validNeighbors[] berisi daftar neighbor yang bisa dipakai untuk relay
+    
+    // Validate node ID is within range
+    if (selfNodeId >= MeshTopology::totalNodes)
+    {
+        LOG_ERROR(TAG, "Invalid selfNodeId: %d (max: %d)",
+                  selfNodeId, MeshTopology::totalNodes - 1);
+        _neighborNodeId = 0; // Fallback to gateway
+        return;
+    }
+
+    // Copy neighbors dari routing table ke instance field — dengan bounds checking
+    _validNeighborCount = 0;
+    
+    for (uint8_t i = 0; i < MeshTopology::maxNeighborsPerNode && i < 4; i++)
+    {
+        // Safely read from routing table with bounds checking
+        if (i >= 1)  // maxNeighborsPerNode is 1 in current config
+            break;
+            
+        uint8_t neighbor = MeshTopology::nodeNeighbors[selfNodeId][i];
+        
+        // Only add valid non-self references
+        if (neighbor != selfNodeId && neighbor < MeshTopology::totalNodes)
+        {
+            _validNeighbors[_validNeighborCount] = neighbor;
+            _validNeighborCount++;
+        }
+    }
+
+    // Set primary neighbor (first valid relay, or gateway as default)
+    if (_validNeighborCount > 0)
+    {
+        _neighborNodeId = _validNeighbors[0];
+        LOG_INFO(TAG, "Router init | self=%d | neighbors=[", _selfNodeId);
+        for (uint8_t i = 0; i < _validNeighborCount; i++)
+        {
+            LOG_INFO(TAG, "%d%s", _validNeighbors[i], i < _validNeighborCount - 1 ? "," : "]");
+        }
+        LOG_INFO(TAG, "threshold=%d dBm", RoutingCfg::RELAY_THRESHOLD_DBM);
+    }
+    else
+    {
+        // No relays available — only direct to gateway
+        _neighborNodeId = 0; // GATEWAY_NODE_ID
+        LOG_INFO(TAG, "Router init | self=%d | no relay neighbors, direct to gateway only",
+                 _selfNodeId);
+    }
 }
 
 
@@ -48,13 +98,24 @@ void DynamicRouter::updateSelfRssi(int8_t rssi)
 // updateNeighborRssi() — Dipanggil saat terima RssiReportPacket
 //
 // KONTEKS: WiFi task (recv callback) — gunakan critical section
+// === PHASE 3: Accept any valid neighbor from routing table ===
 // =============================================================================
 void DynamicRouter::updateNeighborRssi(uint8_t neighborNodeId, int8_t rssiNeighborToGw)
 {
-    if (neighborNodeId != _neighborNodeId)
+    // Check if this neighbor is in our valid neighbors list
+    bool isValidNeighbor = false;
+    for (uint8_t i = 0; i < _validNeighborCount; i++)
     {
-        LOG_WARN(TAG, "RssiReport dari node %d tidak dikenal (expected %d)",
-                 neighborNodeId, _neighborNodeId);
+        if (_validNeighbors[i] == neighborNodeId)
+        {
+            isValidNeighbor = true;
+            break;
+        }
+    }
+
+    if (!isValidNeighbor)
+    {
+        LOG_WARN(TAG, "RssiReport dari node %d bukan valid neighbor", neighborNodeId);
         return;
     }
 

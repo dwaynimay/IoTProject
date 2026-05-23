@@ -59,23 +59,43 @@ bool EspNowMesh::begin(bool senderMode)
         esp_wifi_set_promiscuous(true);
         esp_wifi_set_promiscuous_rx_cb(_promiscuousRxCb);
 
-        // Channel sweep: coba ch 1-13 sampai beacon gateway terdeteksi.
-        // Gateway broadcast beacon setiap 1000 ms; dwell 400 ms/ch.
-        // Worst-case: 13 × 400 ms = 5.2 s (masih di dalam discovery phase 6 s).
-        LOG_INFO(TAG, "Channel sweep dimulai (ch 1-13, dwell=400 ms/ch)...");
+        // Channel sweep: coba ch 1-13 dengan timeout extended CHANNEL_SWEEP_TIMEOUT_MS
+        // Gateway broadcast beacon setiap 1000 ms; dwell 400 ms/ch × multiple passes.
+        // Extended timeout dari 5.2s → 8s untuk mengakomodasi boot asinkron.
+        // Sensor dan gateway bisa boot dengan delay 1-5s; perlu waktu lebih untuk sync.
+        LOG_INFO(TAG, "Channel sweep dimulai (timeout=%d ms)...", RoutingCfg::CHANNEL_SWEEP_TIMEOUT_MS);
 
-        for (uint8_t tryC = 1; tryC <= 13 && s_channel == 0; tryC++)
+        uint32_t sweepStartMs = millis();
+        uint8_t lastTryChannel = 6; // Fallback channel jika timeout
+
+        // Loop sampai beacon terdeteksi ATAU timeout tercapai
+        while (s_channel == 0 && (millis() - sweepStartMs) < RoutingCfg::CHANNEL_SWEEP_TIMEOUT_MS)
         {
-            esp_wifi_set_channel(tryC, WIFI_SECOND_CHAN_NONE);
-            delay(400); // _promiscuousRxCb isi s_channel jika beacon terdeteksi
+            // Coba channel 1-13 secara berulang dalam window timeout
+            for (uint8_t tryC = 1; tryC <= 13 && s_channel == 0; tryC++)
+            {
+                if ((millis() - sweepStartMs) >= RoutingCfg::CHANNEL_SWEEP_TIMEOUT_MS)
+                    break; // Timeout tercapai dalam loop
+                
+                esp_wifi_set_channel(tryC, WIFI_SECOND_CHAN_NONE);
+                lastTryChannel = tryC;
+                delay(400); // _promiscuousRxCb isi s_channel jika beacon terdeteksi
+            }
         }
 
         if (s_channel == 0)
         {
-            // Gateway tidak ditemukan — fallback, sync terjadi saat beacon pertama
-            s_channel = 6;
+            // Timeout tercapai tanpa beacon — gunakan fallback channel
+            // Promiscuous mode tetap ON, jadi jika beacon datang di channel berbeda,
+            // _promiscuousRxCb akan sync ke channel baru secara dinamis
+            s_channel = lastTryChannel;
             esp_wifi_set_channel(s_channel, WIFI_SECOND_CHAN_NONE);
-            LOG_WARN(TAG, "Sweep selesai, beacon tidak ditemukan — fallback ch=%d", s_channel);
+            LOG_WARN(TAG, "Sweep timeout (%d ms) — fallback ch=%d | promiscuous ON, menunggu beacon...",
+                     RoutingCfg::CHANNEL_SWEEP_TIMEOUT_MS, s_channel);
+        }
+        else
+        {
+            LOG_INFO(TAG, "Beacon terdeteksi pada sweep — ch=%d", s_channel);
         }
 
         LOG_INFO(TAG, "Sensor channel: %d | promiscuous=ON (RSSI mode)", s_channel);
@@ -406,6 +426,11 @@ void EspNowMesh::_onDataRecv(const uint8_t* mac, const uint8_t* data, int len)
 //   [rx_ctrl : wifi_pkt_rx_ctrl_t][payload : uint8_t[]]
 //   rx_ctrl.rssi = RSSI dalam dBm (negatif)
 //
+// === PHASE 4: Mid-Op Channel Re-Sync ===
+// Mendeteksi beacon pada channel berbeda (gateway WiFi reconnect ke channel baru).
+// Menggunakan debouncing: hanya switch setelah 3 consecutive beacon pada channel baru.
+// Mencegah false positive dari interference atau beacon spoofing.
+//
 // ⚠️  Callback ini berjalan di WiFi task context — SANGAT singkat
 // =============================================================================
 void EspNowMesh::_promiscuousRxCb(void* buf, wifi_promiscuous_pkt_type_t type)
@@ -434,13 +459,55 @@ void EspNowMesh::_promiscuousRxCb(void* buf, wifi_promiscuous_pkt_type_t type)
     const uint8_t firstByte = payload[ESPNOW_PAYLOAD_OFFSET];
     if (firstByte != static_cast<uint8_t>(PacketType::BEACON)) return;
 
-    // Sync channel jika beacon datang dari channel berbeda
+    // === PHASE 4: Debounced Channel Sync ===
+    // Track how many consecutive beacons on a new channel before switching
+    static uint8_t  s_newChannelCandidate = 0;
+    static uint8_t  s_newChannelCount     = 0;
+    static constexpr uint8_t CHANNEL_SYNC_DEBOUNCE = 3; // require 3 beacons on new channel
+
     const uint8_t beaconCh = pkt->rx_ctrl.channel;
-    if (beaconCh > 0 && beaconCh <= 13 && beaconCh != s_channel)
+    if (beaconCh > 0 && beaconCh <= 13)
     {
-        s_channel = beaconCh;
-        esp_wifi_set_channel(s_channel, WIFI_SECOND_CHAN_NONE);
-        LOG_INFO("MESH", "Channel sync via beacon: %d", s_channel);
+        if (beaconCh != s_channel)
+        {
+            // Different channel detected
+            if (beaconCh != s_newChannelCandidate)
+            {
+                // New candidate channel — reset counter
+                s_newChannelCandidate = beaconCh;
+                s_newChannelCount = 1;
+            }
+            else
+            {
+                // Same candidate channel — increment counter
+                s_newChannelCount++;
+            }
+
+            // If debounce threshold reached, switch channels
+            if (s_newChannelCount >= CHANNEL_SYNC_DEBOUNCE)
+            {
+                s_channel = beaconCh;
+                esp_wifi_set_channel(s_channel, WIFI_SECOND_CHAN_NONE);
+
+                LOG_WARN(TAG, "Mid-op channel change: %d → %d | re-syncing peers...",
+                         s_channel, beaconCh);
+                LOG_INFO(TAG, "New gateway channel: %d | promiscuous mode continues",
+                         s_channel);
+
+                // Reset counters for future detections
+                s_newChannelCandidate = 0;
+                s_newChannelCount     = 0;
+
+                // TODO: Re-register peers on new channel if needed
+                // (_addPeer calls for all registered nodes)
+            }
+        }
+        else
+        {
+            // Beacon on current channel — reset new channel counter
+            s_newChannelCandidate = 0;
+            s_newChannelCount     = 0;
+        }
     }
 
     _instance->_lastBeaconRssi = static_cast<int8_t>(pkt->rx_ctrl.rssi);

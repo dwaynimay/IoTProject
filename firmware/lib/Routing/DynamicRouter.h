@@ -86,7 +86,13 @@ public:
 
 private:
     uint8_t  _selfNodeId;
-    uint8_t  _neighborNodeId;   // ID node tetangga (dihitung dari _selfNodeId)
+    uint8_t  _neighborNodeId;   // ID primary neighbor (dari routing table)
+    
+    // === PHASE 3: N-Node Mesh Support ===
+    // Daftar semua valid neighbors dari routing table
+    // Routing engine bisa kemudian pick yang terbaik dari list ini
+    uint8_t  _validNeighbors[4];      // Array neighbor yang valid (dari MeshTopology)
+    uint8_t  _validNeighborCount;     // Jumlah neighbors yang valid
 
     // Nilai RSSI terbaru (dBm)
     int8_t   _rssiSelf     = RoutingCfg::RSSI_UNKNOWN;
