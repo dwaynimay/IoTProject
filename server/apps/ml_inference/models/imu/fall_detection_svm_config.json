@@ -1,0 +1,310 @@
+{
+    "model_name": "fall_detection_svm_v1",
+    "model_version": "1.0.0",
+    "description": "Fall detection 4-class (duduk/jalan/jatuh/tidur) — SVM RBF, trained on UMA ADL FALL dataset, Chest Accelerometer, window=64s@20Hz",
+    "author": "imu-team",
+    "trained_at": "2026-05",
+    "labels": [
+        "duduk",
+        "jalan",
+        "jatuh",
+        "tidur"
+    ],
+    "features": [
+        {
+            "name": "ax_mean",
+            "type": "stat",
+            "signal": "ax",
+            "stat": "mean"
+        },
+        {
+            "name": "ax_std",
+            "type": "stat",
+            "signal": "ax",
+            "stat": "std"
+        },
+        {
+            "name": "ax_min",
+            "type": "stat",
+            "signal": "ax",
+            "stat": "min"
+        },
+        {
+            "name": "ax_max",
+            "type": "stat",
+            "signal": "ax",
+            "stat": "max"
+        },
+        {
+            "name": "ax_range",
+            "type": "stat",
+            "signal": "ax",
+            "stat": "range"
+        },
+        {
+            "name": "ax_skew",
+            "type": "stat",
+            "signal": "ax",
+            "stat": "skew"
+        },
+        {
+            "name": "ax_kurt",
+            "type": "stat",
+            "signal": "ax",
+            "stat": "kurt"
+        },
+        {
+            "name": "ax_rms",
+            "type": "stat",
+            "signal": "ax",
+            "stat": "rms"
+        },
+        {
+            "name": "ax_q1",
+            "type": "stat",
+            "signal": "ax",
+            "stat": "p25"
+        },
+        {
+            "name": "ax_q3",
+            "type": "stat",
+            "signal": "ax",
+            "stat": "p75"
+        },
+        {
+            "name": "ay_mean",
+            "type": "stat",
+            "signal": "ay",
+            "stat": "mean"
+        },
+        {
+            "name": "ay_std",
+            "type": "stat",
+            "signal": "ay",
+            "stat": "std"
+        },
+        {
+            "name": "ay_min",
+            "type": "stat",
+            "signal": "ay",
+            "stat": "min"
+        },
+        {
+            "name": "ay_max",
+            "type": "stat",
+            "signal": "ay",
+            "stat": "max"
+        },
+        {
+            "name": "ay_range",
+            "type": "stat",
+            "signal": "ay",
+            "stat": "range"
+        },
+        {
+            "name": "ay_skew",
+            "type": "stat",
+            "signal": "ay",
+            "stat": "skew"
+        },
+        {
+            "name": "ay_kurt",
+            "type": "stat",
+            "signal": "ay",
+            "stat": "kurt"
+        },
+        {
+            "name": "ay_rms",
+            "type": "stat",
+            "signal": "ay",
+            "stat": "rms"
+        },
+        {
+            "name": "ay_q1",
+            "type": "stat",
+            "signal": "ay",
+            "stat": "p25"
+        },
+        {
+            "name": "ay_q3",
+            "type": "stat",
+            "signal": "ay",
+            "stat": "p75"
+        },
+        {
+            "name": "az_mean",
+            "type": "stat",
+            "signal": "az",
+            "stat": "mean"
+        },
+        {
+            "name": "az_std",
+            "type": "stat",
+            "signal": "az",
+            "stat": "std"
+        },
+        {
+            "name": "az_min",
+            "type": "stat",
+            "signal": "az",
+            "stat": "min"
+        },
+        {
+            "name": "az_max",
+            "type": "stat",
+            "signal": "az",
+            "stat": "max"
+        },
+        {
+            "name": "az_range",
+            "type": "stat",
+            "signal": "az",
+            "stat": "range"
+        },
+        {
+            "name": "az_skew",
+            "type": "stat",
+            "signal": "az",
+            "stat": "skew"
+        },
+        {
+            "name": "az_kurt",
+            "type": "stat",
+            "signal": "az",
+            "stat": "kurt"
+        },
+        {
+            "name": "az_rms",
+            "type": "stat",
+            "signal": "az",
+            "stat": "rms"
+        },
+        {
+            "name": "az_q1",
+            "type": "stat",
+            "signal": "az",
+            "stat": "p25"
+        },
+        {
+            "name": "az_q3",
+            "type": "stat",
+            "signal": "az",
+            "stat": "p75"
+        },
+        {
+            "name": "smv_mean",
+            "type": "derived",
+            "formula": "smv",
+            "stat": "mean"
+        },
+        {
+            "name": "smv_std",
+            "type": "derived",
+            "formula": "smv",
+            "stat": "std"
+        },
+        {
+            "name": "smv_max",
+            "type": "derived",
+            "formula": "smv",
+            "stat": "max"
+        },
+        {
+            "name": "smv_min",
+            "type": "derived",
+            "formula": "smv",
+            "stat": "min"
+        },
+        {
+            "name": "smv_range",
+            "type": "derived",
+            "formula": "smv",
+            "stat": "range"
+        },
+        {
+            "name": "smv_skew",
+            "type": "derived",
+            "formula": "smv",
+            "stat": "skew"
+        },
+        {
+            "name": "smv_kurt",
+            "type": "derived",
+            "formula": "smv",
+            "stat": "kurt"
+        },
+        {
+            "name": "smv_rms",
+            "type": "derived",
+            "formula": "smv",
+            "stat": "rms"
+        },
+        {
+            "name": "ax_zcr",
+            "type": "stat",
+            "signal": "ax",
+            "stat": "zcr"
+        },
+        {
+            "name": "ay_zcr",
+            "type": "stat",
+            "signal": "ay",
+            "stat": "zcr"
+        },
+        {
+            "name": "az_zcr",
+            "type": "stat",
+            "signal": "az",
+            "stat": "zcr"
+        },
+        {
+            "name": "corr_xy",
+            "type": "cross",
+            "signal_a": "ax",
+            "signal_b": "ay",
+            "cross_type": "corr",
+            "default": 0.0
+        },
+        {
+            "name": "corr_xz",
+            "type": "cross",
+            "signal_a": "ax",
+            "signal_b": "az",
+            "cross_type": "corr",
+            "default": 0.0
+        },
+        {
+            "name": "corr_yz",
+            "type": "cross",
+            "signal_a": "ay",
+            "signal_b": "az",
+            "cross_type": "corr",
+            "default": 0.0
+        }
+    ],
+    "skip_if": {
+        "require_signals": [
+            "ax",
+            "ay",
+            "az"
+        ]
+    },
+    "output": {
+        "confidence_threshold": 0.3
+    },
+    "_training_info": {
+        "window_size": 64,
+        "step_size": 32,
+        "fs_hz": 20,
+        "n_features": 44,
+        "best_params": {
+            "svm__C": 1,
+            "svm__gamma": "scale"
+        },
+        "best_cv_f1": 0.8237,
+        "test_accuracy": 0.8719,
+        "test_f1_macro": 0.8198,
+        "n_train": 2902,
+        "n_test": 726
+    }
+}

@@ -44,7 +44,7 @@ from .schemas   import WindowInput, InferenceResult, MultiModelResult
 from .registry  import ModelRegistry
 from .adapter   import from_processor, from_storage_rows
 from .feature_extractor import FeatureExtractor
-from .wrappers  import SVMActivityWrapper
+# from .wrappers  import SVMActivityWrapper
 
 __all__ = [
     # Core engine
@@ -66,6 +66,6 @@ __all__ = [
     "from_storage_rows",
 
     # Model wrappers
-    "SVMActivityWrapper",
+    # "SVMActivityWrapper",
 ]
 
