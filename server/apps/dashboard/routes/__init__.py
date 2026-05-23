@@ -9,6 +9,7 @@ from .events import router as events_router
 from .metrics import router as metrics_router
 from .maintenance import router as maintenance_router
 from .ml import router as ml_router
+from .calibration import router as calibration_router
 
 router = APIRouter()
 
@@ -19,3 +20,4 @@ router.include_router(events_router)
 router.include_router(metrics_router)
 router.include_router(maintenance_router)
 router.include_router(ml_router)
+router.include_router(calibration_router)
