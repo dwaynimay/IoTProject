@@ -91,41 +91,32 @@ bool EspNowMesh::begin(bool senderMode)
         LOG_INFO(TAG, "Sensor: promiscuous ON, sweep ch=1..13 (timeout=%d ms)",
                  RoutingCfg::CHANNEL_SWEEP_TIMEOUT_MS);
 
-        // Sweep: coba semua channel sampai beacon ditemukan atau timeout
-        const uint32_t sweepStart = millis();
-        uint8_t lastTryCh = 6;
+        LOG_INFO(TAG, "Sensor: mencari beacon gateway (tanpa batas waktu)...");
 
-        while (!s_channelConfirmed &&
-               (millis() - sweepStart) < RoutingCfg::CHANNEL_SWEEP_TIMEOUT_MS)
+        uint32_t sweepRound = 0;
+
+        while (!s_channelConfirmed)
         {
-            for (uint8_t tryC = 1; tryC <= 13; tryC++)
-            {
-                if (s_channelConfirmed) break;
-                if ((millis() - sweepStart) >= RoutingCfg::CHANNEL_SWEEP_TIMEOUT_MS)
-                    break;
+            sweepRound++;
 
+            for (uint8_t tryC = 1; tryC <= 13 && !s_channelConfirmed; tryC++)
+            {
                 esp_wifi_set_channel(tryC, WIFI_SECOND_CHAN_NONE);
-                lastTryCh = tryC;
-                delay(400); // tunggu _promiscuousRxCb
+                delay(400); // 400ms per channel = cukup tangkap 1 beacon
+            }
+
+            // Log progress setiap 3 putaran (~16 detik sekali)
+            if (sweepRound % 3 == 0)
+            {
+                LOG_WARN(TAG,
+                         "Sweep ronde #%lu selesai — beacon belum ditemukan. "
+                         "Pastikan gateway nyala.",
+                         sweepRound);
             }
         }
 
-        if (!s_channelConfirmed)
-        {
-            // Timeout tanpa beacon — gunakan ch=1 sebagai default
-            // _promiscuousRxCb tetap ON dan akan sync saat beacon datang
-            s_channel = 1;
-            esp_wifi_set_channel(s_channel, WIFI_SECOND_CHAN_NONE);
-            LOG_WARN(TAG,
-                     "Sweep timeout (%d ms) — belum terima beacon, "
-                     "default ch=%d | promiscuous tetap ON untuk auto-sync",
-                     RoutingCfg::CHANNEL_SWEEP_TIMEOUT_MS, s_channel);
-        }
-        else
-        {
-            LOG_INFO(TAG, "Beacon ditemukan: ch=%d | sensor siap",
-                     s_channel);
-        }
+        LOG_INFO(TAG, "Beacon ditemukan! ch=%d | lanjut inisialisasi...",
+                 s_channel);
     }
     else
     {
@@ -208,6 +199,13 @@ void EspNowMesh::setGatewayChannel(uint8_t channel)
              oldCh, s_channel, updated);
 }
 
+// =============================================================================
+// Status
+// =============================================================================
+bool EspNowMesh::isChannelConfirmed() const
+{
+    return s_channelConfirmed;
+}
 
 // =============================================================================
 // sendBeacon()
@@ -432,23 +430,39 @@ void EspNowMesh::_promiscuousRxCb(void* buf, wifi_promiscuous_pkt_type_t type)
     const uint8_t*  payload    = ppkt->payload;
     const uint16_t  payloadLen = ppkt->rx_ctrl.sig_len;
 
-    // ESP-NOW data frame: 802.11 header (24B) + LLC (8B) + ESP-NOW hdr (7B) = 39B
-    static constexpr uint16_t OFFSET = 39;
-    if (payloadLen <= OFFSET) return;
+    if (payloadLen < 50) return;
 
-    // Cek apakah ini beacon packet dari gateway
-    if (payload[OFFSET] != static_cast<uint8_t>(PacketType::BEACON)) return;
+    // ── Cek apakah ini frame dari gateway MAC ─────────────────────────────
+    // 802.11 data frame: transmitter address ada di byte 10..15
+    // Bandingkan dengan MacAddr::GATEWAY
+    bool fromGateway = (
+        payload[10] == MacAddr::GATEWAY[0] &&
+        payload[11] == MacAddr::GATEWAY[1] &&
+        payload[12] == MacAddr::GATEWAY[2] &&
+        payload[13] == MacAddr::GATEWAY[3] &&
+        payload[14] == MacAddr::GATEWAY[4] &&
+        payload[15] == MacAddr::GATEWAY[5]
+    );
 
+    if (!fromGateway) return;  // bukan dari gateway, skip
+
+    // ── Frame dari gateway ditemukan — ini sudah cukup untuk sync channel!
+    // Tidak perlu parse isi beacon, cukup tahu frame dari gateway ada di channel ini
     const uint8_t beaconCh = ppkt->rx_ctrl.channel;
+    const int8_t  rssi     = static_cast<int8_t>(ppkt->rx_ctrl.rssi);
+
     if (beaconCh < 1 || beaconCh > 13) return;
 
     // Update RSSI
-    _instance->_lastBeaconRssi = static_cast<int8_t>(ppkt->rx_ctrl.rssi);
+    _instance->_lastBeaconRssi = rssi;
 
-    // Jika channel berbeda → sync
+    // Update router langsung
+    if (g_routerPtr != nullptr)
+        g_routerPtr->updateSelfRssi(rssi);
+
+    // ── Channel sync ──────────────────────────────────────────────────────
     if (beaconCh != s_channel)
     {
-        // Debounce sederhana: tunggu 3 beacon berurutan di channel baru
         static uint8_t s_candCh    = 0;
         static uint8_t s_candCount = 0;
 
@@ -465,34 +479,30 @@ void EspNowMesh::_promiscuousRxCb(void* buf, wifi_promiscuous_pkt_type_t type)
         if (s_candCount >= 3)
         {
             const uint8_t oldCh = s_channel;
-            s_channel          = beaconCh;
-            s_channelConfirmed = true;
-            s_candCh           = 0;
-            s_candCount        = 0;
+            s_channel           = beaconCh;
+            s_channelConfirmed  = true;
+            s_candCh            = 0;
+            s_candCount         = 0;
 
-            // Set WiFi ke channel baru
             esp_wifi_set_channel(s_channel, WIFI_SECOND_CHAN_NONE);
-
-            // [KUNCI FIX] Update semua peer yang sudah terdaftar ke channel baru
-            // Tanpa ini, esp_now_send() → "Peer channel != home channel" → NACK
             _updateAllPeerChannels(s_channel);
 
             LOG_WARN("MESH", "Channel sync: %d → %d | RSSI=%d dBm | peers updated",
-                     oldCh, s_channel,
-                     (int)_instance->_lastBeaconRssi);
+                     oldCh, s_channel, (int)rssi);
         }
     }
     else
     {
-        // Beacon di channel yang benar — konfirmasi
+        // Channel sudah benar
         if (!s_channelConfirmed)
         {
             s_channelConfirmed = true;
-            LOG_INFO("MESH", "Channel %d dikonfirmasi via beacon | RSSI=%d dBm",
-                     s_channel, (int)_instance->_lastBeaconRssi);
+            _updateAllPeerChannels(s_channel);
+
+            LOG_INFO("MESH", "Channel %d confirmed dari gateway frame | RSSI=%d dBm",
+                     s_channel, (int)rssi);
         }
 
-        // Reset debounce counter saat sudah di channel yang benar
         static uint8_t s_candCh    = 0;
         static uint8_t s_candCount = 0;
         s_candCh    = 0;

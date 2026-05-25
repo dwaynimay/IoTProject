@@ -94,6 +94,8 @@ public:
     // ── RSSI Measurement ──────────────────────────────────────────────────────
 
     int8_t getLastBeaconRssi() const { return _lastBeaconRssi; }
+    void resetBeaconRssi() { _lastBeaconRssi = RoutingCfg::RSSI_UNKNOWN; }
+    bool isChannelConfirmed() const;
 
     // ── Status ────────────────────────────────────────────────────────────────
 

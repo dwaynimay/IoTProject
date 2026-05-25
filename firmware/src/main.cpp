@@ -282,46 +282,35 @@ void setup()
     if (!g_mqttQueue)
         g_watchdog.triggerRestart("Gagal buat g_mqttQueue");
 
-    // ── Step 1: Inisialisasi ESP-NOW (WiFi belum aktif) ───────────────────────
-    // begin(false) menggunakan channel sementara (1).
-    // Beacon mulai broadcast di ch 1 — akan diupdate setelah WiFi connect.
+    // ── Step 1: ESP-NOW init ───────────────────────
     if (!g_mesh.begin(false))
         g_watchdog.triggerRestart("ESP-NOW init gagal");
 
-    // ── Step 2: Mulai beacon SEBELUM WiFi/MQTT init ───────────────────────────
-    // Tujuan: sensor node yang boot lebih dulu bisa mulai terima beacon
-    // selama proses WiFi connect gateway (bisa 3-10 detik).
-    xTaskCreatePinnedToCore(taskBeacon, "BEACON", 4096,
-                            nullptr, 1, nullptr, 0);
-    LOG_INFO(TAG, "Beacon task dimulai (ch=1 sementara)");
-
-    // ── Step 3: Inisialisasi WiFi + MQTT ─────────────────────────────────────
+    // ── Step 2: WiFi + MQTT DULU — dapat channel yang benar ───────────────────
     if (!g_mqtt.begin())
         g_watchdog.triggerRestart("WiFi/MQTT init gagal");
 
-    // ── Step 4: [FIX-1] Update channel ESP-NOW ke channel WiFi yang asli ─────
-    // Setelah WiFi connect, kita tahu channel yang dipakai router.
-    // Update semua peer (NODE_A, NODE_B, BROADCAST) ke channel ini.
+    // ── Step 3: Update channel ke nilai WiFi aktual ─────
     {
         uint8_t ch = 0;
         wifi_second_chan_t sch;
 
         if (esp_wifi_get_channel(&ch, &sch) != ESP_OK || ch == 0)
         {
-            // Fallback: baca dari WiFi object
             ch = static_cast<uint8_t>(WiFi.channel());
         }
 
         if (ch > 0 && ch <= 13)
         {
             g_mesh.setGatewayChannel(ch);
-            LOG_INFO(TAG, "Gateway channel dikunci ke ch=%d setelah WiFi connect", ch);
-        }
-        else
-        {
-            LOG_WARN(TAG, "Tidak bisa baca channel WiFi (ch=%d) — peer tetap di ch=1", ch);
+            LOG_INFO(TAG, "Gateway channel dikunci ke ch=%d", ch);
         }
     }
+
+    // ── Step 4: Baru start beacon — SETELAH channel benar ─────────────────────
+    xTaskCreatePinnedToCore(taskBeacon, "BEACON", 4096,
+                            nullptr, 1, nullptr, 0);
+    LOG_INFO(TAG, "Beacon task dimulai (ch aktual WiFi)");
 
     // ── Step 5: Task pipeline ─────────────────────────────────────────────────
     xTaskCreatePinnedToCore(taskMeshHandler, "HANDLER", StackSize::MQTT_PUB,

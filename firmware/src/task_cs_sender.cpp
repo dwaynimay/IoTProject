@@ -178,15 +178,22 @@ void taskRssiExchange(void* param)
 
         const int8_t myRssi = g_mesh.getLastBeaconRssi();
 
-        if (myRssi == RoutingCfg::RSSI_UNKNOWN)
+        // ── SEBELUM: langsung skip jika -127
+        // ── SESUDAH: update router dulu, baru putuskan kirim exchange
+        if (myRssi != RoutingCfg::RSSI_UNKNOWN)
+        {
+            g_router.updateSelfRssi(myRssi);
+        }
+        else
         {
             LOG_EVERY_N(5, LOG_WARN, RTAG,
-                        "Belum terima beacon dari gateway — skip exchange");
-            continue;
+                        "Belum terima beacon dari gateway — RSSI belum valid");
+            // Tidak continue — tetap kirim report ke neighbor
+            // agar neighbor tahu kita ada, walau RSSI belum valid
         }
 
-        g_router.updateSelfRssi(myRssi);
-
+        // Kirim RSSI report ke neighbor terlepas dari validitas RSSI self
+        // Gunakan nilai terbaik yang ada (bisa RSSI_UNKNOWN)
         const bool ok = g_mesh.sendRssiReport(NODE_ID, myRssi);
 
         LOG_DEBUG(RTAG, "RSSI exchange | self=%d dBm | ok=%s",

@@ -10066,19 +10066,46 @@
       "norm_label": "espnowmesh.cpp"
     },
     {
+      "label": "_updateAllPeerChannels()",
+      "file_type": "code",
+      "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
+      "source_location": "L43",
+      "id": "espnowmesh_espnowmesh_updateallpeerchannels",
+      "community": 20,
+      "norm_label": "_updateallpeerchannels()"
+    },
+    {
       "label": "begin()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L44",
+      "source_location": "L69",
       "id": "espnowmesh_espnowmesh_begin",
       "community": 20,
       "norm_label": "begin()"
     },
     {
+      "label": "setGatewayChannel()",
+      "file_type": "code",
+      "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
+      "source_location": "L173",
+      "id": "espnowmesh_espnowmesh_setgatewaychannel",
+      "community": 20,
+      "norm_label": "setgatewaychannel()"
+    },
+    {
+      "label": "isChannelConfirmed()",
+      "file_type": "code",
+      "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
+      "source_location": "L205",
+      "id": "espnowmesh_espnowmesh_ischannelconfirmed",
+      "community": 20,
+      "norm_label": "ischannelconfirmed()"
+    },
+    {
       "label": "sendBeacon()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L163",
+      "source_location": "L213",
       "id": "espnowmesh_espnowmesh_sendbeacon",
       "community": 20,
       "norm_label": "sendbeacon()"
@@ -10087,7 +10114,7 @@
       "label": "sendRssiReport()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L184",
+      "source_location": "L230",
       "id": "espnowmesh_espnowmesh_sendrssireport",
       "community": 20,
       "norm_label": "sendrssireport()"
@@ -10096,7 +10123,7 @@
       "label": "sendCsAxis()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L214",
+      "source_location": "L251",
       "id": "espnowmesh_espnowmesh_sendcsaxis",
       "community": 20,
       "norm_label": "sendcsaxis()"
@@ -10105,7 +10132,7 @@
       "label": "sendCsPpg()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L233",
+      "source_location": "L268",
       "id": "espnowmesh_espnowmesh_sendcsppg",
       "community": 20,
       "norm_label": "sendcsppg()"
@@ -10114,7 +10141,7 @@
       "label": "forwardRoutedCs()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L254",
+      "source_location": "L287",
       "id": "espnowmesh_espnowmesh_forwardroutedcs",
       "community": 20,
       "norm_label": "forwardroutedcs()"
@@ -10123,7 +10150,7 @@
       "label": "sendCombined()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L286",
+      "source_location": "L310",
       "id": "espnowmesh_espnowmesh_sendcombined",
       "community": 20,
       "norm_label": "sendcombined()"
@@ -10132,7 +10159,7 @@
       "label": "sendHeartbeat()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L291",
+      "source_location": "L315",
       "id": "espnowmesh_espnowmesh_sendheartbeat",
       "community": 20,
       "norm_label": "sendheartbeat()"
@@ -10141,7 +10168,7 @@
       "label": "_send()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L305",
+      "source_location": "L329",
       "id": "espnowmesh_espnowmesh_send",
       "community": 20,
       "norm_label": "_send()"
@@ -10150,7 +10177,7 @@
       "label": "_addPeer()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L320",
+      "source_location": "L339",
       "id": "espnowmesh_espnowmesh_addpeer",
       "community": 20,
       "norm_label": "_addpeer()"
@@ -10159,7 +10186,7 @@
       "label": "_isPeerRegistered()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L342",
+      "source_location": "L357",
       "id": "espnowmesh_espnowmesh_ispeerregistered",
       "community": 20,
       "norm_label": "_ispeerregistered()"
@@ -10168,7 +10195,7 @@
       "label": "_onDataSent()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L355",
+      "source_location": "L370",
       "id": "espnowmesh_espnowmesh_ondatasent",
       "community": 20,
       "norm_label": "_ondatasent()"
@@ -10177,7 +10204,7 @@
       "label": "_onDataRecv()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L383",
+      "source_location": "L386",
       "id": "espnowmesh_espnowmesh_ondatarecv",
       "community": 20,
       "norm_label": "_ondatarecv()"
@@ -10186,7 +10213,7 @@
       "label": "_promiscuousRxCb()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L436",
+      "source_location": "L422",
       "id": "espnowmesh_espnowmesh_promiscuousrxcb",
       "community": 20,
       "norm_label": "_promiscuousrxcb()"
@@ -10204,7 +10231,7 @@
       "label": "EspNowMesh()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.h",
-      "source_location": "L51",
+      "source_location": "L41",
       "id": "espnowmesh_espnowmesh_espnowmesh",
       "community": 46,
       "norm_label": "espnowmesh()"
@@ -10222,7 +10249,7 @@
       "label": "PacketType()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/MeshPackets.h",
-      "source_location": "L36",
+      "source_location": "L35",
       "id": "espnowmesh_meshpackets_packettype",
       "community": 46,
       "norm_label": "packettype()"
@@ -10231,7 +10258,7 @@
       "label": "RoutingCfg()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/MeshPackets.h",
-      "source_location": "L262",
+      "source_location": "L257",
       "id": "espnowmesh_meshpackets_routingcfg",
       "community": 46,
       "norm_label": "routingcfg()"
@@ -10654,7 +10681,7 @@
       "label": "DynamicRouter()",
       "file_type": "code",
       "source_file": "firmware/lib/Routing/DynamicRouter.h",
-      "source_location": "L55",
+      "source_location": "L53",
       "id": "routing_dynamicrouter_dynamicrouter",
       "community": 46,
       "norm_label": "dynamicrouter()"
@@ -10663,7 +10690,7 @@
       "label": "updateSelfRssi()",
       "file_type": "code",
       "source_file": "firmware/lib/Routing/DynamicRouter.cpp",
-      "source_location": "L86",
+      "source_location": "L88",
       "id": "routing_dynamicrouter_updateselfrssi",
       "community": 54,
       "norm_label": "updateselfrssi()"
@@ -10672,7 +10699,7 @@
       "label": "updateNeighborRssi()",
       "file_type": "code",
       "source_file": "firmware/lib/Routing/DynamicRouter.cpp",
-      "source_location": "L103",
+      "source_location": "L105",
       "id": "routing_dynamicrouter_updateneighborrssi",
       "community": 54,
       "norm_label": "updateneighborrssi()"
@@ -10681,7 +10708,7 @@
       "label": "decide()",
       "file_type": "code",
       "source_file": "firmware/lib/Routing/DynamicRouter.cpp",
-      "source_location": "L148",
+      "source_location": "L147",
       "id": "routing_dynamicrouter_decide",
       "community": 54,
       "norm_label": "decide()"
@@ -10690,7 +10717,7 @@
       "label": "isSelfRssiValid()",
       "file_type": "code",
       "source_file": "firmware/lib/Routing/DynamicRouter.cpp",
-      "source_location": "L231",
+      "source_location": "L220",
       "id": "routing_dynamicrouter_isselfrssivalid",
       "community": 54,
       "norm_label": "isselfrssivalid()"
@@ -10699,7 +10726,7 @@
       "label": "isNeighborRssiValid()",
       "file_type": "code",
       "source_file": "firmware/lib/Routing/DynamicRouter.cpp",
-      "source_location": "L237",
+      "source_location": "L227",
       "id": "routing_dynamicrouter_isneighborrssivalid",
       "community": 54,
       "norm_label": "isneighborrssivalid()"
@@ -10708,7 +10735,7 @@
       "label": "isDiscoveryDone()",
       "file_type": "code",
       "source_file": "firmware/lib/Routing/DynamicRouter.cpp",
-      "source_location": "L243",
+      "source_location": "L234",
       "id": "routing_dynamicrouter_isdiscoverydone",
       "community": 54,
       "norm_label": "isdiscoverydone()"
@@ -10717,7 +10744,7 @@
       "label": "printStatus()",
       "file_type": "code",
       "source_file": "firmware/lib/Routing/DynamicRouter.cpp",
-      "source_location": "L248",
+      "source_location": "L239",
       "id": "routing_dynamicrouter_printstatus",
       "community": 54,
       "norm_label": "printstatus()"
@@ -10861,7 +10888,7 @@
       "label": "taskReadPPG()",
       "file_type": "code",
       "source_file": "firmware/src/main.cpp",
-      "source_location": "L75",
+      "source_location": "L71",
       "id": "src_main_taskreadppg",
       "community": 55,
       "norm_label": "taskreadppg()"
@@ -10870,7 +10897,7 @@
       "label": "taskReadIMU()",
       "file_type": "code",
       "source_file": "firmware/src/main.cpp",
-      "source_location": "L104",
+      "source_location": "L100",
       "id": "src_main_taskreadimu",
       "community": 55,
       "norm_label": "taskreadimu()"
@@ -10879,7 +10906,7 @@
       "label": "taskMonitorSensor()",
       "file_type": "code",
       "source_file": "firmware/src/main.cpp",
-      "source_location": "L147",
+      "source_location": "L143",
       "id": "src_main_taskmonitorsensor",
       "community": 55,
       "norm_label": "taskmonitorsensor()"
@@ -10888,7 +10915,7 @@
       "label": "taskBeacon()",
       "file_type": "code",
       "source_file": "firmware/src/main.cpp",
-      "source_location": "L178",
+      "source_location": "L163",
       "id": "src_main_taskbeacon",
       "community": 55,
       "norm_label": "taskbeacon()"
@@ -10897,7 +10924,7 @@
       "label": "taskMonitorGateway()",
       "file_type": "code",
       "source_file": "firmware/src/main.cpp",
-      "source_location": "L200",
+      "source_location": "L184",
       "id": "src_main_taskmonitorgateway",
       "community": 55,
       "norm_label": "taskmonitorgateway()"
@@ -10906,7 +10933,7 @@
       "label": "setup()",
       "file_type": "code",
       "source_file": "firmware/src/main.cpp",
-      "source_location": "L240",
+      "source_location": "L224",
       "id": "src_main_setup",
       "community": 55,
       "norm_label": "setup()"
@@ -10915,7 +10942,7 @@
       "label": "loop()",
       "file_type": "code",
       "source_file": "firmware/src/main.cpp",
-      "source_location": "L340",
+      "source_location": "L332",
       "id": "src_main_loop",
       "community": 55,
       "norm_label": "loop()"
@@ -10969,7 +10996,7 @@
       "label": "taskCSSender()",
       "file_type": "code",
       "source_file": "firmware/src/task_cs_sender.cpp",
-      "source_location": "L204",
+      "source_location": "L211",
       "id": "src_task_cs_sender_taskcssender",
       "community": 109,
       "norm_label": "taskcssender()"
@@ -11023,7 +11050,7 @@
       "label": "test_phase1_sweep_timeout_constant_defined()",
       "file_type": "code",
       "source_file": "firmware/test/test_mesh_routing.cpp",
-      "source_location": "L27",
+      "source_location": "L26",
       "id": "test_test_mesh_routing_test_phase1_sweep_timeout_constant_defined",
       "community": 166,
       "norm_label": "test_phase1_sweep_timeout_constant_defined()"
@@ -11032,7 +11059,7 @@
       "label": "test_phase1_sweep_timeout_within_discovery_window()",
       "file_type": "code",
       "source_file": "firmware/test/test_mesh_routing.cpp",
-      "source_location": "L33",
+      "source_location": "L32",
       "id": "test_test_mesh_routing_test_phase1_sweep_timeout_within_discovery_window",
       "community": 166,
       "norm_label": "test_phase1_sweep_timeout_within_discovery_window()"
@@ -11041,7 +11068,7 @@
       "label": "test_phase1_channel_range_valid()",
       "file_type": "code",
       "source_file": "firmware/test/test_mesh_routing.cpp",
-      "source_location": "L48",
+      "source_location": "L47",
       "id": "test_test_mesh_routing_test_phase1_channel_range_valid",
       "community": 166,
       "norm_label": "test_phase1_channel_range_valid()"
@@ -11050,7 +11077,7 @@
       "label": "test_phase2_beacon_interval_consistent()",
       "file_type": "code",
       "source_file": "firmware/test/test_mesh_routing.cpp",
-      "source_location": "L64",
+      "source_location": "L62",
       "id": "test_test_mesh_routing_test_phase2_beacon_interval_consistent",
       "community": 166,
       "norm_label": "test_phase2_beacon_interval_consistent()"
@@ -11059,7 +11086,7 @@
       "label": "test_phase2_beacon_before_discovery_phase()",
       "file_type": "code",
       "source_file": "firmware/test/test_mesh_routing.cpp",
-      "source_location": "L71",
+      "source_location": "L69",
       "id": "test_test_mesh_routing_test_phase2_beacon_before_discovery_phase",
       "community": 166,
       "norm_label": "test_phase2_beacon_before_discovery_phase()"
@@ -11068,7 +11095,7 @@
       "label": "test_phase3_routing_table_defined()",
       "file_type": "code",
       "source_file": "firmware/test/test_mesh_routing.cpp",
-      "source_location": "L86",
+      "source_location": "L83",
       "id": "test_test_mesh_routing_test_phase3_routing_table_defined",
       "community": 166,
       "norm_label": "test_phase3_routing_table_defined()"
@@ -11077,7 +11104,7 @@
       "label": "test_phase3_routing_table_gateway_no_neighbors()",
       "file_type": "code",
       "source_file": "firmware/test/test_mesh_routing.cpp",
-      "source_location": "L94",
+      "source_location": "L91",
       "id": "test_test_mesh_routing_test_phase3_routing_table_gateway_no_neighbors",
       "community": 166,
       "norm_label": "test_phase3_routing_table_gateway_no_neighbors()"
@@ -11086,7 +11113,7 @@
       "label": "test_phase3_routing_table_2node_config()",
       "file_type": "code",
       "source_file": "firmware/test/test_mesh_routing.cpp",
-      "source_location": "L102",
+      "source_location": "L99",
       "id": "test_test_mesh_routing_test_phase3_routing_table_2node_config",
       "community": 166,
       "norm_label": "test_phase3_routing_table_2node_config()"
@@ -11095,7 +11122,7 @@
       "label": "test_phase3_dynamic_router_init_2node()",
       "file_type": "code",
       "source_file": "firmware/test/test_mesh_routing.cpp",
-      "source_location": "L118",
+      "source_location": "L115",
       "id": "test_test_mesh_routing_test_phase3_dynamic_router_init_2node",
       "community": 166,
       "norm_label": "test_phase3_dynamic_router_init_2node()"
@@ -11104,7 +11131,7 @@
       "label": "test_phase3_dynamic_router_rssi_update()",
       "file_type": "code",
       "source_file": "firmware/test/test_mesh_routing.cpp",
-      "source_location": "L130",
+      "source_location": "L127",
       "id": "test_test_mesh_routing_test_phase3_dynamic_router_rssi_update",
       "community": 166,
       "norm_label": "test_phase3_dynamic_router_rssi_update()"
@@ -11113,7 +11140,7 @@
       "label": "test_phase4_debounce_threshold()",
       "file_type": "code",
       "source_file": "firmware/test/test_mesh_routing.cpp",
-      "source_location": "L150",
+      "source_location": "L146",
       "id": "test_test_mesh_routing_test_phase4_debounce_threshold",
       "community": 166,
       "norm_label": "test_phase4_debounce_threshold()"
@@ -11122,7 +11149,7 @@
       "label": "test_phase4_channel_valid_range()",
       "file_type": "code",
       "source_file": "firmware/test/test_mesh_routing.cpp",
-      "source_location": "L158",
+      "source_location": "L154",
       "id": "test_test_mesh_routing_test_phase4_channel_valid_range",
       "community": 166,
       "norm_label": "test_phase4_channel_valid_range()"
@@ -11131,7 +11158,7 @@
       "label": "test_integration_boot_timing_gateway_first()",
       "file_type": "code",
       "source_file": "firmware/test/test_mesh_routing.cpp",
-      "source_location": "L181",
+      "source_location": "L176",
       "id": "test_test_mesh_routing_test_integration_boot_timing_gateway_first",
       "community": 166,
       "norm_label": "test_integration_boot_timing_gateway_first()"
@@ -11140,7 +11167,7 @@
       "label": "test_integration_boot_timing_sensor_first()",
       "file_type": "code",
       "source_file": "firmware/test/test_mesh_routing.cpp",
-      "source_location": "L198",
+      "source_location": "L193",
       "id": "test_test_mesh_routing_test_integration_boot_timing_sensor_first",
       "community": 166,
       "norm_label": "test_integration_boot_timing_sensor_first()"
@@ -11149,7 +11176,7 @@
       "label": "test_integration_3node_mesh()",
       "file_type": "code",
       "source_file": "firmware/test/test_mesh_routing.cpp",
-      "source_location": "L220",
+      "source_location": "L215",
       "id": "test_test_mesh_routing_test_integration_3node_mesh",
       "community": 166,
       "norm_label": "test_integration_3node_mesh()"
@@ -11158,7 +11185,7 @@
       "label": "setup()",
       "file_type": "code",
       "source_file": "firmware/test/test_mesh_routing.cpp",
-      "source_location": "L243",
+      "source_location": "L237",
       "id": "test_test_mesh_routing_setup",
       "community": 166,
       "norm_label": "setup()"
@@ -11167,7 +11194,7 @@
       "label": "loop()",
       "file_type": "code",
       "source_file": "firmware/test/test_mesh_routing.cpp",
-      "source_location": "L276",
+      "source_location": "L270",
       "id": "test_test_mesh_routing_loop",
       "community": 166,
       "norm_label": "loop()"
@@ -11205,7 +11232,7 @@
       "source_file": "server/apps/main_app.py",
       "source_location": "L1",
       "id": "server_apps_main_app_py",
-      "community": 205,
+      "community": 240,
       "norm_label": "main_app.py"
     },
     {
@@ -11214,7 +11241,7 @@
       "source_file": "server/apps/main_app.py",
       "source_location": "L65",
       "id": "apps_main_app_run_mqtt_thread",
-      "community": 205,
+      "community": 240,
       "norm_label": "_run_mqtt_thread()"
     },
     {
@@ -11223,7 +11250,7 @@
       "source_file": "server/apps/main_app.py",
       "source_location": "L87",
       "id": "apps_main_app_combined_lifespan",
-      "community": 205,
+      "community": 240,
       "norm_label": "_combined_lifespan()"
     },
     {
@@ -11232,7 +11259,7 @@
       "source_file": "server/apps/main_app.py",
       "source_location": "L140",
       "id": "apps_main_app_main",
-      "community": 205,
+      "community": 240,
       "norm_label": "main()"
     },
     {
@@ -11241,7 +11268,7 @@
       "source_file": "server/apps/main_app.py",
       "source_location": "L1",
       "id": "apps_main_app_rationale_1",
-      "community": 205,
+      "community": 240,
       "norm_label": "main_app.py \u2014 orkestrator satu proses: fastapi + mqtt worker dalam satu perintah"
     },
     {
@@ -11250,7 +11277,7 @@
       "source_file": "server/apps/main_app.py",
       "source_location": "L66",
       "id": "apps_main_app_rationale_66",
-      "community": 205,
+      "community": 240,
       "norm_label": "blocking mqtt loop \u2014 dijalankan di background thread."
     },
     {
@@ -11259,7 +11286,7 @@
       "source_file": "server/apps/main_app.py",
       "source_location": "L88",
       "id": "apps_main_app_rationale_88",
-      "community": 205,
+      "community": 240,
       "norm_label": "ganti lifespan dashboard_server dengan versi yang juga start mqtt thread."
     },
     {
@@ -11268,7 +11295,7 @@
       "source_file": "server/apps/main_app.py",
       "source_location": "L141",
       "id": "apps_main_app_rationale_141",
-      "community": 205,
+      "community": 240,
       "norm_label": "jalankan semua sistem server dalam satu proses."
     },
     {
@@ -12051,7 +12078,7 @@
       "source_file": "server/apps/ml_inference/engine.py",
       "source_location": "L97",
       "id": "ml_inference_engine_mlinferenceengine_load",
-      "community": 273,
+      "community": 205,
       "norm_label": ".load()"
     },
     {
@@ -12060,7 +12087,7 @@
       "source_file": "server/apps/ml_inference/engine.py",
       "source_location": "L160",
       "id": "ml_inference_engine_mlinferenceengine_unload",
-      "community": 237,
+      "community": 327,
       "norm_label": ".unload()"
     },
     {
@@ -12069,7 +12096,7 @@
       "source_file": "server/apps/ml_inference/engine.py",
       "source_location": "L169",
       "id": "ml_inference_engine_mlinferenceengine_predict",
-      "community": 283,
+      "community": 324,
       "norm_label": ".predict()"
     },
     {
@@ -12078,7 +12105,7 @@
       "source_file": "server/apps/ml_inference/engine.py",
       "source_location": "L248",
       "id": "ml_inference_engine_mlinferenceengine_predict_batch",
-      "community": 283,
+      "community": 324,
       "norm_label": ".predict_batch()"
     },
     {
@@ -12141,7 +12168,7 @@
       "source_file": "server/apps/ml_inference/engine.py",
       "source_location": "L395",
       "id": "ml_inference_engine_mlinferenceengine_check_skip",
-      "community": 283,
+      "community": 324,
       "norm_label": "._check_skip()"
     },
     {
@@ -12186,7 +12213,7 @@
       "source_file": "server/apps/ml_inference/engine.py",
       "source_location": "L102",
       "id": "ml_inference_engine_rationale_102",
-      "community": 273,
+      "community": 205,
       "norm_label": "load model .pkl dan manifest json.          thread-safe: assign atomik di akhir"
     },
     {
@@ -12195,7 +12222,7 @@
       "source_file": "server/apps/ml_inference/engine.py",
       "source_location": "L161",
       "id": "ml_inference_engine_rationale_161",
-      "community": 237,
+      "community": 327,
       "norm_label": "hapus model dari memori."
     },
     {
@@ -12204,7 +12231,7 @@
       "source_file": "server/apps/ml_inference/engine.py",
       "source_location": "L170",
       "id": "ml_inference_engine_rationale_170",
-      "community": 283,
+      "community": 324,
       "norm_label": "infer satu window. thread-safe (read-only akses ke model).          returns infe"
     },
     {
@@ -12213,7 +12240,7 @@
       "source_file": "server/apps/ml_inference/engine.py",
       "source_location": "L254",
       "id": "ml_inference_engine_rationale_254",
-      "community": 283,
+      "community": 324,
       "norm_label": "infer batch window. lebih efisien untuk data sqlite.          jika model menduku"
     },
     {
@@ -12222,7 +12249,7 @@
       "source_file": "server/apps/ml_inference/engine.py",
       "source_location": "L396",
       "id": "ml_inference_engine_rationale_396",
-      "community": 283,
+      "community": 324,
       "norm_label": "cek apakah window harus di-skip berdasarkan config skip_if.         return strin"
     },
     {
@@ -12303,7 +12330,7 @@
       "source_file": "server/apps/ml_inference/feature_extractor.py",
       "source_location": "L195",
       "id": "ml_inference_feature_extractor_featureextractor",
-      "community": 285,
+      "community": 205,
       "norm_label": "featureextractor"
     },
     {
@@ -12312,7 +12339,7 @@
       "source_file": "server/apps/ml_inference/feature_extractor.py",
       "source_location": "L207",
       "id": "ml_inference_feature_extractor_featureextractor_init",
-      "community": 285,
+      "community": 205,
       "norm_label": ".__init__()"
     },
     {
@@ -12402,7 +12429,7 @@
       "source_file": "server/apps/ml_inference/feature_extractor.py",
       "source_location": "L196",
       "id": "ml_inference_feature_extractor_rationale_196",
-      "community": 285,
+      "community": 205,
       "norm_label": "ekstrak feature vector dari windowinput berdasarkan schema di config.      args:"
     },
     {
@@ -12564,7 +12591,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L71",
       "id": "ml_inference_registry_modelentry",
-      "community": 294,
+      "community": 319,
       "norm_label": "_modelentry"
     },
     {
@@ -12573,7 +12600,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L74",
       "id": "ml_inference_registry_modelentry_init",
-      "community": 294,
+      "community": 319,
       "norm_label": ".__init__()"
     },
     {
@@ -12582,7 +12609,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L83",
       "id": "ml_inference_registry_modelentry_load",
-      "community": 294,
+      "community": 319,
       "norm_label": ".load()"
     },
     {
@@ -12600,7 +12627,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L96",
       "id": "ml_inference_registry_modelentry_info",
-      "community": 294,
+      "community": 319,
       "norm_label": ".info()"
     },
     {
@@ -12627,7 +12654,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L132",
       "id": "ml_inference_registry_modelregistry_register",
-      "community": 294,
+      "community": 319,
       "norm_label": ".register()"
     },
     {
@@ -12636,7 +12663,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L168",
       "id": "ml_inference_registry_modelregistry_scan",
-      "community": 294,
+      "community": 319,
       "norm_label": ".scan()"
     },
     {
@@ -12645,7 +12672,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L231",
       "id": "ml_inference_registry_modelregistry_unregister",
-      "community": 294,
+      "community": 319,
       "norm_label": ".unregister()"
     },
     {
@@ -12654,7 +12681,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L244",
       "id": "ml_inference_registry_modelregistry_reload",
-      "community": 294,
+      "community": 325,
       "norm_label": ".reload()"
     },
     {
@@ -12663,7 +12690,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L258",
       "id": "ml_inference_registry_modelregistry_reload_all",
-      "community": 294,
+      "community": 325,
       "norm_label": ".reload_all()"
     },
     {
@@ -12672,7 +12699,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L264",
       "id": "ml_inference_registry_modelregistry_enable",
-      "community": 294,
+      "community": 319,
       "norm_label": ".enable()"
     },
     {
@@ -12681,7 +12708,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L271",
       "id": "ml_inference_registry_modelregistry_disable",
-      "community": 294,
+      "community": 319,
       "norm_label": ".disable()"
     },
     {
@@ -12771,7 +12798,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L72",
       "id": "ml_inference_registry_rationale_72",
-      "community": 294,
+      "community": 319,
       "norm_label": "satu slot di registry: engine + path + status."
     },
     {
@@ -12789,7 +12816,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L140",
       "id": "ml_inference_registry_rationale_140",
-      "community": 294,
+      "community": 319,
       "norm_label": "daftarkan satu model ke registry.          args:             model_path  : path"
     },
     {
@@ -12798,7 +12825,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L175",
       "id": "ml_inference_registry_rationale_175",
-      "community": 294,
+      "community": 319,
       "norm_label": "scan folder dan auto-register semua pasangan .pkl + config.          konvensi pe"
     },
     {
@@ -12807,7 +12834,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L232",
       "id": "ml_inference_registry_rationale_232",
-      "community": 294,
+      "community": 319,
       "norm_label": "hapus model dari registry dan bebaskan memori."
     },
     {
@@ -12816,7 +12843,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L245",
       "id": "ml_inference_registry_rationale_245",
-      "community": 294,
+      "community": 325,
       "norm_label": "hot-reload model tertentu tanpa menyentuh model lain.         berguna saat .pkl"
     },
     {
@@ -12825,7 +12852,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L259",
       "id": "ml_inference_registry_rationale_259",
-      "community": 294,
+      "community": 325,
       "norm_label": "reload semua model. return dict model_name \u2192 sukses."
     },
     {
@@ -12834,7 +12861,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L265",
       "id": "ml_inference_registry_rationale_265",
-      "community": 294,
+      "community": 319,
       "norm_label": "aktifkan model. model yang disabled di-skip saat predict."
     },
     {
@@ -12843,7 +12870,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L272",
       "id": "ml_inference_registry_rationale_272",
-      "community": 294,
+      "community": 319,
       "norm_label": "nonaktifkan model sementara tanpa unload dari memori."
     },
     {
@@ -13653,7 +13680,7 @@
       "source_file": "server/apps/reconstruct/listener.py",
       "source_location": "L1",
       "id": "server_apps_reconstruct_listener_py",
-      "community": 240,
+      "community": 242,
       "norm_label": "listener.py"
     },
     {
@@ -13662,7 +13689,7 @@
       "source_file": "server/apps/reconstruct/listener.py",
       "source_location": "L28",
       "id": "reconstruct_listener_run",
-      "community": 240,
+      "community": 242,
       "norm_label": "run()"
     },
     {
@@ -13671,7 +13698,7 @@
       "source_file": "server/apps/reconstruct/listener.py",
       "source_location": "L1",
       "id": "reconstruct_listener_rationale_1",
-      "community": 240,
+      "community": 242,
       "norm_label": "listener.py \u2014 mqtt subscribe + dispatch ke nodestate.  tanggung jawab tunggal:"
     },
     {
@@ -13680,7 +13707,7 @@
       "source_file": "server/apps/reconstruct/listener.py",
       "source_location": "L40",
       "id": "reconstruct_listener_rationale_40",
-      "community": 240,
+      "community": 242,
       "norm_label": "jalankan mqtt listener (blocking \u2014 panggil dari thread atau main).      args:"
     },
     {
@@ -13689,7 +13716,7 @@
       "source_file": "server/apps/reconstruct/node_state.py",
       "source_location": "L1",
       "id": "server_apps_reconstruct_node_state_py",
-      "community": 240,
+      "community": 242,
       "norm_label": "node_state.py"
     },
     {
@@ -13698,7 +13725,7 @@
       "source_file": "server/apps/reconstruct/node_state.py",
       "source_location": "L21",
       "id": "reconstruct_node_state_nodestate",
-      "community": 240,
+      "community": 316,
       "norm_label": "nodestate"
     },
     {
@@ -13707,7 +13734,7 @@
       "source_file": "server/apps/reconstruct/node_state.py",
       "source_location": "L33",
       "id": "reconstruct_node_state_nodestate_init",
-      "community": 240,
+      "community": 316,
       "norm_label": ".__init__()"
     },
     {
@@ -13716,7 +13743,7 @@
       "source_file": "server/apps/reconstruct/node_state.py",
       "source_location": "L56",
       "id": "reconstruct_node_state_nodestate_on_imu",
-      "community": 240,
+      "community": 316,
       "norm_label": ".on_imu()"
     },
     {
@@ -13725,7 +13752,7 @@
       "source_file": "server/apps/reconstruct/node_state.py",
       "source_location": "L73",
       "id": "reconstruct_node_state_nodestate_on_ppg",
-      "community": 240,
+      "community": 316,
       "norm_label": ".on_ppg()"
     },
     {
@@ -13734,7 +13761,7 @@
       "source_file": "server/apps/reconstruct/node_state.py",
       "source_location": "L92",
       "id": "reconstruct_node_state_nodestate_try_dispatch",
-      "community": 240,
+      "community": 316,
       "norm_label": "._try_dispatch()"
     },
     {
@@ -13743,7 +13770,7 @@
       "source_file": "server/apps/reconstruct/node_state.py",
       "source_location": "L1",
       "id": "reconstruct_node_state_rationale_1",
-      "community": 240,
+      "community": 242,
       "norm_label": "node_state.py \u2014 state management per node: buffer imu/ppg, timestamp spread chec"
     },
     {
@@ -13752,7 +13779,7 @@
       "source_file": "server/apps/reconstruct/node_state.py",
       "source_location": "L22",
       "id": "reconstruct_node_state_rationale_22",
-      "community": 240,
+      "community": 316,
       "norm_label": "buffer dan state per node sensor.      args:         node_id      : id node ("
     },
     {
@@ -13761,7 +13788,7 @@
       "source_file": "server/apps/reconstruct/node_state.py",
       "source_location": "L57",
       "id": "reconstruct_node_state_rationale_57",
-      "community": 240,
+      "community": 316,
       "norm_label": "terima payload cs_imu, validasi, simpan ke buffer."
     },
     {
@@ -13770,7 +13797,7 @@
       "source_file": "server/apps/reconstruct/node_state.py",
       "source_location": "L74",
       "id": "reconstruct_node_state_rationale_74",
-      "community": 240,
+      "community": 316,
       "norm_label": "terima payload cs_ppg, validasi, simpan ke buffer."
     },
     {
@@ -13779,7 +13806,7 @@
       "source_file": "server/apps/reconstruct/node_state.py",
       "source_location": "L93",
       "id": "reconstruct_node_state_rationale_93",
-      "community": 240,
+      "community": 316,
       "norm_label": "cek apakah kedua buffer siap. jika ya, dispatch ke processor."
     },
     {
@@ -13833,7 +13860,7 @@
       "source_file": "server/apps/reconstruct/processor.py",
       "source_location": "L1",
       "id": "server_apps_reconstruct_processor_py",
-      "community": 240,
+      "community": 242,
       "norm_label": "processor.py"
     },
     {
@@ -13842,7 +13869,7 @@
       "source_file": "server/apps/reconstruct/processor.py",
       "source_location": "L41",
       "id": "reconstruct_processor_process_window",
-      "community": 240,
+      "community": 242,
       "norm_label": "process_window()"
     },
     {
@@ -13851,7 +13878,7 @@
       "source_file": "server/apps/reconstruct/processor.py",
       "source_location": "L1",
       "id": "reconstruct_processor_rationale_1",
-      "community": 240,
+      "community": 242,
       "norm_label": "processor.py \u2014 logika rekonstruksi, quality assessment, storage, dan dashboard p"
     },
     {
@@ -13860,7 +13887,7 @@
       "source_file": "server/apps/reconstruct/processor.py",
       "source_location": "L51",
       "id": "reconstruct_processor_rationale_51",
-      "community": 240,
+      "community": 242,
       "norm_label": "rekonstruksi satu window cs, nilai kualitas, simpan, dan push ke dashboard."
     },
     {
@@ -13887,7 +13914,7 @@
       "source_file": "server/apps/reconstruct/__main__.py",
       "source_location": "L1",
       "id": "server_apps_reconstruct_main_py",
-      "community": 240,
+      "community": 242,
       "norm_label": "__main__.py"
     },
     {
@@ -13896,7 +13923,7 @@
       "source_file": "server/apps/reconstruct/__main__.py",
       "source_location": "L22",
       "id": "reconstruct_main_main",
-      "community": 205,
+      "community": 240,
       "norm_label": "main()"
     },
     {
@@ -13905,7 +13932,7 @@
       "source_file": "server/apps/reconstruct/__main__.py",
       "source_location": "L1",
       "id": "reconstruct_main_rationale_1",
-      "community": 240,
+      "community": 242,
       "norm_label": "entry point: python -m apps.reconstruct  inisialisasi singleton (validator, as"
     },
     {
@@ -13914,7 +13941,7 @@
       "source_file": "server/apps/reconstruct/__main__.py",
       "source_location": "L23",
       "id": "reconstruct_main_rationale_23",
-      "community": 205,
+      "community": 240,
       "norm_label": "setup logging, singleton, lalu jalankan listener (blocking)."
     },
     {
@@ -13986,7 +14013,7 @@
       "source_file": "server/core/logger.py",
       "source_location": "L1",
       "id": "server_core_logger_py",
-      "community": 205,
+      "community": 240,
       "norm_label": "logger.py"
     },
     {
@@ -13995,7 +14022,7 @@
       "source_file": "server/core/logger.py",
       "source_location": "L12",
       "id": "core_logger_setup_logging",
-      "community": 205,
+      "community": 240,
       "norm_label": "setup_logging()"
     },
     {
@@ -14004,7 +14031,7 @@
       "source_file": "server/core/logger.py",
       "source_location": "L28",
       "id": "core_logger_get_logger",
-      "community": 205,
+      "community": 240,
       "norm_label": "get_logger()"
     },
     {
@@ -14013,7 +14040,7 @@
       "source_file": "server/core/logger.py",
       "source_location": "L1",
       "id": "core_logger_rationale_1",
-      "community": 205,
+      "community": 240,
       "norm_label": "setup logging stdlib terpusat untuk seluruh server."
     },
     {
@@ -14022,7 +14049,7 @@
       "source_file": "server/core/logger.py",
       "source_location": "L13",
       "id": "core_logger_rationale_13",
-      "community": 205,
+      "community": 240,
       "norm_label": "panggil sekali di entry point (apps/*/___main__.py).     semua modul lain cukup"
     },
     {
@@ -14031,7 +14058,7 @@
       "source_file": "server/core/logger.py",
       "source_location": "L29",
       "id": "core_logger_rationale_29",
-      "community": 205,
+      "community": 240,
       "norm_label": "shortcut: logger = get_logger(__name__)"
     },
     {
@@ -14112,7 +14139,7 @@
       "source_file": "server/core/quality.py",
       "source_location": "L126",
       "id": "core_quality_signalmetric_short_str",
-      "community": 23,
+      "community": 317,
       "norm_label": ".short_str()"
     },
     {
@@ -14193,7 +14220,7 @@
       "source_file": "server/core/quality.py",
       "source_location": "L210",
       "id": "core_quality_windowreport_detail_lines",
-      "community": 23,
+      "community": 317,
       "norm_label": ".detail_lines()"
     },
     {
@@ -14202,7 +14229,7 @@
       "source_file": "server/core/quality.py",
       "source_location": "L219",
       "id": "core_quality_qualityassessor",
-      "community": 23,
+      "community": 322,
       "norm_label": "qualityassessor"
     },
     {
@@ -14211,7 +14238,7 @@
       "source_file": "server/core/quality.py",
       "source_location": "L234",
       "id": "core_quality_qualityassessor_init",
-      "community": 23,
+      "community": 322,
       "norm_label": ".__init__()"
     },
     {
@@ -14238,7 +14265,7 @@
       "source_file": "server/core/quality.py",
       "source_location": "L357",
       "id": "core_quality_qualityassessor_global_stats",
-      "community": 23,
+      "community": 322,
       "norm_label": ".global_stats()"
     },
     {
@@ -14247,7 +14274,7 @@
       "source_file": "server/core/quality.py",
       "source_location": "L375",
       "id": "core_quality_qualityassessor_stats_summary",
-      "community": 23,
+      "community": 322,
       "norm_label": ".stats_summary()"
     },
     {
@@ -14265,7 +14292,7 @@
       "source_file": "server/core/quality.py",
       "source_location": "L127",
       "id": "core_quality_rationale_127",
-      "community": 23,
+      "community": 317,
       "norm_label": "ringkasan satu baris untuk logging."
     },
     {
@@ -14301,7 +14328,7 @@
       "source_file": "server/core/quality.py",
       "source_location": "L211",
       "id": "core_quality_rationale_211",
-      "community": 23,
+      "community": 317,
       "norm_label": "satu baris per sinyal untuk log verbose."
     },
     {
@@ -14310,7 +14337,7 @@
       "source_file": "server/core/quality.py",
       "source_location": "L220",
       "id": "core_quality_rationale_220",
-      "community": 23,
+      "community": 322,
       "norm_label": "hitung metrik kualitas rekonstruksi cs.      args:         phi : np.ndarray ("
     },
     {
@@ -14337,7 +14364,7 @@
       "source_file": "server/core/quality.py",
       "source_location": "L358",
       "id": "core_quality_rationale_358",
-      "community": 23,
+      "community": 322,
       "norm_label": "statistik akumulatif sejak assessor dibuat.         berguna untuk print ke cons"
     },
     {
@@ -14346,7 +14373,7 @@
       "source_file": "server/core/quality.py",
       "source_location": "L376",
       "id": "core_quality_rationale_376",
-      "community": 23,
+      "community": 322,
       "norm_label": "satu baris ringkasan statistik global."
     },
     {
@@ -14364,7 +14391,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L113",
       "id": "core_storage_storagemanager",
-      "community": 238,
+      "community": 320,
       "norm_label": "storagemanager"
     },
     {
@@ -14373,7 +14400,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L122",
       "id": "core_storage_storagemanager_init",
-      "community": 238,
+      "community": 320,
       "norm_label": ".__init__()"
     },
     {
@@ -14389,142 +14416,142 @@
       "label": ".close()",
       "file_type": "code",
       "source_file": "server/core/storage.py",
-      "source_location": "L149",
+      "source_location": "L150",
       "id": "core_storage_storagemanager_close",
-      "community": 238,
+      "community": 320,
       "norm_label": ".close()"
     },
     {
       "label": ".__enter__()",
       "file_type": "code",
       "source_file": "server/core/storage.py",
-      "source_location": "L155",
+      "source_location": "L156",
       "id": "core_storage_storagemanager_enter",
-      "community": 238,
+      "community": 226,
       "norm_label": ".__enter__()"
     },
     {
       "label": ".__exit__()",
       "file_type": "code",
       "source_file": "server/core/storage.py",
-      "source_location": "L159",
+      "source_location": "L160",
       "id": "core_storage_storagemanager_exit",
-      "community": 238,
+      "community": 320,
       "norm_label": ".__exit__()"
     },
     {
       "label": ".save_window()",
       "file_type": "code",
       "source_file": "server/core/storage.py",
-      "source_location": "L164",
+      "source_location": "L165",
       "id": "core_storage_storagemanager_save_window",
-      "community": 242,
+      "community": 320,
       "norm_label": ".save_window()"
     },
     {
       "label": ".log_event()",
       "file_type": "code",
       "source_file": "server/core/storage.py",
-      "source_location": "L243",
+      "source_location": "L244",
       "id": "core_storage_storagemanager_log_event",
-      "community": 242,
+      "community": 320,
       "norm_label": ".log_event()"
     },
     {
       "label": ".get_last_windows()",
       "file_type": "code",
       "source_file": "server/core/storage.py",
-      "source_location": "L270",
+      "source_location": "L271",
       "id": "core_storage_storagemanager_get_last_windows",
-      "community": 309,
+      "community": 320,
       "norm_label": ".get_last_windows()"
     },
     {
       "label": ".get_last_events()",
       "file_type": "code",
       "source_file": "server/core/storage.py",
-      "source_location": "L302",
+      "source_location": "L303",
       "id": "core_storage_storagemanager_get_last_events",
-      "community": 242,
+      "community": 320,
       "norm_label": ".get_last_events()"
     },
     {
       "label": ".get_node_stats()",
       "file_type": "code",
       "source_file": "server/core/storage.py",
-      "source_location": "L340",
+      "source_location": "L341",
       "id": "core_storage_storagemanager_get_node_stats",
-      "community": 242,
+      "community": 320,
       "norm_label": ".get_node_stats()"
     },
     {
       "label": ".get_all_node_ids()",
       "file_type": "code",
       "source_file": "server/core/storage.py",
-      "source_location": "L387",
+      "source_location": "L388",
       "id": "core_storage_storagemanager_get_all_node_ids",
-      "community": 242,
+      "community": 320,
       "norm_label": ".get_all_node_ids()"
     },
     {
       "label": ".purge_old()",
       "file_type": "code",
       "source_file": "server/core/storage.py",
-      "source_location": "L397",
+      "source_location": "L398",
       "id": "core_storage_storagemanager_purge_old",
-      "community": 242,
+      "community": 320,
       "norm_label": ".purge_old()"
     },
     {
       "label": ".db_size_bytes()",
       "file_type": "code",
       "source_file": "server/core/storage.py",
-      "source_location": "L424",
+      "source_location": "L425",
       "id": "core_storage_storagemanager_db_size_bytes",
-      "community": 238,
+      "community": 320,
       "norm_label": ".db_size_bytes()"
     },
     {
       "label": "._create_tables()",
       "file_type": "code",
       "source_file": "server/core/storage.py",
-      "source_location": "L430",
+      "source_location": "L431",
       "id": "core_storage_storagemanager_create_tables",
-      "community": 238,
+      "community": 226,
       "norm_label": "._create_tables()"
     },
     {
       "label": "._ensure_open()",
       "file_type": "code",
       "source_file": "server/core/storage.py",
-      "source_location": "L470",
+      "source_location": "L471",
       "id": "core_storage_storagemanager_ensure_open",
-      "community": 242,
+      "community": 320,
       "norm_label": "._ensure_open()"
     },
     {
       "label": "_now_ms()",
       "file_type": "code",
       "source_file": "server/core/storage.py",
-      "source_location": "L481",
+      "source_location": "L482",
       "id": "core_storage_now_ms",
-      "community": 242,
+      "community": 320,
       "norm_label": "_now_ms()"
     },
     {
       "label": "_sanitize_node_id()",
       "file_type": "code",
       "source_file": "server/core/storage.py",
-      "source_location": "L486",
+      "source_location": "L487",
       "id": "core_storage_sanitize_node_id",
-      "community": 242,
+      "community": 320,
       "norm_label": "_sanitize_node_id()"
     },
     {
       "label": "_row_to_dict()",
       "file_type": "code",
       "source_file": "server/core/storage.py",
-      "source_location": "L490",
+      "source_location": "L491",
       "id": "core_storage_row_to_dict",
       "community": 309,
       "norm_label": "_row_to_dict()"
@@ -14535,7 +14562,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L114",
       "id": "core_storage_rationale_114",
-      "community": 238,
+      "community": 320,
       "norm_label": "kelola koneksi sqlite dan semua operasi baca-tulis.      args:         db_pat"
     },
     {
@@ -14551,98 +14578,98 @@
       "label": "Tutup koneksi. Panggil saat shutdown server.",
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
-      "source_location": "L150",
-      "id": "core_storage_rationale_150",
-      "community": 238,
+      "source_location": "L151",
+      "id": "core_storage_rationale_151",
+      "community": 320,
       "norm_label": "tutup koneksi. panggil saat shutdown server."
     },
     {
       "label": "Simpan satu window rekonstruksi ke tabel `windows`.         Satu window \u2192 beber",
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
-      "source_location": "L175",
-      "id": "core_storage_rationale_175",
-      "community": 242,
+      "source_location": "L176",
+      "id": "core_storage_rationale_176",
+      "community": 320,
       "norm_label": "simpan satu window rekonstruksi ke tabel `windows`.         satu window \u2192 beber"
     },
     {
       "label": "Catat satu event ke tabel `events`.          event_type contoh:           \"NO",
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
-      "source_location": "L249",
-      "id": "core_storage_rationale_249",
-      "community": 242,
+      "source_location": "L250",
+      "id": "core_storage_rationale_250",
+      "community": 320,
       "norm_label": "catat satu event ke tabel `events`.          event_type contoh:           \"no"
     },
     {
       "label": "Ambil N window terakhir untuk sinyal tertentu dari node tertentu.          Ret",
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
-      "source_location": "L276",
-      "id": "core_storage_rationale_276",
-      "community": 309,
+      "source_location": "L277",
+      "id": "core_storage_rationale_277",
+      "community": 320,
       "norm_label": "ambil n window terakhir untuk sinyal tertentu dari node tertentu.          ret"
     },
     {
       "label": "Ambil N event terakhir, opsional filter node_id dan/atau event_type.",
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
-      "source_location": "L308",
-      "id": "core_storage_rationale_308",
-      "community": 242,
+      "source_location": "L309",
+      "id": "core_storage_rationale_309",
+      "community": 320,
       "norm_label": "ambil n event terakhir, opsional filter node_id dan/atau event_type."
     },
     {
       "label": "Statistik ringkas untuk satu node (berguna untuk dashboard).          Returns",
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
-      "source_location": "L341",
-      "id": "core_storage_rationale_341",
-      "community": 242,
+      "source_location": "L342",
+      "id": "core_storage_rationale_342",
+      "community": 320,
       "norm_label": "statistik ringkas untuk satu node (berguna untuk dashboard).          returns"
     },
     {
       "label": "Daftar semua node_id yang pernah kirim data.",
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
-      "source_location": "L388",
-      "id": "core_storage_rationale_388",
-      "community": 242,
+      "source_location": "L389",
+      "id": "core_storage_rationale_389",
+      "community": 320,
       "norm_label": "daftar semua node_id yang pernah kirim data."
     },
     {
       "label": "Hapus data lebih tua dari max_age_hours.         Default: gunakan retention_hou",
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
-      "source_location": "L398",
-      "id": "core_storage_rationale_398",
-      "community": 242,
+      "source_location": "L399",
+      "id": "core_storage_rationale_399",
+      "community": 320,
       "norm_label": "hapus data lebih tua dari max_age_hours.         default: gunakan retention_hou"
     },
     {
       "label": "Ukuran file DB dalam byte.",
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
-      "source_location": "L425",
-      "id": "core_storage_rationale_425",
-      "community": 238,
+      "source_location": "L426",
+      "id": "core_storage_rationale_426",
+      "community": 320,
       "norm_label": "ukuran file db dalam byte."
     },
     {
       "label": "Epoch time dalam milidetik.",
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
-      "source_location": "L482",
-      "id": "core_storage_rationale_482",
-      "community": 242,
+      "source_location": "L483",
+      "id": "core_storage_rationale_483",
+      "community": 320,
       "norm_label": "epoch time dalam milidetik."
     },
     {
       "label": "Konversi tuple result SELECT ke dict dengan values sudah di-decode.",
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
-      "source_location": "L491",
-      "id": "core_storage_rationale_491",
+      "source_location": "L492",
+      "id": "core_storage_rationale_492",
       "community": 309,
       "norm_label": "konversi tuple result select ke dict dengan values sudah di-decode."
     },
@@ -14769,7 +14796,7 @@
       "source_file": "server/core/validator.py",
       "source_location": "L230",
       "id": "core_validator_validatorregistry",
-      "community": 318,
+      "community": 311,
       "norm_label": "validatorregistry"
     },
     {
@@ -14805,7 +14832,7 @@
       "source_file": "server/core/validator.py",
       "source_location": "L324",
       "id": "core_validator_validatorregistry_get_stats",
-      "community": 318,
+      "community": 311,
       "norm_label": ".get_stats()"
     },
     {
@@ -14913,7 +14940,7 @@
       "source_file": "server/core/validator.py",
       "source_location": "L231",
       "id": "core_validator_rationale_231",
-      "community": 318,
+      "community": 311,
       "norm_label": "registry validasi dengan state per-node untuk monotonicity check.      buat sa"
     },
     {
@@ -14940,7 +14967,7 @@
       "source_file": "server/core/validator.py",
       "source_location": "L325",
       "id": "core_validator_rationale_325",
-      "community": 318,
+      "community": 311,
       "norm_label": "kembalikan salinan counter statistik."
     },
     {
@@ -15975,7 +16002,7 @@
       "source_file": "server/tests/test_full_pipeline.py",
       "source_location": "L1",
       "id": "server_tests_test_full_pipeline_py",
-      "community": 240,
+      "community": 322,
       "norm_label": "test_full_pipeline.py"
     },
     {
@@ -15984,7 +16011,7 @@
       "source_file": "server/tests/test_full_pipeline.py",
       "source_location": "L15",
       "id": "tests_test_full_pipeline_test_integration_full_pipeline",
-      "community": 240,
+      "community": 322,
       "norm_label": "test_integration_full_pipeline()"
     },
     {
@@ -15993,7 +16020,7 @@
       "source_file": "server/tests/test_full_pipeline.py",
       "source_location": "L16",
       "id": "tests_test_full_pipeline_rationale_16",
-      "community": 240,
+      "community": 322,
       "norm_label": "e2e integration test:     mulai dari payload mentah sensor -> validasi & recons"
     },
     {
@@ -16632,7 +16659,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L1",
       "id": "server_tests_test_quality_py",
-      "community": 23,
+      "community": 238,
       "norm_label": "test_quality.py"
     },
     {
@@ -16641,7 +16668,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L45",
       "id": "tests_test_quality_make_phi",
-      "community": 23,
+      "community": 238,
       "norm_label": "_make_phi()"
     },
     {
@@ -16650,7 +16677,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L53",
       "id": "tests_test_quality_make_assessor",
-      "community": 23,
+      "community": 238,
       "norm_label": "_make_assessor()"
     },
     {
@@ -16659,7 +16686,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L56",
       "id": "tests_test_quality_make_sparse_signal",
-      "community": 23,
+      "community": 318,
       "norm_label": "_make_sparse_signal()"
     },
     {
@@ -16668,7 +16695,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L64",
       "id": "tests_test_quality_encode",
-      "community": 23,
+      "community": 318,
       "norm_label": "_encode()"
     },
     {
@@ -16677,7 +16704,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L73",
       "id": "tests_test_quality_test_assess_signal_perfect_reconstruction",
-      "community": 23,
+      "community": 318,
       "norm_label": "test_assess_signal_perfect_reconstruction()"
     },
     {
@@ -16686,7 +16713,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L88",
       "id": "tests_test_quality_test_assess_signal_zero_signal",
-      "community": 23,
+      "community": 238,
       "norm_label": "test_assess_signal_zero_signal()"
     },
     {
@@ -16695,7 +16722,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L100",
       "id": "tests_test_quality_test_assess_signal_low_quality",
-      "community": 23,
+      "community": 318,
       "norm_label": "test_assess_signal_low_quality()"
     },
     {
@@ -16704,7 +16731,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L118",
       "id": "tests_test_quality_test_assess_signal_critical",
-      "community": 23,
+      "community": 318,
       "norm_label": "test_assess_signal_critical()"
     },
     {
@@ -16713,7 +16740,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L136",
       "id": "tests_test_quality_test_assess_signal_sparsity_ratio",
-      "community": 23,
+      "community": 238,
       "norm_label": "test_assess_signal_sparsity_ratio()"
     },
     {
@@ -16722,7 +16749,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L153",
       "id": "tests_test_quality_test_assess_signal_snr_db_positive_for_good_reconstruction",
-      "community": 23,
+      "community": 318,
       "norm_label": "test_assess_signal_snr_db_positive_for_good_reconstruction()"
     },
     {
@@ -16731,7 +16758,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L170",
       "id": "tests_test_quality_test_assess_signal_short_str_format",
-      "community": 23,
+      "community": 318,
       "norm_label": "test_assess_signal_short_str_format()"
     },
     {
@@ -16740,7 +16767,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L185",
       "id": "tests_test_quality_test_assess_signal_list_input",
-      "community": 23,
+      "community": 318,
       "norm_label": "test_assess_signal_list_input()"
     },
     {
@@ -16749,7 +16776,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L199",
       "id": "tests_test_quality_make_full_results_and_measurements",
-      "community": 23,
+      "community": 238,
       "norm_label": "_make_full_results_and_measurements()"
     },
     {
@@ -16758,7 +16785,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L226",
       "id": "tests_test_quality_test_assess_window_all_ok",
-      "community": 23,
+      "community": 238,
       "norm_label": "test_assess_window_all_ok()"
     },
     {
@@ -16767,7 +16794,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L239",
       "id": "tests_test_quality_test_assess_window_some_low_quality",
-      "community": 23,
+      "community": 238,
       "norm_label": "test_assess_window_some_low_quality()"
     },
     {
@@ -16776,7 +16803,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L257",
       "id": "tests_test_quality_test_assess_window_missing_measurement",
-      "community": 23,
+      "community": 238,
       "norm_label": "test_assess_window_missing_measurement()"
     },
     {
@@ -16785,7 +16812,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L272",
       "id": "tests_test_quality_test_assess_window_summary_ok",
-      "community": 23,
+      "community": 238,
       "norm_label": "test_assess_window_summary_ok()"
     },
     {
@@ -16794,7 +16821,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L286",
       "id": "tests_test_quality_test_assess_window_summary_low_quality",
-      "community": 23,
+      "community": 238,
       "norm_label": "test_assess_window_summary_low_quality()"
     },
     {
@@ -16803,7 +16830,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L302",
       "id": "tests_test_quality_test_assess_window_detail_lines",
-      "community": 23,
+      "community": 238,
       "norm_label": "test_assess_window_detail_lines()"
     },
     {
@@ -16812,7 +16839,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L313",
       "id": "tests_test_quality_test_assess_window_mean_relative_error",
-      "community": 23,
+      "community": 238,
       "norm_label": "test_assess_window_mean_relative_error()"
     },
     {
@@ -16821,7 +16848,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L328",
       "id": "tests_test_quality_test_assess_window_mean_sparsity",
-      "community": 23,
+      "community": 238,
       "norm_label": "test_assess_window_mean_sparsity()"
     },
     {
@@ -16830,7 +16857,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L342",
       "id": "tests_test_quality_test_global_stats_accumulate",
-      "community": 23,
+      "community": 238,
       "norm_label": "test_global_stats_accumulate()"
     },
     {
@@ -16839,7 +16866,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L362",
       "id": "tests_test_quality_test_global_stats_empty",
-      "community": 23,
+      "community": 238,
       "norm_label": "test_global_stats_empty()"
     },
     {
@@ -16848,7 +16875,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L371",
       "id": "tests_test_quality_test_stats_summary_format",
-      "community": 23,
+      "community": 238,
       "norm_label": "test_stats_summary_format()"
     },
     {
@@ -16857,7 +16884,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L382",
       "id": "tests_test_quality_test_assessor_invalid_phi_shape",
-      "community": 23,
+      "community": 322,
       "norm_label": "test_assessor_invalid_phi_shape()"
     },
     {
@@ -16866,7 +16893,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L46",
       "id": "tests_test_quality_rationale_46",
-      "community": 23,
+      "community": 238,
       "norm_label": "phi acak ternormalisasi \u2014 cukup untuk test residual."
     },
     {
@@ -16875,7 +16902,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L57",
       "id": "tests_test_quality_rationale_57",
-      "community": 23,
+      "community": 318,
       "norm_label": "sinyal sparse: hanya k elemen non-nol."
     },
     {
@@ -16884,7 +16911,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L65",
       "id": "tests_test_quality_rationale_65",
-      "community": 23,
+      "community": 318,
       "norm_label": "y = \u03c6 \u00b7 x (encode sempurna, residual harusnya 0)."
     },
     {
@@ -16893,7 +16920,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L74",
       "id": "tests_test_quality_rationale_74",
-      "community": 23,
+      "community": 318,
       "norm_label": "jika x_hat sempurna (y = \u03c6\u00b7x_hat persis), relative_error harus ~0."
     },
     {
@@ -16902,7 +16929,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L89",
       "id": "tests_test_quality_rationale_89",
-      "community": 23,
+      "community": 238,
       "norm_label": "sinyal nol \u2192 zero_signal flag."
     },
     {
@@ -16911,7 +16938,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L101",
       "id": "tests_test_quality_rationale_101",
-      "community": 23,
+      "community": 318,
       "norm_label": "jika x_hat salah (noise), residual besar \u2192 low_quality atau critical."
     },
     {
@@ -16920,7 +16947,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L119",
       "id": "tests_test_quality_rationale_119",
-      "community": 23,
+      "community": 318,
       "norm_label": "rekonstruksi sangat buruk \u2192 critical.     paksa dengan x_hat = 0 sehingga resid"
     },
     {
@@ -16929,7 +16956,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L137",
       "id": "tests_test_quality_rationale_137",
-      "community": 23,
+      "community": 238,
       "norm_label": "sparsity_ratio = fraksi elemen non-nol."
     },
     {
@@ -16938,7 +16965,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L154",
       "id": "tests_test_quality_rationale_154",
-      "community": 23,
+      "community": 318,
       "norm_label": "snr harus positif untuk rekonstruksi bagus."
     },
     {
@@ -16947,7 +16974,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L171",
       "id": "tests_test_quality_rationale_171",
-      "community": 23,
+      "community": 318,
       "norm_label": "short_str harus mengandung nama sinyal dan angka."
     },
     {
@@ -16956,7 +16983,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L186",
       "id": "tests_test_quality_rationale_186",
-      "community": 23,
+      "community": 318,
       "norm_label": "y boleh berupa list python, bukan hanya ndarray."
     },
     {
@@ -16965,7 +16992,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L205",
       "id": "tests_test_quality_rationale_205",
-      "community": 23,
+      "community": 238,
       "norm_label": "buat results (x_hat) dan measurements (y) untuk beberapa sinyal.     noise_scal"
     },
     {
@@ -16974,7 +17001,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L240",
       "id": "tests_test_quality_rationale_240",
-      "community": 23,
+      "community": 238,
       "norm_label": "jika satu sinyal rekonstruksinya buruk, report.has_low_quality() = true."
     },
     {
@@ -16983,7 +17010,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L258",
       "id": "tests_test_quality_rationale_258",
-      "community": 23,
+      "community": 238,
       "norm_label": "sinyal yang tidak ada di measurements \u2192 dilewati, tidak crash."
     },
     {
@@ -16992,7 +17019,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L314",
       "id": "tests_test_quality_rationale_314",
-      "community": 23,
+      "community": 238,
       "norm_label": "mean_relative_error harus rata-rata dari semua sinyal."
     },
     {
@@ -17001,7 +17028,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L363",
       "id": "tests_test_quality_rationale_363",
-      "community": 23,
+      "community": 238,
       "norm_label": "tanpa window apapun, tidak crash."
     },
     {
@@ -17010,7 +17037,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L383",
       "id": "tests_test_quality_rationale_383",
-      "community": 23,
+      "community": 322,
       "norm_label": "phi 1d harus raise valueerror."
     },
     {
@@ -17028,7 +17055,7 @@
       "source_file": "server/tests/test_storage.py",
       "source_location": "L31",
       "id": "tests_test_storage_fakemetric",
-      "community": 238,
+      "community": 211,
       "norm_label": "_fakemetric"
     },
     {
@@ -17037,7 +17064,7 @@
       "source_file": "server/tests/test_storage.py",
       "source_location": "L32",
       "id": "tests_test_storage_fakemetric_init",
-      "community": 238,
+      "community": 211,
       "norm_label": ".__init__()"
     },
     {
@@ -17055,7 +17082,7 @@
       "source_file": "server/tests/test_storage.py",
       "source_location": "L41",
       "id": "tests_test_storage_fakereport_init",
-      "community": 238,
+      "community": 211,
       "norm_label": ".__init__()"
     },
     {
@@ -17091,7 +17118,7 @@
       "source_file": "server/tests/test_storage.py",
       "source_location": "L77",
       "id": "tests_test_storage_test_double_open_idempotent",
-      "community": 238,
+      "community": 211,
       "norm_label": "test_double_open_idempotent()"
     },
     {
@@ -17100,7 +17127,7 @@
       "source_file": "server/tests/test_storage.py",
       "source_location": "L88",
       "id": "tests_test_storage_test_ensure_open_raises_if_not_opened",
-      "community": 238,
+      "community": 226,
       "norm_label": "test_ensure_open_raises_if_not_opened()"
     },
     {
@@ -17109,7 +17136,7 @@
       "source_file": "server/tests/test_storage.py",
       "source_location": "L97",
       "id": "tests_test_storage_test_context_manager",
-      "community": 238,
+      "community": 320,
       "norm_label": "test_context_manager()"
     },
     {
@@ -17271,7 +17298,7 @@
       "source_file": "server/tests/test_storage.py",
       "source_location": "L366",
       "id": "tests_test_storage_test_purge_old_events",
-      "community": 242,
+      "community": 211,
       "norm_label": "test_purge_old_events()"
     },
     {
@@ -17307,7 +17334,7 @@
       "source_file": "server/tests/test_storage.py",
       "source_location": "L78",
       "id": "tests_test_storage_rationale_78",
-      "community": 238,
+      "community": 211,
       "norm_label": "open() dua kali tidak crash \u2014 tabel create if not exists."
     },
     {
@@ -17577,7 +17604,7 @@
       "source_file": "server/tests/test_validator.py",
       "source_location": "L242",
       "id": "tests_test_validator_test_registry_valid_imu",
-      "community": 318,
+      "community": 311,
       "norm_label": "test_registry_valid_imu()"
     },
     {
@@ -17595,7 +17622,7 @@
       "source_file": "server/tests/test_validator.py",
       "source_location": "L256",
       "id": "tests_test_validator_test_registry_invalid_counts",
-      "community": 318,
+      "community": 311,
       "norm_label": "test_registry_invalid_counts()"
     },
     {
@@ -17604,7 +17631,7 @@
       "source_file": "server/tests/test_validator.py",
       "source_location": "L264",
       "id": "tests_test_validator_test_registry_sequential_windows",
-      "community": 318,
+      "community": 311,
       "norm_label": "test_registry_sequential_windows()"
     },
     {
@@ -17613,7 +17640,7 @@
       "source_file": "server/tests/test_validator.py",
       "source_location": "L276",
       "id": "tests_test_validator_test_registry_stops_early_on_schema_error",
-      "community": 318,
+      "community": 311,
       "norm_label": "test_registry_stops_early_on_schema_error()"
     },
     {
@@ -17622,7 +17649,7 @@
       "source_file": "server/tests/test_validator.py",
       "source_location": "L287",
       "id": "tests_test_validator_test_registry_nan_caught",
-      "community": 318,
+      "community": 311,
       "norm_label": "test_registry_nan_caught()"
     },
     {
@@ -17631,7 +17658,7 @@
       "source_file": "server/tests/test_validator.py",
       "source_location": "L295",
       "id": "tests_test_validator_test_registry_monotonicity_caught",
-      "community": 318,
+      "community": 311,
       "norm_label": "test_registry_monotonicity_caught()"
     },
     {
@@ -17685,7 +17712,7 @@
       "source_file": "server/tests/test_validator.py",
       "source_location": "L265",
       "id": "tests_test_validator_rationale_265",
-      "community": 318,
+      "community": 311,
       "norm_label": "simulasi beberapa window berturut-turut \u2014 ts maju terus."
     },
     {
@@ -17694,7 +17721,7 @@
       "source_file": "server/tests/test_validator.py",
       "source_location": "L277",
       "id": "tests_test_validator_rationale_277",
-      "community": 318,
+      "community": 311,
       "norm_label": "jika schema gagal, layer length/finite tidak dijalankan."
     },
     {
@@ -22207,11 +22234,128 @@
       "norm_label": "file yang direkomendasikan:"
     },
     {
+      "label": "_channelSweepTask()",
+      "file_type": "code",
+      "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
+      "source_location": "L182",
+      "community": 20,
+      "norm_label": "_channelsweeptask()",
+      "id": "espnowmesh_espnowmesh_channelsweeptask"
+    },
+    {
+      "label": "startBackgroundSweep()",
+      "file_type": "code",
+      "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
+      "source_location": "L216",
+      "community": 20,
+      "norm_label": "startbackgroundsweep()",
+      "id": "espnowmesh_espnowmesh_startbackgroundsweep"
+    },
+    {
+      "label": "Tutup koneksi. Panggil saat shutdown server.",
+      "file_type": "rationale",
+      "source_file": "server/core/storage.py",
+      "source_location": "L150",
+      "community": 320,
+      "norm_label": "tutup koneksi. panggil saat shutdown server.",
+      "id": "core_storage_rationale_150"
+    },
+    {
+      "label": "Simpan satu window rekonstruksi ke tabel `windows`.         Satu window \u2192 beber",
+      "file_type": "rationale",
+      "source_file": "server/core/storage.py",
+      "source_location": "L175",
+      "community": 320,
+      "norm_label": "simpan satu window rekonstruksi ke tabel `windows`.         satu window \u2192 beber",
+      "id": "core_storage_rationale_175"
+    },
+    {
+      "label": "Catat satu event ke tabel `events`.          event_type contoh:           \"NO",
+      "file_type": "rationale",
+      "source_file": "server/core/storage.py",
+      "source_location": "L249",
+      "community": 320,
+      "norm_label": "catat satu event ke tabel `events`.          event_type contoh:           \"no",
+      "id": "core_storage_rationale_249"
+    },
+    {
+      "label": "Ambil N window terakhir untuk sinyal tertentu dari node tertentu.          Ret",
+      "file_type": "rationale",
+      "source_file": "server/core/storage.py",
+      "source_location": "L276",
+      "community": 320,
+      "norm_label": "ambil n window terakhir untuk sinyal tertentu dari node tertentu.          ret",
+      "id": "core_storage_rationale_276"
+    },
+    {
+      "label": "Ambil N event terakhir, opsional filter node_id dan/atau event_type.",
+      "file_type": "rationale",
+      "source_file": "server/core/storage.py",
+      "source_location": "L308",
+      "community": 320,
+      "norm_label": "ambil n event terakhir, opsional filter node_id dan/atau event_type.",
+      "id": "core_storage_rationale_308"
+    },
+    {
+      "label": "Statistik ringkas untuk satu node (berguna untuk dashboard).          Returns",
+      "file_type": "rationale",
+      "source_file": "server/core/storage.py",
+      "source_location": "L341",
+      "community": 320,
+      "norm_label": "statistik ringkas untuk satu node (berguna untuk dashboard).          returns",
+      "id": "core_storage_rationale_341"
+    },
+    {
+      "label": "Daftar semua node_id yang pernah kirim data.",
+      "file_type": "rationale",
+      "source_file": "server/core/storage.py",
+      "source_location": "L388",
+      "community": 320,
+      "norm_label": "daftar semua node_id yang pernah kirim data.",
+      "id": "core_storage_rationale_388"
+    },
+    {
+      "label": "Hapus data lebih tua dari max_age_hours.         Default: gunakan retention_hou",
+      "file_type": "rationale",
+      "source_file": "server/core/storage.py",
+      "source_location": "L398",
+      "community": 320,
+      "norm_label": "hapus data lebih tua dari max_age_hours.         default: gunakan retention_hou",
+      "id": "core_storage_rationale_398"
+    },
+    {
+      "label": "Ukuran file DB dalam byte.",
+      "file_type": "rationale",
+      "source_file": "server/core/storage.py",
+      "source_location": "L425",
+      "community": 320,
+      "norm_label": "ukuran file db dalam byte.",
+      "id": "core_storage_rationale_425"
+    },
+    {
+      "label": "Epoch time dalam milidetik.",
+      "file_type": "rationale",
+      "source_file": "server/core/storage.py",
+      "source_location": "L482",
+      "community": 320,
+      "norm_label": "epoch time dalam milidetik.",
+      "id": "core_storage_rationale_482"
+    },
+    {
+      "label": "Konversi tuple result SELECT ke dict dengan values sudah di-decode.",
+      "file_type": "rationale",
+      "source_file": "server/core/storage.py",
+      "source_location": "L491",
+      "community": 309,
+      "norm_label": "konversi tuple result select ke dict dengan values sudah di-decode.",
+      "id": "core_storage_rationale_491"
+    },
+    {
       "label": "Jalankan semua sistem server dalam satu proses.",
       "file_type": "rationale",
       "source_file": "server/apps/main_app.py",
       "source_location": "L140",
-      "community": 205,
+      "community": 240,
       "norm_label": "jalankan semua sistem server dalam satu proses.",
       "id": "apps_main_app_rationale_140"
     },
@@ -22733,7 +22877,7 @@
       "file_type": "code",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L38",
-      "community": 247,
+      "community": 326,
       "norm_label": "dummymodel",
       "id": "ml_inference_test_ml_engine_dummymodel"
     },
@@ -22742,7 +22886,7 @@
       "file_type": "code",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L41",
-      "community": 247,
+      "community": 326,
       "norm_label": ".__init__()",
       "id": "ml_inference_test_ml_engine_dummymodel_init"
     },
@@ -22751,7 +22895,7 @@
       "file_type": "code",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L46",
-      "community": 247,
+      "community": 326,
       "norm_label": ".predict_proba()",
       "id": "ml_inference_test_ml_engine_dummymodel_predict_proba"
     },
@@ -22814,7 +22958,7 @@
       "file_type": "code",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L173",
-      "community": 247,
+      "community": 226,
       "norm_label": "test_load_config_invalid_labels_count()",
       "id": "ml_inference_test_ml_engine_test_load_config_invalid_labels_count"
     },
@@ -23066,7 +23210,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L39",
-      "community": 247,
+      "community": 326,
       "norm_label": "sklearn-compatible dummy dengan predict_proba tetap.",
       "id": "ml_inference_test_ml_engine_rationale_39"
     },
@@ -23120,7 +23264,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L174",
-      "community": 247,
+      "community": 226,
       "norm_label": "valueerror jika labels < 2.",
       "id": "ml_inference_test_ml_engine_rationale_174"
     },
@@ -23336,7 +23480,7 @@
       "file_type": "code",
       "source_file": "server/apps/ml_inference/wrappers.py",
       "source_location": "L1",
-      "community": 273,
+      "community": 321,
       "norm_label": "wrappers.py",
       "id": "server_apps_ml_inference_wrappers_py"
     },
@@ -23345,7 +23489,7 @@
       "file_type": "code",
       "source_file": "server/apps/ml_inference/wrappers.py",
       "source_location": "L26",
-      "community": 273,
+      "community": 321,
       "norm_label": "svmactivitywrapper",
       "id": "ml_inference_wrappers_svmactivitywrapper"
     },
@@ -23354,7 +23498,7 @@
       "file_type": "code",
       "source_file": "server/apps/ml_inference/wrappers.py",
       "source_location": "L54",
-      "community": 226,
+      "community": 321,
       "norm_label": ".__init__()",
       "id": "ml_inference_wrappers_svmactivitywrapper_init"
     },
@@ -23363,7 +23507,7 @@
       "file_type": "code",
       "source_file": "server/apps/ml_inference/wrappers.py",
       "source_location": "L68",
-      "community": 273,
+      "community": 321,
       "norm_label": ".predict_proba()",
       "id": "ml_inference_wrappers_svmactivitywrapper_predict_proba"
     },
@@ -23372,7 +23516,7 @@
       "file_type": "code",
       "source_file": "server/apps/ml_inference/wrappers.py",
       "source_location": "L80",
-      "community": 273,
+      "community": 321,
       "norm_label": ".predict()",
       "id": "ml_inference_wrappers_svmactivitywrapper_predict"
     },
@@ -23381,7 +23525,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/wrappers.py",
       "source_location": "L1",
-      "community": 273,
+      "community": 321,
       "norm_label": "wrappers.py \u2014 sklearn-compatible wrappers untuk model .pkl non-standar.  masalah",
       "id": "ml_inference_wrappers_rationale_1"
     },
@@ -23390,7 +23534,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/wrappers.py",
       "source_location": "L27",
-      "community": 273,
+      "community": 321,
       "norm_label": "wrapper sklearn-compatible untuk model svm yang disimpan sebagai dict.      dict",
       "id": "ml_inference_wrappers_rationale_27"
     },
@@ -23399,7 +23543,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/wrappers.py",
       "source_location": "L55",
-      "community": 226,
+      "community": 321,
       "norm_label": "args:             pipeline      : sklearn pipeline dengan steps [scaler, smote,",
       "id": "ml_inference_wrappers_rationale_55"
     },
@@ -23408,7 +23552,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/wrappers.py",
       "source_location": "L69",
-      "community": 273,
+      "community": 321,
       "norm_label": "args:             x: ndarray shape (n_samples, n_features), dtype float64",
       "id": "ml_inference_wrappers_rationale_69"
     },
@@ -23417,7 +23561,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/wrappers.py",
       "source_location": "L81",
-      "community": 273,
+      "community": 321,
       "norm_label": "predict kelas (encoded integer).",
       "id": "ml_inference_wrappers_rationale_81"
     },
@@ -23570,7 +23714,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/feature_extractor.py",
       "source_location": "L158",
-      "community": 285,
+      "community": 205,
       "norm_label": "ekstrak feature vector dari windowinput berdasarkan schema di config.      args:",
       "id": "ml_inference_feature_extractor_rationale_158"
     },
@@ -23687,7 +23831,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L174",
-      "community": 294,
+      "community": 319,
       "norm_label": "scan folder dan auto-register semua pasangan .pkl + config.          konvensi pe",
       "id": "ml_inference_registry_rationale_174"
     },
@@ -23696,7 +23840,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L225",
-      "community": 294,
+      "community": 319,
       "norm_label": "hapus model dari registry dan bebaskan memori.",
       "id": "ml_inference_registry_rationale_225"
     },
@@ -23705,7 +23849,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L238",
-      "community": 294,
+      "community": 325,
       "norm_label": "hot-reload model tertentu tanpa menyentuh model lain.         berguna saat .pkl",
       "id": "ml_inference_registry_rationale_238"
     },
@@ -23714,7 +23858,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L252",
-      "community": 294,
+      "community": 325,
       "norm_label": "reload semua model. return dict model_name \u2192 sukses.",
       "id": "ml_inference_registry_rationale_252"
     },
@@ -23723,7 +23867,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L258",
-      "community": 294,
+      "community": 319,
       "norm_label": "aktifkan model. model yang disabled di-skip saat predict.",
       "id": "ml_inference_registry_rationale_258"
     },
@@ -24245,7 +24389,7 @@
       "file_type": "code",
       "source_file": "server/apps/reconstruct/processor.py",
       "source_location": "L41",
-      "community": 240,
+      "community": 242,
       "norm_label": "_notify_window()",
       "id": "reconstruct_processor_notify_window"
     },
@@ -24254,7 +24398,7 @@
       "file_type": "code",
       "source_file": "server/apps/reconstruct/processor.py",
       "source_location": "L42",
-      "community": 240,
+      "community": 242,
       "norm_label": "_notify_event()",
       "id": "reconstruct_processor_notify_event"
     },
@@ -24263,7 +24407,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/reconstruct/processor.py",
       "source_location": "L57",
-      "community": 240,
+      "community": 242,
       "norm_label": "rekonstruksi satu window cs, nilai kualitas, simpan, dan push ke dashboard.",
       "id": "reconstruct_processor_rationale_57"
     },
@@ -24506,7 +24650,7 @@
       "file_type": "code",
       "source_file": "server/core/cs_router.py",
       "source_location": "L66",
-      "community": 217,
+      "community": 312,
       "norm_label": "reconstruct()",
       "id": "core_cs_router_reconstruct"
     },
@@ -24515,7 +24659,7 @@
       "file_type": "rationale",
       "source_file": "server/core/cs_router.py",
       "source_location": "L67",
-      "community": 217,
+      "community": 312,
       "norm_label": "rekonstruksi sinyal menggunakan omp.          args:             y : (m,) meas",
       "id": "core_cs_router_rationale_67"
     },
@@ -24524,7 +24668,7 @@
       "file_type": "rationale",
       "source_file": "server/core/cs_router.py",
       "source_location": "L86",
-      "community": 217,
+      "community": 312,
       "norm_label": "rekonstruksi sinyal menggunakan lasso.          args:             y : (m,) me",
       "id": "core_cs_router_rationale_86"
     },
@@ -25262,7 +25406,7 @@
       "file_type": "rationale",
       "source_file": "server/core/cs_router.py",
       "source_location": "L64",
-      "community": 217,
+      "community": 312,
       "norm_label": "rekonstruksi sinyal menggunakan omp.          args:             y : (m,) meas",
       "id": "core_cs_router_rationale_64"
     },
@@ -25271,7 +25415,7 @@
       "file_type": "rationale",
       "source_file": "server/core/cs_router.py",
       "source_location": "L83",
-      "community": 217,
+      "community": 312,
       "norm_label": "rekonstruksi sinyal menggunakan lasso.          args:             y : (m,) me",
       "id": "core_cs_router_rationale_83"
     },
@@ -25433,7 +25577,7 @@
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
       "source_location": "L111",
-      "community": 238,
+      "community": 320,
       "norm_label": "kelola koneksi sqlite dan semua operasi baca-tulis.      args:         db_pat",
       "id": "core_storage_rationale_111"
     },
@@ -25451,7 +25595,7 @@
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
       "source_location": "L146",
-      "community": 238,
+      "community": 320,
       "norm_label": "tutup koneksi. panggil saat shutdown server.",
       "id": "core_storage_rationale_146"
     },
@@ -25460,7 +25604,7 @@
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
       "source_location": "L171",
-      "community": 242,
+      "community": 320,
       "norm_label": "simpan satu window rekonstruksi ke tabel `windows`.         satu window \u2192 beber",
       "id": "core_storage_rationale_171"
     },
@@ -25469,7 +25613,7 @@
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
       "source_location": "L245",
-      "community": 242,
+      "community": 320,
       "norm_label": "catat satu event ke tabel `events`.          event_type contoh:           \"no",
       "id": "core_storage_rationale_245"
     },
@@ -25478,7 +25622,7 @@
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
       "source_location": "L272",
-      "community": 309,
+      "community": 320,
       "norm_label": "ambil n window terakhir untuk sinyal tertentu dari node tertentu.          ret",
       "id": "core_storage_rationale_272"
     },
@@ -25487,7 +25631,7 @@
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
       "source_location": "L304",
-      "community": 242,
+      "community": 320,
       "norm_label": "ambil n event terakhir, opsional filter node_id dan/atau event_type.",
       "id": "core_storage_rationale_304"
     },
@@ -25496,7 +25640,7 @@
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
       "source_location": "L337",
-      "community": 242,
+      "community": 320,
       "norm_label": "statistik ringkas untuk satu node (berguna untuk dashboard).          returns",
       "id": "core_storage_rationale_337"
     },
@@ -25505,7 +25649,7 @@
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
       "source_location": "L384",
-      "community": 242,
+      "community": 320,
       "norm_label": "daftar semua node_id yang pernah kirim data.",
       "id": "core_storage_rationale_384"
     },
@@ -25514,7 +25658,7 @@
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
       "source_location": "L394",
-      "community": 242,
+      "community": 320,
       "norm_label": "hapus data lebih tua dari max_age_hours.         default: gunakan retention_hou",
       "id": "core_storage_rationale_394"
     },
@@ -25523,7 +25667,7 @@
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
       "source_location": "L421",
-      "community": 238,
+      "community": 320,
       "norm_label": "ukuran file db dalam byte.",
       "id": "core_storage_rationale_421"
     },
@@ -25532,7 +25676,7 @@
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
       "source_location": "L478",
-      "community": 242,
+      "community": 320,
       "norm_label": "epoch time dalam milidetik.",
       "id": "core_storage_rationale_478"
     },
@@ -25631,7 +25775,7 @@
       "file_type": "rationale",
       "source_file": "server/core/validator.py",
       "source_location": "L228",
-      "community": 318,
+      "community": 311,
       "norm_label": "registry validasi dengan state per-node untuk monotonicity check.      buat sa",
       "id": "core_validator_rationale_228"
     },
@@ -25658,7 +25802,7 @@
       "file_type": "rationale",
       "source_file": "server/core/validator.py",
       "source_location": "L323",
-      "community": 318,
+      "community": 311,
       "norm_label": "kembalikan salinan counter statistik.",
       "id": "core_validator_rationale_323"
     },
@@ -29609,7 +29753,7 @@
       "file_type": "code",
       "source_file": "server/core/quality.py",
       "source_location": "L203",
-      "community": 212,
+      "community": 217,
       "norm_label": "window_summary()",
       "id": "core_quality_window_summary"
     },
@@ -29636,7 +29780,7 @@
       "file_type": "rationale",
       "source_file": "server/core/quality.py",
       "source_location": "L204",
-      "community": 212,
+      "community": 217,
       "norm_label": "ringkasan window: avg relative_error, flag any low_quality, total warnings.",
       "id": "core_quality_rationale_204"
     },
@@ -54937,9 +55081,9 @@
       "source_file": "firmware/include/config/tuning.h",
       "source_location": "L128",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_include_config_tuning_h",
-      "target": "config_tuning_meshtopology",
-      "confidence_score": 1.0
+      "target": "config_tuning_meshtopology"
     },
     {
       "relation": "imports",
@@ -54959,9 +55103,9 @@
       "source_file": "firmware/lib/Routing/DynamicRouter.cpp",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_lib_routing_dynamicrouter_cpp",
-      "target": "firmware_include_config_tuning_h",
-      "confidence_score": 1.0
+      "target": "firmware_include_config_tuning_h"
     },
     {
       "relation": "imports",
@@ -55040,11 +55184,41 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
+      "source_location": "L43",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "firmware_lib_espnowmesh_espnowmesh_cpp",
+      "target": "espnowmesh_espnowmesh_updateallpeerchannels"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
       "source_location": "L44",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "firmware_lib_espnowmesh_espnowmesh_cpp",
       "target": "espnowmesh_espnowmesh_begin"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
+      "source_location": "L182",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "firmware_lib_espnowmesh_espnowmesh_cpp",
+      "target": "espnowmesh_espnowmesh_setgatewaychannel"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
+      "source_location": "L214",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "firmware_lib_espnowmesh_espnowmesh_cpp",
+      "target": "espnowmesh_espnowmesh_ischannelconfirmed"
     },
     {
       "relation": "contains",
@@ -55177,6 +55351,37 @@
       "target": "espnowmesh_espnowmesh_promiscuousrxcb"
     },
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
+      "source_location": "L182",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "firmware_lib_espnowmesh_espnowmesh_cpp",
+      "target": "espnowmesh_espnowmesh_channelsweeptask"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
+      "source_location": "L216",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "firmware_lib_espnowmesh_espnowmesh_cpp",
+      "target": "espnowmesh_espnowmesh_startbackgroundsweep"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
+      "source_location": "L478",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "espnowmesh_espnowmesh_promiscuousrxcb",
+      "target": "espnowmesh_espnowmesh_updateallpeerchannels"
+    },
+    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -55186,6 +55391,17 @@
       "confidence_score": 1.0,
       "source": "espnowmesh_espnowmesh_begin",
       "target": "espnowmesh_espnowmesh_addpeer"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
+      "source_location": "L121",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "espnowmesh_espnowmesh_begin",
+      "target": "espnowmesh_espnowmesh_startbackgroundsweep"
     },
     {
       "relation": "calls",
@@ -56549,9 +56765,9 @@
       "source_file": "firmware/test/test_mesh_routing.cpp",
       "source_location": "L27",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_test_test_mesh_routing_cpp",
-      "target": "test_test_mesh_routing_test_phase1_sweep_timeout_constant_defined",
-      "confidence_score": 1.0
+      "target": "test_test_mesh_routing_test_phase1_sweep_timeout_constant_defined"
     },
     {
       "relation": "contains",
@@ -56559,9 +56775,9 @@
       "source_file": "firmware/test/test_mesh_routing.cpp",
       "source_location": "L33",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_test_test_mesh_routing_cpp",
-      "target": "test_test_mesh_routing_test_phase1_sweep_timeout_within_discovery_window",
-      "confidence_score": 1.0
+      "target": "test_test_mesh_routing_test_phase1_sweep_timeout_within_discovery_window"
     },
     {
       "relation": "contains",
@@ -56569,9 +56785,9 @@
       "source_file": "firmware/test/test_mesh_routing.cpp",
       "source_location": "L48",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_test_test_mesh_routing_cpp",
-      "target": "test_test_mesh_routing_test_phase1_channel_range_valid",
-      "confidence_score": 1.0
+      "target": "test_test_mesh_routing_test_phase1_channel_range_valid"
     },
     {
       "relation": "contains",
@@ -56579,9 +56795,9 @@
       "source_file": "firmware/test/test_mesh_routing.cpp",
       "source_location": "L64",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_test_test_mesh_routing_cpp",
-      "target": "test_test_mesh_routing_test_phase2_beacon_interval_consistent",
-      "confidence_score": 1.0
+      "target": "test_test_mesh_routing_test_phase2_beacon_interval_consistent"
     },
     {
       "relation": "contains",
@@ -56589,9 +56805,9 @@
       "source_file": "firmware/test/test_mesh_routing.cpp",
       "source_location": "L71",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_test_test_mesh_routing_cpp",
-      "target": "test_test_mesh_routing_test_phase2_beacon_before_discovery_phase",
-      "confidence_score": 1.0
+      "target": "test_test_mesh_routing_test_phase2_beacon_before_discovery_phase"
     },
     {
       "relation": "contains",
@@ -56599,9 +56815,9 @@
       "source_file": "firmware/test/test_mesh_routing.cpp",
       "source_location": "L86",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_test_test_mesh_routing_cpp",
-      "target": "test_test_mesh_routing_test_phase3_routing_table_defined",
-      "confidence_score": 1.0
+      "target": "test_test_mesh_routing_test_phase3_routing_table_defined"
     },
     {
       "relation": "contains",
@@ -56609,9 +56825,9 @@
       "source_file": "firmware/test/test_mesh_routing.cpp",
       "source_location": "L94",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_test_test_mesh_routing_cpp",
-      "target": "test_test_mesh_routing_test_phase3_routing_table_gateway_no_neighbors",
-      "confidence_score": 1.0
+      "target": "test_test_mesh_routing_test_phase3_routing_table_gateway_no_neighbors"
     },
     {
       "relation": "contains",
@@ -56619,9 +56835,9 @@
       "source_file": "firmware/test/test_mesh_routing.cpp",
       "source_location": "L102",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_test_test_mesh_routing_cpp",
-      "target": "test_test_mesh_routing_test_phase3_routing_table_2node_config",
-      "confidence_score": 1.0
+      "target": "test_test_mesh_routing_test_phase3_routing_table_2node_config"
     },
     {
       "relation": "contains",
@@ -56629,9 +56845,9 @@
       "source_file": "firmware/test/test_mesh_routing.cpp",
       "source_location": "L118",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_test_test_mesh_routing_cpp",
-      "target": "test_test_mesh_routing_test_phase3_dynamic_router_init_2node",
-      "confidence_score": 1.0
+      "target": "test_test_mesh_routing_test_phase3_dynamic_router_init_2node"
     },
     {
       "relation": "contains",
@@ -56639,9 +56855,9 @@
       "source_file": "firmware/test/test_mesh_routing.cpp",
       "source_location": "L130",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_test_test_mesh_routing_cpp",
-      "target": "test_test_mesh_routing_test_phase3_dynamic_router_rssi_update",
-      "confidence_score": 1.0
+      "target": "test_test_mesh_routing_test_phase3_dynamic_router_rssi_update"
     },
     {
       "relation": "contains",
@@ -56649,9 +56865,9 @@
       "source_file": "firmware/test/test_mesh_routing.cpp",
       "source_location": "L150",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_test_test_mesh_routing_cpp",
-      "target": "test_test_mesh_routing_test_phase4_debounce_threshold",
-      "confidence_score": 1.0
+      "target": "test_test_mesh_routing_test_phase4_debounce_threshold"
     },
     {
       "relation": "contains",
@@ -56659,9 +56875,9 @@
       "source_file": "firmware/test/test_mesh_routing.cpp",
       "source_location": "L158",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_test_test_mesh_routing_cpp",
-      "target": "test_test_mesh_routing_test_phase4_channel_valid_range",
-      "confidence_score": 1.0
+      "target": "test_test_mesh_routing_test_phase4_channel_valid_range"
     },
     {
       "relation": "contains",
@@ -56669,9 +56885,9 @@
       "source_file": "firmware/test/test_mesh_routing.cpp",
       "source_location": "L181",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_test_test_mesh_routing_cpp",
-      "target": "test_test_mesh_routing_test_integration_boot_timing_gateway_first",
-      "confidence_score": 1.0
+      "target": "test_test_mesh_routing_test_integration_boot_timing_gateway_first"
     },
     {
       "relation": "contains",
@@ -56679,9 +56895,9 @@
       "source_file": "firmware/test/test_mesh_routing.cpp",
       "source_location": "L198",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_test_test_mesh_routing_cpp",
-      "target": "test_test_mesh_routing_test_integration_boot_timing_sensor_first",
-      "confidence_score": 1.0
+      "target": "test_test_mesh_routing_test_integration_boot_timing_sensor_first"
     },
     {
       "relation": "contains",
@@ -56689,9 +56905,9 @@
       "source_file": "firmware/test/test_mesh_routing.cpp",
       "source_location": "L220",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_test_test_mesh_routing_cpp",
-      "target": "test_test_mesh_routing_test_integration_3node_mesh",
-      "confidence_score": 1.0
+      "target": "test_test_mesh_routing_test_integration_3node_mesh"
     },
     {
       "relation": "contains",
@@ -56699,9 +56915,9 @@
       "source_file": "firmware/test/test_mesh_routing.cpp",
       "source_location": "L243",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_test_test_mesh_routing_cpp",
-      "target": "test_test_mesh_routing_setup",
-      "confidence_score": 1.0
+      "target": "test_test_mesh_routing_setup"
     },
     {
       "relation": "contains",
@@ -56709,9 +56925,9 @@
       "source_file": "firmware/test/test_mesh_routing.cpp",
       "source_location": "L276",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_test_test_mesh_routing_cpp",
-      "target": "test_test_mesh_routing_loop",
-      "confidence_score": 1.0
+      "target": "test_test_mesh_routing_loop"
     },
     {
       "relation": "rationale_for",
@@ -57268,9 +57484,9 @@
       "source_file": "server/apps/dashboard/routes/calibration.py",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "server_apps_dashboard_routes_calibration_py",
-      "target": "routes_calibration_serve_calibration",
-      "confidence_score": 1.0
+      "target": "routes_calibration_serve_calibration"
     },
     {
       "relation": "imports_from",
@@ -57279,9 +57495,9 @@
       "source_file": "server/apps/dashboard/routes/__init__.py",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "server_apps_dashboard_routes_init_py",
-      "target": "server_apps_dashboard_routes_calibration_py",
-      "confidence_score": 1.0
+      "target": "server_apps_dashboard_routes_calibration_py"
     },
     {
       "relation": "rationale_for",
@@ -57289,9 +57505,9 @@
       "source_file": "server/apps/dashboard/routes/calibration.py",
       "source_location": "L19",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_calibration_rationale_19",
-      "target": "routes_calibration_serve_calibration",
-      "confidence_score": 1.0
+      "target": "routes_calibration_serve_calibration"
     },
     {
       "relation": "contains",
@@ -63160,6 +63376,16 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "server/core/storage.py",
+      "source_location": "L151",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_storage_rationale_151",
+      "target": "core_storage_storagemanager_close"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "server/core/storage.py",
       "source_location": "L150",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -63197,6 +63423,16 @@
       "confidence_score": 1.0,
       "source": "core_storage_storagemanager_save_window",
       "target": "core_storage_now_ms"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "server/core/storage.py",
+      "source_location": "L176",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_storage_rationale_176",
+      "target": "core_storage_storagemanager_save_window"
     },
     {
       "relation": "rationale_for",
@@ -63255,6 +63491,16 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "server/core/storage.py",
+      "source_location": "L250",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_storage_rationale_250",
+      "target": "core_storage_storagemanager_log_event"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "server/core/storage.py",
       "source_location": "L249",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -63297,6 +63543,16 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "server/core/storage.py",
+      "source_location": "L277",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_storage_rationale_277",
+      "target": "core_storage_storagemanager_get_last_windows"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "server/core/storage.py",
       "source_location": "L276",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -63323,6 +63579,16 @@
       "confidence_score": 1.0,
       "source": "core_storage_storagemanager_get_last_events",
       "target": "core_storage_storagemanager_ensure_open"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "server/core/storage.py",
+      "source_location": "L309",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_storage_rationale_309",
+      "target": "core_storage_storagemanager_get_last_events"
     },
     {
       "relation": "rationale_for",
@@ -63359,6 +63625,16 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "server/core/storage.py",
+      "source_location": "L342",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_storage_rationale_342",
+      "target": "core_storage_storagemanager_get_node_stats"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "server/core/storage.py",
       "source_location": "L341",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -63385,6 +63661,16 @@
       "confidence_score": 1.0,
       "source": "core_storage_storagemanager_get_all_node_ids",
       "target": "core_storage_storagemanager_ensure_open"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "server/core/storage.py",
+      "source_location": "L389",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_storage_rationale_389",
+      "target": "core_storage_storagemanager_get_all_node_ids"
     },
     {
       "relation": "rationale_for",
@@ -63432,6 +63718,16 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "server/core/storage.py",
+      "source_location": "L399",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_storage_rationale_399",
+      "target": "core_storage_storagemanager_purge_old"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "server/core/storage.py",
       "source_location": "L398",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -63452,6 +63748,16 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "server/core/storage.py",
+      "source_location": "L426",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_storage_rationale_426",
+      "target": "core_storage_storagemanager_db_size_bytes"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "server/core/storage.py",
       "source_location": "L425",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -63467,6 +63773,16 @@
       "confidence_score": 1.0,
       "source": "core_storage_rationale_421",
       "target": "core_storage_storagemanager_db_size_bytes"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "server/core/storage.py",
+      "source_location": "L483",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_storage_rationale_483",
+      "target": "core_storage_now_ms"
     },
     {
       "relation": "rationale_for",
@@ -63509,6 +63825,16 @@
       "weight": 1.0,
       "source": "tests_test_storage_test_purge_old_events",
       "target": "core_storage_now_ms"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "server/core/storage.py",
+      "source_location": "L492",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "core_storage_rationale_492",
+      "target": "core_storage_row_to_dict"
     },
     {
       "relation": "rationale_for",
@@ -71676,9 +72002,9 @@
       "source_file": "firmware/.pio/libdeps/node_gateway/ArduinoJson/README.md",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_pio_libdeps_node_gateway_arduinojson_readme_md",
-      "target": "arduinojson_readme_features",
-      "confidence_score": 1.0
+      "target": "arduinojson_readme_features"
     },
     {
       "relation": "contains",
@@ -71686,9 +72012,9 @@
       "source_file": "firmware/.pio/libdeps/node_gateway/ArduinoJson/README.md",
       "source_location": "L99",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_pio_libdeps_node_gateway_arduinojson_readme_md",
-      "target": "arduinojson_readme_quickstart",
-      "confidence_score": 1.0
+      "target": "arduinojson_readme_quickstart"
     },
     {
       "relation": "contains",
@@ -71696,9 +72022,9 @@
       "source_file": "firmware/.pio/libdeps/node_gateway/ArduinoJson/README.md",
       "source_location": "L138",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_pio_libdeps_node_gateway_arduinojson_readme_md",
-      "target": "arduinojson_readme_sponsors",
-      "confidence_score": 1.0
+      "target": "arduinojson_readme_sponsors"
     },
     {
       "relation": "contains",
@@ -71706,9 +72032,9 @@
       "source_file": "firmware/.pio/libdeps/node_sensor_a/ArduinoJson/README.md",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_pio_libdeps_node_sensor_a_arduinojson_readme_md",
-      "target": "arduinojson_readme_features",
-      "confidence_score": 1.0
+      "target": "arduinojson_readme_features"
     },
     {
       "relation": "contains",
@@ -71716,9 +72042,9 @@
       "source_file": "firmware/.pio/libdeps/node_sensor_a/ArduinoJson/README.md",
       "source_location": "L101",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "arduinojson_readme_quickstart",
-      "target": "arduinojson_readme_deserialization",
-      "confidence_score": 1.0
+      "target": "arduinojson_readme_deserialization"
     },
     {
       "relation": "contains",
@@ -71726,9 +72052,9 @@
       "source_file": "firmware/.pio/libdeps/node_sensor_a/ArduinoJson/README.md",
       "source_location": "L119",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "arduinojson_readme_quickstart",
-      "target": "arduinojson_readme_serialization",
-      "confidence_score": 1.0
+      "target": "arduinojson_readme_serialization"
     },
     {
       "relation": "contains",
@@ -71736,9 +72062,9 @@
       "source_file": "firmware/.pio/libdeps/node_sensor_a/ArduinoJson/README.md",
       "source_location": "L99",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_pio_libdeps_node_sensor_a_arduinojson_readme_md",
-      "target": "arduinojson_readme_quickstart",
-      "confidence_score": 1.0
+      "target": "arduinojson_readme_quickstart"
     },
     {
       "relation": "contains",
@@ -71746,9 +72072,9 @@
       "source_file": "firmware/.pio/libdeps/node_sensor_a/ArduinoJson/README.md",
       "source_location": "L105",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "arduinojson_readme_deserialization",
-      "target": "arduinojson_readme_codeblock_1",
-      "confidence_score": 1.0
+      "target": "arduinojson_readme_codeblock_1"
     },
     {
       "relation": "contains",
@@ -71756,9 +72082,9 @@
       "source_file": "firmware/.pio/libdeps/node_sensor_a/ArduinoJson/README.md",
       "source_location": "L123",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "arduinojson_readme_serialization",
-      "target": "arduinojson_readme_codeblock_2",
-      "confidence_score": 1.0
+      "target": "arduinojson_readme_codeblock_2"
     },
     {
       "relation": "contains",
@@ -71766,9 +72092,9 @@
       "source_file": "firmware/.pio/libdeps/node_sensor_a/ArduinoJson/README.md",
       "source_location": "L138",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_pio_libdeps_node_sensor_a_arduinojson_readme_md",
-      "target": "arduinojson_readme_sponsors",
-      "confidence_score": 1.0
+      "target": "arduinojson_readme_sponsors"
     },
     {
       "relation": "contains",
@@ -71776,9 +72102,9 @@
       "source_file": "firmware/.pio/libdeps/node_gateway/PubSubClient/README.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_pio_libdeps_node_gateway_pubsubclient_readme_md",
-      "target": "pubsubclient_readme_arduino_client_for_mqtt",
-      "confidence_score": 1.0
+      "target": "pubsubclient_readme_arduino_client_for_mqtt"
     },
     {
       "relation": "contains",
@@ -71786,9 +72112,9 @@
       "source_file": "firmware/.pio/libdeps/node_sensor_a/PubSubClient/README.md",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "pubsubclient_readme_arduino_client_for_mqtt",
-      "target": "pubsubclient_readme_examples",
-      "confidence_score": 1.0
+      "target": "pubsubclient_readme_examples"
     },
     {
       "relation": "contains",
@@ -71796,9 +72122,9 @@
       "source_file": "firmware/.pio/libdeps/node_sensor_a/PubSubClient/README.md",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "pubsubclient_readme_arduino_client_for_mqtt",
-      "target": "pubsubclient_readme_limitations",
-      "confidence_score": 1.0
+      "target": "pubsubclient_readme_limitations"
     },
     {
       "relation": "contains",
@@ -71806,9 +72132,9 @@
       "source_file": "firmware/.pio/libdeps/node_sensor_a/PubSubClient/README.md",
       "source_location": "L26",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "pubsubclient_readme_arduino_client_for_mqtt",
-      "target": "pubsubclient_readme_compatible_hardware",
-      "confidence_score": 1.0
+      "target": "pubsubclient_readme_compatible_hardware"
     },
     {
       "relation": "contains",
@@ -71816,9 +72142,9 @@
       "source_file": "firmware/.pio/libdeps/node_sensor_a/PubSubClient/README.md",
       "source_location": "L48",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "pubsubclient_readme_arduino_client_for_mqtt",
-      "target": "pubsubclient_readme_license",
-      "confidence_score": 1.0
+      "target": "pubsubclient_readme_license"
     },
     {
       "relation": "contains",
@@ -71826,9 +72152,9 @@
       "source_file": "firmware/.pio/libdeps/node_sensor_a/PubSubClient/README.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_pio_libdeps_node_sensor_a_pubsubclient_readme_md",
-      "target": "pubsubclient_readme_arduino_client_for_mqtt",
-      "confidence_score": 1.0
+      "target": "pubsubclient_readme_arduino_client_for_mqtt"
     },
     {
       "relation": "contains",
@@ -86534,5 +86860,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "2657f87e8999ab683fb327af6636ae2bef34fb4a"
+  "built_at_commit": "b437646271a8682f7d4ba3b213fdea5145a01a6d"
 }

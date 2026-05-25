@@ -102,7 +102,7 @@ except ImportError:
 # Konfigurasi default
 # =============================================================================
 
-DEFAULT_DB_PATH      = Path("health_monitor.db")
+DEFAULT_DB_PATH      = Path("data/health_monitor.db")
 DEFAULT_RETENTION_H  = 24    # jam
 
 
@@ -136,6 +136,7 @@ class StorageManager:
         Buka koneksi ke database dan buat tabel jika belum ada.
         Panggil sekali di awal sebelum operasi apapun.
         """
+        self._path.parent.mkdir(parents=True, exist_ok=True)
         self._conn = sqlite3.connect(
             str(self._path),
             check_same_thread = False,  # kita handle locking sendiri
