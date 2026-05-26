@@ -455,16 +455,7 @@ void EspNowMesh::_taskChannelDiscovery(void* param)
 {
     static constexpr char DTAG[] = "DISC";
 
-    // Dwell time bervariasi untuk memecah phase lock dengan beacon gateway.
-    // Jika dwell FIXED (mis. 400ms) dan beacon FIXED (1000ms), keduanya
-    // bisa "saling menghindari" untuk waktu yang lama (phase lock problem).
-    // Randomisasi memastikan phase bergeser setiap channel → pasti ketemu.
-    static constexpr uint32_t DWELL_MIN_MS = 200;
-    static constexpr uint32_t DWELL_MAX_MS = 600;
-
-    LOG_INFO(DTAG, "Background channel discovery dimulai | "
-             "dwell=%lu-%lu ms (random anti-phase-lock)",
-             DWELL_MIN_MS, DWELL_MAX_MS);
+    LOG_INFO(DTAG, "Background channel discovery dimulai | dwell=120 ms");
 
     // Enable promiscuous mode untuk deteksi beacon gateway
     // Aman: esp_now sudah init, callback hanya update variable
@@ -479,11 +470,7 @@ void EspNowMesh::_taskChannelDiscovery(void* param)
         for (uint8_t tryC = 1; tryC <= 13 && !s_channelConfirmed; tryC++)
         {
             esp_wifi_set_channel(tryC, WIFI_SECOND_CHAN_NONE);
-
-            // Dwell time acak setiap channel → pecah phase lock
-            const uint32_t dwell = DWELL_MIN_MS +
-                (esp_random() % (DWELL_MAX_MS - DWELL_MIN_MS + 1));
-            vTaskDelay(pdMS_TO_TICKS(dwell));
+            vTaskDelay(pdMS_TO_TICKS(120));   // 120ms dwell time
         }
 
         if (sweepRound % 5 == 0)
@@ -491,8 +478,14 @@ void EspNowMesh::_taskChannelDiscovery(void* param)
                      "Pastikan gateway sudah nyala.", sweepRound);
     }
 
+    // Beacon ditemukan — proses peer channel update DI SINI
+    // (taskCSSender belum jalan, jadi tidak ada yang proses flag ini)
+    if (_instance)
+    {
+        _instance->processPendingChannelSync();
+    }
+
     // Beacon ditemukan! Channel sudah di-set oleh _promiscuousRxCb.
-    // Peer update di-handle oleh processPendingChannelSync() dari taskCSSender.
     LOG_INFO(DTAG, "Gateway ditemukan! ch=%d | %lu ronde sweep | "
              "promiscuous tetap ON untuk RSSI",
              s_channel, sweepRound);
@@ -567,30 +560,18 @@ void EspNowMesh::_promiscuousRxCb(void* buf, wifi_promiscuous_pkt_type_t type)
     // ── Channel sync logic ────────────────────────────────────────────────────
     if (!s_channelConfirmed)
     {
-        // Fase sweep (sebelum esp_now_init): langsung set s_channel
-        // esp_wifi_set_channel() aman dipanggil dari ISR
-        static uint8_t s_candCh    = 0;
-        static uint8_t s_candCount = 0;
+        // Filter RSSI: abaikan sinyal < -90 dBm (kemungkinan bukan gateway asli / noise reflection)
+        if (rssi < -90) return;
 
-        if (beaconCh != s_candCh) { s_candCh = beaconCh; s_candCount = 1; }
-        else                        s_candCount++;
+        // 1-hit konfirmasi — langsung lock
+        s_channel          = beaconCh;
+        s_channelConfirmed = true;
+        esp_wifi_set_channel(s_channel, WIFI_SECOND_CHAN_NONE);
 
-        if (s_candCount >= 2)  // 2 hits cukup — MAC matching sudah reliable
+        if (s_espnowReady)
         {
-            s_channel          = beaconCh;
-            s_channelConfirmed = true;
-            s_candCh           = 0;
-            s_candCount        = 0;
-            // esp_wifi_set_channel aman dari ISR
-            esp_wifi_set_channel(s_channel, WIFI_SECOND_CHAN_NONE);
-
-            // v4.0: Jika ESP-NOW sudah init (boot-anytime flow),
-            // trigger peer channel update dari task context
-            if (s_espnowReady)
-            {
-                s_pendingChannel    = beaconCh;
-                s_needChannelUpdate = true;
-            }
+            s_pendingChannel    = beaconCh;
+            s_needChannelUpdate = true;
         }
     }
     else if (s_espnowReady && beaconCh != s_channel)

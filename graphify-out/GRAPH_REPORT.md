@@ -1,16 +1,16 @@
 # Graph Report - IoTProject  (2026-05-26)
 
 ## Corpus Check
-- 615 files · ~286,008 words
+- 615 files · ~285,942 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 3528 nodes · 5447 edges · 322 communities (245 shown, 77 thin omitted)
+- 3528 nodes · 5448 edges · 330 communities (251 shown, 79 thin omitted)
 - Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 185 edges (avg confidence: 0.74)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `b4143a8d`
+- Built from commit: `e0e0b2ff`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -265,6 +265,14 @@
 - [[_COMMUNITY_Community 317|Community 317]]
 - [[_COMMUNITY_Community 318|Community 318]]
 - [[_COMMUNITY_Community 320|Community 320]]
+- [[_COMMUNITY_Community 322|Community 322]]
+- [[_COMMUNITY_Community 323|Community 323]]
+- [[_COMMUNITY_Community 324|Community 324]]
+- [[_COMMUNITY_Community 325|Community 325]]
+- [[_COMMUNITY_Community 326|Community 326]]
+- [[_COMMUNITY_Community 327|Community 327]]
+- [[_COMMUNITY_Community 328|Community 328]]
+- [[_COMMUNITY_Community 329|Community 329]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `MLInferenceEngine` - 60 edges
@@ -290,7 +298,7 @@
 - `BroadcastHub` --uses--> `StorageManager`  [INFERRED]
   new_feature/dashboard_server.py → server/core/storage.py
 
-## Communities (322 total, 77 thin omitted)
+## Communities (330 total, 79 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.08
@@ -362,7 +370,7 @@ Nodes (4): JsonArrayConst, data_, resources_, operator[]()
 
 ### Community 20 - "Community 20"
 Cohesion: 0.15
-Nodes (16): _addPeer(), begin(), forwardRoutedCs(), _isPeerRegistered(), processPendingChannelSync(), _promiscuousRxCb(), _send(), sendBeacon() (+8 more)
+Nodes (17): _addPeer(), begin(), forwardRoutedCs(), _isPeerRegistered(), processPendingChannelSync(), _promiscuousRxCb(), _send(), sendBeacon() (+9 more)
 
 ### Community 21 - "Community 21"
 Cohesion: 0.35
@@ -373,8 +381,8 @@ Cohesion: 0.3
 Nodes (8): canConvertFromJson(), checkJson(), convertFromJson(), convertToJson(), fromJson(), StringBuilderPrint, copier_, toJson()
 
 ### Community 23 - "Community 23"
-Cohesion: 0.15
-Nodes (9): Ambil N event terakhir, opsional filter node_id dan/atau event_type., Ambil N event terakhir, opsional filter node_id dan/atau event_type., Ambil N event terakhir, opsional filter node_id dan/atau event_type., Statistik ringkas untuk satu node (berguna untuk dashboard).          Returns, Statistik ringkas untuk satu node (berguna untuk dashboard).          Returns, Statistik ringkas untuk satu node (berguna untuk dashboard).          Returns, Daftar semua node_id yang pernah kirim data., Daftar semua node_id yang pernah kirim data. (+1 more)
+Cohesion: 0.07
+Nodes (24): Kelola koneksi SQLite dan semua operasi baca-tulis.      Args:         db_pat, Kelola koneksi SQLite dan semua operasi baca-tulis.      Args:         db_pat, Buka koneksi ke database dan buat tabel jika belum ada.         Panggil sekali, Buka koneksi ke database dan buat tabel jika belum ada.         Panggil sekali, Catat satu event ke tabel `events`.          event_type contoh:           "NO, Catat satu event ke tabel `events`.          event_type contoh:           "NO, Catat satu event ke tabel `events`.          event_type contoh:           "NO, Ambil N window terakhir untuk sinyal tertentu dari node tertentu.          Ret (+16 more)
 
 ### Community 24 - "Community 24"
 Cohesion: 0.23
@@ -705,8 +713,8 @@ Cohesion: 0.15
 Nodes (16): build_psi(), build_theta(), generate_phi(), _hadamard(), _lcg_rng(), omp(), Bangkitkan matrix IDCT orthonormal Ψ (n × n).     Kolom ke-k = basis cosine fre, Θ = Φ · Ψ  (m × n), murni real.     Dipakai langsung oleh OMP tanpa split kompl (+8 more)
 
 ### Community 217 - "Community 217"
-Cohesion: 0.14
-Nodes (12): _get(), _get_float(), _get_int(), Ambil env var dengan fallback ke default yang aman untuk lokal., Ambil env var sebagai int., Ambil env var sebagai float., Public API server core.  apps/ HANYA boleh import dari sini, bukan dari submod, assess() (+4 more)
+Cohesion: 0.13
+Nodes (13): _get(), _get_float(), _get_int(), Ambil env var dengan fallback ke default yang aman untuk lokal., Ambil env var sebagai int., Ambil env var sebagai float., Public API server core.  apps/ HANYA boleh import dari sini, bukan dari submod, assess() (+5 more)
 
 ### Community 218 - "Community 218"
 Cohesion: 0.36
@@ -741,8 +749,8 @@ Cohesion: 0.1
 Nodes (11): BroadcastHub, Thread-safe hub untuk push pesan ke semua WebSocket client., Thread-safe hub untuk push pesan ke semua WebSocket client., Simpan referensi event loop., Simpan referensi event loop., Kirim data ke semua client, hapus yang sudah disconnect., Kirim data ke semua client, hapus yang sudah disconnect., Dipanggil dari MQTT thread. (+3 more)
 
 ### Community 226 - "Community 226"
-Cohesion: 0.07
-Nodes (21): BadModel, TypeError jika model tidak punya predict_proba., Model tanpa predict_proba — untuk test validasi engine., test_load_model_no_predict_proba(), wrappers.py — Sklearn-compatible wrappers untuk model .pkl non-standar.  Masalah, Wrapper sklearn-compatible untuk model SVM yang disimpan sebagai dict.      Dict, Args:             pipeline      : sklearn Pipeline dengan steps [scaler, smote,, Args:             X: ndarray shape (n_samples, n_features), dtype float64 (+13 more)
+Cohesion: 0.1
+Nodes (19): BadModel, ValueError jika labels < 2., TypeError jika model tidak punya predict_proba., ValueError jika n_features model ≠ jumlah features di config., Model tanpa predict_proba — untuk test validasi engine., test_load_config_invalid_labels_count(), test_load_model_no_predict_proba(), test_load_n_features_mismatch() (+11 more)
 
 ### Community 227 - "Community 227"
 Cohesion: 0.17
@@ -781,8 +789,8 @@ Cohesion: 0.1
 Nodes (19): Test konsistensi CS encoder: router, gaussian, lasso., Φ harus berukuran (M, N)., Θ = Φ·Ψ harus berukuran (M, N)., Ψ (basis DCT) harus berukuran (N, N)., Rekonstruksi dari y(M,) harus menghasilkan x_hat(N,)., Input nol harus menghasilkan output nol., Harus menerima list Python, bukan hanya ndarray., Residual dari sinyal sparse harus kecil (< 0.5). (+11 more)
 
 ### Community 237 - "Community 237"
-Cohesion: 0.06
-Nodes (57): MLInferenceEngine, Hapus model dari memori., Generic inference engine untuk model .pkl + manifest model_config.json.      Lif, _make_model_files(), _make_window(), tests/test_ml_engine.py — Unit test untuk ML Inference Engine.  Jalankan dari ro, WindowInput dengan sinyal dummy., Engine berhasil load model dan config yang valid. (+49 more)
+Cohesion: 0.08
+Nodes (46): MLInferenceEngine, Generic inference engine untuk model .pkl + manifest model_config.json.      Lif, _make_model_files(), _make_window(), tests/test_ml_engine.py — Unit test untuk ML Inference Engine.  Jalankan dari ro, WindowInput dengan sinyal dummy., Engine berhasil load model dan config yang valid., FileNotFoundError jika model tidak ada. (+38 more)
 
 ### Community 238 - "Community 238"
 Cohesion: 0.05
@@ -793,8 +801,8 @@ Cohesion: 0.5
 Nodes (4): 1. Konteks & Tujuan, Latar belakang, Masalah yang ditemukan, Tujuan refactor
 
 ### Community 240 - "Community 240"
-Cohesion: 0.05
-Nodes (33): _combined_lifespan(), main(), main_app.py — Orkestrator satu proses: FastAPI + MQTT worker dalam satu perintah, Jalankan semua sistem server dalam satu proses., Jalankan semua sistem server dalam satu proses., Blocking MQTT loop — dijalankan di background thread., Ganti lifespan dashboard_server dengan versi yang juga start MQTT thread., _run_mqtt_thread() (+25 more)
+Cohesion: 0.09
+Nodes (18): listener.py — MQTT subscribe + dispatch ke NodeState.  Tanggung jawab tunggal:, Jalankan MQTT listener (blocking — panggil dari thread atau main).      Args:, run(), Entry point: python -m apps.reconstruct  Inisialisasi singleton (validator, as, NodeState, node_state.py — State management per node: buffer imu/ppg, timestamp spread chec, Buffer dan state per node sensor.      Args:         node_id      : ID node (, Terima payload cs_imu, validasi, simpan ke buffer. (+10 more)
 
 ### Community 242 - "Community 242"
 Cohesion: 0.17
@@ -817,8 +825,8 @@ Cohesion: 0.33
 Nodes (4): Reset state node tertentu (misalnya saat reboot terdeteksi)., Reset state node tertentu (misalnya saat reboot terdeteksi)., Reset state monotonicity untuk node tertentu., Reset state monotonicity untuk node tertentu.
 
 ### Community 247 - "Community 247"
-Cohesion: 0.06
-Nodes (56): DummyModel, _make_model_files(), _make_window(), tests/test_ml_engine.py — Unit test untuk ML Inference Engine.  Jalankan dari ro, WindowInput dengan sinyal dummy., Engine berhasil load model dan config yang valid., FileNotFoundError jika model tidak ada., ValueError jika config tidak punya 'labels'. (+48 more)
+Cohesion: 0.08
+Nodes (44): _make_model_files(), _make_window(), tests/test_ml_engine.py — Unit test untuk ML Inference Engine.  Jalankan dari ro, WindowInput dengan sinyal dummy., Engine berhasil load model dan config yang valid., FileNotFoundError jika model tidak ada., ValueError jika config tidak punya 'labels'., Predict sebelum load → skipped=True. (+36 more)
 
 ### Community 248 - "Community 248"
 Cohesion: 0.29
@@ -841,8 +849,8 @@ Cohesion: 0.29
 Nodes (6): notify_event(), notify_window(), Dipanggil setelah window selesai direkonstruksi.     Push payload ke semua /ws/, Dipanggil setelah window selesai direkonstruksi.     Push payload ke semua /ws/, Dipanggil saat ada event anomali atau validasi gagal.     Push ke semua /ws/eve, Dipanggil saat ada event anomali atau validasi gagal.     Push ke semua /ws/eve
 
 ### Community 273 - "Community 273"
-Cohesion: 0.09
-Nodes (18): from_storage_rows(), adapter.py — Jembatan antara pipeline rekonstruksi dan ML engine.  Tanggung jawa, Buat WindowInput dari baris SQLite (get_last_windows).      Args:         node_i, engine.py — Generic ML Inference Engine.  Filosofi (mirip SnortML):     Engine t, Load model .pkl dan manifest JSON.          Thread-safe: assign atomik di akhir, Validasi minimal struktur model_config.json., Validasi model punya interface yang dibutuhkan., _validate_config() (+10 more)
+Cohesion: 0.13
+Nodes (10): adapter.py — Jembatan antara pipeline rekonstruksi dan ML engine.  Tanggung jawa, engine.py — Generic ML Inference Engine.  Filosofi (mirip SnortML):     Engine t, Load model .pkl dan manifest JSON.          Thread-safe: assign atomik di akhir, Validasi minimal struktur model_config.json., Validasi model punya interface yang dibutuhkan., _validate_config(), _validate_model(), apps/ml_inference — Generic ML Inference Engine untuk Health Monitor.  Public AP (+2 more)
 
 ### Community 274 - "Community 274"
 Cohesion: 0.25
@@ -861,16 +869,16 @@ Cohesion: 0.11
 Nodes (8): MultiModelResult, Agregasi hasil semua model yang jalan parallel untuk satu window.      Desain di, Tambah hasil satu model. model_name diambil dari result.model_name., dict model_name → label terprediksi. Hanya model yang tidak skip., dict model_name → confidence top label., Jumlah model yang tidak skip., Serialisasi ke dict untuk WebSocket / REST API dashboard.          Format output, Satu baris ringkasan semua model — berguna untuk logging.
 
 ### Community 283 - "Community 283"
-Cohesion: 0.13
-Nodes (9): Infer satu window. Thread-safe (read-only akses ke model).          Returns Infe, Infer batch window. Lebih efisien untuk data SQLite.          Jika model menduku, Cek apakah window harus di-skip berdasarkan config skip_if.         Return strin, Batch predict: tiap model jalan batch-nya sendiri, lalu di-zip ke MultiModelResu, Batch predict: tiap model jalan batch-nya sendiri, lalu di-zip ke MultiModelResu, InferenceResult, Hasil inferensi satu model untuk satu window.      label       : kelas prediksi, N label teratas beserta probabilitasnya, urut descending. (+1 more)
+Cohesion: 0.18
+Nodes (6): Batch predict: tiap model jalan batch-nya sendiri, lalu di-zip ke MultiModelResu, Batch predict: tiap model jalan batch-nya sendiri, lalu di-zip ke MultiModelResu, InferenceResult, Hasil inferensi satu model untuk satu window.      label       : kelas prediksi, N label teratas beserta probabilitasnya, urut descending., Serialisasi ke dict untuk WebSocket / REST.
 
 ### Community 284 - "Community 284"
 Cohesion: 0.13
 Nodes (14): author, _comment, description, features, labels, model_name, model_version, output (+6 more)
 
 ### Community 285 - "Community 285"
-Cohesion: 0.13
-Nodes (17): _cross_feature(), _derived_signal(), FeatureExtractor, _get_meta(), _get_signal(), feature_extractor.py — Ekstrak fitur dari WindowInput berdasarkan model_config., Hitung sinyal derived dari formula sederhana.      Formula yang didukung:, Hitung fitur cross-signal. (+9 more)
+Cohesion: 0.16
+Nodes (14): _cross_feature(), _derived_signal(), _get_meta(), _get_signal(), feature_extractor.py — Ekstrak fitur dari WindowInput berdasarkan model_config., Hitung sinyal derived dari formula sederhana.      Formula yang didukung:, Hitung fitur cross-signal., Ambil field metadata dari WindowInput. (+6 more)
 
 ### Community 286 - "Community 286"
 Cohesion: 0.51
@@ -893,12 +901,12 @@ Cohesion: 0.08
 Nodes (24): author, svm__C, svm__gamma, description, features, labels, model_name, model_version (+16 more)
 
 ### Community 294 - "Community 294"
-Cohesion: 0.06
-Nodes (23): _ModelEntry, ModelRegistry, Pool dinamis MLInferenceEngine yang jalan parallel.      Jumlah model tidak diba, Daftarkan satu model ke registry.          Args:             model_path  : path, Scan folder dan auto-register semua pasangan .pkl + config.          Konvensi pe, Scan folder dan auto-register semua pasangan .pkl + config.          Konvensi pe, Hapus model dari registry dan bebaskan memori., Hapus model dari registry dan bebaskan memori. (+15 more)
+Cohesion: 0.12
+Nodes (9): ModelRegistry, Pool dinamis MLInferenceEngine yang jalan parallel.      Jumlah model tidak diba, Jalankan semua model aktif untuk satu window.          Setiap model menghasilkan, Jalankan semua model aktif untuk satu window.          Setiap model menghasilkan, Status semua model — untuk REST API /api/ml/status.          Tiap model menyerta, Status semua model — untuk REST API /api/ml/status.          Tiap model menyerta, Statistik inferensi semua model (dari engine.stats())., Statistik inferensi semua model (dari engine.stats()). (+1 more)
 
 ### Community 295 - "Community 295"
-Cohesion: 0.2
-Nodes (10): from_processor(), Buat WindowInput dari output processor.process_window().      Args:         node, from_processor harus mengisi semua field dari dict results., Sinyal yang tidak ada di results → None di WindowInput., test_from_processor_basic(), test_from_processor_missing_signal(), from_processor harus mengisi semua field dari dict results., Sinyal yang tidak ada di results → None di WindowInput. (+2 more)
+Cohesion: 0.11
+Nodes (18): from_processor(), from_storage_rows(), Buat WindowInput dari output processor.process_window().      Args:         node, Buat WindowInput dari baris SQLite (get_last_windows).      Args:         node_i, Data satu window rekonstruksi yang akan di-infer.      Semua sinyal berupa list/, WindowInput, from_processor harus mengisi semua field dari dict results., Sinyal yang tidak ada di results → None di WindowInput. (+10 more)
 
 ### Community 296 - "Community 296"
 Cohesion: 0.12
@@ -949,8 +957,8 @@ Cohesion: 0.29
 Nodes (7): 1. File `.pkl` harus expose `predict_proba()`, 2. `n_features_in_` disarankan ada, 3. Urutan label harus konsisten, code:python (proba = model.predict_proba(X)), code:python (if hasattr(model, "n_features_in_"):), code:python (# Contoh: model punya classes_ = ["duduk", "jalan", "jatuh",), Kontrak Model — Syarat Wajib
 
 ### Community 309 - "Community 309"
-Cohesion: 0.25
-Nodes (7): Ambil N window terakhir untuk sinyal tertentu dari node tertentu.          Ret, Ambil N window terakhir untuk sinyal tertentu dari node tertentu.          Ret, Ambil N window terakhir untuk sinyal tertentu dari node tertentu.          Ret, Konversi tuple result SELECT ke dict dengan values sudah di-decode., Konversi tuple result SELECT ke dict dengan values sudah di-decode., Konversi tuple result SELECT ke dict dengan values sudah di-decode., _row_to_dict()
+Cohesion: 0.5
+Nodes (4): Konversi tuple result SELECT ke dict dengan values sudah di-decode., Konversi tuple result SELECT ke dict dengan values sudah di-decode., Konversi tuple result SELECT ke dict dengan values sudah di-decode., _row_to_dict()
 
 ### Community 310 - "Community 310"
 Cohesion: 0.33
@@ -973,30 +981,54 @@ Cohesion: 0.05
 Nodes (39): 1. Command Bar, 2. Node Cards (Sidebar Kiri), 3. EKG Strip (Detail Panel — Atas), 4. ML Inference Panel (Detail Panel — Tengah Kiri), 5. Vitals Trend Chart (Detail Panel — Tengah Kanan), 6. Activity Timeline (Detail Panel — Tengah Bawah), 7. Reconstruction Quality Grid, 8. Event Log (+31 more)
 
 ### Community 316 - "Community 316"
-Cohesion: 0.4
-Nodes (4): Catat satu event ke tabel `events`.          event_type contoh:           "NO, Catat satu event ke tabel `events`.          event_type contoh:           "NO, Catat satu event ke tabel `events`.          event_type contoh:           "NO, _sanitize_node_id()
+Cohesion: 0.1
+Nodes (19): FeatureExtractor, Ekstrak feature vector dari WindowInput berdasarkan schema di config.      Args:, Ekstrak feature vector dari WindowInput berdasarkan schema di config.      Args:, Raw feature harus ambil elemen ke-index dari sinyal., Cross-feature correlation ax–ay., Sinyal None → pakai default, masuk ke missing list., test_feature_extractor_cross_corr(), test_feature_extractor_missing_signal_uses_default() (+11 more)
 
 ### Community 318 - "Community 318"
 Cohesion: 0.14
 Nodes (13): 1. EspNowMesh.h, 2. EspNowMesh.cpp (main changes), 3. task_cs_sender.cpp, 4. main.cpp, Behavior Change, Build Verification, Changes Made, code:diff:EspNowMesh.h (// File: firmware/lib/EspNowMesh/EspNowMesh.h) (+5 more)
 
 ### Community 320 - "Community 320"
-Cohesion: 0.1
-Nodes (15): Kelola koneksi SQLite dan semua operasi baca-tulis.      Args:         db_pat, Kelola koneksi SQLite dan semua operasi baca-tulis.      Args:         db_pat, Buka koneksi ke database dan buat tabel jika belum ada.         Panggil sekali, Buka koneksi ke database dan buat tabel jika belum ada.         Panggil sekali, Tutup koneksi. Panggil saat shutdown server., Tutup koneksi. Panggil saat shutdown server., Tutup koneksi. Panggil saat shutdown server., Ukuran file DB dalam byte. (+7 more)
+Cohesion: 0.4
+Nodes (3): Tutup koneksi. Panggil saat shutdown server., Tutup koneksi. Panggil saat shutdown server., Tutup koneksi. Panggil saat shutdown server.
+
+### Community 322 - "Community 322"
+Cohesion: 0.14
+Nodes (10): _ModelEntry, Daftarkan satu model ke registry.          Args:             model_path  : path, Scan folder dan auto-register semua pasangan .pkl + config.          Konvensi pe, Scan folder dan auto-register semua pasangan .pkl + config.          Konvensi pe, Hapus model dari registry dan bebaskan memori., Hapus model dari registry dan bebaskan memori., Aktifkan model. Model yang disabled di-skip saat predict., Aktifkan model. Model yang disabled di-skip saat predict. (+2 more)
+
+### Community 323 - "Community 323"
+Cohesion: 0.12
+Nodes (15): _combined_lifespan(), main(), main_app.py — Orkestrator satu proses: FastAPI + MQTT worker dalam satu perintah, Jalankan semua sistem server dalam satu proses., Jalankan semua sistem server dalam satu proses., Blocking MQTT loop — dijalankan di background thread., Ganti lifespan dashboard_server dengan versi yang juga start MQTT thread., _run_mqtt_thread() (+7 more)
+
+### Community 324 - "Community 324"
+Cohesion: 0.2
+Nodes (6): wrappers.py — Sklearn-compatible wrappers untuk model .pkl non-standar.  Masalah, Wrapper sklearn-compatible untuk model SVM yang disimpan sebagai dict.      Dict, Args:             pipeline      : sklearn Pipeline dengan steps [scaler, smote,, Args:             X: ndarray shape (n_samples, n_features), dtype float64, Predict kelas (encoded integer)., SVMActivityWrapper
+
+### Community 325 - "Community 325"
+Cohesion: 0.4
+Nodes (3): Infer satu window. Thread-safe (read-only akses ke model).          Returns Infe, Infer batch window. Lebih efisien untuk data SQLite.          Jika model menduku, Cek apakah window harus di-skip berdasarkan config skip_if.         Return strin
+
+### Community 326 - "Community 326"
+Cohesion: 0.33
+Nodes (4): Hot-reload model tertentu tanpa menyentuh model lain.         Berguna saat .pkl, Hot-reload model tertentu tanpa menyentuh model lain.         Berguna saat .pkl, Reload semua model. Return dict model_name → sukses., Reload semua model. Return dict model_name → sukses.
+
+### Community 327 - "Community 327"
+Cohesion: 0.5
+Nodes (3): Ukuran file DB dalam byte., Ukuran file DB dalam byte., Ukuran file DB dalam byte.
 
 ## Knowledge Gaps
 - **510 isolated node(s):** `version`, `source`, `sourceType`, `skillPath`, `computedHash` (+505 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **77 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **79 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `StorageManager` connect `Community 320` to `Community 225`, `Community 66`, `Community 238`, `Community 208`, `Community 240`, `Community 242`, `Community 211`, `Community 212`, `Community 309`, `Community 275`, `Community 23`, `Community 178`, `Community 217`, `Community 218`, `Community 219`, `Community 316`, `Community 317`?**
+- **Why does `StorageManager` connect `Community 23` to `Community 320`, `Community 225`, `Community 66`, `Community 323`, `Community 327`, `Community 238`, `Community 208`, `Community 242`, `Community 211`, `Community 212`, `Community 275`, `Community 178`, `Community 217`, `Community 218`, `Community 219`, `Community 317`?**
   _High betweenness centrality (0.030) - this node is a cross-community bridge._
 - **Why does `get_db_info()` connect `Community 222` to `Community 226`?**
   _High betweenness centrality (0.011) - this node is a cross-community bridge._
-- **Why does `MLInferenceEngine` connect `Community 237` to `Community 226`, `Community 294`, `Community 273`, `Community 247`, `Community 283`, `Community 285`?**
+- **Why does `MLInferenceEngine` connect `Community 237` to `Community 322`, `Community 226`, `Community 325`, `Community 294`, `Community 295`, `Community 329`, `Community 273`, `Community 247`, `Community 283`, `Community 316`?**
   _High betweenness centrality (0.011) - this node is a cross-community bridge._
 - **Are the 49 inferred relationships involving `MLInferenceEngine` (e.g. with `FeatureExtractor` and `InferenceResult`) actually correct?**
   _`MLInferenceEngine` has 49 INFERRED edges - model-reasoned connections that need verification._

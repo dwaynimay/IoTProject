@@ -11590,7 +11590,7 @@
       "label": "_promiscuousRxCb()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L506",
+      "source_location": "L499",
       "id": "espnowmesh_espnowmesh_promiscuousrxcb",
       "community": 20,
       "norm_label": "_promiscuousrxcb()"
@@ -12301,7 +12301,7 @@
       "label": "taskMonitorGateway()",
       "file_type": "code",
       "source_file": "firmware/src/main.cpp",
-      "source_location": "L193",
+      "source_location": "L198",
       "id": "src_main_taskmonitorgateway",
       "community": 55,
       "norm_label": "taskmonitorgateway()"
@@ -12310,7 +12310,7 @@
       "label": "setup()",
       "file_type": "code",
       "source_file": "firmware/src/main.cpp",
-      "source_location": "L233",
+      "source_location": "L238",
       "id": "src_main_setup",
       "community": 55,
       "norm_label": "setup()"
@@ -12319,7 +12319,7 @@
       "label": "loop()",
       "file_type": "code",
       "source_file": "firmware/src/main.cpp",
-      "source_location": "L330",
+      "source_location": "L335",
       "id": "src_main_loop",
       "community": 55,
       "norm_label": "loop()"
@@ -12609,7 +12609,7 @@
       "source_file": "server/apps/main_app.py",
       "source_location": "L1",
       "id": "server_apps_main_app_py",
-      "community": 240,
+      "community": 323,
       "norm_label": "main_app.py"
     },
     {
@@ -12618,7 +12618,7 @@
       "source_file": "server/apps/main_app.py",
       "source_location": "L65",
       "id": "apps_main_app_run_mqtt_thread",
-      "community": 240,
+      "community": 323,
       "norm_label": "_run_mqtt_thread()"
     },
     {
@@ -12627,7 +12627,7 @@
       "source_file": "server/apps/main_app.py",
       "source_location": "L87",
       "id": "apps_main_app_combined_lifespan",
-      "community": 240,
+      "community": 323,
       "norm_label": "_combined_lifespan()"
     },
     {
@@ -12636,7 +12636,7 @@
       "source_file": "server/apps/main_app.py",
       "source_location": "L140",
       "id": "apps_main_app_main",
-      "community": 240,
+      "community": 323,
       "norm_label": "main()"
     },
     {
@@ -12645,7 +12645,7 @@
       "source_file": "server/apps/main_app.py",
       "source_location": "L1",
       "id": "apps_main_app_rationale_1",
-      "community": 240,
+      "community": 323,
       "norm_label": "main_app.py \u2014 orkestrator satu proses: fastapi + mqtt worker dalam satu perintah"
     },
     {
@@ -12654,7 +12654,7 @@
       "source_file": "server/apps/main_app.py",
       "source_location": "L66",
       "id": "apps_main_app_rationale_66",
-      "community": 240,
+      "community": 323,
       "norm_label": "blocking mqtt loop \u2014 dijalankan di background thread."
     },
     {
@@ -12663,7 +12663,7 @@
       "source_file": "server/apps/main_app.py",
       "source_location": "L88",
       "id": "apps_main_app_rationale_88",
-      "community": 240,
+      "community": 323,
       "norm_label": "ganti lifespan dashboard_server dengan versi yang juga start mqtt thread."
     },
     {
@@ -12672,7 +12672,7 @@
       "source_file": "server/apps/main_app.py",
       "source_location": "L141",
       "id": "apps_main_app_rationale_141",
-      "community": 240,
+      "community": 323,
       "norm_label": "jalankan semua sistem server dalam satu proses."
     },
     {
@@ -13392,7 +13392,7 @@
       "source_file": "server/apps/ml_inference/adapter.py",
       "source_location": "L72",
       "id": "ml_inference_adapter_from_storage_rows",
-      "community": 273,
+      "community": 295,
       "norm_label": "from_storage_rows()"
     },
     {
@@ -13419,7 +13419,7 @@
       "source_file": "server/apps/ml_inference/adapter.py",
       "source_location": "L82",
       "id": "ml_inference_adapter_rationale_82",
-      "community": 273,
+      "community": 295,
       "norm_label": "buat windowinput dari baris sqlite (get_last_windows).      args:         node_i"
     },
     {
@@ -13464,7 +13464,7 @@
       "source_file": "server/apps/ml_inference/engine.py",
       "source_location": "L160",
       "id": "ml_inference_engine_mlinferenceengine_unload",
-      "community": 237,
+      "community": 329,
       "norm_label": ".unload()"
     },
     {
@@ -13473,7 +13473,7 @@
       "source_file": "server/apps/ml_inference/engine.py",
       "source_location": "L169",
       "id": "ml_inference_engine_mlinferenceengine_predict",
-      "community": 283,
+      "community": 325,
       "norm_label": ".predict()"
     },
     {
@@ -13482,7 +13482,7 @@
       "source_file": "server/apps/ml_inference/engine.py",
       "source_location": "L248",
       "id": "ml_inference_engine_mlinferenceengine_predict_batch",
-      "community": 283,
+      "community": 325,
       "norm_label": ".predict_batch()"
     },
     {
@@ -13545,7 +13545,7 @@
       "source_file": "server/apps/ml_inference/engine.py",
       "source_location": "L395",
       "id": "ml_inference_engine_mlinferenceengine_check_skip",
-      "community": 283,
+      "community": 325,
       "norm_label": "._check_skip()"
     },
     {
@@ -13599,7 +13599,7 @@
       "source_file": "server/apps/ml_inference/engine.py",
       "source_location": "L161",
       "id": "ml_inference_engine_rationale_161",
-      "community": 237,
+      "community": 329,
       "norm_label": "hapus model dari memori."
     },
     {
@@ -13608,7 +13608,7 @@
       "source_file": "server/apps/ml_inference/engine.py",
       "source_location": "L170",
       "id": "ml_inference_engine_rationale_170",
-      "community": 283,
+      "community": 325,
       "norm_label": "infer satu window. thread-safe (read-only akses ke model).          returns infe"
     },
     {
@@ -13617,7 +13617,7 @@
       "source_file": "server/apps/ml_inference/engine.py",
       "source_location": "L254",
       "id": "ml_inference_engine_rationale_254",
-      "community": 283,
+      "community": 325,
       "norm_label": "infer batch window. lebih efisien untuk data sqlite.          jika model menduku"
     },
     {
@@ -13626,7 +13626,7 @@
       "source_file": "server/apps/ml_inference/engine.py",
       "source_location": "L396",
       "id": "ml_inference_engine_rationale_396",
-      "community": 283,
+      "community": 325,
       "norm_label": "cek apakah window harus di-skip berdasarkan config skip_if.         return strin"
     },
     {
@@ -13707,7 +13707,7 @@
       "source_file": "server/apps/ml_inference/feature_extractor.py",
       "source_location": "L195",
       "id": "ml_inference_feature_extractor_featureextractor",
-      "community": 285,
+      "community": 316,
       "norm_label": "featureextractor"
     },
     {
@@ -13716,7 +13716,7 @@
       "source_file": "server/apps/ml_inference/feature_extractor.py",
       "source_location": "L207",
       "id": "ml_inference_feature_extractor_featureextractor_init",
-      "community": 285,
+      "community": 316,
       "norm_label": ".__init__()"
     },
     {
@@ -13806,7 +13806,7 @@
       "source_file": "server/apps/ml_inference/feature_extractor.py",
       "source_location": "L196",
       "id": "ml_inference_feature_extractor_rationale_196",
-      "community": 285,
+      "community": 316,
       "norm_label": "ekstrak feature vector dari windowinput berdasarkan schema di config.      args:"
     },
     {
@@ -13968,7 +13968,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L71",
       "id": "ml_inference_registry_modelentry",
-      "community": 294,
+      "community": 322,
       "norm_label": "_modelentry"
     },
     {
@@ -13977,7 +13977,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L74",
       "id": "ml_inference_registry_modelentry_init",
-      "community": 294,
+      "community": 322,
       "norm_label": ".__init__()"
     },
     {
@@ -13986,7 +13986,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L83",
       "id": "ml_inference_registry_modelentry_load",
-      "community": 294,
+      "community": 322,
       "norm_label": ".load()"
     },
     {
@@ -14004,7 +14004,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L96",
       "id": "ml_inference_registry_modelentry_info",
-      "community": 294,
+      "community": 322,
       "norm_label": ".info()"
     },
     {
@@ -14031,7 +14031,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L132",
       "id": "ml_inference_registry_modelregistry_register",
-      "community": 294,
+      "community": 322,
       "norm_label": ".register()"
     },
     {
@@ -14040,7 +14040,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L168",
       "id": "ml_inference_registry_modelregistry_scan",
-      "community": 294,
+      "community": 322,
       "norm_label": ".scan()"
     },
     {
@@ -14049,7 +14049,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L231",
       "id": "ml_inference_registry_modelregistry_unregister",
-      "community": 294,
+      "community": 322,
       "norm_label": ".unregister()"
     },
     {
@@ -14058,7 +14058,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L244",
       "id": "ml_inference_registry_modelregistry_reload",
-      "community": 294,
+      "community": 326,
       "norm_label": ".reload()"
     },
     {
@@ -14067,7 +14067,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L258",
       "id": "ml_inference_registry_modelregistry_reload_all",
-      "community": 294,
+      "community": 326,
       "norm_label": ".reload_all()"
     },
     {
@@ -14076,7 +14076,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L264",
       "id": "ml_inference_registry_modelregistry_enable",
-      "community": 294,
+      "community": 322,
       "norm_label": ".enable()"
     },
     {
@@ -14085,7 +14085,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L271",
       "id": "ml_inference_registry_modelregistry_disable",
-      "community": 294,
+      "community": 322,
       "norm_label": ".disable()"
     },
     {
@@ -14175,7 +14175,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L72",
       "id": "ml_inference_registry_rationale_72",
-      "community": 294,
+      "community": 322,
       "norm_label": "satu slot di registry: engine + path + status."
     },
     {
@@ -14193,7 +14193,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L140",
       "id": "ml_inference_registry_rationale_140",
-      "community": 294,
+      "community": 322,
       "norm_label": "daftarkan satu model ke registry.          args:             model_path  : path"
     },
     {
@@ -14202,7 +14202,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L175",
       "id": "ml_inference_registry_rationale_175",
-      "community": 294,
+      "community": 322,
       "norm_label": "scan folder dan auto-register semua pasangan .pkl + config.          konvensi pe"
     },
     {
@@ -14211,7 +14211,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L232",
       "id": "ml_inference_registry_rationale_232",
-      "community": 294,
+      "community": 322,
       "norm_label": "hapus model dari registry dan bebaskan memori."
     },
     {
@@ -14220,7 +14220,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L245",
       "id": "ml_inference_registry_rationale_245",
-      "community": 294,
+      "community": 326,
       "norm_label": "hot-reload model tertentu tanpa menyentuh model lain.         berguna saat .pkl"
     },
     {
@@ -14229,7 +14229,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L259",
       "id": "ml_inference_registry_rationale_259",
-      "community": 294,
+      "community": 326,
       "norm_label": "reload semua model. return dict model_name \u2192 sukses."
     },
     {
@@ -14238,7 +14238,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L265",
       "id": "ml_inference_registry_rationale_265",
-      "community": 294,
+      "community": 322,
       "norm_label": "aktifkan model. model yang disabled di-skip saat predict."
     },
     {
@@ -14247,7 +14247,7 @@
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L272",
       "id": "ml_inference_registry_rationale_272",
-      "community": 294,
+      "community": 322,
       "norm_label": "nonaktifkan model sementara tanpa unload dari memori."
     },
     {
@@ -14301,7 +14301,7 @@
       "source_file": "server/apps/ml_inference/schemas.py",
       "source_location": "L17",
       "id": "ml_inference_schemas_windowinput",
-      "community": 273,
+      "community": 295,
       "norm_label": "windowinput"
     },
     {
@@ -14472,7 +14472,7 @@
       "source_file": "server/apps/ml_inference/schemas.py",
       "source_location": "L18",
       "id": "ml_inference_schemas_rationale_18",
-      "community": 273,
+      "community": 295,
       "norm_label": "data satu window rekonstruksi yang akan di-infer.      semua sinyal berupa list/"
     },
     {
@@ -15300,7 +15300,7 @@
       "source_file": "server/apps/reconstruct/__main__.py",
       "source_location": "L22",
       "id": "reconstruct_main_main",
-      "community": 240,
+      "community": 323,
       "norm_label": "main()"
     },
     {
@@ -15318,7 +15318,7 @@
       "source_file": "server/apps/reconstruct/__main__.py",
       "source_location": "L23",
       "id": "reconstruct_main_rationale_23",
-      "community": 240,
+      "community": 323,
       "norm_label": "setup logging, singleton, lalu jalankan listener (blocking)."
     },
     {
@@ -15390,7 +15390,7 @@
       "source_file": "server/core/logger.py",
       "source_location": "L1",
       "id": "server_core_logger_py",
-      "community": 240,
+      "community": 323,
       "norm_label": "logger.py"
     },
     {
@@ -15399,7 +15399,7 @@
       "source_file": "server/core/logger.py",
       "source_location": "L12",
       "id": "core_logger_setup_logging",
-      "community": 240,
+      "community": 323,
       "norm_label": "setup_logging()"
     },
     {
@@ -15408,7 +15408,7 @@
       "source_file": "server/core/logger.py",
       "source_location": "L28",
       "id": "core_logger_get_logger",
-      "community": 240,
+      "community": 323,
       "norm_label": "get_logger()"
     },
     {
@@ -15417,7 +15417,7 @@
       "source_file": "server/core/logger.py",
       "source_location": "L1",
       "id": "core_logger_rationale_1",
-      "community": 240,
+      "community": 323,
       "norm_label": "setup logging stdlib terpusat untuk seluruh server."
     },
     {
@@ -15426,7 +15426,7 @@
       "source_file": "server/core/logger.py",
       "source_location": "L13",
       "id": "core_logger_rationale_13",
-      "community": 240,
+      "community": 323,
       "norm_label": "panggil sekali di entry point (apps/*/___main__.py).     semua modul lain cukup"
     },
     {
@@ -15435,7 +15435,7 @@
       "source_file": "server/core/logger.py",
       "source_location": "L29",
       "id": "core_logger_rationale_29",
-      "community": 240,
+      "community": 323,
       "norm_label": "shortcut: logger = get_logger(__name__)"
     },
     {
@@ -15768,7 +15768,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L113",
       "id": "core_storage_storagemanager",
-      "community": 320,
+      "community": 23,
       "norm_label": "storagemanager"
     },
     {
@@ -15777,7 +15777,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L122",
       "id": "core_storage_storagemanager_init",
-      "community": 320,
+      "community": 23,
       "norm_label": ".__init__()"
     },
     {
@@ -15786,7 +15786,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L134",
       "id": "core_storage_storagemanager_open",
-      "community": 320,
+      "community": 23,
       "norm_label": ".open()"
     },
     {
@@ -15804,7 +15804,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L156",
       "id": "core_storage_storagemanager_enter",
-      "community": 320,
+      "community": 23,
       "norm_label": ".__enter__()"
     },
     {
@@ -15831,7 +15831,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L244",
       "id": "core_storage_storagemanager_log_event",
-      "community": 316,
+      "community": 23,
       "norm_label": ".log_event()"
     },
     {
@@ -15840,7 +15840,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L271",
       "id": "core_storage_storagemanager_get_last_windows",
-      "community": 309,
+      "community": 23,
       "norm_label": ".get_last_windows()"
     },
     {
@@ -15885,7 +15885,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L425",
       "id": "core_storage_storagemanager_db_size_bytes",
-      "community": 320,
+      "community": 327,
       "norm_label": ".db_size_bytes()"
     },
     {
@@ -15894,7 +15894,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L431",
       "id": "core_storage_storagemanager_create_tables",
-      "community": 320,
+      "community": 23,
       "norm_label": "._create_tables()"
     },
     {
@@ -15921,7 +15921,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L487",
       "id": "core_storage_sanitize_node_id",
-      "community": 316,
+      "community": 217,
       "norm_label": "_sanitize_node_id()"
     },
     {
@@ -15939,7 +15939,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L114",
       "id": "core_storage_rationale_114",
-      "community": 320,
+      "community": 23,
       "norm_label": "kelola koneksi sqlite dan semua operasi baca-tulis.      args:         db_pat"
     },
     {
@@ -15948,7 +15948,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L135",
       "id": "core_storage_rationale_135",
-      "community": 320,
+      "community": 23,
       "norm_label": "buka koneksi ke database dan buat tabel jika belum ada.         panggil sekali"
     },
     {
@@ -15975,7 +15975,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L250",
       "id": "core_storage_rationale_250",
-      "community": 316,
+      "community": 23,
       "norm_label": "catat satu event ke tabel `events`.          event_type contoh:           \"no"
     },
     {
@@ -15984,7 +15984,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L277",
       "id": "core_storage_rationale_277",
-      "community": 309,
+      "community": 23,
       "norm_label": "ambil n window terakhir untuk sinyal tertentu dari node tertentu.          ret"
     },
     {
@@ -16029,7 +16029,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L426",
       "id": "core_storage_rationale_426",
-      "community": 320,
+      "community": 327,
       "norm_label": "ukuran file db dalam byte."
     },
     {
@@ -17676,7 +17676,7 @@
       "source_file": "server/tests/test_ml_engine.py",
       "source_location": "L423",
       "id": "tests_test_ml_engine_test_feature_extractor_all_stat_types",
-      "community": 237,
+      "community": 316,
       "norm_label": "test_feature_extractor_all_stat_types()"
     },
     {
@@ -17685,7 +17685,7 @@
       "source_file": "server/tests/test_ml_engine.py",
       "source_location": "L440",
       "id": "tests_test_ml_engine_test_feature_extractor_meta_cast_int",
-      "community": 237,
+      "community": 316,
       "norm_label": "test_feature_extractor_meta_cast_int()"
     },
     {
@@ -17694,7 +17694,7 @@
       "source_file": "server/tests/test_ml_engine.py",
       "source_location": "L455",
       "id": "tests_test_ml_engine_test_feature_extractor_raw_index",
-      "community": 237,
+      "community": 316,
       "norm_label": "test_feature_extractor_raw_index()"
     },
     {
@@ -17703,7 +17703,7 @@
       "source_file": "server/tests/test_ml_engine.py",
       "source_location": "L464",
       "id": "tests_test_ml_engine_test_feature_extractor_cross_corr",
-      "community": 237,
+      "community": 316,
       "norm_label": "test_feature_extractor_cross_corr()"
     },
     {
@@ -17712,7 +17712,7 @@
       "source_file": "server/tests/test_ml_engine.py",
       "source_location": "L477",
       "id": "tests_test_ml_engine_test_feature_extractor_missing_signal_uses_default",
-      "community": 237,
+      "community": 316,
       "norm_label": "test_feature_extractor_missing_signal_uses_default()"
     },
     {
@@ -17739,7 +17739,7 @@
       "source_file": "server/tests/test_ml_engine.py",
       "source_location": "L525",
       "id": "tests_test_ml_engine_test_from_storage_rows",
-      "community": 273,
+      "community": 295,
       "norm_label": "test_from_storage_rows()"
     },
     {
@@ -17964,7 +17964,7 @@
       "source_file": "server/tests/test_ml_engine.py",
       "source_location": "L424",
       "id": "tests_test_ml_engine_rationale_424",
-      "community": 237,
+      "community": 316,
       "norm_label": "semua stat type harus bisa diekstrak tanpa crash."
     },
     {
@@ -17973,7 +17973,7 @@
       "source_file": "server/tests/test_ml_engine.py",
       "source_location": "L441",
       "id": "tests_test_ml_engine_rationale_441",
-      "community": 237,
+      "community": 316,
       "norm_label": "meta field dengan cast=int: finger (bool) \u2192 0.0 atau 1.0."
     },
     {
@@ -17982,7 +17982,7 @@
       "source_file": "server/tests/test_ml_engine.py",
       "source_location": "L456",
       "id": "tests_test_ml_engine_rationale_456",
-      "community": 237,
+      "community": 316,
       "norm_label": "raw feature harus ambil elemen ke-index dari sinyal."
     },
     {
@@ -17991,7 +17991,7 @@
       "source_file": "server/tests/test_ml_engine.py",
       "source_location": "L465",
       "id": "tests_test_ml_engine_rationale_465",
-      "community": 237,
+      "community": 316,
       "norm_label": "cross-feature correlation ax\u2013ay."
     },
     {
@@ -18000,7 +18000,7 @@
       "source_file": "server/tests/test_ml_engine.py",
       "source_location": "L478",
       "id": "tests_test_ml_engine_rationale_478",
-      "community": 237,
+      "community": 316,
       "norm_label": "sinyal none \u2192 pakai default, masuk ke missing list."
     },
     {
@@ -18027,7 +18027,7 @@
       "source_file": "server/tests/test_ml_engine.py",
       "source_location": "L526",
       "id": "tests_test_ml_engine_rationale_526",
-      "community": 273,
+      "community": 295,
       "norm_label": "from_storage_rows harus mapping ke windowinput dengan benar."
     },
     {
@@ -18495,7 +18495,7 @@
       "source_file": "server/tests/test_storage.py",
       "source_location": "L77",
       "id": "tests_test_storage_test_double_open_idempotent",
-      "community": 320,
+      "community": 23,
       "norm_label": "test_double_open_idempotent()"
     },
     {
@@ -18504,7 +18504,7 @@
       "source_file": "server/tests/test_storage.py",
       "source_location": "L88",
       "id": "tests_test_storage_test_ensure_open_raises_if_not_opened",
-      "community": 320,
+      "community": 23,
       "norm_label": "test_ensure_open_raises_if_not_opened()"
     },
     {
@@ -18513,7 +18513,7 @@
       "source_file": "server/tests/test_storage.py",
       "source_location": "L97",
       "id": "tests_test_storage_test_context_manager",
-      "community": 320,
+      "community": 23,
       "norm_label": "test_context_manager()"
     },
     {
@@ -18711,7 +18711,7 @@
       "source_file": "server/tests/test_storage.py",
       "source_location": "L78",
       "id": "tests_test_storage_rationale_78",
-      "community": 320,
+      "community": 23,
       "norm_label": "open() dua kali tidak crash \u2014 tabel create if not exists."
     },
     {
@@ -24083,7 +24083,7 @@
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
       "source_location": "L249",
-      "community": 316,
+      "community": 23,
       "norm_label": "catat satu event ke tabel `events`.          event_type contoh:           \"no",
       "id": "core_storage_rationale_249"
     },
@@ -24092,7 +24092,7 @@
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
       "source_location": "L276",
-      "community": 309,
+      "community": 23,
       "norm_label": "ambil n window terakhir untuk sinyal tertentu dari node tertentu.          ret",
       "id": "core_storage_rationale_276"
     },
@@ -24137,7 +24137,7 @@
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
       "source_location": "L425",
-      "community": 320,
+      "community": 327,
       "norm_label": "ukuran file db dalam byte.",
       "id": "core_storage_rationale_425"
     },
@@ -24164,7 +24164,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/main_app.py",
       "source_location": "L140",
-      "community": 240,
+      "community": 323,
       "norm_label": "jalankan semua sistem server dalam satu proses.",
       "id": "apps_main_app_rationale_140"
     },
@@ -24686,7 +24686,7 @@
       "file_type": "code",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L38",
-      "community": 247,
+      "community": 328,
       "norm_label": "dummymodel",
       "id": "ml_inference_test_ml_engine_dummymodel"
     },
@@ -24695,7 +24695,7 @@
       "file_type": "code",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L41",
-      "community": 247,
+      "community": 328,
       "norm_label": ".__init__()",
       "id": "ml_inference_test_ml_engine_dummymodel_init"
     },
@@ -24704,7 +24704,7 @@
       "file_type": "code",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L46",
-      "community": 247,
+      "community": 328,
       "norm_label": ".predict_proba()",
       "id": "ml_inference_test_ml_engine_dummymodel_predict_proba"
     },
@@ -24767,7 +24767,7 @@
       "file_type": "code",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L173",
-      "community": 247,
+      "community": 226,
       "norm_label": "test_load_config_invalid_labels_count()",
       "id": "ml_inference_test_ml_engine_test_load_config_invalid_labels_count"
     },
@@ -24785,7 +24785,7 @@
       "file_type": "code",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L204",
-      "community": 247,
+      "community": 226,
       "norm_label": "test_load_n_features_mismatch()",
       "id": "ml_inference_test_ml_engine_test_load_n_features_mismatch"
     },
@@ -24947,7 +24947,7 @@
       "file_type": "code",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L455",
-      "community": 247,
+      "community": 316,
       "norm_label": "test_feature_extractor_raw_index()",
       "id": "ml_inference_test_ml_engine_test_feature_extractor_raw_index"
     },
@@ -24956,7 +24956,7 @@
       "file_type": "code",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L464",
-      "community": 247,
+      "community": 316,
       "norm_label": "test_feature_extractor_cross_corr()",
       "id": "ml_inference_test_ml_engine_test_feature_extractor_cross_corr"
     },
@@ -24965,7 +24965,7 @@
       "file_type": "code",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L477",
-      "community": 247,
+      "community": 316,
       "norm_label": "test_feature_extractor_missing_signal_uses_default()",
       "id": "ml_inference_test_ml_engine_test_feature_extractor_missing_signal_uses_default"
     },
@@ -24992,7 +24992,7 @@
       "file_type": "code",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L525",
-      "community": 273,
+      "community": 295,
       "norm_label": "test_from_storage_rows()",
       "id": "ml_inference_test_ml_engine_test_from_storage_rows"
     },
@@ -25019,7 +25019,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L39",
-      "community": 247,
+      "community": 328,
       "norm_label": "sklearn-compatible dummy dengan predict_proba tetap.",
       "id": "ml_inference_test_ml_engine_rationale_39"
     },
@@ -25073,7 +25073,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L174",
-      "community": 247,
+      "community": 226,
       "norm_label": "valueerror jika labels < 2.",
       "id": "ml_inference_test_ml_engine_rationale_174"
     },
@@ -25091,7 +25091,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L205",
-      "community": 247,
+      "community": 226,
       "norm_label": "valueerror jika n_features model = jumlah features di config.",
       "id": "ml_inference_test_ml_engine_rationale_205"
     },
@@ -25235,7 +25235,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L456",
-      "community": 247,
+      "community": 316,
       "norm_label": "raw feature harus ambil elemen ke-index dari sinyal.",
       "id": "ml_inference_test_ml_engine_rationale_456"
     },
@@ -25244,7 +25244,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L465",
-      "community": 247,
+      "community": 316,
       "norm_label": "cross-feature correlation ax\u2013ay.",
       "id": "ml_inference_test_ml_engine_rationale_465"
     },
@@ -25253,7 +25253,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L478",
-      "community": 247,
+      "community": 316,
       "norm_label": "sinyal none \u2192 pakai default, masuk ke missing list.",
       "id": "ml_inference_test_ml_engine_rationale_478"
     },
@@ -25280,7 +25280,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L526",
-      "community": 273,
+      "community": 295,
       "norm_label": "from_storage_rows harus mapping ke windowinput dengan benar.",
       "id": "ml_inference_test_ml_engine_rationale_526"
     },
@@ -25289,7 +25289,7 @@
       "file_type": "code",
       "source_file": "server/apps/ml_inference/wrappers.py",
       "source_location": "L1",
-      "community": 226,
+      "community": 324,
       "norm_label": "wrappers.py",
       "id": "server_apps_ml_inference_wrappers_py"
     },
@@ -25298,7 +25298,7 @@
       "file_type": "code",
       "source_file": "server/apps/ml_inference/wrappers.py",
       "source_location": "L26",
-      "community": 226,
+      "community": 324,
       "norm_label": "svmactivitywrapper",
       "id": "ml_inference_wrappers_svmactivitywrapper"
     },
@@ -25307,7 +25307,7 @@
       "file_type": "code",
       "source_file": "server/apps/ml_inference/wrappers.py",
       "source_location": "L54",
-      "community": 226,
+      "community": 324,
       "norm_label": ".__init__()",
       "id": "ml_inference_wrappers_svmactivitywrapper_init"
     },
@@ -25316,7 +25316,7 @@
       "file_type": "code",
       "source_file": "server/apps/ml_inference/wrappers.py",
       "source_location": "L68",
-      "community": 226,
+      "community": 324,
       "norm_label": ".predict_proba()",
       "id": "ml_inference_wrappers_svmactivitywrapper_predict_proba"
     },
@@ -25325,7 +25325,7 @@
       "file_type": "code",
       "source_file": "server/apps/ml_inference/wrappers.py",
       "source_location": "L80",
-      "community": 226,
+      "community": 324,
       "norm_label": ".predict()",
       "id": "ml_inference_wrappers_svmactivitywrapper_predict"
     },
@@ -25334,7 +25334,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/wrappers.py",
       "source_location": "L1",
-      "community": 226,
+      "community": 324,
       "norm_label": "wrappers.py \u2014 sklearn-compatible wrappers untuk model .pkl non-standar.  masalah",
       "id": "ml_inference_wrappers_rationale_1"
     },
@@ -25343,7 +25343,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/wrappers.py",
       "source_location": "L27",
-      "community": 226,
+      "community": 324,
       "norm_label": "wrapper sklearn-compatible untuk model svm yang disimpan sebagai dict.      dict",
       "id": "ml_inference_wrappers_rationale_27"
     },
@@ -25352,7 +25352,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/wrappers.py",
       "source_location": "L55",
-      "community": 226,
+      "community": 324,
       "norm_label": "args:             pipeline      : sklearn pipeline dengan steps [scaler, smote,",
       "id": "ml_inference_wrappers_rationale_55"
     },
@@ -25361,7 +25361,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/wrappers.py",
       "source_location": "L69",
-      "community": 226,
+      "community": 324,
       "norm_label": "args:             x: ndarray shape (n_samples, n_features), dtype float64",
       "id": "ml_inference_wrappers_rationale_69"
     },
@@ -25370,7 +25370,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/wrappers.py",
       "source_location": "L81",
-      "community": 226,
+      "community": 324,
       "norm_label": "predict kelas (encoded integer).",
       "id": "ml_inference_wrappers_rationale_81"
     },
@@ -25523,7 +25523,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/feature_extractor.py",
       "source_location": "L158",
-      "community": 285,
+      "community": 316,
       "norm_label": "ekstrak feature vector dari windowinput berdasarkan schema di config.      args:",
       "id": "ml_inference_feature_extractor_rationale_158"
     },
@@ -25640,7 +25640,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L174",
-      "community": 294,
+      "community": 322,
       "norm_label": "scan folder dan auto-register semua pasangan .pkl + config.          konvensi pe",
       "id": "ml_inference_registry_rationale_174"
     },
@@ -25649,7 +25649,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L225",
-      "community": 294,
+      "community": 322,
       "norm_label": "hapus model dari registry dan bebaskan memori.",
       "id": "ml_inference_registry_rationale_225"
     },
@@ -25658,7 +25658,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L238",
-      "community": 294,
+      "community": 326,
       "norm_label": "hot-reload model tertentu tanpa menyentuh model lain.         berguna saat .pkl",
       "id": "ml_inference_registry_rationale_238"
     },
@@ -25667,7 +25667,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L252",
-      "community": 294,
+      "community": 326,
       "norm_label": "reload semua model. return dict model_name \u2192 sukses.",
       "id": "ml_inference_registry_rationale_252"
     },
@@ -25676,7 +25676,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/registry.py",
       "source_location": "L258",
-      "community": 294,
+      "community": 322,
       "norm_label": "aktifkan model. model yang disabled di-skip saat predict.",
       "id": "ml_inference_registry_rationale_258"
     },
@@ -27386,7 +27386,7 @@
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
       "source_location": "L111",
-      "community": 320,
+      "community": 23,
       "norm_label": "kelola koneksi sqlite dan semua operasi baca-tulis.      args:         db_pat",
       "id": "core_storage_rationale_111"
     },
@@ -27395,7 +27395,7 @@
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
       "source_location": "L132",
-      "community": 320,
+      "community": 23,
       "norm_label": "buka koneksi ke database dan buat tabel jika belum ada.         panggil sekali",
       "id": "core_storage_rationale_132"
     },
@@ -27422,7 +27422,7 @@
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
       "source_location": "L245",
-      "community": 316,
+      "community": 23,
       "norm_label": "catat satu event ke tabel `events`.          event_type contoh:           \"no",
       "id": "core_storage_rationale_245"
     },
@@ -27431,7 +27431,7 @@
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
       "source_location": "L272",
-      "community": 309,
+      "community": 23,
       "norm_label": "ambil n window terakhir untuk sinyal tertentu dari node tertentu.          ret",
       "id": "core_storage_rationale_272"
     },
@@ -27476,7 +27476,7 @@
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
       "source_location": "L421",
-      "community": 320,
+      "community": 327,
       "norm_label": "ukuran file db dalam byte.",
       "id": "core_storage_rationale_421"
     },
@@ -56697,9 +56697,9 @@
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
       "source_location": "L454",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_lib_espnowmesh_espnowmesh_cpp",
-      "target": "espnowmesh_espnowmesh_taskchanneldiscovery",
-      "confidence_score": 1.0
+      "target": "espnowmesh_espnowmesh_taskchanneldiscovery"
     },
     {
       "relation": "contains",
@@ -56873,6 +56873,17 @@
       "confidence_score": 1.0,
       "source": "espnowmesh_espnowmesh_processpendingchannelsync",
       "target": "espnowmesh_espnowmesh_addpeer"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
+      "source_location": "L485",
+      "weight": 1.0,
+      "source": "espnowmesh_espnowmesh_taskchanneldiscovery",
+      "target": "espnowmesh_espnowmesh_processpendingchannelsync",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -73425,9 +73436,9 @@
       "source_file": "firmware/.pio/libdeps/node_sensor_b/ArduinoJson/README.md",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_pio_libdeps_node_sensor_b_arduinojson_readme_md",
-      "target": "arduinojson_readme_features",
-      "confidence_score": 1.0
+      "target": "arduinojson_readme_features"
     },
     {
       "relation": "contains",
@@ -73465,9 +73476,9 @@
       "source_file": "firmware/.pio/libdeps/node_sensor_b/ArduinoJson/README.md",
       "source_location": "L99",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_pio_libdeps_node_sensor_b_arduinojson_readme_md",
-      "target": "arduinojson_readme_quickstart",
-      "confidence_score": 1.0
+      "target": "arduinojson_readme_quickstart"
     },
     {
       "relation": "contains",
@@ -73505,9 +73516,9 @@
       "source_file": "firmware/.pio/libdeps/node_sensor_b/ArduinoJson/README.md",
       "source_location": "L138",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_pio_libdeps_node_sensor_b_arduinojson_readme_md",
-      "target": "arduinojson_readme_sponsors",
-      "confidence_score": 1.0
+      "target": "arduinojson_readme_sponsors"
     },
     {
       "relation": "contains",
@@ -73575,9 +73586,9 @@
       "source_file": "firmware/.pio/libdeps/node_sensor_b/PubSubClient/README.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "firmware_pio_libdeps_node_sensor_b_pubsubclient_readme_md",
-      "target": "pubsubclient_readme_arduino_client_for_mqtt",
-      "confidence_score": 1.0
+      "target": "pubsubclient_readme_arduino_client_for_mqtt"
     },
     {
       "relation": "contains",
@@ -73585,9 +73596,9 @@
       "source_file": "new_feature/analysis_espnow_connectivity.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_analysis_espnow_connectivity_md",
-      "target": "new_feature_analysis_espnow_connectivity_analisis_konektivitas_esp_now_mqtt_problem_solusi",
-      "confidence_score": 1.0
+      "target": "new_feature_analysis_espnow_connectivity_analisis_konektivitas_esp_now_mqtt_problem_solusi"
     },
     {
       "relation": "contains",
@@ -73595,9 +73606,9 @@
       "source_file": "new_feature/analysis_espnow_connectivity.md",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_analysis_espnow_connectivity_analisis_konektivitas_esp_now_mqtt_problem_solusi",
-      "target": "new_feature_analysis_espnow_connectivity_diagnosis_mengapa_harus_dinyalakan_bersamaan",
-      "confidence_score": 1.0
+      "target": "new_feature_analysis_espnow_connectivity_diagnosis_mengapa_harus_dinyalakan_bersamaan"
     },
     {
       "relation": "contains",
@@ -73605,9 +73616,9 @@
       "source_file": "new_feature/analysis_espnow_connectivity.md",
       "source_location": "L68",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_analysis_espnow_connectivity_analisis_konektivitas_esp_now_mqtt_problem_solusi",
-      "target": "new_feature_analysis_espnow_connectivity_solusi_yang_direkomendasikan",
-      "confidence_score": 1.0
+      "target": "new_feature_analysis_espnow_connectivity_solusi_yang_direkomendasikan"
     },
     {
       "relation": "contains",
@@ -73615,9 +73626,9 @@
       "source_file": "new_feature/analysis_espnow_connectivity.md",
       "source_location": "L260",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_analysis_espnow_connectivity_analisis_konektivitas_esp_now_mqtt_problem_solusi",
-      "target": "new_feature_analysis_espnow_connectivity_perbandingan_sebelum_vs_sesudah",
-      "confidence_score": 1.0
+      "target": "new_feature_analysis_espnow_connectivity_perbandingan_sebelum_vs_sesudah"
     },
     {
       "relation": "contains",
@@ -73625,9 +73636,9 @@
       "source_file": "new_feature/analysis_espnow_connectivity.md",
       "source_location": "L274",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_analysis_espnow_connectivity_analisis_konektivitas_esp_now_mqtt_problem_solusi",
-      "target": "new_feature_analysis_espnow_connectivity_flow_setelah_perbaikan",
-      "confidence_score": 1.0
+      "target": "new_feature_analysis_espnow_connectivity_flow_setelah_perbaikan"
     },
     {
       "relation": "contains",
@@ -73635,9 +73646,9 @@
       "source_file": "new_feature/analysis_espnow_connectivity.md",
       "source_location": "L309",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_analysis_espnow_connectivity_analisis_konektivitas_esp_now_mqtt_problem_solusi",
-      "target": "new_feature_analysis_espnow_connectivity_hal_yang_perlu_diperhatikan",
-      "confidence_score": 1.0
+      "target": "new_feature_analysis_espnow_connectivity_hal_yang_perlu_diperhatikan"
     },
     {
       "relation": "contains",
@@ -73645,9 +73656,9 @@
       "source_file": "new_feature/analysis_espnow_connectivity.md",
       "source_location": "L332",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_analysis_espnow_connectivity_analisis_konektivitas_esp_now_mqtt_problem_solusi",
-      "target": "new_feature_analysis_espnow_connectivity_rekomendasi_implementasi",
-      "confidence_score": 1.0
+      "target": "new_feature_analysis_espnow_connectivity_rekomendasi_implementasi"
     },
     {
       "relation": "contains",
@@ -73655,9 +73666,9 @@
       "source_file": "new_feature/analysis_espnow_connectivity.md",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_analysis_espnow_connectivity_diagnosis_mengapa_harus_dinyalakan_bersamaan",
-      "target": "new_feature_analysis_espnow_connectivity_arsitektur_saat_ini",
-      "confidence_score": 1.0
+      "target": "new_feature_analysis_espnow_connectivity_arsitektur_saat_ini"
     },
     {
       "relation": "contains",
@@ -73665,9 +73676,9 @@
       "source_file": "new_feature/analysis_espnow_connectivity.md",
       "source_location": "L28",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_analysis_espnow_connectivity_diagnosis_mengapa_harus_dinyalakan_bersamaan",
-      "target": "new_feature_analysis_espnow_connectivity_root_cause_3_masalah_utama",
-      "confidence_score": 1.0
+      "target": "new_feature_analysis_espnow_connectivity_root_cause_3_masalah_utama"
     },
     {
       "relation": "contains",
@@ -73675,9 +73686,9 @@
       "source_file": "new_feature/analysis_espnow_connectivity.md",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_analysis_espnow_connectivity_arsitektur_saat_ini",
-      "target": "new_feature_analysis_espnow_connectivity_codeblock_1",
-      "confidence_score": 1.0
+      "target": "new_feature_analysis_espnow_connectivity_codeblock_1"
     },
     {
       "relation": "contains",
@@ -73685,9 +73696,9 @@
       "source_file": "new_feature/analysis_espnow_connectivity.md",
       "source_location": "L30",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_analysis_espnow_connectivity_root_cause_3_masalah_utama",
-      "target": "new_feature_analysis_espnow_connectivity_1_sensor_begin_true_blocking_infinite_loop",
-      "confidence_score": 1.0
+      "target": "new_feature_analysis_espnow_connectivity_1_sensor_begin_true_blocking_infinite_loop"
     },
     {
       "relation": "contains",
@@ -73695,9 +73706,9 @@
       "source_file": "new_feature/analysis_espnow_connectivity.md",
       "source_location": "L47",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_analysis_espnow_connectivity_root_cause_3_masalah_utama",
-      "target": "new_feature_analysis_espnow_connectivity_2_gateway_mulai_beacon_setelah_wifi_mqtt_selesai",
-      "confidence_score": 1.0
+      "target": "new_feature_analysis_espnow_connectivity_2_gateway_mulai_beacon_setelah_wifi_mqtt_selesai"
     },
     {
       "relation": "contains",
@@ -73705,9 +73716,9 @@
       "source_file": "new_feature/analysis_espnow_connectivity.md",
       "source_location": "L59",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_analysis_espnow_connectivity_root_cause_3_masalah_utama",
-      "target": "new_feature_analysis_espnow_connectivity_3_tidak_ada_mekanisme_re_discovery_setelah_init",
-      "confidence_score": 1.0
+      "target": "new_feature_analysis_espnow_connectivity_3_tidak_ada_mekanisme_re_discovery_setelah_init"
     },
     {
       "relation": "contains",
@@ -73715,9 +73726,9 @@
       "source_file": "new_feature/analysis_espnow_connectivity.md",
       "source_location": "L32",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_analysis_espnow_connectivity_1_sensor_begin_true_blocking_infinite_loop",
-      "target": "new_feature_analysis_espnow_connectivity_codeblock_2",
-      "confidence_score": 1.0
+      "target": "new_feature_analysis_espnow_connectivity_codeblock_2"
     },
     {
       "relation": "contains",
@@ -73725,9 +73736,9 @@
       "source_file": "new_feature/analysis_espnow_connectivity.md",
       "source_location": "L49",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_analysis_espnow_connectivity_2_gateway_mulai_beacon_setelah_wifi_mqtt_selesai",
-      "target": "new_feature_analysis_espnow_connectivity_codeblock_3",
-      "confidence_score": 1.0
+      "target": "new_feature_analysis_espnow_connectivity_codeblock_3"
     },
     {
       "relation": "contains",
@@ -73735,9 +73746,9 @@
       "source_file": "new_feature/analysis_espnow_connectivity.md",
       "source_location": "L70",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_analysis_espnow_connectivity_solusi_yang_direkomendasikan",
-      "target": "new_feature_analysis_espnow_connectivity_strategi_boot_anytime_connect_eventually",
-      "confidence_score": 1.0
+      "target": "new_feature_analysis_espnow_connectivity_strategi_boot_anytime_connect_eventually"
     },
     {
       "relation": "contains",
@@ -73745,9 +73756,9 @@
       "source_file": "new_feature/analysis_espnow_connectivity.md",
       "source_location": "L74",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_analysis_espnow_connectivity_solusi_yang_direkomendasikan",
-      "target": "new_feature_analysis_espnow_connectivity_perubahan_1_sensor_boot_non_blocking_paling_penting",
-      "confidence_score": 1.0
+      "target": "new_feature_analysis_espnow_connectivity_perubahan_1_sensor_boot_non_blocking_paling_penting"
     },
     {
       "relation": "contains",
@@ -73755,9 +73766,9 @@
       "source_file": "new_feature/analysis_espnow_connectivity.md",
       "source_location": "L131",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_analysis_espnow_connectivity_solusi_yang_direkomendasikan",
-      "target": "new_feature_analysis_espnow_connectivity_perubahan_2_background_discovery_task_freertos",
-      "confidence_score": 1.0
+      "target": "new_feature_analysis_espnow_connectivity_perubahan_2_background_discovery_task_freertos"
     },
     {
       "relation": "contains",
@@ -73765,9 +73776,9 @@
       "source_file": "new_feature/analysis_espnow_connectivity.md",
       "source_location": "L189",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_analysis_espnow_connectivity_solusi_yang_direkomendasikan",
-      "target": "new_feature_analysis_espnow_connectivity_perubahan_3_sensor_task_guard_kirim_data_hanya_setelah_connected",
-      "confidence_score": 1.0
+      "target": "new_feature_analysis_espnow_connectivity_perubahan_3_sensor_task_guard_kirim_data_hanya_setelah_connected"
     },
     {
       "relation": "contains",
@@ -73775,9 +73786,9 @@
       "source_file": "new_feature/analysis_espnow_connectivity.md",
       "source_location": "L212",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_analysis_espnow_connectivity_solusi_yang_direkomendasikan",
-      "target": "new_feature_analysis_espnow_connectivity_perubahan_4_gateway_mulai_beacon_lebih_awal",
-      "confidence_score": 1.0
+      "target": "new_feature_analysis_espnow_connectivity_perubahan_4_gateway_mulai_beacon_lebih_awal"
     },
     {
       "relation": "contains",
@@ -73785,9 +73796,9 @@
       "source_file": "new_feature/analysis_espnow_connectivity.md",
       "source_location": "L78",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_analysis_espnow_connectivity_perubahan_1_sensor_boot_non_blocking_paling_penting",
-      "target": "new_feature_analysis_espnow_connectivity_codeblock_4",
-      "confidence_score": 1.0
+      "target": "new_feature_analysis_espnow_connectivity_codeblock_4"
     },
     {
       "relation": "contains",
@@ -73795,9 +73806,9 @@
       "source_file": "new_feature/analysis_espnow_connectivity.md",
       "source_location": "L135",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_analysis_espnow_connectivity_perubahan_2_background_discovery_task_freertos",
-      "target": "new_feature_analysis_espnow_connectivity_codeblock_5",
-      "confidence_score": 1.0
+      "target": "new_feature_analysis_espnow_connectivity_codeblock_5"
     },
     {
       "relation": "contains",
@@ -73805,9 +73816,9 @@
       "source_file": "new_feature/analysis_espnow_connectivity.md",
       "source_location": "L193",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_analysis_espnow_connectivity_perubahan_3_sensor_task_guard_kirim_data_hanya_setelah_connected",
-      "target": "new_feature_analysis_espnow_connectivity_codeblock_6",
-      "confidence_score": 1.0
+      "target": "new_feature_analysis_espnow_connectivity_codeblock_6"
     },
     {
       "relation": "contains",
@@ -73815,9 +73826,9 @@
       "source_file": "new_feature/analysis_espnow_connectivity.md",
       "source_location": "L216",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_analysis_espnow_connectivity_perubahan_4_gateway_mulai_beacon_lebih_awal",
-      "target": "new_feature_analysis_espnow_connectivity_codeblock_7",
-      "confidence_score": 1.0
+      "target": "new_feature_analysis_espnow_connectivity_codeblock_7"
     },
     {
       "relation": "contains",
@@ -73825,9 +73836,9 @@
       "source_file": "new_feature/analysis_espnow_connectivity.md",
       "source_location": "L276",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_analysis_espnow_connectivity_flow_setelah_perbaikan",
-      "target": "new_feature_analysis_espnow_connectivity_codeblock_8",
-      "confidence_score": 1.0
+      "target": "new_feature_analysis_espnow_connectivity_codeblock_8"
     },
     {
       "relation": "contains",
@@ -73835,9 +73846,9 @@
       "source_file": "new_feature/analysis_espnow_connectivity.md",
       "source_location": "L311",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_analysis_espnow_connectivity_hal_yang_perlu_diperhatikan",
-      "target": "new_feature_analysis_espnow_connectivity_1_wifi_mode_vs_esp_now_init_order_gateway",
-      "confidence_score": 1.0
+      "target": "new_feature_analysis_espnow_connectivity_1_wifi_mode_vs_esp_now_init_order_gateway"
     },
     {
       "relation": "contains",
@@ -73845,9 +73856,9 @@
       "source_file": "new_feature/analysis_espnow_connectivity.md",
       "source_location": "L322",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_analysis_espnow_connectivity_hal_yang_perlu_diperhatikan",
-      "target": "new_feature_analysis_espnow_connectivity_2_sensor_mengirim_data_ke_channel_salah_sementara",
-      "confidence_score": 1.0
+      "target": "new_feature_analysis_espnow_connectivity_2_sensor_mengirim_data_ke_channel_salah_sementara"
     },
     {
       "relation": "contains",
@@ -73855,9 +73866,9 @@
       "source_file": "new_feature/analysis_espnow_connectivity.md",
       "source_location": "L326",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_analysis_espnow_connectivity_hal_yang_perlu_diperhatikan",
-      "target": "new_feature_analysis_espnow_connectivity_3_promiscuous_mode_esp_now_interference",
-      "confidence_score": 1.0
+      "target": "new_feature_analysis_espnow_connectivity_3_promiscuous_mode_esp_now_interference"
     },
     {
       "relation": "contains",
@@ -73865,9 +73876,9 @@
       "source_file": "new_feature/analysis_espnow_connectivity.md",
       "source_location": "L315",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_analysis_espnow_connectivity_1_wifi_mode_vs_esp_now_init_order_gateway",
-      "target": "new_feature_analysis_espnow_connectivity_codeblock_9",
-      "confidence_score": 1.0
+      "target": "new_feature_analysis_espnow_connectivity_codeblock_9"
     },
     {
       "relation": "contains",
@@ -73875,9 +73886,9 @@
       "source_file": "new_feature/walkthrough.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_walkthrough_md",
-      "target": "new_feature_walkthrough_walkthrough_v4_0_boot_anytime_esp_now_connectivity",
-      "confidence_score": 1.0
+      "target": "new_feature_walkthrough_walkthrough_v4_0_boot_anytime_esp_now_connectivity"
     },
     {
       "relation": "contains",
@@ -73885,9 +73896,9 @@
       "source_file": "new_feature/walkthrough.md",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_walkthrough_walkthrough_v4_0_boot_anytime_esp_now_connectivity",
-      "target": "new_feature_walkthrough_problem",
-      "confidence_score": 1.0
+      "target": "new_feature_walkthrough_problem"
     },
     {
       "relation": "contains",
@@ -73895,9 +73906,9 @@
       "source_file": "new_feature/walkthrough.md",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_walkthrough_walkthrough_v4_0_boot_anytime_esp_now_connectivity",
-      "target": "new_feature_walkthrough_changes_made",
-      "confidence_score": 1.0
+      "target": "new_feature_walkthrough_changes_made"
     },
     {
       "relation": "contains",
@@ -73905,9 +73916,9 @@
       "source_file": "new_feature/walkthrough.md",
       "source_location": "L2886",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_walkthrough_walkthrough_v4_0_boot_anytime_esp_now_connectivity",
-      "target": "new_feature_walkthrough_build_verification",
-      "confidence_score": 1.0
+      "target": "new_feature_walkthrough_build_verification"
     },
     {
       "relation": "contains",
@@ -73915,9 +73926,9 @@
       "source_file": "new_feature/walkthrough.md",
       "source_location": "L2894",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_walkthrough_walkthrough_v4_0_boot_anytime_esp_now_connectivity",
-      "target": "new_feature_walkthrough_behavior_change",
-      "confidence_score": 1.0
+      "target": "new_feature_walkthrough_behavior_change"
     },
     {
       "relation": "contains",
@@ -73925,9 +73936,9 @@
       "source_file": "new_feature/walkthrough.md",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_walkthrough_changes_made",
-      "target": "new_feature_walkthrough_1_espnowmesh_h",
-      "confidence_score": 1.0
+      "target": "new_feature_walkthrough_1_espnowmesh_h"
     },
     {
       "relation": "contains",
@@ -73935,9 +73946,9 @@
       "source_file": "new_feature/walkthrough.md",
       "source_location": "L266",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_walkthrough_changes_made",
-      "target": "new_feature_walkthrough_2_espnowmesh_cpp_main_changes",
-      "confidence_score": 1.0
+      "target": "new_feature_walkthrough_2_espnowmesh_cpp_main_changes"
     },
     {
       "relation": "contains",
@@ -73945,9 +73956,9 @@
       "source_file": "new_feature/walkthrough.md",
       "source_location": "L1440",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_walkthrough_changes_made",
-      "target": "new_feature_walkthrough_3_task_cs_sender_cpp",
-      "confidence_score": 1.0
+      "target": "new_feature_walkthrough_3_task_cs_sender_cpp"
     },
     {
       "relation": "contains",
@@ -73955,9 +73966,9 @@
       "source_file": "new_feature/walkthrough.md",
       "source_location": "L2222",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_walkthrough_changes_made",
-      "target": "new_feature_walkthrough_4_main_cpp",
-      "confidence_score": 1.0
+      "target": "new_feature_walkthrough_4_main_cpp"
     },
     {
       "relation": "contains",
@@ -73965,9 +73976,9 @@
       "source_file": "new_feature/walkthrough.md",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_walkthrough_1_espnowmesh_h",
-      "target": "new_feature_walkthrough_codeblock_1",
-      "confidence_score": 1.0
+      "target": "new_feature_walkthrough_codeblock_1"
     },
     {
       "relation": "contains",
@@ -73975,9 +73986,9 @@
       "source_file": "new_feature/walkthrough.md",
       "source_location": "L267",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_walkthrough_2_espnowmesh_cpp_main_changes",
-      "target": "new_feature_walkthrough_codeblock_2",
-      "confidence_score": 1.0
+      "target": "new_feature_walkthrough_codeblock_2"
     },
     {
       "relation": "contains",
@@ -73985,9 +73996,9 @@
       "source_file": "new_feature/walkthrough.md",
       "source_location": "L1441",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_walkthrough_3_task_cs_sender_cpp",
-      "target": "new_feature_walkthrough_codeblock_3",
-      "confidence_score": 1.0
+      "target": "new_feature_walkthrough_codeblock_3"
     },
     {
       "relation": "contains",
@@ -73995,9 +74006,9 @@
       "source_file": "new_feature/walkthrough.md",
       "source_location": "L2223",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "new_feature_walkthrough_4_main_cpp",
-      "target": "new_feature_walkthrough_codeblock_4",
-      "confidence_score": 1.0
+      "target": "new_feature_walkthrough_codeblock_4"
     },
     {
       "relation": "contains",
@@ -87812,5 +87823,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "b4143a8d4fcfe24aed4925749e8a83712f94e622"
+  "built_at_commit": "e0e0b2ff82cc7adb9525cd400bba054d66e75038"
 }

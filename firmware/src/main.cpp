@@ -172,21 +172,26 @@ static void taskMonitorSensor(void *param)
 static void taskBeacon(void *param)
 {
     static constexpr char BTAG[] = "BEACON";
+    
+    // Fase awal: beacon agresif 200ms selama 30 detik pertama
+    // Setelah itu kembali ke interval normal
+    const uint32_t startMs       = millis();
+    const uint32_t FAST_DURATION = 30000;   // 30 detik
+    const uint32_t FAST_INTERVAL = 200;     // ms
+    const uint32_t NORMAL_INTERVAL = static_cast<uint32_t>(
+                                        RoutingCfg::BEACON_INTERVAL_MS);
 
-    LOG_INFO(BTAG, "taskBeacon dimulai | interval=%lu ms",
-             (unsigned long)RoutingCfg::BEACON_INTERVAL_MS);
+    LOG_INFO(BTAG, "taskBeacon dimulai | normal interval=%lu ms", (unsigned long)NORMAL_INTERVAL);
 
     for (;;)
     {
         const bool ok = g_mesh.sendBeacon();
+        LOG_EVERY_N(10, LOG_DEBUG, BTAG, "Beacon | ok=%s", ok ? "Y" : "N");
 
-        LOG_EVERY_N(10, LOG_DEBUG, BTAG,
-                    "Beacon sent | ok=%s", ok ? "Y" : "N");
-
-        vTaskDelay(pdMS_TO_TICKS(20));
-
-        if (RoutingCfg::BEACON_INTERVAL_MS > 20)
-            vTaskDelay(pdMS_TO_TICKS(RoutingCfg::BEACON_INTERVAL_MS - 20));
+        const uint32_t interval = (millis() - startMs < FAST_DURATION)
+                                  ? FAST_INTERVAL
+                                  : NORMAL_INTERVAL;
+        vTaskDelay(pdMS_TO_TICKS(interval));
     }
 }
 
