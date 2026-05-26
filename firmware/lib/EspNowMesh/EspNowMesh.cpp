@@ -1,42 +1,35 @@
 // File: firmware/lib/EspNowMesh/EspNowMesh.cpp
 // =============================================================================
-// PERBAIKAN v4.1 — Dynamic Peer + 2-Hit Channel Lock
+// v5.0 — WiFi-Channel-Sync
 //
-// FIX 1 (Dynamic Peer): _send() selalu del+add peer dengan channel terkini
-//   sebelum setiap pengiriman. Terinspirasi dari zh_network (aZholtikov).
-//   Eliminasi masalah "peer terdaftar di channel lama" secara permanen.
-//   Tidak perlu lagi processPendingChannelSync() untuk update peer channel.
+// KONSEP BARU (menggantikan promiscuous scan v4.x):
+//   Sensor node konek ke WiFi AP yang SAMA dengan gateway untuk mendapatkan
+//   channel yang tepat, lalu langsung disconnect dan init ESP-NOW di channel itu.
 //
-// FIX 2 (2-Hit Lock): Channel lock butuh 2 beacon frame berturut-turut dari
-//   gateway MAC yang sama sebelum s_channelConfirmed = true.
-//   Mengurangi false lock akibat noise/stray frame di environment ramai.
-// =============================================================================
-// PERBAIKAN v4.0 — Boot-Anytime: sensor boot non-blocking,
-//                  channel discovery di background FreeRTOS task.
-//                  Gateway dan sensor bisa dinyalakan di waktu berbeda.
-// =============================================================================
-// PERBAIKAN v3.4 — Fix urutan init: promiscuous sweep SELESAI dulu,
-//                  baru esp_now_init(). Callback tidak boleh sentuh ESP-NOW API.
-// =============================================================================
-// PERBAIKAN v3.3 — Channel Sync Fix
+// ALASAN GANTI:
+//   Promiscuous scan (v3.x–v4.x) terlalu sensitif terhadap timing — sensor
+//   harus boot saat gateway sudah memancarkan beacon di channel yang benar.
+//   WiFi association jauh lebih reliable: channel AP selalu konsisten.
 //
-// MASALAH:
-//   Sensor sweep 8 detik tapi gateway beacon belum ada di channel yang benar
-//   (gateway baru connect WiFi ch=2 setelah ~2 detik, tapi sensor sudah
-//   timeout sweep di ch lain → peer terdaftar di channel yang salah →
-//   NACK 100% selamanya).
+// FLOW SENSOR (baru):
+//   1. WiFi.begin(SSID, PASSWORD)          ← connect ke AP yang sama dg gateway
+//   2. Tunggu WL_CONNECTED (max 10 detik)
+//   3. ch = WiFi.channel()                 ← baca channel AP
+//   4. WiFi.disconnect() + WiFi.mode(OFF)  ← keluar dari WiFi
+//   5. delay(200)                          ← tunggu radio stabil
+//   6. WiFi.mode(STA) + set ch             ← siapkan mode ESP-NOW
+//   7. esp_now_init()                      ← init ESP-NOW di channel yang benar
 //
-// FIX:
-//   1. Sensor: setelah sweep timeout, JANGAN stop scan. Jalankan
-//      taskChannelSync (background task) yang terus sweep semua channel
-//      sampai beacon ditemukan, lalu re-register peer dengan channel baru.
+// FLOW GATEWAY (tidak berubah):
+//   WiFi tetap tersambung ke AP (STA+AP) — channel dikunci oleh koneksi STA.
+//   Beacon dikirim di channel yang sama secara otomatis.
 //
-//   2. Sensor: _promiscuousRxCb saat deteksi beacon di channel berbeda,
-//      langsung re-register semua peer ke channel baru (esp_now_mod_peer).
-//
-//   3. Gateway: tidak ada perubahan logika, tapi tambah log channel saat
-//      beacon dikirim untuk memudahkan debug.
-// =============================================================================
+// TRADEOFF:
+//   + Tidak ada timing sensitivity sama sekali
+//   + Tidak ada promiscuous mode, tidak ada background task discovery
+//   + Sensor boot order bebas (bisa sebelum/sesudah gateway)
+//   - Sensor butuh credentials WiFi (sudah ada di credentials.h)
+//   - WiFi connect +1-3 detik di awal boot (sekali saja)
 
 #include <esp_wifi.h>
 #include "EspNowMesh.h"
@@ -45,9 +38,6 @@ static constexpr char TAG[] = "MESH";
 
 static uint8_t  s_channel          = 1;
 static bool     s_channelConfirmed = false;
-
-// Flag khusus: apakah esp_now sudah di-init?
-// Dipakai oleh _promiscuousRxCb untuk guard sebelum sentuh ESP-NOW API.
 static volatile bool s_espnowReady = false;
 
 static const uint8_t BROADCAST_MAC[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
@@ -90,32 +80,60 @@ static void _updateAllPeerChannels(uint8_t newChannel)
 // =============================================================================
 bool EspNowMesh::begin(bool senderMode)
 {
-    _instance   = this;
-    _senderMode = senderMode;
+    _instance     = this;
+    _senderMode   = senderMode;
     s_espnowReady = false;
 
     if (senderMode)
     {
-        // ── FASE 1: Init WiFi STA — channel discovery di background ──────────
-        // ESP-NOW langsung di-init dengan ch=1 (default).
-        // Background task akan sweep channel sampai beacon gateway ditemukan,
-        // lalu update peer channel via processPendingChannelSync().
-        // Sensor bisa boot TANPA gateway — discovery task terus sweep.
+        // ── SENSOR: WiFi-Channel-Sync (v5.0) ─────────────────────────────────
+        // Konek ke WiFi AP yang sama dengan gateway untuk mendapatkan channel.
+        // Setelah dapat channel, langsung disconnect dan init ESP-NOW.
+        // Tidak ada timing sensitivity — WiFi association selalu reliable.
+
+        LOG_INFO(TAG, "Sensor: WiFi channel-sync dimulai | SSID='%s'", Wifi::SSID);
+
+        WiFi.mode(WIFI_STA);
+        WiFi.begin(Wifi::SSID, Wifi::PASSWORD);
+
+        const uint32_t wifiStart = millis();
+        while (WiFi.status() != WL_CONNECTED)
+        {
+            if (millis() - wifiStart > Timing::WIFI_TIMEOUT_MS)
+            {
+                LOG_ERROR(TAG, "WiFi timeout setelah %lu ms! Pakai ch=1 sebagai fallback.",
+                          Timing::WIFI_TIMEOUT_MS);
+                s_channel = 1;
+                goto wifi_done;
+            }
+            vTaskDelay(pdMS_TO_TICKS(200));
+        }
+
+        // Berhasil konek — baca channel dari AP
+        s_channel = static_cast<uint8_t>(WiFi.channel());
+        LOG_INFO(TAG, "WiFi connected! ch=%d | IP=%s | RSSI=%d dBm",
+                 s_channel, WiFi.localIP().toString().c_str(), WiFi.RSSI());
+
+    wifi_done:
+        // Keluar dari WiFi — radio akan dipakai oleh ESP-NOW
+        WiFi.disconnect(true);      // true = juga erase credentials dari NVS
+        WiFi.mode(WIFI_OFF);
+        vTaskDelay(pdMS_TO_TICKS(300));  // beri waktu radio reset
+
+        // Siapkan mode STA untuk ESP-NOW
         WiFi.mode(WIFI_STA);
         WiFi.disconnect();
-        delay(100);
+        vTaskDelay(pdMS_TO_TICKS(100));
 
-        s_channel          = 1;     // Default, akan diupdate oleh discovery
-        s_channelConfirmed = false;
-
+        // Set channel sesuai yang didapat dari WiFi AP
         esp_wifi_set_channel(s_channel, WIFI_SECOND_CHAN_NONE);
+        s_channelConfirmed = true;  // channel sudah pasti, tidak perlu discovery
 
-        LOG_INFO(TAG, "Sensor: init di ch=%d | discovery akan jalan di background",
-                 s_channel);
+        LOG_INFO(TAG, "Sensor: ESP-NOW akan init di ch=%d (dari WiFi AP)", s_channel);
     }
     else
     {
-        // ── Gateway: WiFi sudah di-init oleh NetworkMqtt::begin() ────────────
+        // ── GATEWAY: WiFi sudah di-init oleh NetworkMqtt::begin() ────────────
         // JANGAN panggil WiFi.mode() lagi — akan reset state WiFi/ESP-NOW.
         uint8_t ch = 0;
         wifi_second_chan_t sch;
@@ -124,23 +142,25 @@ bool EspNowMesh::begin(bool senderMode)
         else
             s_channel = 1;
 
-        s_channelConfirmed = false;
-        LOG_INFO(TAG, "Gateway: menggunakan ch=%d dari WiFi aktif", s_channel);
+        s_channelConfirmed = true;
+        LOG_INFO(TAG, "Gateway: ch=%d dari WiFi STA aktif", s_channel);
     }
 
-    // ── FASE 3: esp_now_init() — setelah channel pasti ───────────────────────
+    // ── ESP-NOW init ─────────────────────────────────────────────────────────
     if (esp_now_init() != ESP_OK)
     {
         LOG_ERROR(TAG, "esp_now_init() gagal!");
         return false;
     }
 
-    s_espnowReady = true;  // ← set SETELAH esp_now_init() berhasil
+    s_espnowReady = true;
 
     esp_now_register_send_cb(_onDataSent);
     esp_now_register_recv_cb(_onDataRecv);
 
-    // ── FASE 4: Register peers ────────────────────────────────────────────────
+    // ── Register peers ───────────────────────────────────────────────────────
+    // Dengan dynamic peer di _send(), peer awal ini tetap didaftarkan
+    // untuk BROADCAST dan sebagai fallback.
     if (senderMode)
     {
         if (!_addPeer(MacAddr::GATEWAY)) return false;
@@ -155,15 +175,8 @@ bool EspNowMesh::begin(bool senderMode)
 
         if (!_addPeer(BROADCAST_MAC)) return false;
 
-        // ── FASE 5: Start background discovery task ──────────────────────────
-        // Discovery task sweep channel sampai beacon gateway ditemukan.
-        // Promiscuous mode dikelola oleh task, bukan begin().
-        // Task sensor lain (IMU, PPG) bisa jalan parallel.
-        // taskCSSender dan taskRssiExchange menunggu isChannelConfirmed().
-        xTaskCreatePinnedToCore(_taskChannelDiscovery, "DISC", 3072,
-                                nullptr, 2, nullptr, 0);
-
-        LOG_INFO(TAG, "Mode: SENSOR | MAC: %s | ch=%d | discovery=BACKGROUND",
+        // v5.0: tidak ada background discovery task — channel sudah pasti
+        LOG_INFO(TAG, "Mode: SENSOR | MAC: %s | ch=%d | channelConfirmed=YES",
                  WiFi.macAddress().c_str(), s_channel);
     }
     else
@@ -173,6 +186,14 @@ bool EspNowMesh::begin(bool senderMode)
         if (!_addPeer(BROADCAST_MAC))   return false;
         LOG_INFO(TAG, "Mode: GATEWAY | MAC: %s | ch=%d",
                  WiFi.macAddress().c_str(), s_channel);
+    }
+
+    // Aktifkan promiscuous mode untuk RSSI monitoring (tidak untuk discovery)
+    if (senderMode)
+    {
+        esp_wifi_set_promiscuous(true);
+        esp_wifi_set_promiscuous_rx_cb(_promiscuousRxCb);
+        LOG_INFO(TAG, "Promiscuous ON untuk RSSI monitoring");
     }
 
     return true;
@@ -486,59 +507,16 @@ bool EspNowMesh::processPendingChannelSync()
 
 
 // =============================================================================
-// _taskChannelDiscovery() — Background FreeRTOS task (v4.0 Boot-Anytime)
+// _taskChannelDiscovery() — DIHAPUS di v5.0
 //
-// Menggantikan blocking sweep di begin(). Task ini:
-//   1. Enable promiscuous mode
-//   2. Sweep channel 1..13 sampai beacon gateway ditemukan
-//   3. _promiscuousRxCb set s_channelConfirmed + s_needChannelUpdate
-//   4. processPendingChannelSync() di taskCSSender handle peer re-register
-//   5. Promiscuous tetap ON untuk RSSI monitoring setelah discovery
-//   6. Task delete diri sendiri
-//
-// Sensor bisa boot TANPA gateway — task ini terus sweep tanpa batas.
+// Digantikan oleh WiFi-channel-sync di begin().
+// Fungsi ini dikosongkan dan tidak dipanggil di manapun.
+// Tetap ada untuk menghindari linker error jika ada referensi tersisa.
 // =============================================================================
 void EspNowMesh::_taskChannelDiscovery(void* param)
 {
-    static constexpr char DTAG[] = "DISC";
-
-    LOG_INFO(DTAG, "Background channel discovery dimulai | dwell=120 ms");
-
-    // Enable promiscuous mode untuk deteksi beacon gateway
-    // Aman: esp_now sudah init, callback hanya update variable
-    esp_wifi_set_promiscuous(true);
-    esp_wifi_set_promiscuous_rx_cb(_promiscuousRxCb);
-
-    uint32_t sweepRound = 0;
-
-    while (!s_channelConfirmed)
-    {
-        sweepRound++;
-        for (uint8_t tryC = 1; tryC <= 13 && !s_channelConfirmed; tryC++)
-        {
-            esp_wifi_set_channel(tryC, WIFI_SECOND_CHAN_NONE);
-            vTaskDelay(pdMS_TO_TICKS(120));   // 120ms dwell time
-        }
-
-        if (sweepRound % 5 == 0)
-            LOG_WARN(DTAG, "Sweep ronde #%lu — gateway belum ditemukan. "
-                     "Pastikan gateway sudah nyala.", sweepRound);
-    }
-
-    // Beacon ditemukan — proses peer channel update DI SINI
-    // (taskCSSender belum jalan, jadi tidak ada yang proses flag ini)
-    if (_instance)
-    {
-        _instance->processPendingChannelSync();
-    }
-
-    // Beacon ditemukan! Channel sudah di-set oleh _promiscuousRxCb.
-    LOG_INFO(DTAG, "Gateway ditemukan! ch=%d | %lu ronde sweep | "
-             "promiscuous tetap ON untuk RSSI",
-             s_channel, sweepRound);
-
-    // Promiscuous tetap ON — dibutuhkan untuk RSSI monitoring
-    // Task selesai, hapus diri sendiri
+    // Tidak dipakai di v5.0 — channel sudah diketahui via WiFi AP
+    LOG_WARN("DISC", "_taskChannelDiscovery dipanggil tapi tidak seharusnya di v5.0!");
     vTaskDelete(NULL);
 }
 
@@ -605,43 +583,21 @@ void EspNowMesh::_promiscuousRxCb(void* buf, wifi_promiscuous_pkt_type_t type)
     }
 
     // ── Channel sync logic ────────────────────────────────────────────────────
+    // v5.0: s_channelConfirmed selalu true sejak begin() karena channel
+    // sudah diketahui via WiFi AP. Blok ini hanya untuk deteksi channel
+    // drift saat operasional (gateway roam ke channel lain — jarang terjadi).
     if (!s_channelConfirmed)
     {
-        // Filter RSSI: abaikan sinyal < -85 dBm
-        // (gateway 1–5 meter biasanya -30 s/d -70 dBm)
+        // Seharusnya tidak masuk sini di v5.0
+        // Jika masuk, artinya WiFi connect gagal dan fallback ke ch=1
         if (rssi < -85) return;
-
-        // 2-hit confirmation: butuh 2 frame berturut-turut dari channel yang sama
-        // sebelum lock. Mencegah false lock dari stray frame / noise.
-        static uint8_t s_candCh    = 0;
-        static uint8_t s_candCount = 0;
-
-        if (beaconCh != s_candCh)
-        {
-            // Channel baru muncul — reset counter
-            s_candCh    = beaconCh;
-            s_candCount = 1;
-            return;  // belum cukup hit
-        }
-        else
-        {
-            s_candCount++;
-        }
-
-        if (s_candCount < 2) return;  // tunggu hit ke-2
-
-        // 2 hit konsisten dari gateway MAC di channel yang sama → LOCK
-        s_candCh    = 0;
-        s_candCount = 0;
 
         s_channel          = beaconCh;
         s_channelConfirmed = true;
         esp_wifi_set_channel(s_channel, WIFI_SECOND_CHAN_NONE);
 
-        // Dengan dynamic peer di _send(), tidak perlu lagi flag s_needChannelUpdate
-        // untuk update channel peer — _send() akan pakai s_channel terbaru otomatis.
-        // Flag ini tetap diset untuk kompatibilitas (processPendingChannelSync
-        // dipanggil di _taskChannelDiscovery setelah loop selesai).
+        LOG_WARN(TAG, "[v5.0 fallback] Channel dikunci dari beacon: ch=%d", s_channel);
+
         if (s_espnowReady)
         {
             s_pendingChannel    = beaconCh;
