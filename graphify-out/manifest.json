@@ -1574,18 +1574,773 @@
     "ast_hash": "8b53e968779faa056a93379dea817615",
     "semantic_hash": ""
   },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\ArduinoJson.h": {
+    "mtime": 1772472220.7758987,
+    "ast_hash": "8107fd5c90d9ed35cb5ad5e47678a901",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\library.json": {
+    "mtime": 1772472220.7898989,
+    "ast_hash": "85505030132e437d938f878dfe662ae2",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson.h": {
+    "mtime": 1772472220.7898989,
+    "ast_hash": "c77b74d217c98702f4a9780f0dfdc451",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson.hpp": {
+    "mtime": 1772472220.790899,
+    "ast_hash": "ec0a3029599608b641dd45dea294325f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\compatibility.hpp": {
+    "mtime": 1772472220.7960784,
+    "ast_hash": "dd45a0a09f6037ac8b62626d7a216937",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Configuration.hpp": {
+    "mtime": 1772472220.7914488,
+    "ast_hash": "f545dbccb810b5441624c6528b248509",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Namespace.hpp": {
+    "mtime": 1772472220.7931206,
+    "ast_hash": "139a5eac532655e11a057f34cdba2f07",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\version.hpp": {
+    "mtime": 1772472220.7960784,
+    "ast_hash": "4f998b731bf2f675bcb95381fe9f59f6",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Array\\ArrayData.hpp": {
+    "mtime": 1772472220.7910614,
+    "ast_hash": "da2355030068b8a1be3403ad1a824504",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Array\\ArrayImpl.hpp": {
+    "mtime": 1772472220.7911325,
+    "ast_hash": "70823da80d89946ec14461671cbea4a1",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Array\\ElementProxy.hpp": {
+    "mtime": 1772472220.7911325,
+    "ast_hash": "879215462b40a9c5f54d6e24e4d8daa6",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Array\\JsonArray.hpp": {
+    "mtime": 1772472220.7911325,
+    "ast_hash": "e7c02a1f8287603fc7160494c9792a2d",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Array\\JsonArrayConst.hpp": {
+    "mtime": 1772472220.7911325,
+    "ast_hash": "ff9983de29ef7096de52c4e8123ef2da",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Array\\JsonArrayIterator.hpp": {
+    "mtime": 1772472220.7911325,
+    "ast_hash": "6ed56c3ca7a7f1dece282a0312d687a7",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Array\\Utilities.hpp": {
+    "mtime": 1772472220.7911325,
+    "ast_hash": "5a2f5820e645f936391c5389c375115a",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Collection\\CollectionData.hpp": {
+    "mtime": 1772472220.7911325,
+    "ast_hash": "01a79ac4f487bf9128918ebb4353d82f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Collection\\CollectionImpl.hpp": {
+    "mtime": 1772472220.7914488,
+    "ast_hash": "d3c8845b79f43e1759c27e35f3eaf9f5",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Deserialization\\DeserializationError.hpp": {
+    "mtime": 1772472220.7914488,
+    "ast_hash": "957a3876aee84751bcad7c7a7ae16bd6",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Deserialization\\DeserializationOptions.hpp": {
+    "mtime": 1772472220.791607,
+    "ast_hash": "a5ff09b02a2ef76b564b4c9b99208964",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Deserialization\\deserialize.hpp": {
+    "mtime": 1772472220.791899,
+    "ast_hash": "1757a476def3cc5ea77d54097db8c536",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Deserialization\\Filter.hpp": {
+    "mtime": 1772472220.791607,
+    "ast_hash": "0c4113173965e905fe11f3f939feefed",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Deserialization\\NestingLimit.hpp": {
+    "mtime": 1772472220.791607,
+    "ast_hash": "7c136a4e804e8ecfbb223df178a6120e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Deserialization\\Reader.hpp": {
+    "mtime": 1772472220.791607,
+    "ast_hash": "c8879de19159e7d07c6ba9e2e9a0ad08",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Deserialization\\Readers\\ArduinoStreamReader.hpp": {
+    "mtime": 1772472220.791607,
+    "ast_hash": "f9fd0421df591235c08c2b338a6c1578",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Deserialization\\Readers\\ArduinoStringReader.hpp": {
+    "mtime": 1772472220.791808,
+    "ast_hash": "245dd29b108f2a142a922eb3cb6d0b07",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Deserialization\\Readers\\FlashReader.hpp": {
+    "mtime": 1772472220.791808,
+    "ast_hash": "e7f101ff94950adcd587fdbfa9ff3da5",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Deserialization\\Readers\\IteratorReader.hpp": {
+    "mtime": 1772472220.791808,
+    "ast_hash": "cfd4cfc45469d9133048ab3ee8912177",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Deserialization\\Readers\\RamReader.hpp": {
+    "mtime": 1772472220.791808,
+    "ast_hash": "652ad96550bdd11f5cb2db1a9809a138",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Deserialization\\Readers\\StdStreamReader.hpp": {
+    "mtime": 1772472220.791808,
+    "ast_hash": "a3cde94e1006cd0a71c9b974787adda1",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Deserialization\\Readers\\VariantReader.hpp": {
+    "mtime": 1772472220.791899,
+    "ast_hash": "05a8b24b0c2f0519f2fe29f0b4390591",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Document\\JsonDocument.hpp": {
+    "mtime": 1772472220.791899,
+    "ast_hash": "35d66a28ca74c73dc75df81337667c7f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Json\\EscapeSequence.hpp": {
+    "mtime": 1772472220.791899,
+    "ast_hash": "967fa21ee42c3a9b0cf412e6a8a72610",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Json\\JsonDeserializer.hpp": {
+    "mtime": 1772472220.792265,
+    "ast_hash": "80a6f302e867e445127d13335f16e56b",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Json\\JsonSerializer.hpp": {
+    "mtime": 1772472220.792265,
+    "ast_hash": "9e7c04fd4a9e8eb2262c8b13a94e82f0",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Json\\Latch.hpp": {
+    "mtime": 1772472220.792265,
+    "ast_hash": "ce92adea9f3cfe1e6d9f00180d5a80b3",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Json\\PrettyJsonSerializer.hpp": {
+    "mtime": 1772472220.792265,
+    "ast_hash": "b8169cbb599b79de7a50d42950bbb53c",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Json\\TextFormatter.hpp": {
+    "mtime": 1772472220.792265,
+    "ast_hash": "b88c1308116f17617d1ea1dcb8cff331",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Json\\Utf16.hpp": {
+    "mtime": 1772472220.792265,
+    "ast_hash": "e7b9c3de61f8b33a65ddf2aec863d18d",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Json\\Utf8.hpp": {
+    "mtime": 1772472220.792265,
+    "ast_hash": "3cb0295d66f1dd7713b6384a60239251",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Memory\\Alignment.hpp": {
+    "mtime": 1772472220.792265,
+    "ast_hash": "697eebbb3a1e7218634870ff73998300",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Memory\\Allocator.hpp": {
+    "mtime": 1772472220.7926064,
+    "ast_hash": "6d3aff3d3cbc97ca429387c6a0a565c0",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Memory\\MemoryPool.hpp": {
+    "mtime": 1772472220.7926064,
+    "ast_hash": "de3704c6b01eb33f1736996ae1f985ff",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Memory\\MemoryPoolList.hpp": {
+    "mtime": 1772472220.7926064,
+    "ast_hash": "1a9ff7303d931396e1d92535efbf1deb",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Memory\\ResourceManager.hpp": {
+    "mtime": 1772472220.7926064,
+    "ast_hash": "8f9b416082419b8be00d07d678725159",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Memory\\ResourceManagerImpl.hpp": {
+    "mtime": 1772472220.7926064,
+    "ast_hash": "556a8d5640ca13ec15a3f0e0a0788dd2",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Memory\\StringBuffer.hpp": {
+    "mtime": 1772472220.7926064,
+    "ast_hash": "f12b8095e972b164bd52d97508b03faf",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Memory\\StringBuilder.hpp": {
+    "mtime": 1772472220.7926064,
+    "ast_hash": "5c038b60bf0f2928a672f2fffa4d7245",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Memory\\StringNode.hpp": {
+    "mtime": 1772472220.7926064,
+    "ast_hash": "4dfb4e3866fd4bed713c3093d50d7050",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Memory\\StringPool.hpp": {
+    "mtime": 1772472220.7926064,
+    "ast_hash": "ee44870262ed86bc9a6605bb2d6a7ebf",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Misc\\SerializedValue.hpp": {
+    "mtime": 1772472220.792899,
+    "ast_hash": "eaf147ee117144ccd860d6ed5bc05567",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\MsgPack\\endianness.hpp": {
+    "mtime": 1772472220.7931206,
+    "ast_hash": "e27ba64196e365038c1f8afe073acc1e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\MsgPack\\ieee754.hpp": {
+    "mtime": 1772472220.7931206,
+    "ast_hash": "c26fa402b87c672d4d877a6bf87233d6",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\MsgPack\\MsgPackBinary.hpp": {
+    "mtime": 1772472220.792899,
+    "ast_hash": "f78e2a3db01885d1dcb1ad04bb0c5995",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\MsgPack\\MsgPackDeserializer.hpp": {
+    "mtime": 1772472220.7931206,
+    "ast_hash": "132af31b1136309038f604436cdbb7f9",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\MsgPack\\MsgPackExtension.hpp": {
+    "mtime": 1772472220.7931206,
+    "ast_hash": "adcb04c2a75bce3a31f06b049f4db9af",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\MsgPack\\MsgPackSerializer.hpp": {
+    "mtime": 1772472220.7931206,
+    "ast_hash": "d4c757d92b7700ceca8aac4b892946a6",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Numbers\\arithmeticCompare.hpp": {
+    "mtime": 1772472220.7933996,
+    "ast_hash": "56c805681363b20f12e209a50dd7a4ad",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Numbers\\convertNumber.hpp": {
+    "mtime": 1772472220.7933996,
+    "ast_hash": "36ccd38bdc514f7a4731c6c9fb16e576",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Numbers\\FloatParts.hpp": {
+    "mtime": 1772472220.7931206,
+    "ast_hash": "e785ad7b1be6dd83917ae958495d1e15",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Numbers\\FloatTraits.hpp": {
+    "mtime": 1772472220.7933996,
+    "ast_hash": "e5a7a6bb7ee4baabb0beaddf5d40156b",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Numbers\\JsonFloat.hpp": {
+    "mtime": 1772472220.7933996,
+    "ast_hash": "05a865a5e132a74f4ca87400e60ceb37",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Numbers\\JsonInteger.hpp": {
+    "mtime": 1772472220.7933996,
+    "ast_hash": "fef6d0711539d5816de172451c61294a",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Numbers\\parseNumber.hpp": {
+    "mtime": 1772472220.7933996,
+    "ast_hash": "b44040f4fb2593be1c1c3c78d8f22387",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Object\\JsonObject.hpp": {
+    "mtime": 1772472220.7933996,
+    "ast_hash": "f56250292c94573aae5d2bcf0a755161",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Object\\JsonObjectConst.hpp": {
+    "mtime": 1772472220.7937326,
+    "ast_hash": "669692f81e651f7955e45b12e0539328",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Object\\JsonObjectIterator.hpp": {
+    "mtime": 1772472220.7937326,
+    "ast_hash": "f9c76034684cb2ccf1d553118b559652",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Object\\JsonPair.hpp": {
+    "mtime": 1772472220.7937326,
+    "ast_hash": "5ecb81fb6bc8801321a61de4e7ce5405",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Object\\MemberProxy.hpp": {
+    "mtime": 1772472220.7937326,
+    "ast_hash": "2250347820e50a44c098b2a19f52f313",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Object\\ObjectData.hpp": {
+    "mtime": 1772472220.7937326,
+    "ast_hash": "1bea8fe912ccc1ecb096280d94929b27",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Object\\ObjectImpl.hpp": {
+    "mtime": 1772472220.7937326,
+    "ast_hash": "ed2ad1e8333d759c7172b46c34484920",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\alias_cast.hpp": {
+    "mtime": 1772472220.793899,
+    "ast_hash": "d869c28d133d9a7112eece6d11a34f07",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\assert.hpp": {
+    "mtime": 1772472220.794057,
+    "ast_hash": "b785466e6444d088ee9e93d5099e0070",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\attributes.hpp": {
+    "mtime": 1772472220.794057,
+    "ast_hash": "bf963d04bf4c8efa80077f1ff9b713cc",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\ctype.hpp": {
+    "mtime": 1772472220.794057,
+    "ast_hash": "bc8e8e560df696824ee21291d5056b31",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\integer.hpp": {
+    "mtime": 1772472220.794057,
+    "ast_hash": "3702bc3ac318935ecbeeca74016bf25a",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\limits.hpp": {
+    "mtime": 1772472220.794057,
+    "ast_hash": "3a170b1218bd43976416f2a1e772762e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\math.hpp": {
+    "mtime": 1772472220.794057,
+    "ast_hash": "33a84eb691c06a412fe25bf96095e896",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\pgmspace.hpp": {
+    "mtime": 1772472220.794057,
+    "ast_hash": "702fe121dbeffdb7f4283e615260df8f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\pgmspace_generic.hpp": {
+    "mtime": 1772472220.794057,
+    "ast_hash": "a7434f1dc6fc8c4ee92ce73ca3249e47",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\preprocessor.hpp": {
+    "mtime": 1772472220.794057,
+    "ast_hash": "8fea0a3de29c1f3c245b1d135029fa3c",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\type_traits.hpp": {
+    "mtime": 1772472220.794057,
+    "ast_hash": "52a93729992c245037b39dff5110330f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\utility.hpp": {
+    "mtime": 1772472220.794899,
+    "ast_hash": "72b2ae1966b4e7ed5bf3a7affdea4988",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\mpl\\max.hpp": {
+    "mtime": 1772472220.794057,
+    "ast_hash": "c71f78ad0ef6ce0daeaf6ba81eb9499e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\type_traits\\conditional.hpp": {
+    "mtime": 1772472220.794057,
+    "ast_hash": "489c26608735125a323fad98082706bd",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\type_traits\\decay.hpp": {
+    "mtime": 1772472220.7944934,
+    "ast_hash": "90c202f5b9c9131d5e029e1dc6e8e6ea",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\type_traits\\declval.hpp": {
+    "mtime": 1772472220.7944934,
+    "ast_hash": "7b1ff80b88d513b6e556dd741127d895",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\type_traits\\enable_if.hpp": {
+    "mtime": 1772472220.7944934,
+    "ast_hash": "f02de7d8ca70ffbb4f787c8943aa0648",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\type_traits\\function_traits.hpp": {
+    "mtime": 1772472220.7944934,
+    "ast_hash": "d6ae9c34f2939eeb7445017fcd85072b",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\type_traits\\integral_constant.hpp": {
+    "mtime": 1772472220.7944934,
+    "ast_hash": "d6b257cef15e852331644b03c1afcbe3",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\type_traits\\is_array.hpp": {
+    "mtime": 1772472220.7944934,
+    "ast_hash": "a62692dd31903af817a97fc44d3b7f28",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\type_traits\\is_base_of.hpp": {
+    "mtime": 1772472220.7944934,
+    "ast_hash": "0f3af523fd89a4efc6b373c194ddd503",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\type_traits\\is_class.hpp": {
+    "mtime": 1772472220.7944934,
+    "ast_hash": "70585b9916551da1a3cecec84c2fd129",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\type_traits\\is_const.hpp": {
+    "mtime": 1772472220.7944934,
+    "ast_hash": "a6ed04af7e673b3db122344133fd6857",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\type_traits\\is_convertible.hpp": {
+    "mtime": 1772472220.7944934,
+    "ast_hash": "e0bf380ddffbbcdc258b5d937831a151",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\type_traits\\is_enum.hpp": {
+    "mtime": 1772472220.7944934,
+    "ast_hash": "06e7e4cb29f500ac6d9e1ccadb956984",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\type_traits\\is_floating_point.hpp": {
+    "mtime": 1772472220.7944934,
+    "ast_hash": "93f3774014ccc9f7a2921a77a1ff0277",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\type_traits\\is_integral.hpp": {
+    "mtime": 1772472220.7944934,
+    "ast_hash": "2d81a11f7f532e4cbf91d0ce0d946da1",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\type_traits\\is_pointer.hpp": {
+    "mtime": 1772472220.7944934,
+    "ast_hash": "c654316f987d07a304f6e48969987743",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\type_traits\\is_same.hpp": {
+    "mtime": 1772472220.7944934,
+    "ast_hash": "868d858f808c0f5b1d1a26f21e0e11cd",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\type_traits\\is_signed.hpp": {
+    "mtime": 1772472220.7944934,
+    "ast_hash": "91cc9c2c0f02b09460ce2ba7def11bc2",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\type_traits\\is_unsigned.hpp": {
+    "mtime": 1772472220.794899,
+    "ast_hash": "385bbbda092b15638667f16b554295d8",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\type_traits\\make_unsigned.hpp": {
+    "mtime": 1772472220.794899,
+    "ast_hash": "954d74d3d110d34e056c4aab1737f973",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\type_traits\\remove_const.hpp": {
+    "mtime": 1772472220.794899,
+    "ast_hash": "c5ad915e29e21b06dd3e2800a470e83f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\type_traits\\remove_cv.hpp": {
+    "mtime": 1772472220.794899,
+    "ast_hash": "ea80f79012a5d9bff0fd4bb48c652eb2",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\type_traits\\remove_reference.hpp": {
+    "mtime": 1772472220.794899,
+    "ast_hash": "85720bb69896c81628db7a3a206833ae",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\type_traits\\type_identity.hpp": {
+    "mtime": 1772472220.794899,
+    "ast_hash": "9156654c3fa959e9e2e5afc8837ad2a1",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Polyfills\\type_traits\\void_t.hpp": {
+    "mtime": 1772472220.794899,
+    "ast_hash": "e05a6de0084ada7c1624f82b50f87d39",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Serialization\\CountingDecorator.hpp": {
+    "mtime": 1772472220.794899,
+    "ast_hash": "c84001ca96d4c80098906de5b1e2101f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Serialization\\measure.hpp": {
+    "mtime": 1772472220.7954211,
+    "ast_hash": "ebe484e3ac609a0caf6018e3b180dcad",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Serialization\\serialize.hpp": {
+    "mtime": 1772472220.7954211,
+    "ast_hash": "7dec23fdc7f8061d75e6672f6c8a75ff",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Serialization\\Writer.hpp": {
+    "mtime": 1772472220.7953207,
+    "ast_hash": "8873d97461a20698199a6f52ba715c1b",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Serialization\\Writers\\ArduinoStringWriter.hpp": {
+    "mtime": 1772472220.7953207,
+    "ast_hash": "7b31f7bb7e420f52b5b068f7ddeab7e7",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Serialization\\Writers\\DummyWriter.hpp": {
+    "mtime": 1772472220.7954211,
+    "ast_hash": "725e7593ee29cac691dcac946a9b8c54",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Serialization\\Writers\\PrintWriter.hpp": {
+    "mtime": 1772472220.7954211,
+    "ast_hash": "f9ad75f53f2a51d9fa598bc2f4933512",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Serialization\\Writers\\StaticStringWriter.hpp": {
+    "mtime": 1772472220.7954211,
+    "ast_hash": "cb77d989750ea48df1a7c00d2d7256c2",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Serialization\\Writers\\StdStreamWriter.hpp": {
+    "mtime": 1772472220.7954211,
+    "ast_hash": "e4dbfb74f0761870d7a4f1c3d27a604c",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Serialization\\Writers\\StdStringWriter.hpp": {
+    "mtime": 1772472220.7954211,
+    "ast_hash": "6324420284d207254274d22a9689801a",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Strings\\IsString.hpp": {
+    "mtime": 1772472220.7957404,
+    "ast_hash": "cb227bc490f3e34455f7a9624e59f01a",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Strings\\JsonString.hpp": {
+    "mtime": 1772472220.7957404,
+    "ast_hash": "d791c9e6d5e64fb53b8a68bd1488d0ee",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Strings\\StringAdapter.hpp": {
+    "mtime": 1772472220.7957404,
+    "ast_hash": "7aea88540b41b8dee88ae23aa99c7119",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Strings\\StringAdapters.hpp": {
+    "mtime": 1772472220.7957404,
+    "ast_hash": "0373dbebe09a8c55d8866d747fdba248",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Strings\\StringTraits.hpp": {
+    "mtime": 1772472220.7957404,
+    "ast_hash": "97142da4d03ade626202e338ee3737c8",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Strings\\Adapters\\FlashString.hpp": {
+    "mtime": 1772472220.7956572,
+    "ast_hash": "e8b3e7dc1714dfe5f02532fcd44184d7",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Strings\\Adapters\\RamString.hpp": {
+    "mtime": 1772472220.7957404,
+    "ast_hash": "9d18b7b6a0690503f29d2ba41bac3722",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Strings\\Adapters\\StringObject.hpp": {
+    "mtime": 1772472220.7957404,
+    "ast_hash": "f97dc03f2bb60785f8e0e842cb3163b1",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Variant\\Converter.hpp": {
+    "mtime": 1772472220.7958992,
+    "ast_hash": "ec669b4110a72535b2ed8b73884325c2",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Variant\\ConverterImpl.hpp": {
+    "mtime": 1772472220.7960784,
+    "ast_hash": "b0760661d68bf0c38c0203a4def7ba2e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Variant\\JsonVariant.hpp": {
+    "mtime": 1772472220.7960784,
+    "ast_hash": "e121751584a62427407e8ba9d4efd397",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Variant\\JsonVariantConst.hpp": {
+    "mtime": 1772472220.7960784,
+    "ast_hash": "14c30972869ed5751c32b644cff022c5",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Variant\\JsonVariantCopier.hpp": {
+    "mtime": 1772472220.7960784,
+    "ast_hash": "77b66c56f18fc2120d633409ed15c9bb",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Variant\\JsonVariantVisitor.hpp": {
+    "mtime": 1772472220.7960784,
+    "ast_hash": "bca9b1ce07f7814bfb3dcc153790f15d",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Variant\\VariantAttorney.hpp": {
+    "mtime": 1772472220.7960784,
+    "ast_hash": "335bd771bffd551b9bb7e9578953cf03",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Variant\\VariantCompare.hpp": {
+    "mtime": 1772472220.7960784,
+    "ast_hash": "06d800000900d9160f22944895307c94",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Variant\\VariantContent.hpp": {
+    "mtime": 1772472220.7960784,
+    "ast_hash": "a76b65344e51901ee31eafc450909c63",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Variant\\VariantData.hpp": {
+    "mtime": 1772472220.7960784,
+    "ast_hash": "fcf3c19c1ebf53fea175424f596418c0",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Variant\\VariantDataVisitor.hpp": {
+    "mtime": 1772472220.7960784,
+    "ast_hash": "9176b12f836e0bd5ef3b5430a276709c",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Variant\\VariantImpl.hpp": {
+    "mtime": 1772472220.7960784,
+    "ast_hash": "180242eb834faf5415154997c0fff7c4",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Variant\\VariantOperators.hpp": {
+    "mtime": 1772472220.7960784,
+    "ast_hash": "bef064b0a14066bc3209401d8b332b01",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Variant\\VariantRefBase.hpp": {
+    "mtime": 1772472220.7960784,
+    "ast_hash": "f25a063a7c270dfaee05d89bfdbf72d2",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Variant\\VariantRefBaseImpl.hpp": {
+    "mtime": 1772472220.7960784,
+    "ast_hash": "d97b111debbd6322c91fe2d479396baa",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Variant\\VariantTag.hpp": {
+    "mtime": 1772472220.7960784,
+    "ast_hash": "fa90301dde491327a84e5a21b60c0e5f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\ArduinoJson\\Variant\\VariantTo.hpp": {
+    "mtime": 1772472220.7960784,
+    "ast_hash": "698e18c39adc73fddaa43e0ce521e674",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\PubSubClient\\library.json": {
+    "mtime": 1589973313.0,
+    "ast_hash": "ca38c05262d3510f43113115e64b0d4c",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\PubSubClient\\src\\PubSubClient.cpp": {
+    "mtime": 1589935239.0,
+    "ast_hash": "4ab11a9a5f48490f94c55ebe8ebf940e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\PubSubClient\\src\\PubSubClient.h": {
+    "mtime": 1589935239.0,
+    "ast_hash": "6cc105518c983d166ee358390ccdc53a",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\SparkFun MAX3010x Pulse and Proximity Sensor Library\\src\\heartRate.cpp": {
+    "mtime": 1653445573.0,
+    "ast_hash": "d03ceea07130cf98a56c5e801ebd294f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\SparkFun MAX3010x Pulse and Proximity Sensor Library\\src\\heartRate.h": {
+    "mtime": 1653445573.0,
+    "ast_hash": "9d8dbd84abba6453c432949370f9867b",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\SparkFun MAX3010x Pulse and Proximity Sensor Library\\src\\MAX30105.cpp": {
+    "mtime": 1653445573.0,
+    "ast_hash": "ae9a3215cb564135129496e223346971",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\SparkFun MAX3010x Pulse and Proximity Sensor Library\\src\\MAX30105.h": {
+    "mtime": 1653445573.0,
+    "ast_hash": "bf732cf5979bcc0fab0516085421f897",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\SparkFun MAX3010x Pulse and Proximity Sensor Library\\src\\spo2_algorithm.cpp": {
+    "mtime": 1653445573.0,
+    "ast_hash": "265d45754ee58b04bf6b90707eb6083e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\SparkFun MAX3010x Pulse and Proximity Sensor Library\\src\\spo2_algorithm.h": {
+    "mtime": 1653445573.0,
+    "ast_hash": "8b53e968779faa056a93379dea817615",
+    "semantic_hash": ""
+  },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.vscode\\c_cpp_properties.json": {
-    "mtime": 1779669390.128015,
+    "mtime": 1779726873.5476992,
     "ast_hash": "5a8f6cabc0a2ad3872e7d54ab9be5936",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.vscode\\extensions.json": {
-    "mtime": 1779669390.1331925,
+    "mtime": 1779726873.5497231,
     "ast_hash": "41e5d8dec3ff179fe5aecb46632391ca",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.vscode\\launch.json": {
-    "mtime": 1779669390.1430647,
+    "mtime": 1779726873.5546863,
     "ast_hash": "139d1d005d53b644bfcaee29a61b8196",
     "semantic_hash": ""
   },
@@ -1640,13 +2395,13 @@
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\lib\\EspNowMesh\\EspNowMesh.cpp": {
-    "mtime": 1779672603.8128943,
-    "ast_hash": "36d8a4628415255d46b980df14a58520",
+    "mtime": 1779782181.678993,
+    "ast_hash": "7194198e43f159623a79be05a9f10124",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\lib\\EspNowMesh\\EspNowMesh.h": {
-    "mtime": 1779670988.9103682,
-    "ast_hash": "a8322a4a83ba46734831fe6ce216dfcf",
+    "mtime": 1779775963.5231237,
+    "ast_hash": "73e652777135d8a6a22b4cf0b7356704",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\lib\\EspNowMesh\\MeshPackets.h": {
@@ -1715,13 +2470,13 @@
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\src\\main.cpp": {
-    "mtime": 1779644691.8034983,
-    "ast_hash": "73ebdbce56e3a949cf5535e72401522a",
+    "mtime": 1779776100.8428571,
+    "ast_hash": "1afdf3b2baf809e61828db729b87b205",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\src\\task_cs_sender.cpp": {
-    "mtime": 1779644689.7645373,
-    "ast_hash": "31c310a0d73132f0b33659233f7ade56",
+    "mtime": 1779776066.0056458,
+    "ast_hash": "5daf883bd66af1146815c5a1e2f4a7f3",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\src\\task_mesh_handler.cpp": {
@@ -2292,6 +3047,71 @@
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_a\\SparkFun MAX3010x Pulse and Proximity Sensor Library\\README.md": {
     "mtime": 1653445573.0,
     "ast_hash": "745091f939004b1d6309b5b0d276b4ad",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\LICENSE.txt": {
+    "mtime": 1772472220.7758987,
+    "ast_hash": "6a456cf375f0c57d217222d102c730e1",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\README.md": {
+    "mtime": 1772472220.7758987,
+    "ast_hash": "71bb18ce41a01af722a18088e929f388",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\ArduinoJson\\src\\CMakeLists.txt": {
+    "mtime": 1772472220.7960784,
+    "ast_hash": "09ef0975e85f28028dff857c4f46a4ed",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\PubSubClient\\.travis.yml": {
+    "mtime": 1589973313.0,
+    "ast_hash": "7dc775e658bfcdd47a43414a3d3d32f7",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\PubSubClient\\CHANGES.txt": {
+    "mtime": 1589973313.0,
+    "ast_hash": "3ab62278dffdd6f31417bc65e8f092ec",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\PubSubClient\\keywords.txt": {
+    "mtime": 1589973313.0,
+    "ast_hash": "2b79660ce61ec00edfc007172ea5ef50",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\PubSubClient\\LICENSE.txt": {
+    "mtime": 1589973313.0,
+    "ast_hash": "a0dbd49444a7c1bc47aad61b6aa4dd54",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\PubSubClient\\README.md": {
+    "mtime": 1589973313.0,
+    "ast_hash": "f1eb96aa46d8ab58853dd3295af7e26a",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\SparkFun MAX3010x Pulse and Proximity Sensor Library\\keywords.txt": {
+    "mtime": 1653445573.0,
+    "ast_hash": "c9a8cb80e4c7b0af5f853060521902c2",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\SparkFun MAX3010x Pulse and Proximity Sensor Library\\LICENSE.md": {
+    "mtime": 1653445573.0,
+    "ast_hash": "b5fe36eeadc072c7ea0406431f608ccc",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_sensor_b\\SparkFun MAX3010x Pulse and Proximity Sensor Library\\README.md": {
+    "mtime": 1653445573.0,
+    "ast_hash": "745091f939004b1d6309b5b0d276b4ad",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\new_feature\\analysis_espnow_connectivity.md": {
+    "mtime": 1779775781.6335175,
+    "ast_hash": "ae8b0a586f0b10458a1753600a9a7eee",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\new_feature\\walkthrough.md": {
+    "mtime": 1779776306.2788408,
+    "ast_hash": "7758ff89d4aecee58d0f521cf27c6629",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\README.md": {
