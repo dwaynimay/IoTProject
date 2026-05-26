@@ -1,8 +1,16 @@
 // File: firmware/src/main.cpp
 
 // =============================================================================
-// main.cpp — Orkestrator v3.1
+// main.cpp — Orkestrator v4.0 (Boot-Anytime)
 // =============================================================================
+//
+// PERBAIKAN v4.0:
+//   Sensor boot NON-BLOCKING — begin(true) langsung return,
+//   channel discovery jalan di background FreeRTOS task.
+//   Gateway dan sensor bisa dinyalakan di waktu BERBEDA.
+//
+//   Task CS_TX dan RSSI_EX menunggu isChannelConfirmed() sebelum kirim data.
+//   Task IMU dan PPG langsung jalan (baca sensor tanpa perlu koneksi).
 //
 // PERBAIKAN v3.1:
 //   [FIX-1] Gateway: g_mesh.setGatewayChannel(ch) dipanggil setelah
@@ -10,16 +18,17 @@
 //           yang benar. Sebelumnya channel = 0 → LoadProhibited crash.
 //
 // URUTAN INISIALISASI GATEWAY:
-//   1. g_mesh.begin(false)            ← ESP-NOW init, peer ch=1 (sementara)
-//   2. xTaskCreatePinnedToCore(BEACON)← beacon dimulai di ch 1 (sementara)
-//   3. g_mqtt.begin()                 ← WiFi connect → dapat channel asli
-//   4. g_mesh.setGatewayChannel(ch)   ← update semua peer ke channel WiFi asli
-//   5. xTaskCreatePinnedToCore(HANDLER, MQTT, MONITOR)
+//   1. g_mqtt.begin()                 ← WiFi connect → dapat channel asli
+//   2. g_mesh.begin(false)            ← ESP-NOW init, peer ch dari WiFi
+//   3. g_mesh.setGatewayChannel(ch)   ← update semua peer ke channel WiFi asli
+//   4. xTaskCreatePinnedToCore(BEACON, HANDLER, MQTT, MONITOR)
 //
-// URUTAN INISIALISASI SENSOR:
+// URUTAN INISIALISASI SENSOR (v4.0 — non-blocking):
 //   1. g_imu.begin()
-//   2. g_mesh.begin(true)   ← sweep channel + tunggu beacon dari gateway
+//   2. g_mesh.begin(true)   ← ESP-NOW init ch=1, return SEGERA
+//                              (background task sweep channel)
 //   3. g_ppg.begin()
+//   4. Semua task dimulai — CS_TX dan RSSI_EX tunggu channel confirmed
 // =============================================================================
 
 #include <Arduino.h>
@@ -250,8 +259,8 @@ void setup()
     if (!g_imu.begin())
         g_watchdog.triggerRestart("MPU6050 init gagal");
 
-    // ESP-NOW: sweep channel untuk temukan gateway
-    // begin(true) akan block sampai beacon ditemukan atau timeout 8s
+    // ESP-NOW: init non-blocking (v4.0)
+    // begin(true) langsung return, channel discovery di background task
     if (!g_mesh.begin(true))
         g_watchdog.triggerRestart("ESP-NOW init gagal");
 
@@ -274,32 +283,27 @@ void setup()
 // ── GATEWAY NODE ─────────────────────────────────────────────────────────────
 #elif NODE_ROLE == ROLE_GATEWAY
 
-    g_rawQueue = xQueueCreate(10, sizeof(RawPacket));
-    if (!g_rawQueue)
-        g_watchdog.triggerRestart("Gagal buat g_rawQueue");
-
+    g_rawQueue  = xQueueCreate(10, sizeof(RawPacket));
     g_mqttQueue = xQueueCreate(QueueLen::MQTT_MSG, sizeof(MqttMessage));
-    if (!g_mqttQueue)
-        g_watchdog.triggerRestart("Gagal buat g_mqttQueue");
+    if (!g_rawQueue || !g_mqttQueue)
+        g_watchdog.triggerRestart("Gagal buat queue");
 
-    // ── Step 1: ESP-NOW init ───────────────────────
-    if (!g_mesh.begin(false))
-        g_watchdog.triggerRestart("ESP-NOW init gagal");
+    // ── URUTAN KRITIS: WiFi/MQTT DULU, baru ESP-NOW ──────────────────────────
+    // WiFi.mode(AP_STA) di dalam g_mqtt.begin() harus terjadi SEBELUM
+    // esp_now_init() di dalam g_mesh.begin().
+    // Jika dibalik, WiFi.mode() akan reset state ESP-NOW.
 
-    // ── Step 2: WiFi + MQTT DULU — dapat channel yang benar ───────────────────
     if (!g_mqtt.begin())
         g_watchdog.triggerRestart("WiFi/MQTT init gagal");
 
-    // ── Step 3: Update channel ke nilai WiFi aktual ─────
+    if (!g_mesh.begin(false))   // ← ESP-NOW init setelah WiFi stabil
+        g_watchdog.triggerRestart("ESP-NOW init gagal");
+
+    // Channel sudah benar karena begin(false) membaca dari WiFi aktif
     {
-        uint8_t ch = 0;
-        wifi_second_chan_t sch;
-
+        uint8_t ch = 0; wifi_second_chan_t sch;
         if (esp_wifi_get_channel(&ch, &sch) != ESP_OK || ch == 0)
-        {
             ch = static_cast<uint8_t>(WiFi.channel());
-        }
-
         if (ch > 0 && ch <= 13)
         {
             g_mesh.setGatewayChannel(ch);
@@ -307,21 +311,15 @@ void setup()
         }
     }
 
-    // ── Step 4: Baru start beacon — SETELAH channel benar ─────────────────────
-    xTaskCreatePinnedToCore(taskBeacon, "BEACON", 4096,
-                            nullptr, 1, nullptr, 0);
-    LOG_INFO(TAG, "Beacon task dimulai (ch aktual WiFi)");
-
-    // ── Step 5: Task pipeline ─────────────────────────────────────────────────
-    xTaskCreatePinnedToCore(taskMeshHandler, "HANDLER", StackSize::MQTT_PUB,
+    xTaskCreatePinnedToCore(taskBeacon,       "BEACON",  4096, nullptr, 1, nullptr, 0);
+    xTaskCreatePinnedToCore(taskMeshHandler,  "HANDLER", StackSize::MQTT_PUB,
                             nullptr, TaskPrio::MQTT_PUB + 1, nullptr, 1);
-    xTaskCreatePinnedToCore(taskMqttPublish, "MQTT", StackSize::MQTT_PUB,
-                            nullptr, TaskPrio::MQTT_PUB, nullptr, 0);
-    xTaskCreatePinnedToCore(taskMonitorGateway, "MONITOR", StackSize::MONITOR,
+    xTaskCreatePinnedToCore(taskMqttPublish,  "MQTT",    StackSize::MQTT_PUB,
+                            nullptr, TaskPrio::MQTT_PUB,     nullptr, 0);
+    xTaskCreatePinnedToCore(taskMonitorGateway,"MONITOR", StackSize::MONITOR,
                             nullptr, 1, nullptr, 0);
 
-    LOG_INFO(TAG, "Gateway siap — 4 task aktif (+ BEACON)");
-    LOG_INFO(TAG, "Pipeline: ISR → rawQ → HANDLER → mqttQ → MQTT");
+    LOG_INFO(TAG, "Gateway siap — 4 task aktif");
 
 #endif
 }

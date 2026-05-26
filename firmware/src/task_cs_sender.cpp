@@ -30,6 +30,8 @@
 // =============================================================================
 
 #include <Arduino.h>
+#include <esp_wifi.h>
+#include <esp_now.h>
 #include "Config.h"
 
 #if NODE_ROLE == ROLE_SENSOR
@@ -167,6 +169,14 @@ void taskRssiExchange(void* param)
 {
     static constexpr char RTAG[] = "RSSI_EX";
 
+    // v4.0: Tunggu gateway ditemukan sebelum mulai exchange
+    LOG_INFO(RTAG, "Menunggu koneksi gateway (background discovery)...");
+    while (!g_mesh.isChannelConfirmed())
+    {
+        vTaskDelay(pdMS_TO_TICKS(1000));
+    }
+    LOG_INFO(RTAG, "Gateway terdeteksi — mulai RSSI exchange");
+
     LOG_INFO(RTAG, "taskRssiExchange dimulai | interval=%lu ms",
              (unsigned long)RoutingCfg::RSSI_EXCHANGE_MS);
 
@@ -212,6 +222,16 @@ void taskCSSender(void* param)
 {
     g_watchdog.registerTask();
 
+    // v4.0: Tunggu gateway ditemukan sebelum mulai encode & kirim
+    // Task sensor (IMU, PPG) sudah jalan — hanya TX yang menunggu.
+    LOG_INFO(TAG, "Menunggu koneksi gateway (background discovery)...");
+    while (!g_mesh.isChannelConfirmed())
+    {
+        g_watchdog.feed();
+        vTaskDelay(pdMS_TO_TICKS(1000));
+    }
+    LOG_INFO(TAG, "Gateway terdeteksi — mulai encode & kirim data");
+
     float yAx[CS_M], yAy[CS_M], yAz[CS_M];
     float yGx[CS_M], yGy[CS_M], yGz[CS_M];
     float yIr[CS_M];
@@ -241,6 +261,10 @@ void taskCSSender(void* param)
         imu = g_latestImu;
         ppg = g_latestPpg;
         taskEXIT_CRITICAL(&g_stateMux);
+
+        // ── Deferred channel sync (dari _promiscuousRxCb) ────────────────────────
+        // Proses update peer dan channel yang ditunda.
+        g_mesh.processPendingChannelSync();
 
         // ── F2: Sanity check IMU sebelum push ke encoder ──────────────────────
         // Drop window jika ada axis yang di luar batas fisis.

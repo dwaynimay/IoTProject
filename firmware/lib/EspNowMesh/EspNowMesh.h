@@ -57,6 +57,11 @@ public:
     // Parameter: channel WiFi yang aktif (dari esp_wifi_get_channel atau WiFi.channel())
     void setGatewayChannel(uint8_t channel);
 
+    // Proses deferred channel sync dari task context (bukan ISR).
+    // Panggil di loop taskCSSender sebelum encode/send.
+    // Return true jika channel baru di-apply.
+    bool processPendingChannelSync();
+
     // ── Beacon API (Gateway Node Only) ────────────────────────────────────────
 
     // Broadcast beacon ke semua node untuk RSSI discovery.
@@ -115,6 +120,7 @@ private:
     static void _onDataSent(const uint8_t* mac, esp_now_send_status_t status);
     static void _onDataRecv(const uint8_t* mac, const uint8_t* data, int len);
     static void _promiscuousRxCb(void* buf, wifi_promiscuous_pkt_type_t type);
+    static void _taskChannelDiscovery(void* param);
 
     static EspNowMesh* _instance;
 };
