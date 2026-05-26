@@ -345,17 +345,30 @@ void taskCSSender(void* param)
         else              relayedCount++;
 
         // ── Kirim 6 IMU axis + PPG ke tujuan yang dipilih ────────────────────
+        // ANTI-NACK: tambah jeda 2ms antar paket untuk menghindari tabrakan
+        // dengan AP beacon (dikirim gateway setiap 100ms, durasi ~1ms).
+        // Tanpa jeda: 7 paket dalam <5ms → P(tabrakan) ≈ 4–5%.
+        // Dengan jeda 2ms: paket tersebar 14ms → P(tabrakan) ≈ 0.1%.
+        // Total overhead: 6 × 2ms = 12ms per window (budget window = 640ms).
+        static constexpr uint8_t INTER_PKT_MS = 2;
         uint8_t nack = 0;
 
         if (!g_mesh.sendCsAxis(PKT_CS_AX, NODE_ID, yAx, finger, tsNow, dstMac)) nack++;
+        vTaskDelay(pdMS_TO_TICKS(INTER_PKT_MS));
         if (!g_mesh.sendCsAxis(PKT_CS_AY, NODE_ID, yAy, finger, tsNow, dstMac)) nack++;
+        vTaskDelay(pdMS_TO_TICKS(INTER_PKT_MS));
         if (!g_mesh.sendCsAxis(PKT_CS_AZ, NODE_ID, yAz, finger, tsNow, dstMac)) nack++;
+        vTaskDelay(pdMS_TO_TICKS(INTER_PKT_MS));
         if (!g_mesh.sendCsAxis(PKT_CS_GX, NODE_ID, yGx, finger, tsNow, dstMac)) nack++;
+        vTaskDelay(pdMS_TO_TICKS(INTER_PKT_MS));
         if (!g_mesh.sendCsAxis(PKT_CS_GY, NODE_ID, yGy, finger, tsNow, dstMac)) nack++;
+        vTaskDelay(pdMS_TO_TICKS(INTER_PKT_MS));
         if (!g_mesh.sendCsAxis(PKT_CS_GZ, NODE_ID, yGz, finger, tsNow, dstMac)) nack++;
+        vTaskDelay(pdMS_TO_TICKS(INTER_PKT_MS));
         if (!g_mesh.sendCsPpg(NODE_ID, yIr, displayHR,
                                displayValid, displaySpo2,
                                finger, tsNow, dstMac))                           nack++;
+
 
         windowCount++;
 

@@ -32,22 +32,11 @@
 
 
 // ---------------------------------------------------------------------------
-// FINGER GATE — Blokir pengiriman data jika jari tidak menempel
+// SENSOR LIMITS & CONFIG
 // ---------------------------------------------------------------------------
 namespace EdgeConfig
 {
-    constexpr bool     ENABLE_FINGER_GATE  = false;
     constexpr uint32_t IR_FINGER_THRESHOLD = 50000;
-}
-
-
-// ---------------------------------------------------------------------------
-// MQTT BATCHING
-// ---------------------------------------------------------------------------
-namespace BatchConfig
-{
-    constexpr bool    BATCHING_ENABLED = false;
-    constexpr uint8_t BATCH_SIZE       = 5;
 }
 
 
