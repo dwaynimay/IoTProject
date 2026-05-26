@@ -1,5 +1,16 @@
 // File: firmware/lib/EspNowMesh/EspNowMesh.cpp
 // =============================================================================
+// PERBAIKAN v4.1 — Dynamic Peer + 2-Hit Channel Lock
+//
+// FIX 1 (Dynamic Peer): _send() selalu del+add peer dengan channel terkini
+//   sebelum setiap pengiriman. Terinspirasi dari zh_network (aZholtikov).
+//   Eliminasi masalah "peer terdaftar di channel lama" secara permanen.
+//   Tidak perlu lagi processPendingChannelSync() untuk update peer channel.
+//
+// FIX 2 (2-Hit Lock): Channel lock butuh 2 beacon frame berturut-turut dari
+//   gateway MAC yang sama sebelum s_channelConfirmed = true.
+//   Mengurangi false lock akibat noise/stray frame di environment ramai.
+// =============================================================================
 // PERBAIKAN v4.0 — Boot-Anytime: sensor boot non-blocking,
 //                  channel discovery di background FreeRTOS task.
 //                  Gateway dan sensor bisa dinyalakan di waktu berbeda.
@@ -298,8 +309,44 @@ bool EspNowMesh::sendHeartbeat(uint8_t nodeId, uint32_t uptimeS)
 // =============================================================================
 // _send() / _addPeer() / _isPeerRegistered()
 // =============================================================================
+// _send() — Dynamic peer: selalu del+add peer dengan channel terkini.
+//
+// Terinspirasi dari zh_network (aZholtikov): mereka tidak pernah pre-register
+// peer secara permanen. Setiap kirim = fresh add dengan channel terbaru.
+// Ini eliminasi race condition "peer channel lama vs channel aktif" secara
+// fundamental tanpa perlu mekanisme processPendingChannelSync() untuk peer.
+//
+// Tradeoff: +~50µs overhead per kirim (esp_now_del+add sangat cepat).
+// Broadcast MAC (FF:FF:FF:FF:FF:FF) tidak perlu del+add — selalu tersedia.
+// =============================================================================
 bool EspNowMesh::_send(const void* data, size_t len, const uint8_t* dstMac)
 {
+    // Broadcast: tidak perlu dynamic re-register, langsung kirim
+    const bool isBroadcast = (dstMac[0] == 0xFF && dstMac[1] == 0xFF &&
+                               dstMac[2] == 0xFF && dstMac[3] == 0xFF &&
+                               dstMac[4] == 0xFF && dstMac[5] == 0xFF);
+
+    if (!isBroadcast)
+    {
+        // Dynamic peer: del+add dengan channel terkini
+        // Abaikan error del (peer mungkin belum ada)
+        esp_now_del_peer(dstMac);
+
+        esp_now_peer_info_t peer{};
+        memcpy(peer.peer_addr, dstMac, 6);
+        peer.channel = s_channel;  // ← selalu pakai channel aktif terkini
+        peer.encrypt = false;
+
+        const esp_err_t addErr = esp_now_add_peer(&peer);
+        if (addErr != ESP_OK)
+        {
+            LOG_EVERY_N(10, LOG_WARN, TAG,
+                        "dynamic peer add gagal: 0x%X ch=%d", addErr, s_channel);
+            _lastSendOk = false;
+            return false;
+        }
+    }
+
     const esp_err_t err = esp_now_send(
         dstMac, reinterpret_cast<const uint8_t*>(data), len);
     if (err != ESP_OK)
@@ -560,14 +607,41 @@ void EspNowMesh::_promiscuousRxCb(void* buf, wifi_promiscuous_pkt_type_t type)
     // ── Channel sync logic ────────────────────────────────────────────────────
     if (!s_channelConfirmed)
     {
-        // Filter RSSI: abaikan sinyal < -90 dBm (kemungkinan bukan gateway asli / noise reflection)
-        if (rssi < -90) return;
+        // Filter RSSI: abaikan sinyal < -85 dBm
+        // (gateway 1–5 meter biasanya -30 s/d -70 dBm)
+        if (rssi < -85) return;
 
-        // 1-hit konfirmasi — langsung lock
+        // 2-hit confirmation: butuh 2 frame berturut-turut dari channel yang sama
+        // sebelum lock. Mencegah false lock dari stray frame / noise.
+        static uint8_t s_candCh    = 0;
+        static uint8_t s_candCount = 0;
+
+        if (beaconCh != s_candCh)
+        {
+            // Channel baru muncul — reset counter
+            s_candCh    = beaconCh;
+            s_candCount = 1;
+            return;  // belum cukup hit
+        }
+        else
+        {
+            s_candCount++;
+        }
+
+        if (s_candCount < 2) return;  // tunggu hit ke-2
+
+        // 2 hit konsisten dari gateway MAC di channel yang sama → LOCK
+        s_candCh    = 0;
+        s_candCount = 0;
+
         s_channel          = beaconCh;
         s_channelConfirmed = true;
         esp_wifi_set_channel(s_channel, WIFI_SECOND_CHAN_NONE);
 
+        // Dengan dynamic peer di _send(), tidak perlu lagi flag s_needChannelUpdate
+        // untuk update channel peer — _send() akan pakai s_channel terbaru otomatis.
+        // Flag ini tetap diset untuk kompatibilitas (processPendingChannelSync
+        // dipanggil di _taskChannelDiscovery setelah loop selesai).
         if (s_espnowReady)
         {
             s_pendingChannel    = beaconCh;
