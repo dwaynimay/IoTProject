@@ -262,9 +262,10 @@ void taskCSSender(void* param)
         ppg = g_latestPpg;
         taskEXIT_CRITICAL(&g_stateMux);
 
-        // ── Deferred channel sync (dari _promiscuousRxCb) ────────────────────────
-        // Proses update peer dan channel yang ditunda.
-        g_mesh.processPendingChannelSync();
+        // ── Deferred channel sync — tidak diperlukan lagi di v5.0 ──────────────
+        // processPendingChannelSync() dihapus: v5.0 WiFi-channel-sync menjamin
+        // s_channelConfirmed = true sejak begin(), channel tidak pernah berubah.
+        // Jika channel berubah (gateway roam), _send() handle via _updateAllPeerChannels().
 
         // ── F2: Sanity check IMU sebelum push ke encoder ──────────────────────
         // Drop window jika ada axis yang di luar batas fisis.
@@ -327,6 +328,15 @@ void taskCSSender(void* param)
         const bool     finger = (ppg.irRaw >= EdgeConfig::IR_FINGER_THRESHOLD);
         const uint32_t tsNow  = millis();
 
+        // ── PPG values: nolkan jika tidak ada jari (seperti monitor RS) ───────
+        // Ketika jari tidak menempel, HR dan SpO2 tidak bisa diukur.
+        // Setel ke 0 agar tampilan di dashboard seperti monitor rumah sakit:
+        //   - Finger ON  → tampilkan nilai HR dan SpO2 aktual
+        //   - Finger OFF → tampilkan 0 / garis datar
+        const int8_t displayHR   = finger ? ppg.heartRate : 0;
+        const float  displaySpo2 = finger ? (ppg.spo2 > 0 ? ppg.spo2 : 0.0f) : 0.0f;
+        const bool   displayValid = finger ? ppg.valid : false;
+
         // ── Dynamic Routing Decision ──────────────────────────────────────────
         const RouteDecision dec = g_router.decide();
         const uint8_t* dstMac  = _selectDstMac(dec);
@@ -343,8 +353,8 @@ void taskCSSender(void* param)
         if (!g_mesh.sendCsAxis(PKT_CS_GX, NODE_ID, yGx, finger, tsNow, dstMac)) nack++;
         if (!g_mesh.sendCsAxis(PKT_CS_GY, NODE_ID, yGy, finger, tsNow, dstMac)) nack++;
         if (!g_mesh.sendCsAxis(PKT_CS_GZ, NODE_ID, yGz, finger, tsNow, dstMac)) nack++;
-        if (!g_mesh.sendCsPpg(NODE_ID, yIr, ppg.heartRate,
-                               ppg.valid, ppg.spo2,
+        if (!g_mesh.sendCsPpg(NODE_ID, yIr, displayHR,
+                               displayValid, displaySpo2,
                                finger, tsNow, dstMac))                           nack++;
 
         windowCount++;
@@ -363,7 +373,7 @@ void taskCSSender(void* param)
             LOG_INFO(TAG,
                      "Win #%lu [%s] | self=%d dBm neighbor=%d dBm | "
                      "relay=%.0f%% | dropped=%lu(%.1f%%) | nack=%d | "
-                     "HR=%d SpO2=%.1f%%",
+                     "HR=%d SpO2=%.1f%% finger=%s",
                      windowCount,
                      dec.isDirect ? "DIRECT" : "RELAY",
                      dec.rssiSelf,
@@ -372,8 +382,9 @@ void taskCSSender(void* param)
                      g_droppedWindows,
                      dropPct,
                      nack,
-                     ppg.heartRate,
-                     ppg.spo2 > 0 ? ppg.spo2 : 0.0f);
+                     displayHR,
+                     displaySpo2,
+                     finger ? "ON" : "OFF");
         }
 
         if (nack > 0)

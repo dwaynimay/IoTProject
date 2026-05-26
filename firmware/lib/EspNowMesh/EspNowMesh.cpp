@@ -277,9 +277,8 @@ bool EspNowMesh::sendCsAxis(uint8_t pktType, uint8_t nodeId,
     pkt.header = { static_cast<PacketType>(pktType), nodeId, timestamp };
     memcpy(pkt.y, y, CS_M * sizeof(float));
     pkt.edge   = { fingerOn, 0 };
-    const bool ok = _send(&pkt, sizeof(CS1AxisPacket), dstMac);
-    vTaskDelay(pdMS_TO_TICKS(1));
-    return ok;
+    // vTaskDelay(1ms) dihapus v5.1 — eliminasi 7ms blocking per window
+    return _send(&pkt, sizeof(CS1AxisPacket), dstMac);
 }
 
 bool EspNowMesh::sendCsPpg(uint8_t nodeId, const float yIr[CS_M],
@@ -328,44 +327,34 @@ bool EspNowMesh::sendHeartbeat(uint8_t nodeId, uint32_t uptimeS)
 
 
 // =============================================================================
-// _send() / _addPeer() / _isPeerRegistered()
-// =============================================================================
-// _send() — Dynamic peer: selalu del+add peer dengan channel terkini.
+// _send() — Smart peer channel management (v5.1)
 //
-// Terinspirasi dari zh_network (aZholtikov): mereka tidak pernah pre-register
-// peer secara permanen. Setiap kirim = fresh add dengan channel terbaru.
-// Ini eliminasi race condition "peer channel lama vs channel aktif" secara
-// fundamental tanpa perlu mekanisme processPendingChannelSync() untuk peer.
+// STRATEGI LAMA (v4.1): del+add peer setiap kirim → 14 mutex ops/window extra.
+// STRATEGI BARU (v5.1): peer sudah terdaftar via _addPeer() saat begin().
+//   Saat _send(), cek apakah channel peer perlu diupdate:
+//   - Jika sama → langsung send (0 extra ops)
+//   - Jika berbeda → esp_now_mod_peer() sekali, lalu send
 //
-// Tradeoff: +~50µs overhead per kirim (esp_now_del+add sangat cepat).
-// Broadcast MAC (FF:FF:FF:FF:FF:FF) tidak perlu del+add — selalu tersedia.
+// Dengan v5.0 (WiFi channel sync), channel TIDAK PERNAH berubah setelah boot.
+// Jadi normal path = 0 extra ops per send.
+// Broadcast MAC tidak perlu channel management.
 // =============================================================================
+static uint8_t s_lastSentChannel = 0;  // track channel terakhir yang dipakai
+
 bool EspNowMesh::_send(const void* data, size_t len, const uint8_t* dstMac)
 {
-    // Broadcast: tidak perlu dynamic re-register, langsung kirim
+    // Broadcast: tidak butuh channel management
     const bool isBroadcast = (dstMac[0] == 0xFF && dstMac[1] == 0xFF &&
                                dstMac[2] == 0xFF && dstMac[3] == 0xFF &&
                                dstMac[4] == 0xFF && dstMac[5] == 0xFF);
 
-    if (!isBroadcast)
+    if (!isBroadcast && s_lastSentChannel != s_channel)
     {
-        // Dynamic peer: del+add dengan channel terkini
-        // Abaikan error del (peer mungkin belum ada)
-        esp_now_del_peer(dstMac);
-
-        esp_now_peer_info_t peer{};
-        memcpy(peer.peer_addr, dstMac, 6);
-        peer.channel = s_channel;  // ← selalu pakai channel aktif terkini
-        peer.encrypt = false;
-
-        const esp_err_t addErr = esp_now_add_peer(&peer);
-        if (addErr != ESP_OK)
-        {
-            LOG_EVERY_N(10, LOG_WARN, TAG,
-                        "dynamic peer add gagal: 0x%X ch=%d", addErr, s_channel);
-            _lastSendOk = false;
-            return false;
-        }
+        // Channel berubah sejak send terakhir — update semua peer terdaftar
+        // (ini jarang terjadi di v5.0, hanya jika gateway roam channel)
+        _updateAllPeerChannels(s_channel);
+        s_lastSentChannel = s_channel;
+        LOG_WARN(TAG, "Peer channel diupdate ke ch=%d", s_channel);
     }
 
     const esp_err_t err = esp_now_send(

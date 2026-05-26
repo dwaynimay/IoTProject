@@ -19,11 +19,15 @@
 // LOG_LEVEL:
 //   0 = SILENT  — tidak ada output
 //   1 = ERROR   — kondisi fatal saja
-//   2 = WARN    — peringatan + error
-//   3 = INFO    — informasi umum (production recommended)
+//   2 = WARN    — peringatan + error           ← PRODUKSI (kurangi Serial blocking)
+//   3 = INFO    — informasi umum               ← DEBUGGING (banyak output)
 //   4 = DEBUG   — semua pesan termasuk detail internal
+//
+// Serial.printf() di ESP32 bersifat BLOCKING (~0.5–2ms per baris).
+// Di LOG_LEVEL=3: ~50 calls/detik → overhead CPU signifikan.
+// Di LOG_LEVEL=2: hanya WARN/ERROR → hampir tidak ada Serial overhead.
 // ---------------------------------------------------------------------------
-#define LOG_LEVEL        3
+#define LOG_LEVEL        2   // WARN — ubah ke 3 untuk debugging
 #define LOG_ENABLE_COLOR 0
 
 
