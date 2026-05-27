@@ -11203,25 +11203,16 @@
       "label": "EdgeConfig()",
       "file_type": "code",
       "source_file": "firmware/include/config/features.h",
-      "source_location": "L33",
+      "source_location": "L37",
       "id": "config_features_edgeconfig",
       "community": 33,
       "norm_label": "edgeconfig()"
     },
     {
-      "label": "BatchConfig()",
-      "file_type": "code",
-      "source_file": "firmware/include/config/features.h",
-      "source_location": "L43",
-      "id": "config_features_batchconfig",
-      "community": 33,
-      "norm_label": "batchconfig()"
-    },
-    {
       "label": "Mqtt()",
       "file_type": "code",
       "source_file": "firmware/include/config/features.h",
-      "source_location": "L60",
+      "source_location": "L53",
       "id": "config_features_mqtt",
       "community": 33,
       "norm_label": "mqtt()"
@@ -11248,7 +11239,7 @@
       "label": "I2CClock()",
       "file_type": "code",
       "source_file": "firmware/include/config/hardware.h",
-      "source_location": "L42",
+      "source_location": "L48",
       "id": "config_hardware_i2cclock",
       "community": 33,
       "norm_label": "i2cclock()"
@@ -11257,7 +11248,7 @@
       "label": "I2CAddr()",
       "file_type": "code",
       "source_file": "firmware/include/config/hardware.h",
-      "source_location": "L50",
+      "source_location": "L56",
       "id": "config_hardware_i2caddr",
       "community": 33,
       "norm_label": "i2caddr()"
@@ -11266,7 +11257,7 @@
       "label": "MacAddr()",
       "file_type": "code",
       "source_file": "firmware/include/config/hardware.h",
-      "source_location": "L67",
+      "source_location": "L73",
       "id": "config_hardware_macaddr",
       "community": 33,
       "norm_label": "macaddr()"
@@ -11428,7 +11419,7 @@
       "label": "_updateAllPeerChannels()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L54",
+      "source_location": "L66",
       "id": "espnowmesh_espnowmesh_updateallpeerchannels",
       "community": 20,
       "norm_label": "_updateallpeerchannels()"
@@ -11437,7 +11428,7 @@
       "label": "begin()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L80",
+      "source_location": "L92",
       "id": "espnowmesh_espnowmesh_begin",
       "community": 20,
       "norm_label": "begin()"
@@ -11446,7 +11437,7 @@
       "label": "setGatewayChannel()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L174",
+      "source_location": "L228",
       "id": "espnowmesh_espnowmesh_setgatewaychannel",
       "community": 20,
       "norm_label": "setgatewaychannel()"
@@ -11455,7 +11446,7 @@
       "label": "isChannelConfirmed()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L195",
+      "source_location": "L249",
       "id": "espnowmesh_espnowmesh_ischannelconfirmed",
       "community": 20,
       "norm_label": "ischannelconfirmed()"
@@ -11464,7 +11455,7 @@
       "label": "sendBeacon()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L201",
+      "source_location": "L255",
       "id": "espnowmesh_espnowmesh_sendbeacon",
       "community": 20,
       "norm_label": "sendbeacon()"
@@ -11473,7 +11464,7 @@
       "label": "sendRssiReport()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L218",
+      "source_location": "L272",
       "id": "espnowmesh_espnowmesh_sendrssireport",
       "community": 20,
       "norm_label": "sendrssireport()"
@@ -11482,7 +11473,7 @@
       "label": "sendCsAxis()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L240",
+      "source_location": "L294",
       "id": "espnowmesh_espnowmesh_sendcsaxis",
       "community": 20,
       "norm_label": "sendcsaxis()"
@@ -11491,7 +11482,7 @@
       "label": "sendCsPpg()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L253",
+      "source_location": "L306",
       "id": "espnowmesh_espnowmesh_sendcsppg",
       "community": 20,
       "norm_label": "sendcsppg()"
@@ -11500,7 +11491,7 @@
       "label": "forwardRoutedCs()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L268",
+      "source_location": "L321",
       "id": "espnowmesh_espnowmesh_forwardroutedcs",
       "community": 20,
       "norm_label": "forwardroutedcs()"
@@ -11509,7 +11500,7 @@
       "label": "sendCombined()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L282",
+      "source_location": "L335",
       "id": "espnowmesh_espnowmesh_sendcombined",
       "community": 20,
       "norm_label": "sendcombined()"
@@ -11518,7 +11509,7 @@
       "label": "sendHeartbeat()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L287",
+      "source_location": "L340",
       "id": "espnowmesh_espnowmesh_sendheartbeat",
       "community": 20,
       "norm_label": "sendheartbeat()"
@@ -11527,7 +11518,7 @@
       "label": "_send()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L301",
+      "source_location": "L370",
       "id": "espnowmesh_espnowmesh_send",
       "community": 20,
       "norm_label": "_send()"
@@ -11536,7 +11527,7 @@
       "label": "_addPeer()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L311",
+      "source_location": "L418",
       "id": "espnowmesh_espnowmesh_addpeer",
       "community": 20,
       "norm_label": "_addpeer()"
@@ -11545,7 +11536,7 @@
       "label": "_isPeerRegistered()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L329",
+      "source_location": "L436",
       "id": "espnowmesh_espnowmesh_ispeerregistered",
       "community": 20,
       "norm_label": "_ispeerregistered()"
@@ -11554,7 +11545,7 @@
       "label": "_onDataSent()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L342",
+      "source_location": "L447",
       "id": "espnowmesh_espnowmesh_ondatasent",
       "community": 20,
       "norm_label": "_ondatasent()"
@@ -11563,7 +11554,7 @@
       "label": "_onDataRecv()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L358",
+      "source_location": "L471",
       "id": "espnowmesh_espnowmesh_ondatarecv",
       "community": 20,
       "norm_label": "_ondatarecv()"
@@ -11572,7 +11563,7 @@
       "label": "processPendingChannelSync()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L406",
+      "source_location": "L519",
       "id": "espnowmesh_espnowmesh_processpendingchannelsync",
       "community": 20,
       "norm_label": "processpendingchannelsync()"
@@ -11581,7 +11572,7 @@
       "label": "_taskChannelDiscovery()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L454",
+      "source_location": "L561",
       "id": "espnowmesh_espnowmesh_taskchanneldiscovery",
       "community": 20,
       "norm_label": "_taskchanneldiscovery()"
@@ -11590,7 +11581,7 @@
       "label": "_promiscuousRxCb()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
-      "source_location": "L499",
+      "source_location": "L569",
       "id": "espnowmesh_espnowmesh_promiscuousrxcb",
       "community": 20,
       "norm_label": "_promiscuousrxcb()"
@@ -12337,7 +12328,7 @@
       "label": "_imuInRange()",
       "file_type": "code",
       "source_file": "firmware/src/task_cs_sender.cpp",
-      "source_location": "L113",
+      "source_location": "L114",
       "id": "src_task_cs_sender_imuinrange",
       "community": 109,
       "norm_label": "_imuinrange()"
@@ -12346,7 +12337,7 @@
       "label": "_resetAllEncoders()",
       "file_type": "code",
       "source_file": "firmware/src/task_cs_sender.cpp",
-      "source_location": "L141",
+      "source_location": "L142",
       "id": "src_task_cs_sender_resetallencoders",
       "community": 109,
       "norm_label": "_resetallencoders()"
@@ -12355,7 +12346,7 @@
       "label": "_selectDstMac()",
       "file_type": "code",
       "source_file": "firmware/src/task_cs_sender.cpp",
-      "source_location": "L152",
+      "source_location": "L153",
       "id": "src_task_cs_sender_selectdstmac",
       "community": 109,
       "norm_label": "_selectdstmac()"
@@ -12364,7 +12355,7 @@
       "label": "taskRssiExchange()",
       "file_type": "code",
       "source_file": "firmware/src/task_cs_sender.cpp",
-      "source_location": "L168",
+      "source_location": "L169",
       "id": "src_task_cs_sender_taskrssiexchange",
       "community": 109,
       "norm_label": "taskrssiexchange()"
@@ -12373,7 +12364,7 @@
       "label": "taskCSSender()",
       "file_type": "code",
       "source_file": "firmware/src/task_cs_sender.cpp",
-      "source_location": "L221",
+      "source_location": "L222",
       "id": "src_task_cs_sender_taskcssender",
       "community": 109,
       "norm_label": "taskcssender()"
@@ -12609,7 +12600,7 @@
       "source_file": "server/apps/main_app.py",
       "source_location": "L1",
       "id": "server_apps_main_app_py",
-      "community": 323,
+      "community": 240,
       "norm_label": "main_app.py"
     },
     {
@@ -12618,7 +12609,7 @@
       "source_file": "server/apps/main_app.py",
       "source_location": "L65",
       "id": "apps_main_app_run_mqtt_thread",
-      "community": 323,
+      "community": 240,
       "norm_label": "_run_mqtt_thread()"
     },
     {
@@ -12627,7 +12618,7 @@
       "source_file": "server/apps/main_app.py",
       "source_location": "L87",
       "id": "apps_main_app_combined_lifespan",
-      "community": 323,
+      "community": 240,
       "norm_label": "_combined_lifespan()"
     },
     {
@@ -12636,7 +12627,7 @@
       "source_file": "server/apps/main_app.py",
       "source_location": "L140",
       "id": "apps_main_app_main",
-      "community": 323,
+      "community": 240,
       "norm_label": "main()"
     },
     {
@@ -12645,7 +12636,7 @@
       "source_file": "server/apps/main_app.py",
       "source_location": "L1",
       "id": "apps_main_app_rationale_1",
-      "community": 323,
+      "community": 240,
       "norm_label": "main_app.py \u2014 orkestrator satu proses: fastapi + mqtt worker dalam satu perintah"
     },
     {
@@ -12654,7 +12645,7 @@
       "source_file": "server/apps/main_app.py",
       "source_location": "L66",
       "id": "apps_main_app_rationale_66",
-      "community": 323,
+      "community": 240,
       "norm_label": "blocking mqtt loop \u2014 dijalankan di background thread."
     },
     {
@@ -12663,7 +12654,7 @@
       "source_file": "server/apps/main_app.py",
       "source_location": "L88",
       "id": "apps_main_app_rationale_88",
-      "community": 323,
+      "community": 240,
       "norm_label": "ganti lifespan dashboard_server dengan versi yang juga start mqtt thread."
     },
     {
@@ -12672,7 +12663,7 @@
       "source_file": "server/apps/main_app.py",
       "source_location": "L141",
       "id": "apps_main_app_rationale_141",
-      "community": 323,
+      "community": 240,
       "norm_label": "jalankan semua sistem server dalam satu proses."
     },
     {
@@ -13437,7 +13428,7 @@
       "source_file": "server/apps/ml_inference/engine.py",
       "source_location": "L63",
       "id": "ml_inference_engine_mlinferenceengine",
-      "community": 237,
+      "community": 247,
       "norm_label": "mlinferenceengine"
     },
     {
@@ -13446,7 +13437,7 @@
       "source_file": "server/apps/ml_inference/engine.py",
       "source_location": "L81",
       "id": "ml_inference_engine_mlinferenceengine_init",
-      "community": 237,
+      "community": 247,
       "norm_label": ".__init__()"
     },
     {
@@ -13455,7 +13446,7 @@
       "source_file": "server/apps/ml_inference/engine.py",
       "source_location": "L97",
       "id": "ml_inference_engine_mlinferenceengine_load",
-      "community": 273,
+      "community": 316,
       "norm_label": ".load()"
     },
     {
@@ -13527,7 +13518,7 @@
       "source_file": "server/apps/ml_inference/engine.py",
       "source_location": "L369",
       "id": "ml_inference_engine_mlinferenceengine_stats",
-      "community": 237,
+      "community": 247,
       "norm_label": ".stats()"
     },
     {
@@ -13536,7 +13527,7 @@
       "source_file": "server/apps/ml_inference/engine.py",
       "source_location": "L385",
       "id": "ml_inference_engine_mlinferenceengine_stats_summary",
-      "community": 237,
+      "community": 247,
       "norm_label": ".stats_summary()"
     },
     {
@@ -13581,7 +13572,7 @@
       "source_file": "server/apps/ml_inference/engine.py",
       "source_location": "L64",
       "id": "ml_inference_engine_rationale_64",
-      "community": 237,
+      "community": 247,
       "norm_label": "generic inference engine untuk model .pkl + manifest model_config.json.      lif"
     },
     {
@@ -13590,7 +13581,7 @@
       "source_file": "server/apps/ml_inference/engine.py",
       "source_location": "L102",
       "id": "ml_inference_engine_rationale_102",
-      "community": 273,
+      "community": 316,
       "norm_label": "load model .pkl dan manifest json.          thread-safe: assign atomik di akhir"
     },
     {
@@ -15300,7 +15291,7 @@
       "source_file": "server/apps/reconstruct/__main__.py",
       "source_location": "L22",
       "id": "reconstruct_main_main",
-      "community": 323,
+      "community": 240,
       "norm_label": "main()"
     },
     {
@@ -15318,7 +15309,7 @@
       "source_file": "server/apps/reconstruct/__main__.py",
       "source_location": "L23",
       "id": "reconstruct_main_rationale_23",
-      "community": 323,
+      "community": 240,
       "norm_label": "setup logging, singleton, lalu jalankan listener (blocking)."
     },
     {
@@ -15390,7 +15381,7 @@
       "source_file": "server/core/logger.py",
       "source_location": "L1",
       "id": "server_core_logger_py",
-      "community": 323,
+      "community": 240,
       "norm_label": "logger.py"
     },
     {
@@ -15399,7 +15390,7 @@
       "source_file": "server/core/logger.py",
       "source_location": "L12",
       "id": "core_logger_setup_logging",
-      "community": 323,
+      "community": 240,
       "norm_label": "setup_logging()"
     },
     {
@@ -15408,7 +15399,7 @@
       "source_file": "server/core/logger.py",
       "source_location": "L28",
       "id": "core_logger_get_logger",
-      "community": 323,
+      "community": 240,
       "norm_label": "get_logger()"
     },
     {
@@ -15417,7 +15408,7 @@
       "source_file": "server/core/logger.py",
       "source_location": "L1",
       "id": "core_logger_rationale_1",
-      "community": 323,
+      "community": 240,
       "norm_label": "setup logging stdlib terpusat untuk seluruh server."
     },
     {
@@ -15426,7 +15417,7 @@
       "source_file": "server/core/logger.py",
       "source_location": "L13",
       "id": "core_logger_rationale_13",
-      "community": 323,
+      "community": 240,
       "norm_label": "panggil sekali di entry point (apps/*/___main__.py).     semua modul lain cukup"
     },
     {
@@ -15435,7 +15426,7 @@
       "source_file": "server/core/logger.py",
       "source_location": "L29",
       "id": "core_logger_rationale_29",
-      "community": 323,
+      "community": 240,
       "norm_label": "shortcut: logger = get_logger(__name__)"
     },
     {
@@ -15606,7 +15597,7 @@
       "source_file": "server/core/quality.py",
       "source_location": "L219",
       "id": "core_quality_qualityassessor",
-      "community": 238,
+      "community": 330,
       "norm_label": "qualityassessor"
     },
     {
@@ -15615,7 +15606,7 @@
       "source_file": "server/core/quality.py",
       "source_location": "L234",
       "id": "core_quality_qualityassessor_init",
-      "community": 238,
+      "community": 330,
       "norm_label": ".__init__()"
     },
     {
@@ -15642,7 +15633,7 @@
       "source_file": "server/core/quality.py",
       "source_location": "L357",
       "id": "core_quality_qualityassessor_global_stats",
-      "community": 238,
+      "community": 330,
       "norm_label": ".global_stats()"
     },
     {
@@ -15651,7 +15642,7 @@
       "source_file": "server/core/quality.py",
       "source_location": "L375",
       "id": "core_quality_qualityassessor_stats_summary",
-      "community": 238,
+      "community": 330,
       "norm_label": ".stats_summary()"
     },
     {
@@ -15714,7 +15705,7 @@
       "source_file": "server/core/quality.py",
       "source_location": "L220",
       "id": "core_quality_rationale_220",
-      "community": 238,
+      "community": 330,
       "norm_label": "hitung metrik kualitas rekonstruksi cs.      args:         phi : np.ndarray ("
     },
     {
@@ -15741,7 +15732,7 @@
       "source_file": "server/core/quality.py",
       "source_location": "L358",
       "id": "core_quality_rationale_358",
-      "community": 238,
+      "community": 330,
       "norm_label": "statistik akumulatif sejak assessor dibuat.         berguna untuk print ke cons"
     },
     {
@@ -15750,7 +15741,7 @@
       "source_file": "server/core/quality.py",
       "source_location": "L376",
       "id": "core_quality_rationale_376",
-      "community": 238,
+      "community": 330,
       "norm_label": "satu baris ringkasan statistik global."
     },
     {
@@ -15768,7 +15759,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L113",
       "id": "core_storage_storagemanager",
-      "community": 23,
+      "community": 320,
       "norm_label": "storagemanager"
     },
     {
@@ -15777,7 +15768,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L122",
       "id": "core_storage_storagemanager_init",
-      "community": 23,
+      "community": 320,
       "norm_label": ".__init__()"
     },
     {
@@ -15786,7 +15777,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L134",
       "id": "core_storage_storagemanager_open",
-      "community": 23,
+      "community": 320,
       "norm_label": ".open()"
     },
     {
@@ -15804,7 +15795,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L156",
       "id": "core_storage_storagemanager_enter",
-      "community": 23,
+      "community": 320,
       "norm_label": ".__enter__()"
     },
     {
@@ -15831,7 +15822,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L244",
       "id": "core_storage_storagemanager_log_event",
-      "community": 23,
+      "community": 333,
       "norm_label": ".log_event()"
     },
     {
@@ -15840,7 +15831,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L271",
       "id": "core_storage_storagemanager_get_last_windows",
-      "community": 23,
+      "community": 331,
       "norm_label": ".get_last_windows()"
     },
     {
@@ -15885,7 +15876,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L425",
       "id": "core_storage_storagemanager_db_size_bytes",
-      "community": 327,
+      "community": 320,
       "norm_label": ".db_size_bytes()"
     },
     {
@@ -15894,7 +15885,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L431",
       "id": "core_storage_storagemanager_create_tables",
-      "community": 23,
+      "community": 320,
       "norm_label": "._create_tables()"
     },
     {
@@ -15921,7 +15912,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L487",
       "id": "core_storage_sanitize_node_id",
-      "community": 217,
+      "community": 333,
       "norm_label": "_sanitize_node_id()"
     },
     {
@@ -15930,7 +15921,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L491",
       "id": "core_storage_row_to_dict",
-      "community": 309,
+      "community": 331,
       "norm_label": "_row_to_dict()"
     },
     {
@@ -15939,7 +15930,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L114",
       "id": "core_storage_rationale_114",
-      "community": 23,
+      "community": 320,
       "norm_label": "kelola koneksi sqlite dan semua operasi baca-tulis.      args:         db_pat"
     },
     {
@@ -15948,7 +15939,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L135",
       "id": "core_storage_rationale_135",
-      "community": 23,
+      "community": 320,
       "norm_label": "buka koneksi ke database dan buat tabel jika belum ada.         panggil sekali"
     },
     {
@@ -15975,7 +15966,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L250",
       "id": "core_storage_rationale_250",
-      "community": 23,
+      "community": 333,
       "norm_label": "catat satu event ke tabel `events`.          event_type contoh:           \"no"
     },
     {
@@ -15984,7 +15975,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L277",
       "id": "core_storage_rationale_277",
-      "community": 23,
+      "community": 331,
       "norm_label": "ambil n window terakhir untuk sinyal tertentu dari node tertentu.          ret"
     },
     {
@@ -16029,7 +16020,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L426",
       "id": "core_storage_rationale_426",
-      "community": 327,
+      "community": 320,
       "norm_label": "ukuran file db dalam byte."
     },
     {
@@ -16047,7 +16038,7 @@
       "source_file": "server/core/storage.py",
       "source_location": "L492",
       "id": "core_storage_rationale_492",
-      "community": 309,
+      "community": 331,
       "norm_label": "konversi tuple result select ke dict dengan values sudah di-decode."
     },
     {
@@ -16173,7 +16164,7 @@
       "source_file": "server/core/validator.py",
       "source_location": "L230",
       "id": "core_validator_validatorregistry",
-      "community": 311,
+      "community": 327,
       "norm_label": "validatorregistry"
     },
     {
@@ -16209,7 +16200,7 @@
       "source_file": "server/core/validator.py",
       "source_location": "L324",
       "id": "core_validator_validatorregistry_get_stats",
-      "community": 311,
+      "community": 327,
       "norm_label": ".get_stats()"
     },
     {
@@ -16317,7 +16308,7 @@
       "source_file": "server/core/validator.py",
       "source_location": "L231",
       "id": "core_validator_rationale_231",
-      "community": 311,
+      "community": 327,
       "norm_label": "registry validasi dengan state per-node untuk monotonicity check.      buat sa"
     },
     {
@@ -16344,7 +16335,7 @@
       "source_file": "server/core/validator.py",
       "source_location": "L325",
       "id": "core_validator_rationale_325",
-      "community": 311,
+      "community": 327,
       "norm_label": "kembalikan salinan counter statistik."
     },
     {
@@ -17514,7 +17505,7 @@
       "source_file": "server/tests/test_ml_engine.py",
       "source_location": "L173",
       "id": "tests_test_ml_engine_test_load_config_invalid_labels_count",
-      "community": 237,
+      "community": 226,
       "norm_label": "test_load_config_invalid_labels_count()"
     },
     {
@@ -17712,7 +17703,7 @@
       "source_file": "server/tests/test_ml_engine.py",
       "source_location": "L477",
       "id": "tests_test_ml_engine_test_feature_extractor_missing_signal_uses_default",
-      "community": 316,
+      "community": 237,
       "norm_label": "test_feature_extractor_missing_signal_uses_default()"
     },
     {
@@ -17820,7 +17811,7 @@
       "source_file": "server/tests/test_ml_engine.py",
       "source_location": "L174",
       "id": "tests_test_ml_engine_rationale_174",
-      "community": 237,
+      "community": 226,
       "norm_label": "valueerror jika labels < 2."
     },
     {
@@ -18000,7 +17991,7 @@
       "source_file": "server/tests/test_ml_engine.py",
       "source_location": "L478",
       "id": "tests_test_ml_engine_rationale_478",
-      "community": 316,
+      "community": 237,
       "norm_label": "sinyal none \u2192 pakai default, masuk ke missing list."
     },
     {
@@ -18036,7 +18027,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L1",
       "id": "server_tests_test_quality_py",
-      "community": 238,
+      "community": 312,
       "norm_label": "test_quality.py"
     },
     {
@@ -18045,7 +18036,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L45",
       "id": "tests_test_quality_make_phi",
-      "community": 238,
+      "community": 312,
       "norm_label": "_make_phi()"
     },
     {
@@ -18054,7 +18045,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L53",
       "id": "tests_test_quality_make_assessor",
-      "community": 238,
+      "community": 312,
       "norm_label": "_make_assessor()"
     },
     {
@@ -18063,7 +18054,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L56",
       "id": "tests_test_quality_make_sparse_signal",
-      "community": 238,
+      "community": 323,
       "norm_label": "_make_sparse_signal()"
     },
     {
@@ -18072,7 +18063,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L64",
       "id": "tests_test_quality_encode",
-      "community": 238,
+      "community": 323,
       "norm_label": "_encode()"
     },
     {
@@ -18081,7 +18072,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L73",
       "id": "tests_test_quality_test_assess_signal_perfect_reconstruction",
-      "community": 238,
+      "community": 323,
       "norm_label": "test_assess_signal_perfect_reconstruction()"
     },
     {
@@ -18090,7 +18081,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L88",
       "id": "tests_test_quality_test_assess_signal_zero_signal",
-      "community": 238,
+      "community": 312,
       "norm_label": "test_assess_signal_zero_signal()"
     },
     {
@@ -18099,7 +18090,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L100",
       "id": "tests_test_quality_test_assess_signal_low_quality",
-      "community": 238,
+      "community": 323,
       "norm_label": "test_assess_signal_low_quality()"
     },
     {
@@ -18108,7 +18099,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L118",
       "id": "tests_test_quality_test_assess_signal_critical",
-      "community": 238,
+      "community": 323,
       "norm_label": "test_assess_signal_critical()"
     },
     {
@@ -18117,7 +18108,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L136",
       "id": "tests_test_quality_test_assess_signal_sparsity_ratio",
-      "community": 238,
+      "community": 323,
       "norm_label": "test_assess_signal_sparsity_ratio()"
     },
     {
@@ -18126,7 +18117,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L153",
       "id": "tests_test_quality_test_assess_signal_snr_db_positive_for_good_reconstruction",
-      "community": 238,
+      "community": 323,
       "norm_label": "test_assess_signal_snr_db_positive_for_good_reconstruction()"
     },
     {
@@ -18135,7 +18126,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L170",
       "id": "tests_test_quality_test_assess_signal_short_str_format",
-      "community": 238,
+      "community": 323,
       "norm_label": "test_assess_signal_short_str_format()"
     },
     {
@@ -18144,7 +18135,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L185",
       "id": "tests_test_quality_test_assess_signal_list_input",
-      "community": 238,
+      "community": 323,
       "norm_label": "test_assess_signal_list_input()"
     },
     {
@@ -18153,7 +18144,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L199",
       "id": "tests_test_quality_make_full_results_and_measurements",
-      "community": 238,
+      "community": 312,
       "norm_label": "_make_full_results_and_measurements()"
     },
     {
@@ -18162,7 +18153,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L226",
       "id": "tests_test_quality_test_assess_window_all_ok",
-      "community": 238,
+      "community": 312,
       "norm_label": "test_assess_window_all_ok()"
     },
     {
@@ -18171,7 +18162,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L239",
       "id": "tests_test_quality_test_assess_window_some_low_quality",
-      "community": 238,
+      "community": 312,
       "norm_label": "test_assess_window_some_low_quality()"
     },
     {
@@ -18180,7 +18171,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L257",
       "id": "tests_test_quality_test_assess_window_missing_measurement",
-      "community": 238,
+      "community": 323,
       "norm_label": "test_assess_window_missing_measurement()"
     },
     {
@@ -18189,7 +18180,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L272",
       "id": "tests_test_quality_test_assess_window_summary_ok",
-      "community": 238,
+      "community": 312,
       "norm_label": "test_assess_window_summary_ok()"
     },
     {
@@ -18198,7 +18189,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L286",
       "id": "tests_test_quality_test_assess_window_summary_low_quality",
-      "community": 238,
+      "community": 312,
       "norm_label": "test_assess_window_summary_low_quality()"
     },
     {
@@ -18207,7 +18198,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L302",
       "id": "tests_test_quality_test_assess_window_detail_lines",
-      "community": 238,
+      "community": 312,
       "norm_label": "test_assess_window_detail_lines()"
     },
     {
@@ -18216,7 +18207,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L313",
       "id": "tests_test_quality_test_assess_window_mean_relative_error",
-      "community": 238,
+      "community": 312,
       "norm_label": "test_assess_window_mean_relative_error()"
     },
     {
@@ -18225,7 +18216,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L328",
       "id": "tests_test_quality_test_assess_window_mean_sparsity",
-      "community": 238,
+      "community": 312,
       "norm_label": "test_assess_window_mean_sparsity()"
     },
     {
@@ -18234,7 +18225,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L342",
       "id": "tests_test_quality_test_global_stats_accumulate",
-      "community": 238,
+      "community": 312,
       "norm_label": "test_global_stats_accumulate()"
     },
     {
@@ -18243,7 +18234,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L362",
       "id": "tests_test_quality_test_global_stats_empty",
-      "community": 238,
+      "community": 312,
       "norm_label": "test_global_stats_empty()"
     },
     {
@@ -18252,7 +18243,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L371",
       "id": "tests_test_quality_test_stats_summary_format",
-      "community": 238,
+      "community": 312,
       "norm_label": "test_stats_summary_format()"
     },
     {
@@ -18261,7 +18252,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L382",
       "id": "tests_test_quality_test_assessor_invalid_phi_shape",
-      "community": 238,
+      "community": 330,
       "norm_label": "test_assessor_invalid_phi_shape()"
     },
     {
@@ -18270,7 +18261,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L46",
       "id": "tests_test_quality_rationale_46",
-      "community": 238,
+      "community": 312,
       "norm_label": "phi acak ternormalisasi \u2014 cukup untuk test residual."
     },
     {
@@ -18279,7 +18270,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L57",
       "id": "tests_test_quality_rationale_57",
-      "community": 238,
+      "community": 323,
       "norm_label": "sinyal sparse: hanya k elemen non-nol."
     },
     {
@@ -18288,7 +18279,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L65",
       "id": "tests_test_quality_rationale_65",
-      "community": 238,
+      "community": 323,
       "norm_label": "y = \u03c6 \u00b7 x (encode sempurna, residual harusnya 0)."
     },
     {
@@ -18297,7 +18288,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L74",
       "id": "tests_test_quality_rationale_74",
-      "community": 238,
+      "community": 323,
       "norm_label": "jika x_hat sempurna (y = \u03c6\u00b7x_hat persis), relative_error harus ~0."
     },
     {
@@ -18306,7 +18297,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L89",
       "id": "tests_test_quality_rationale_89",
-      "community": 238,
+      "community": 312,
       "norm_label": "sinyal nol \u2192 zero_signal flag."
     },
     {
@@ -18315,7 +18306,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L101",
       "id": "tests_test_quality_rationale_101",
-      "community": 238,
+      "community": 323,
       "norm_label": "jika x_hat salah (noise), residual besar \u2192 low_quality atau critical."
     },
     {
@@ -18324,7 +18315,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L119",
       "id": "tests_test_quality_rationale_119",
-      "community": 238,
+      "community": 323,
       "norm_label": "rekonstruksi sangat buruk \u2192 critical.     paksa dengan x_hat = 0 sehingga resid"
     },
     {
@@ -18333,7 +18324,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L137",
       "id": "tests_test_quality_rationale_137",
-      "community": 238,
+      "community": 323,
       "norm_label": "sparsity_ratio = fraksi elemen non-nol."
     },
     {
@@ -18342,7 +18333,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L154",
       "id": "tests_test_quality_rationale_154",
-      "community": 238,
+      "community": 323,
       "norm_label": "snr harus positif untuk rekonstruksi bagus."
     },
     {
@@ -18351,7 +18342,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L171",
       "id": "tests_test_quality_rationale_171",
-      "community": 238,
+      "community": 323,
       "norm_label": "short_str harus mengandung nama sinyal dan angka."
     },
     {
@@ -18360,7 +18351,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L186",
       "id": "tests_test_quality_rationale_186",
-      "community": 238,
+      "community": 323,
       "norm_label": "y boleh berupa list python, bukan hanya ndarray."
     },
     {
@@ -18369,7 +18360,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L205",
       "id": "tests_test_quality_rationale_205",
-      "community": 238,
+      "community": 312,
       "norm_label": "buat results (x_hat) dan measurements (y) untuk beberapa sinyal.     noise_scal"
     },
     {
@@ -18378,7 +18369,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L240",
       "id": "tests_test_quality_rationale_240",
-      "community": 238,
+      "community": 312,
       "norm_label": "jika satu sinyal rekonstruksinya buruk, report.has_low_quality() = true."
     },
     {
@@ -18387,7 +18378,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L258",
       "id": "tests_test_quality_rationale_258",
-      "community": 238,
+      "community": 323,
       "norm_label": "sinyal yang tidak ada di measurements \u2192 dilewati, tidak crash."
     },
     {
@@ -18396,7 +18387,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L314",
       "id": "tests_test_quality_rationale_314",
-      "community": 238,
+      "community": 312,
       "norm_label": "mean_relative_error harus rata-rata dari semua sinyal."
     },
     {
@@ -18405,7 +18396,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L363",
       "id": "tests_test_quality_rationale_363",
-      "community": 238,
+      "community": 312,
       "norm_label": "tanpa window apapun, tidak crash."
     },
     {
@@ -18414,7 +18405,7 @@
       "source_file": "server/tests/test_quality.py",
       "source_location": "L383",
       "id": "tests_test_quality_rationale_383",
-      "community": 238,
+      "community": 330,
       "norm_label": "phi 1d harus raise valueerror."
     },
     {
@@ -18495,7 +18486,7 @@
       "source_file": "server/tests/test_storage.py",
       "source_location": "L77",
       "id": "tests_test_storage_test_double_open_idempotent",
-      "community": 23,
+      "community": 320,
       "norm_label": "test_double_open_idempotent()"
     },
     {
@@ -18504,7 +18495,7 @@
       "source_file": "server/tests/test_storage.py",
       "source_location": "L88",
       "id": "tests_test_storage_test_ensure_open_raises_if_not_opened",
-      "community": 23,
+      "community": 320,
       "norm_label": "test_ensure_open_raises_if_not_opened()"
     },
     {
@@ -18513,7 +18504,7 @@
       "source_file": "server/tests/test_storage.py",
       "source_location": "L97",
       "id": "tests_test_storage_test_context_manager",
-      "community": 23,
+      "community": 320,
       "norm_label": "test_context_manager()"
     },
     {
@@ -18711,7 +18702,7 @@
       "source_file": "server/tests/test_storage.py",
       "source_location": "L78",
       "id": "tests_test_storage_rationale_78",
-      "community": 23,
+      "community": 320,
       "norm_label": "open() dua kali tidak crash \u2014 tabel create if not exists."
     },
     {
@@ -18981,7 +18972,7 @@
       "source_file": "server/tests/test_validator.py",
       "source_location": "L242",
       "id": "tests_test_validator_test_registry_valid_imu",
-      "community": 311,
+      "community": 327,
       "norm_label": "test_registry_valid_imu()"
     },
     {
@@ -18999,7 +18990,7 @@
       "source_file": "server/tests/test_validator.py",
       "source_location": "L256",
       "id": "tests_test_validator_test_registry_invalid_counts",
-      "community": 311,
+      "community": 327,
       "norm_label": "test_registry_invalid_counts()"
     },
     {
@@ -19008,7 +18999,7 @@
       "source_file": "server/tests/test_validator.py",
       "source_location": "L264",
       "id": "tests_test_validator_test_registry_sequential_windows",
-      "community": 311,
+      "community": 327,
       "norm_label": "test_registry_sequential_windows()"
     },
     {
@@ -19017,7 +19008,7 @@
       "source_file": "server/tests/test_validator.py",
       "source_location": "L276",
       "id": "tests_test_validator_test_registry_stops_early_on_schema_error",
-      "community": 311,
+      "community": 327,
       "norm_label": "test_registry_stops_early_on_schema_error()"
     },
     {
@@ -19026,7 +19017,7 @@
       "source_file": "server/tests/test_validator.py",
       "source_location": "L287",
       "id": "tests_test_validator_test_registry_nan_caught",
-      "community": 311,
+      "community": 327,
       "norm_label": "test_registry_nan_caught()"
     },
     {
@@ -19035,7 +19026,7 @@
       "source_file": "server/tests/test_validator.py",
       "source_location": "L295",
       "id": "tests_test_validator_test_registry_monotonicity_caught",
-      "community": 311,
+      "community": 327,
       "norm_label": "test_registry_monotonicity_caught()"
     },
     {
@@ -19089,7 +19080,7 @@
       "source_file": "server/tests/test_validator.py",
       "source_location": "L265",
       "id": "tests_test_validator_rationale_265",
-      "community": 311,
+      "community": 327,
       "norm_label": "simulasi beberapa window berturut-turut \u2014 ts maju terus."
     },
     {
@@ -19098,7 +19089,7 @@
       "source_file": "server/tests/test_validator.py",
       "source_location": "L277",
       "id": "tests_test_validator_rationale_277",
-      "community": 311,
+      "community": 327,
       "norm_label": "jika schema gagal, layer length/finite tidak dijalankan."
     },
     {
@@ -20990,6 +20981,339 @@
       "id": "new_feature_analysis_espnow_connectivity_rekomendasi_implementasi",
       "community": 205,
       "norm_label": "\ud83c\udfaf rekomendasi implementasi"
+    },
+    {
+      "label": "system_audit.md",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L1",
+      "id": "new_feature_system_audit_md",
+      "community": 311,
+      "norm_label": "system_audit.md"
+    },
+    {
+      "label": "\ud83d\udccb System Audit \u2014 IoT Health Monitor Firmware",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L1",
+      "id": "new_feature_system_audit_system_audit_iot_health_monitor_firmware",
+      "community": 311,
+      "norm_label": "\ud83d\udccb system audit \u2014 iot health monitor firmware"
+    },
+    {
+      "label": "Arsitektur Sistem Saat Ini",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L3",
+      "id": "new_feature_system_audit_arsitektur_sistem_saat_ini",
+      "community": 311,
+      "norm_label": "arsitektur sistem saat ini"
+    },
+    {
+      "label": "code:block1 (\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510)",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L5",
+      "id": "new_feature_system_audit_codeblock_1",
+      "community": 311,
+      "norm_label": "code:block1 (\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510)"
+    },
+    {
+      "label": "\ud83d\udce6 Inventaris Fitur",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L38",
+      "id": "new_feature_system_audit_inventaris_fitur",
+      "community": 311,
+      "norm_label": "\ud83d\udce6 inventaris fitur"
+    },
+    {
+      "label": "SENSOR NODE",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L40",
+      "id": "new_feature_system_audit_sensor_node",
+      "community": 311,
+      "norm_label": "sensor node"
+    },
+    {
+      "label": "GATEWAY NODE",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L59",
+      "id": "new_feature_system_audit_gateway_node",
+      "community": 311,
+      "norm_label": "gateway node"
+    },
+    {
+      "label": "\ud83d\udd34 Risiko Lag / Hang yang Teridentifikasi",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L72",
+      "id": "new_feature_system_audit_risiko_lag_hang_yang_teridentifikasi",
+      "community": 311,
+      "norm_label": "\ud83d\udd34 risiko lag / hang yang teridentifikasi"
+    },
+    {
+      "label": "Risiko Tinggi",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L74",
+      "id": "new_feature_system_audit_risiko_tinggi",
+      "community": 311,
+      "norm_label": "risiko tinggi"
+    },
+    {
+      "label": "1. `taskCSSender` \u2014 7 `esp_now_send()` per window berturutan",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L76",
+      "id": "new_feature_system_audit_1_taskcssender_7_esp_now_send_per_window_berturutan",
+      "community": 311,
+      "norm_label": "1. `taskcssender` \u2014 7 `esp_now_send()` per window berturutan"
+    },
+    {
+      "label": "code:block2 (SETIAP WINDOW (setiap 10ms dari IMU_SAMPLE_MS):)",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L77",
+      "id": "new_feature_system_audit_codeblock_2",
+      "community": 311,
+      "norm_label": "code:block2 (setiap window (setiap 10ms dari imu_sample_ms):)"
+    },
+    {
+      "label": "2. Dynamic Peer (v4.1) \u2014 `esp_now_del_peer` + `esp_now_add_peer` per send",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L87",
+      "id": "new_feature_system_audit_2_dynamic_peer_v4_1_esp_now_del_peer_esp_now_add_peer_per_send",
+      "community": 311,
+      "norm_label": "2. dynamic peer (v4.1) \u2014 `esp_now_del_peer` + `esp_now_add_peer` per send"
+    },
+    {
+      "label": "code:block3 (Setiap _send() ke unicast:)",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L88",
+      "id": "new_feature_system_audit_codeblock_3",
+      "community": 311,
+      "norm_label": "code:block3 (setiap _send() ke unicast:)"
+    },
+    {
+      "label": "3. `vTaskDelay(pdMS_TO_TICKS(1))` di `sendCsAxis()`",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L96",
+      "id": "new_feature_system_audit_3_vtaskdelay_pdms_to_ticks_1_di_sendcsaxis",
+      "community": 311,
+      "norm_label": "3. `vtaskdelay(pdms_to_ticks(1))` di `sendcsaxis()`"
+    },
+    {
+      "label": "code:cpp (bool EspNowMesh::sendCsAxis(...) {)",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L97",
+      "id": "new_feature_system_audit_codeblock_4",
+      "community": 311,
+      "norm_label": "code:cpp (bool espnowmesh::sendcsaxis(...) {)"
+    },
+    {
+      "label": "4. `taskRssiExchange` \u2014 redundan untuk 2-node saat ini",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L106",
+      "id": "new_feature_system_audit_4_taskrssiexchange_redundan_untuk_2_node_saat_ini",
+      "community": 311,
+      "norm_label": "4. `taskrssiexchange` \u2014 redundan untuk 2-node saat ini"
+    },
+    {
+      "label": "5. Log berlebihan di produksi",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L109",
+      "id": "new_feature_system_audit_5_log_berlebihan_di_produksi",
+      "community": 311,
+      "norm_label": "5. log berlebihan di produksi"
+    },
+    {
+      "label": "code:block5 (LOG_LEVEL = 3 (INFO)  \u2190 setiap window log, setiap 10s log, s)",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L110",
+      "id": "new_feature_system_audit_codeblock_5",
+      "community": 311,
+      "norm_label": "code:block5 (log_level = 3 (info)  \u2190 setiap window log, setiap 10s log, s)"
+    },
+    {
+      "label": "6. `taskCSSender` delay di akhir loop = `IMU_SAMPLE_MS = 10ms`",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L115",
+      "id": "new_feature_system_audit_6_taskcssender_delay_di_akhir_loop_imu_sample_ms_10ms",
+      "community": 311,
+      "norm_label": "6. `taskcssender` delay di akhir loop = `imu_sample_ms = 10ms`"
+    },
+    {
+      "label": "Risiko Sedang",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L118",
+      "id": "new_feature_system_audit_risiko_sedang",
+      "community": 311,
+      "norm_label": "risiko sedang"
+    },
+    {
+      "label": "7. `DynamicRouter` overhead",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L120",
+      "id": "new_feature_system_audit_7_dynamicrouter_overhead",
+      "community": 311,
+      "norm_label": "7. `dynamicrouter` overhead"
+    },
+    {
+      "label": "8. Stack Size mungkin terlalu besar",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L124",
+      "id": "new_feature_system_audit_8_stack_size_mungkin_terlalu_besar",
+      "community": 311,
+      "norm_label": "8. stack size mungkin terlalu besar"
+    },
+    {
+      "label": "code:block6 (ESPNOW_TX: 12288 bytes  \u2190 sangat besar)",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L125",
+      "id": "new_feature_system_audit_codeblock_6",
+      "community": 311,
+      "norm_label": "code:block6 (espnow_tx: 12288 bytes  \u2190 sangat besar)"
+    },
+    {
+      "label": "9. `processPendingChannelSync()` dipanggil setiap window",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L133",
+      "id": "new_feature_system_audit_9_processpendingchannelsync_dipanggil_setiap_window",
+      "community": 311,
+      "norm_label": "9. `processpendingchannelsync()` dipanggil setiap window"
+    },
+    {
+      "label": "\u2705 Rekomendasi: Lean Architecture",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L138",
+      "id": "new_feature_system_audit_rekomendasi_lean_architecture",
+      "community": 311,
+      "norm_label": "\u2705 rekomendasi: lean architecture"
+    },
+    {
+      "label": "Prioritas 1 \u2014 HAPUS Segera (Zero Risk)",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L140",
+      "id": "new_feature_system_audit_prioritas_1_hapus_segera_zero_risk",
+      "community": 311,
+      "norm_label": "prioritas 1 \u2014 hapus segera (zero risk)"
+    },
+    {
+      "label": "Prioritas 2 \u2014 SEDERHANAKAN (Medium Risk, High Reward)",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L150",
+      "id": "new_feature_system_audit_prioritas_2_sederhanakan_medium_risk_high_reward",
+      "community": 311,
+      "norm_label": "prioritas 2 \u2014 sederhanakan (medium risk, high reward)"
+    },
+    {
+      "label": "Prioritas 3 \u2014 PERTAHANKAN & OPTIMALKAN",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L159",
+      "id": "new_feature_system_audit_prioritas_3_pertahankan_optimalkan",
+      "community": 311,
+      "norm_label": "prioritas 3 \u2014 pertahankan & optimalkan"
+    },
+    {
+      "label": "\ud83c\udfaf Target Arsitektur Lean (untuk TA)",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L172",
+      "id": "new_feature_system_audit_target_arsitektur_lean_untuk_ta",
+      "community": 311,
+      "norm_label": "\ud83c\udfaf target arsitektur lean (untuk ta)"
+    },
+    {
+      "label": "Sensor Node \u2014 3 Task saja (dari 5)",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L174",
+      "id": "new_feature_system_audit_sensor_node_3_task_saja_dari_5",
+      "community": 311,
+      "norm_label": "sensor node \u2014 3 task saja (dari 5)"
+    },
+    {
+      "label": "code:block7 (Core 1:  taskReadIMU  (100Hz, baca MPU6050))",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L176",
+      "id": "new_feature_system_audit_codeblock_7",
+      "community": 311,
+      "norm_label": "code:block7 (core 1:  taskreadimu  (100hz, baca mpu6050))"
+    },
+    {
+      "label": "Gateway Node \u2014 Tetap 4 Task",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L185",
+      "id": "new_feature_system_audit_gateway_node_tetap_4_task",
+      "community": 311,
+      "norm_label": "gateway node \u2014 tetap 4 task"
+    },
+    {
+      "label": "code:block8 (Core 1:  taskBeacon        (beacon periodik))",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L187",
+      "id": "new_feature_system_audit_codeblock_8",
+      "community": 311,
+      "norm_label": "code:block8 (core 1:  taskbeacon        (beacon periodik))"
+    },
+    {
+      "label": "Perubahan Kode Kritis",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L194",
+      "id": "new_feature_system_audit_perubahan_kode_kritis",
+      "community": 311,
+      "norm_label": "perubahan kode kritis"
+    },
+    {
+      "label": "code:diff (// 1. Hapus delay 1ms di sendCsAxis())",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L196",
+      "id": "new_feature_system_audit_codeblock_9",
+      "community": 311,
+      "norm_label": "code:diff (// 1. hapus delay 1ms di sendcsaxis())"
+    },
+    {
+      "label": "\ud83d\udcca Estimasi Efek Setelah Optimasi",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L216",
+      "id": "new_feature_system_audit_estimasi_efek_setelah_optimasi",
+      "community": 311,
+      "norm_label": "\ud83d\udcca estimasi efek setelah optimasi"
+    },
+    {
+      "label": "\u2753 Open Questions untuk Keputusan",
+      "file_type": "document",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L228",
+      "id": "new_feature_system_audit_open_questions_untuk_keputusan",
+      "community": 311,
+      "norm_label": "\u2753 open questions untuk keputusan"
     },
     {
       "label": "walkthrough.md",
@@ -24043,6 +24367,348 @@
       "norm_label": "file yang direkomendasikan:"
     },
     {
+      "label": "system_audit.md",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L1",
+      "community": 309,
+      "norm_label": "system_audit.md",
+      "id": "system_audit_md"
+    },
+    {
+      "label": "\ud83d\udccb System Audit \u2014 IoT Health Monitor Firmware",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L1",
+      "community": 309,
+      "norm_label": "\ud83d\udccb system audit \u2014 iot health monitor firmware",
+      "id": "iotproject_system_audit_system_audit_iot_health_monitor_firmware"
+    },
+    {
+      "label": "Arsitektur Sistem Saat Ini",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L3",
+      "community": 309,
+      "norm_label": "arsitektur sistem saat ini",
+      "id": "iotproject_system_audit_arsitektur_sistem_saat_ini"
+    },
+    {
+      "label": "code:block1 (\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510)",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L5",
+      "community": 309,
+      "norm_label": "code:block1 (\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510)",
+      "id": "iotproject_system_audit_codeblock_1"
+    },
+    {
+      "label": "\ud83d\udce6 Inventaris Fitur",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L38",
+      "community": 309,
+      "norm_label": "\ud83d\udce6 inventaris fitur",
+      "id": "iotproject_system_audit_inventaris_fitur"
+    },
+    {
+      "label": "SENSOR NODE",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L40",
+      "community": 309,
+      "norm_label": "sensor node",
+      "id": "iotproject_system_audit_sensor_node"
+    },
+    {
+      "label": "GATEWAY NODE",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L59",
+      "community": 309,
+      "norm_label": "gateway node",
+      "id": "iotproject_system_audit_gateway_node"
+    },
+    {
+      "label": "\ud83d\udd34 Risiko Lag / Hang yang Teridentifikasi",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L72",
+      "community": 309,
+      "norm_label": "\ud83d\udd34 risiko lag / hang yang teridentifikasi",
+      "id": "iotproject_system_audit_risiko_lag_hang_yang_teridentifikasi"
+    },
+    {
+      "label": "Risiko Tinggi",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L74",
+      "community": 309,
+      "norm_label": "risiko tinggi",
+      "id": "iotproject_system_audit_risiko_tinggi"
+    },
+    {
+      "label": "1. `taskCSSender` \u2014 7 `esp_now_send()` per window berturutan",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L76",
+      "community": 309,
+      "norm_label": "1. `taskcssender` \u2014 7 `esp_now_send()` per window berturutan",
+      "id": "iotproject_system_audit_1_taskcssender_7_esp_now_send_per_window_berturutan"
+    },
+    {
+      "label": "code:block2 (SETIAP WINDOW (setiap 10ms dari IMU_SAMPLE_MS):)",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L77",
+      "community": 309,
+      "norm_label": "code:block2 (setiap window (setiap 10ms dari imu_sample_ms):)",
+      "id": "iotproject_system_audit_codeblock_2"
+    },
+    {
+      "label": "2. Dynamic Peer (v4.1) \u2014 `esp_now_del_peer` + `esp_now_add_peer` per send",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L87",
+      "community": 309,
+      "norm_label": "2. dynamic peer (v4.1) \u2014 `esp_now_del_peer` + `esp_now_add_peer` per send",
+      "id": "iotproject_system_audit_2_dynamic_peer_v4_1_esp_now_del_peer_esp_now_add_peer_per_send"
+    },
+    {
+      "label": "code:block3 (Setiap _send() ke unicast:)",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L88",
+      "community": 309,
+      "norm_label": "code:block3 (setiap _send() ke unicast:)",
+      "id": "iotproject_system_audit_codeblock_3"
+    },
+    {
+      "label": "3. `vTaskDelay(pdMS_TO_TICKS(1))` di `sendCsAxis()`",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L96",
+      "community": 309,
+      "norm_label": "3. `vtaskdelay(pdms_to_ticks(1))` di `sendcsaxis()`",
+      "id": "iotproject_system_audit_3_vtaskdelay_pdms_to_ticks_1_di_sendcsaxis"
+    },
+    {
+      "label": "code:cpp (bool EspNowMesh::sendCsAxis(...) {)",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L97",
+      "community": 309,
+      "norm_label": "code:cpp (bool espnowmesh::sendcsaxis(...) {)",
+      "id": "iotproject_system_audit_codeblock_4"
+    },
+    {
+      "label": "4. `taskRssiExchange` \u2014 redundan untuk 2-node saat ini",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L106",
+      "community": 309,
+      "norm_label": "4. `taskrssiexchange` \u2014 redundan untuk 2-node saat ini",
+      "id": "iotproject_system_audit_4_taskrssiexchange_redundan_untuk_2_node_saat_ini"
+    },
+    {
+      "label": "5. Log berlebihan di produksi",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L109",
+      "community": 309,
+      "norm_label": "5. log berlebihan di produksi",
+      "id": "iotproject_system_audit_5_log_berlebihan_di_produksi"
+    },
+    {
+      "label": "code:block5 (LOG_LEVEL = 3 (INFO)  \u2190 setiap window log, setiap 10s log, s)",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L110",
+      "community": 309,
+      "norm_label": "code:block5 (log_level = 3 (info)  \u2190 setiap window log, setiap 10s log, s)",
+      "id": "iotproject_system_audit_codeblock_5"
+    },
+    {
+      "label": "6. `taskCSSender` delay di akhir loop = `IMU_SAMPLE_MS = 10ms`",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L115",
+      "community": 309,
+      "norm_label": "6. `taskcssender` delay di akhir loop = `imu_sample_ms = 10ms`",
+      "id": "iotproject_system_audit_6_taskcssender_delay_di_akhir_loop_imu_sample_ms_10ms"
+    },
+    {
+      "label": "Risiko Sedang",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L118",
+      "community": 309,
+      "norm_label": "risiko sedang",
+      "id": "iotproject_system_audit_risiko_sedang"
+    },
+    {
+      "label": "7. `DynamicRouter` overhead",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L120",
+      "community": 309,
+      "norm_label": "7. `dynamicrouter` overhead",
+      "id": "iotproject_system_audit_7_dynamicrouter_overhead"
+    },
+    {
+      "label": "8. Stack Size mungkin terlalu besar",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L124",
+      "community": 309,
+      "norm_label": "8. stack size mungkin terlalu besar",
+      "id": "iotproject_system_audit_8_stack_size_mungkin_terlalu_besar"
+    },
+    {
+      "label": "code:block6 (ESPNOW_TX: 12288 bytes  \u2190 sangat besar)",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L125",
+      "community": 309,
+      "norm_label": "code:block6 (espnow_tx: 12288 bytes  \u2190 sangat besar)",
+      "id": "iotproject_system_audit_codeblock_6"
+    },
+    {
+      "label": "9. `processPendingChannelSync()` dipanggil setiap window",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L133",
+      "community": 309,
+      "norm_label": "9. `processpendingchannelsync()` dipanggil setiap window",
+      "id": "iotproject_system_audit_9_processpendingchannelsync_dipanggil_setiap_window"
+    },
+    {
+      "label": "\u2705 Rekomendasi: Lean Architecture",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L138",
+      "community": 309,
+      "norm_label": "\u2705 rekomendasi: lean architecture",
+      "id": "iotproject_system_audit_rekomendasi_lean_architecture"
+    },
+    {
+      "label": "Prioritas 1 \u2014 HAPUS Segera (Zero Risk)",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L140",
+      "community": 309,
+      "norm_label": "prioritas 1 \u2014 hapus segera (zero risk)",
+      "id": "iotproject_system_audit_prioritas_1_hapus_segera_zero_risk"
+    },
+    {
+      "label": "Prioritas 2 \u2014 SEDERHANAKAN (Medium Risk, High Reward)",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L150",
+      "community": 309,
+      "norm_label": "prioritas 2 \u2014 sederhanakan (medium risk, high reward)",
+      "id": "iotproject_system_audit_prioritas_2_sederhanakan_medium_risk_high_reward"
+    },
+    {
+      "label": "Prioritas 3 \u2014 PERTAHANKAN & OPTIMALKAN",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L159",
+      "community": 309,
+      "norm_label": "prioritas 3 \u2014 pertahankan & optimalkan",
+      "id": "iotproject_system_audit_prioritas_3_pertahankan_optimalkan"
+    },
+    {
+      "label": "\ud83c\udfaf Target Arsitektur Lean (untuk TA)",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L172",
+      "community": 309,
+      "norm_label": "\ud83c\udfaf target arsitektur lean (untuk ta)",
+      "id": "iotproject_system_audit_target_arsitektur_lean_untuk_ta"
+    },
+    {
+      "label": "Sensor Node \u2014 3 Task saja (dari 5)",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L174",
+      "community": 309,
+      "norm_label": "sensor node \u2014 3 task saja (dari 5)",
+      "id": "iotproject_system_audit_sensor_node_3_task_saja_dari_5"
+    },
+    {
+      "label": "code:block7 (Core 1:  taskReadIMU  (100Hz, baca MPU6050))",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L176",
+      "community": 309,
+      "norm_label": "code:block7 (core 1:  taskreadimu  (100hz, baca mpu6050))",
+      "id": "iotproject_system_audit_codeblock_7"
+    },
+    {
+      "label": "Gateway Node \u2014 Tetap 4 Task",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L185",
+      "community": 309,
+      "norm_label": "gateway node \u2014 tetap 4 task",
+      "id": "iotproject_system_audit_gateway_node_tetap_4_task"
+    },
+    {
+      "label": "code:block8 (Core 1:  taskBeacon        (beacon periodik))",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L187",
+      "community": 309,
+      "norm_label": "code:block8 (core 1:  taskbeacon        (beacon periodik))",
+      "id": "iotproject_system_audit_codeblock_8"
+    },
+    {
+      "label": "Perubahan Kode Kritis",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L194",
+      "community": 309,
+      "norm_label": "perubahan kode kritis",
+      "id": "iotproject_system_audit_perubahan_kode_kritis"
+    },
+    {
+      "label": "code:diff (// 1. Hapus delay 1ms di sendCsAxis())",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L196",
+      "community": 309,
+      "norm_label": "code:diff (// 1. hapus delay 1ms di sendcsaxis())",
+      "id": "iotproject_system_audit_codeblock_9"
+    },
+    {
+      "label": "\ud83d\udcca Estimasi Efek Setelah Optimasi",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L216",
+      "community": 309,
+      "norm_label": "\ud83d\udcca estimasi efek setelah optimasi",
+      "id": "iotproject_system_audit_estimasi_efek_setelah_optimasi"
+    },
+    {
+      "label": "\u2753 Open Questions untuk Keputusan",
+      "file_type": "document",
+      "source_file": "system_audit.md",
+      "source_location": "L228",
+      "community": 309,
+      "norm_label": "\u2753 open questions untuk keputusan",
+      "id": "iotproject_system_audit_open_questions_untuk_keputusan"
+    },
+    {
+      "label": "BatchConfig()",
+      "file_type": "code",
+      "source_file": "firmware/include/config/features.h",
+      "source_location": "L43",
+      "community": 33,
+      "norm_label": "batchconfig()",
+      "id": "config_features_batchconfig"
+    },
+    {
       "label": "_channelSweepTask()",
       "file_type": "code",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
@@ -24083,7 +24749,7 @@
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
       "source_location": "L249",
-      "community": 23,
+      "community": 333,
       "norm_label": "catat satu event ke tabel `events`.          event_type contoh:           \"no",
       "id": "core_storage_rationale_249"
     },
@@ -24092,7 +24758,7 @@
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
       "source_location": "L276",
-      "community": 23,
+      "community": 331,
       "norm_label": "ambil n window terakhir untuk sinyal tertentu dari node tertentu.          ret",
       "id": "core_storage_rationale_276"
     },
@@ -24137,7 +24803,7 @@
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
       "source_location": "L425",
-      "community": 327,
+      "community": 320,
       "norm_label": "ukuran file db dalam byte.",
       "id": "core_storage_rationale_425"
     },
@@ -24155,7 +24821,7 @@
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
       "source_location": "L491",
-      "community": 309,
+      "community": 331,
       "norm_label": "konversi tuple result select ke dict dengan values sudah di-decode.",
       "id": "core_storage_rationale_491"
     },
@@ -24164,7 +24830,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/main_app.py",
       "source_location": "L140",
-      "community": 323,
+      "community": 240,
       "norm_label": "jalankan semua sistem server dalam satu proses.",
       "id": "apps_main_app_rationale_140"
     },
@@ -24767,7 +25433,7 @@
       "file_type": "code",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L173",
-      "community": 226,
+      "community": 247,
       "norm_label": "test_load_config_invalid_labels_count()",
       "id": "ml_inference_test_ml_engine_test_load_config_invalid_labels_count"
     },
@@ -24785,7 +25451,7 @@
       "file_type": "code",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L204",
-      "community": 226,
+      "community": 247,
       "norm_label": "test_load_n_features_mismatch()",
       "id": "ml_inference_test_ml_engine_test_load_n_features_mismatch"
     },
@@ -24929,7 +25595,7 @@
       "file_type": "code",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L423",
-      "community": 247,
+      "community": 316,
       "norm_label": "test_feature_extractor_all_stat_types()",
       "id": "ml_inference_test_ml_engine_test_feature_extractor_all_stat_types"
     },
@@ -24938,7 +25604,7 @@
       "file_type": "code",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L440",
-      "community": 247,
+      "community": 316,
       "norm_label": "test_feature_extractor_meta_cast_int()",
       "id": "ml_inference_test_ml_engine_test_feature_extractor_meta_cast_int"
     },
@@ -24965,7 +25631,7 @@
       "file_type": "code",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L477",
-      "community": 316,
+      "community": 247,
       "norm_label": "test_feature_extractor_missing_signal_uses_default()",
       "id": "ml_inference_test_ml_engine_test_feature_extractor_missing_signal_uses_default"
     },
@@ -25073,7 +25739,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L174",
-      "community": 226,
+      "community": 247,
       "norm_label": "valueerror jika labels < 2.",
       "id": "ml_inference_test_ml_engine_rationale_174"
     },
@@ -25091,7 +25757,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L205",
-      "community": 226,
+      "community": 247,
       "norm_label": "valueerror jika n_features model = jumlah features di config.",
       "id": "ml_inference_test_ml_engine_rationale_205"
     },
@@ -25217,7 +25883,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L424",
-      "community": 247,
+      "community": 316,
       "norm_label": "semua stat type harus bisa diekstrak tanpa crash.",
       "id": "ml_inference_test_ml_engine_rationale_424"
     },
@@ -25226,7 +25892,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L441",
-      "community": 247,
+      "community": 316,
       "norm_label": "meta field dengan cast=int: finger (bool) \u2192 0.0 atau 1.0.",
       "id": "ml_inference_test_ml_engine_rationale_441"
     },
@@ -25253,7 +25919,7 @@
       "file_type": "rationale",
       "source_file": "server/apps/ml_inference/test_ml_engine.py",
       "source_location": "L478",
-      "community": 316,
+      "community": 247,
       "norm_label": "sinyal none \u2192 pakai default, masuk ke missing list.",
       "id": "ml_inference_test_ml_engine_rationale_478"
     },
@@ -26459,7 +27125,7 @@
       "file_type": "code",
       "source_file": "server/core/cs_router.py",
       "source_location": "L66",
-      "community": 312,
+      "community": 332,
       "norm_label": "reconstruct()",
       "id": "core_cs_router_reconstruct"
     },
@@ -26468,7 +27134,7 @@
       "file_type": "rationale",
       "source_file": "server/core/cs_router.py",
       "source_location": "L67",
-      "community": 312,
+      "community": 332,
       "norm_label": "rekonstruksi sinyal menggunakan omp.          args:             y : (m,) meas",
       "id": "core_cs_router_rationale_67"
     },
@@ -26477,7 +27143,7 @@
       "file_type": "rationale",
       "source_file": "server/core/cs_router.py",
       "source_location": "L86",
-      "community": 312,
+      "community": 332,
       "norm_label": "rekonstruksi sinyal menggunakan lasso.          args:             y : (m,) me",
       "id": "core_cs_router_rationale_86"
     },
@@ -27215,7 +27881,7 @@
       "file_type": "rationale",
       "source_file": "server/core/cs_router.py",
       "source_location": "L64",
-      "community": 312,
+      "community": 332,
       "norm_label": "rekonstruksi sinyal menggunakan omp.          args:             y : (m,) meas",
       "id": "core_cs_router_rationale_64"
     },
@@ -27224,7 +27890,7 @@
       "file_type": "rationale",
       "source_file": "server/core/cs_router.py",
       "source_location": "L83",
-      "community": 312,
+      "community": 332,
       "norm_label": "rekonstruksi sinyal menggunakan lasso.          args:             y : (m,) me",
       "id": "core_cs_router_rationale_83"
     },
@@ -27386,7 +28052,7 @@
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
       "source_location": "L111",
-      "community": 23,
+      "community": 320,
       "norm_label": "kelola koneksi sqlite dan semua operasi baca-tulis.      args:         db_pat",
       "id": "core_storage_rationale_111"
     },
@@ -27395,7 +28061,7 @@
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
       "source_location": "L132",
-      "community": 23,
+      "community": 320,
       "norm_label": "buka koneksi ke database dan buat tabel jika belum ada.         panggil sekali",
       "id": "core_storage_rationale_132"
     },
@@ -27422,7 +28088,7 @@
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
       "source_location": "L245",
-      "community": 23,
+      "community": 333,
       "norm_label": "catat satu event ke tabel `events`.          event_type contoh:           \"no",
       "id": "core_storage_rationale_245"
     },
@@ -27431,7 +28097,7 @@
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
       "source_location": "L272",
-      "community": 23,
+      "community": 331,
       "norm_label": "ambil n window terakhir untuk sinyal tertentu dari node tertentu.          ret",
       "id": "core_storage_rationale_272"
     },
@@ -27476,7 +28142,7 @@
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
       "source_location": "L421",
-      "community": 327,
+      "community": 320,
       "norm_label": "ukuran file db dalam byte.",
       "id": "core_storage_rationale_421"
     },
@@ -27494,7 +28160,7 @@
       "file_type": "rationale",
       "source_file": "server/core/storage.py",
       "source_location": "L487",
-      "community": 309,
+      "community": 331,
       "norm_label": "konversi tuple result select ke dict dengan values sudah di-decode.",
       "id": "core_storage_rationale_487"
     },
@@ -27584,7 +28250,7 @@
       "file_type": "rationale",
       "source_file": "server/core/validator.py",
       "source_location": "L228",
-      "community": 311,
+      "community": 327,
       "norm_label": "registry validasi dengan state per-node untuk monotonicity check.      buat sa",
       "id": "core_validator_rationale_228"
     },
@@ -27611,7 +28277,7 @@
       "file_type": "rationale",
       "source_file": "server/core/validator.py",
       "source_location": "L323",
-      "community": 311,
+      "community": 327,
       "norm_label": "kembalikan salinan counter statistik.",
       "id": "core_validator_rationale_323"
     },
@@ -56320,21 +56986,21 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "firmware/include/config/features.h",
-      "source_location": "L43",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "firmware_include_config_features_h",
-      "target": "config_features_batchconfig"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "firmware/include/config/features.h",
       "source_location": "L60",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "firmware_include_config_features_h",
       "target": "config_features_mqtt"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firmware/include/config/features.h",
+      "source_location": "L43",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "firmware_include_config_features_h",
+      "target": "config_features_batchconfig"
     },
     {
       "relation": "contains",
@@ -56747,6 +57413,17 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
+      "source_location": "L379",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "espnowmesh_espnowmesh_send",
+      "target": "espnowmesh_espnowmesh_updateallpeerchannels"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
       "source_location": "L478",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -56881,9 +57558,9 @@
       "source_file": "firmware/lib/EspNowMesh/EspNowMesh.cpp",
       "source_location": "L485",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "espnowmesh_espnowmesh_taskchanneldiscovery",
-      "target": "espnowmesh_espnowmesh_processpendingchannelsync",
-      "confidence_score": 1.0
+      "target": "espnowmesh_espnowmesh_processpendingchannelsync"
     },
     {
       "relation": "imports",
@@ -73883,6 +74560,366 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_md",
+      "target": "new_feature_system_audit_system_audit_iot_health_monitor_firmware",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_system_audit_iot_health_monitor_firmware",
+      "target": "new_feature_system_audit_arsitektur_sistem_saat_ini",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L38",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_system_audit_iot_health_monitor_firmware",
+      "target": "new_feature_system_audit_inventaris_fitur",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L72",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_system_audit_iot_health_monitor_firmware",
+      "target": "new_feature_system_audit_risiko_lag_hang_yang_teridentifikasi",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L138",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_system_audit_iot_health_monitor_firmware",
+      "target": "new_feature_system_audit_rekomendasi_lean_architecture",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L172",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_system_audit_iot_health_monitor_firmware",
+      "target": "new_feature_system_audit_target_arsitektur_lean_untuk_ta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L216",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_system_audit_iot_health_monitor_firmware",
+      "target": "new_feature_system_audit_estimasi_efek_setelah_optimasi",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L228",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_system_audit_iot_health_monitor_firmware",
+      "target": "new_feature_system_audit_open_questions_untuk_keputusan",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_arsitektur_sistem_saat_ini",
+      "target": "new_feature_system_audit_codeblock_1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_inventaris_fitur",
+      "target": "new_feature_system_audit_sensor_node",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L59",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_inventaris_fitur",
+      "target": "new_feature_system_audit_gateway_node",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L74",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_risiko_lag_hang_yang_teridentifikasi",
+      "target": "new_feature_system_audit_risiko_tinggi",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L118",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_risiko_lag_hang_yang_teridentifikasi",
+      "target": "new_feature_system_audit_risiko_sedang",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L76",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_risiko_tinggi",
+      "target": "new_feature_system_audit_1_taskcssender_7_esp_now_send_per_window_berturutan",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L87",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_risiko_tinggi",
+      "target": "new_feature_system_audit_2_dynamic_peer_v4_1_esp_now_del_peer_esp_now_add_peer_per_send",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L96",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_risiko_tinggi",
+      "target": "new_feature_system_audit_3_vtaskdelay_pdms_to_ticks_1_di_sendcsaxis",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L106",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_risiko_tinggi",
+      "target": "new_feature_system_audit_4_taskrssiexchange_redundan_untuk_2_node_saat_ini",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L109",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_risiko_tinggi",
+      "target": "new_feature_system_audit_5_log_berlebihan_di_produksi",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L115",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_risiko_tinggi",
+      "target": "new_feature_system_audit_6_taskcssender_delay_di_akhir_loop_imu_sample_ms_10ms",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L77",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_1_taskcssender_7_esp_now_send_per_window_berturutan",
+      "target": "new_feature_system_audit_codeblock_2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L88",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_2_dynamic_peer_v4_1_esp_now_del_peer_esp_now_add_peer_per_send",
+      "target": "new_feature_system_audit_codeblock_3",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L97",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_3_vtaskdelay_pdms_to_ticks_1_di_sendcsaxis",
+      "target": "new_feature_system_audit_codeblock_4",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L110",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_5_log_berlebihan_di_produksi",
+      "target": "new_feature_system_audit_codeblock_5",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L120",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_risiko_sedang",
+      "target": "new_feature_system_audit_7_dynamicrouter_overhead",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L124",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_risiko_sedang",
+      "target": "new_feature_system_audit_8_stack_size_mungkin_terlalu_besar",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L133",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_risiko_sedang",
+      "target": "new_feature_system_audit_9_processpendingchannelsync_dipanggil_setiap_window",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L125",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_8_stack_size_mungkin_terlalu_besar",
+      "target": "new_feature_system_audit_codeblock_6",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L140",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_rekomendasi_lean_architecture",
+      "target": "new_feature_system_audit_prioritas_1_hapus_segera_zero_risk",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L150",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_rekomendasi_lean_architecture",
+      "target": "new_feature_system_audit_prioritas_2_sederhanakan_medium_risk_high_reward",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L159",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_rekomendasi_lean_architecture",
+      "target": "new_feature_system_audit_prioritas_3_pertahankan_optimalkan",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L174",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_target_arsitektur_lean_untuk_ta",
+      "target": "new_feature_system_audit_sensor_node_3_task_saja_dari_5",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L185",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_target_arsitektur_lean_untuk_ta",
+      "target": "new_feature_system_audit_gateway_node_tetap_4_task",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L194",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_target_arsitektur_lean_untuk_ta",
+      "target": "new_feature_system_audit_perubahan_kode_kritis",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L176",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_sensor_node_3_task_saja_dari_5",
+      "target": "new_feature_system_audit_codeblock_7",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L187",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_gateway_node_tetap_4_task",
+      "target": "new_feature_system_audit_codeblock_8",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "new_feature/system_audit.md",
+      "source_location": "L196",
+      "weight": 1.0,
+      "source": "new_feature_system_audit_perubahan_kode_kritis",
+      "target": "new_feature_system_audit_codeblock_9",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "new_feature/walkthrough.md",
       "source_location": "L1",
       "weight": 1.0,
@@ -77139,6 +78176,366 @@
       "confidence_score": 1.0,
       "source": "pipeline_readme_ml_pipeline_directory",
       "target": "pipeline_readme_file_yang_direkomendasikan"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "system_audit_md",
+      "target": "iotproject_system_audit_system_audit_iot_health_monitor_firmware"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_system_audit_iot_health_monitor_firmware",
+      "target": "iotproject_system_audit_arsitektur_sistem_saat_ini"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L38",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_system_audit_iot_health_monitor_firmware",
+      "target": "iotproject_system_audit_inventaris_fitur"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L72",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_system_audit_iot_health_monitor_firmware",
+      "target": "iotproject_system_audit_risiko_lag_hang_yang_teridentifikasi"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L138",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_system_audit_iot_health_monitor_firmware",
+      "target": "iotproject_system_audit_rekomendasi_lean_architecture"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L172",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_system_audit_iot_health_monitor_firmware",
+      "target": "iotproject_system_audit_target_arsitektur_lean_untuk_ta"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L216",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_system_audit_iot_health_monitor_firmware",
+      "target": "iotproject_system_audit_estimasi_efek_setelah_optimasi"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L228",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_system_audit_iot_health_monitor_firmware",
+      "target": "iotproject_system_audit_open_questions_untuk_keputusan"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_arsitektur_sistem_saat_ini",
+      "target": "iotproject_system_audit_codeblock_1"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L40",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_inventaris_fitur",
+      "target": "iotproject_system_audit_sensor_node"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L59",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_inventaris_fitur",
+      "target": "iotproject_system_audit_gateway_node"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L74",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_risiko_lag_hang_yang_teridentifikasi",
+      "target": "iotproject_system_audit_risiko_tinggi"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L118",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_risiko_lag_hang_yang_teridentifikasi",
+      "target": "iotproject_system_audit_risiko_sedang"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L76",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_risiko_tinggi",
+      "target": "iotproject_system_audit_1_taskcssender_7_esp_now_send_per_window_berturutan"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L87",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_risiko_tinggi",
+      "target": "iotproject_system_audit_2_dynamic_peer_v4_1_esp_now_del_peer_esp_now_add_peer_per_send"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L96",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_risiko_tinggi",
+      "target": "iotproject_system_audit_3_vtaskdelay_pdms_to_ticks_1_di_sendcsaxis"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L106",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_risiko_tinggi",
+      "target": "iotproject_system_audit_4_taskrssiexchange_redundan_untuk_2_node_saat_ini"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L109",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_risiko_tinggi",
+      "target": "iotproject_system_audit_5_log_berlebihan_di_produksi"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L115",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_risiko_tinggi",
+      "target": "iotproject_system_audit_6_taskcssender_delay_di_akhir_loop_imu_sample_ms_10ms"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L77",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_1_taskcssender_7_esp_now_send_per_window_berturutan",
+      "target": "iotproject_system_audit_codeblock_2"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L88",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_2_dynamic_peer_v4_1_esp_now_del_peer_esp_now_add_peer_per_send",
+      "target": "iotproject_system_audit_codeblock_3"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L97",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_3_vtaskdelay_pdms_to_ticks_1_di_sendcsaxis",
+      "target": "iotproject_system_audit_codeblock_4"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L110",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_5_log_berlebihan_di_produksi",
+      "target": "iotproject_system_audit_codeblock_5"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L120",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_risiko_sedang",
+      "target": "iotproject_system_audit_7_dynamicrouter_overhead"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L124",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_risiko_sedang",
+      "target": "iotproject_system_audit_8_stack_size_mungkin_terlalu_besar"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L133",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_risiko_sedang",
+      "target": "iotproject_system_audit_9_processpendingchannelsync_dipanggil_setiap_window"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L125",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_8_stack_size_mungkin_terlalu_besar",
+      "target": "iotproject_system_audit_codeblock_6"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L140",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_rekomendasi_lean_architecture",
+      "target": "iotproject_system_audit_prioritas_1_hapus_segera_zero_risk"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L150",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_rekomendasi_lean_architecture",
+      "target": "iotproject_system_audit_prioritas_2_sederhanakan_medium_risk_high_reward"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L159",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_rekomendasi_lean_architecture",
+      "target": "iotproject_system_audit_prioritas_3_pertahankan_optimalkan"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L174",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_target_arsitektur_lean_untuk_ta",
+      "target": "iotproject_system_audit_sensor_node_3_task_saja_dari_5"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L185",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_target_arsitektur_lean_untuk_ta",
+      "target": "iotproject_system_audit_gateway_node_tetap_4_task"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L194",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_target_arsitektur_lean_untuk_ta",
+      "target": "iotproject_system_audit_perubahan_kode_kritis"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L176",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_sensor_node_3_task_saja_dari_5",
+      "target": "iotproject_system_audit_codeblock_7"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L187",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_gateway_node_tetap_4_task",
+      "target": "iotproject_system_audit_codeblock_8"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "system_audit.md",
+      "source_location": "L196",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "iotproject_system_audit_perubahan_kode_kritis",
+      "target": "iotproject_system_audit_codeblock_9"
     },
     {
       "relation": "calls",
@@ -87823,5 +89220,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "e0e0b2ff82cc7adb9525cd400bba054d66e75038"
+  "built_at_commit": "5f379bbb1e12a7e1d3fc8579aef1c3805a713669"
 }

@@ -27,7 +27,7 @@
 // Di LOG_LEVEL=3: ~50 calls/detik → overhead CPU signifikan.
 // Di LOG_LEVEL=2: hanya WARN/ERROR → hampir tidak ada Serial overhead.
 // ---------------------------------------------------------------------------
-#define LOG_LEVEL        2   // WARN — ubah ke 3 untuk debugging
+#define LOG_LEVEL        3   // WARN — ubah ke 3 untuk debugging
 #define LOG_ENABLE_COLOR 0
 
 

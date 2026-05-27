@@ -118,7 +118,7 @@ export function updateNodeCard(nodeId, data) {
     Object.values(data.ml_results).forEach(res => {
       if (!res.skipped && res.confidence > topConf) {
         topConf = res.confidence;
-        topLabel = res.prediction;
+        topLabel = res.label;
       }
     });
     

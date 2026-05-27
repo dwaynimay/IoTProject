@@ -50,13 +50,13 @@ export function connectWS() {
         
         // Alert checking logic
         Object.values(d.ml_results).forEach(result => {
-           if (!result.skipped && result.prediction) {
-               const label = result.prediction.toLowerCase();
+           if (!result.skipped && result.label) {
+               const label = (result.label || '').toLowerCase();
                // check if label is critical and confidence > 0.7
                const isCritical = ['jatuh', 'fall', 'critical', 'tachycardia'].some(k => label.includes(k));
                if (isCritical && result.confidence > 0.7) {
                    if (window.triggerAlert) {
-                       window.triggerAlert(d.node_id, 'CRITICAL', `ML Detected: ${result.prediction} (${(result.confidence*100).toFixed(0)}%)`);
+                       window.triggerAlert(d.node_id, 'CRITICAL', `ML Detected: ${result.label} (${(result.confidence*100).toFixed(0)}%)`);
                    }
                }
            }

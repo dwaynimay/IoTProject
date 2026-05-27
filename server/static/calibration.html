@@ -5,27 +5,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IMU Calibration — Health Monitor</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #080a0f;
-  --surface: #0e1117;
-  --surface2: #161b26;
-  --surface3: #1e2535;
-  --border: rgba(255,255,255,0.06);
-  --border2: rgba(255,255,255,0.12);
-  --text: #e2e8f8;
-  --text2: #7b85a0;
-  --text3: #404860;
-  --accent: #3d7fff;
-  --accent2: #00e5c0;
-  --warn: #ffb84d;
-  --danger: #ff4f6d;
-  --ok: #00e5c0;
-  --mono: 'JetBrains Mono', monospace;
-  --sans: 'Space Grotesk', sans-serif;
+  --bg: #0a0c0f;
+  --surface: #111318;
+  --surface2: #181b22;
+  --surface3: #222630;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --text: #e8eaf0;
+  --text2: #8a8f9e;
+  --text3: #555a6a;
+  --accent: #00d4aa;
+  --accent2: #0099ff;
+  --warn: #f5a623;
+  --danger: #ff4d4d;
+  --ok: #00d4aa;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'IBM Plex Sans', sans-serif;
+  --header-height: 52px;
 }
 
 body {
@@ -39,13 +40,12 @@ body {
   flex-direction: column;
 }
 
-/* HEADER */
 header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
-  height: 52px;
+  height: var(--header-height);
   background: var(--surface);
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
@@ -62,7 +62,6 @@ header {
   transition: color 0.2s;
 }
 .back-btn:hover { color: var(--text); }
-.back-btn svg { width: 16px; height: 16px; }
 
 .header-title {
   font-size: 13px;
@@ -78,68 +77,159 @@ header {
   gap: 6px;
   font-family: var(--mono);
   font-size: 11px;
-  padding: 4px 10px;
+  padding: 4px 12px;
   border-radius: 20px;
   border: 1px solid var(--border2);
   color: var(--text3);
   transition: all 0.3s;
 }
-.ws-badge.connected { color: var(--ok); border-color: rgba(0,229,192,0.3); }
-.ws-badge.error { color: var(--danger); border-color: rgba(255,79,109,0.3); }
+.ws-badge.connected { color: var(--ok); border-color: rgba(0,212,170,0.3); }
+.ws-badge.error { color: var(--danger); border-color: rgba(255,77,77,0.3); }
 .ws-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-.ws-dot.pulse { animation: pulse 2s ease-in-out infinite; }
-
-@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+.ws-dot.pulse { animation: blink 2s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
 /* MAIN LAYOUT */
 .main {
   display: grid;
-  grid-template-columns: 1fr 280px;
+  grid-template-columns: 1fr 300px;
   flex: 1;
   overflow: hidden;
+  min-height: 0;
 }
 
-/* CANVAS AREA */
-.canvas-area {
-  position: relative;
+/* CENTER ARROW VISUALIZATION */
+.vis-area {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  position: relative;
   background: var(--bg);
+  gap: 24px;
+  padding: 24px;
+  overflow: hidden;
 }
 
-#three-canvas {
-  display: block;
-  width: 100% !important;
-  height: 100% !important;
+.vis-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
-.canvas-overlay-tl, .canvas-overlay-tr, .canvas-overlay-bl, .canvas-overlay-br {
+/* Arrow diagram panels */
+.arrows-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.arrow-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.panel-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  align-self: flex-start;
+}
+
+.arrow-stage {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  flex-shrink: 0;
+}
+
+/* SVG arrow stage background grid */
+.arrow-stage svg { width: 100%; height: 100%; }
+
+/* Individual axis arrows (per panel, shown by position) */
+.axis-arrows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.axis-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.axis-tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  width: 22px;
+  flex-shrink: 0;
+  text-align: right;
+}
+.axis-bar-bg {
+  flex: 1;
+  height: 5px;
+  background: var(--surface3);
+  border-radius: 3px;
+  overflow: visible;
+  position: relative;
+}
+/* Center divider */
+.axis-bar-bg::after {
+  content: '';
   position: absolute;
-  width: 20px; height: 20px;
-  border-color: var(--border2);
-  border-style: solid;
-  pointer-events: none;
-}
-.canvas-overlay-tl { top: 20px; left: 20px; border-width: 1px 0 0 1px; }
-.canvas-overlay-tr { top: 20px; right: 20px; border-width: 1px 1px 0 0; }
-.canvas-overlay-bl { bottom: 20px; left: 20px; border-width: 0 0 1px 1px; }
-.canvas-overlay-br { bottom: 20px; right: 20px; border-width: 0 1px 1px 0; }
-
-.node-selector {
-  position: absolute;
-  top: 20px;
   left: 50%;
-  transform: translateX(-50%);
+  top: -2px;
+  width: 1px;
+  height: 9px;
+  background: var(--border2);
+}
+.axis-bar-pos {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  height: 100%;
+  border-radius: 0 3px 3px 0;
+  transition: width 0.08s linear;
+}
+.axis-bar-neg {
+  position: absolute;
+  right: 50%;
+  top: 0;
+  height: 100%;
+  border-radius: 3px 0 0 3px;
+  transition: width 0.08s linear;
+}
+.axis-val {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text2);
+  width: 48px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Node selector */
+.node-selector {
   display: flex;
   gap: 6px;
-  background: rgba(14,17,23,0.85);
+  background: var(--surface);
   border: 1px solid var(--border2);
   border-radius: 24px;
-  padding: 4px 6px;
-  backdrop-filter: blur(8px);
+  padding: 4px 8px;
 }
 .node-btn {
   background: transparent;
@@ -147,34 +237,13 @@ header {
   color: var(--text2);
   font-family: var(--mono);
   font-size: 11px;
-  padding: 4px 12px;
+  padding: 4px 14px;
   border-radius: 20px;
   cursor: pointer;
   transition: all 0.2s;
 }
-.node-btn.active { background: var(--accent); color: white; }
+.node-btn.active { background: var(--accent); color: #000; font-weight: 600; }
 .node-btn:hover:not(.active) { color: var(--text); }
-
-.hint-label {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--text3);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  pointer-events: none;
-}
-
-/* GRID LINE CANVAS (background) */
-.grid-bg {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.15;
-}
 
 /* SIDEBAR */
 .sidebar {
@@ -200,77 +269,20 @@ header {
   margin-bottom: 12px;
 }
 
-/* AXIS METERS */
-.axis-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-.axis-row:last-child { margin-bottom: 0; }
-
-.axis-name {
-  font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 500;
-  width: 24px;
-  flex-shrink: 0;
-}
-.axis-name.x { color: #ff6b6b; }
-.axis-name.y { color: #6bffb8; }
-.axis-name.z { color: #6bb8ff; }
-.axis-name.gx { color: #ffb86b; }
-.axis-name.gy { color: #c86bff; }
-.axis-name.gz { color: #6bfff0; }
-
-.axis-bar-wrap {
-  flex: 1;
-  height: 6px;
-  background: var(--surface3);
-  border-radius: 3px;
-  overflow: hidden;
-  position: relative;
-}
-.axis-bar-fill {
-  height: 100%;
-  border-radius: 3px;
-  transition: width 0.08s linear;
-  position: absolute;
-  left: 50%;
-  transform-origin: left;
-}
-.axis-bar-neg {
-  height: 100%;
-  border-radius: 3px;
-  transition: width 0.08s linear;
-  position: absolute;
-  right: 50%;
-  transform-origin: right;
-}
-
-.axis-val {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--text2);
-  width: 54px;
-  text-align: right;
-  flex-shrink: 0;
-}
-
-/* ORIENTATION DISPLAY */
+/* ORIENTATION CARDS */
 .orient-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 8px;
 }
 .orient-card {
   background: var(--surface2);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 10px 8px;
+  padding: 10px 6px;
   text-align: center;
 }
-.orient-card-label {
+.orient-card-lbl {
   font-family: var(--mono);
   font-size: 9px;
   color: var(--text3);
@@ -284,70 +296,6 @@ header {
   font-weight: 500;
   color: var(--text);
 }
-
-/* CALIBRATION */
-.calib-steps {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.calib-step {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 10px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  transition: all 0.3s;
-}
-.calib-step.active {
-  border-color: rgba(61,127,255,0.4);
-  background: rgba(61,127,255,0.06);
-}
-.calib-step.done {
-  border-color: rgba(0,229,192,0.3);
-  background: rgba(0,229,192,0.04);
-}
-.step-icon {
-  width: 24px; height: 24px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px;
-  font-weight: 600;
-  flex-shrink: 0;
-  background: var(--surface3);
-  color: var(--text3);
-  font-family: var(--mono);
-  transition: all 0.3s;
-}
-.calib-step.active .step-icon { background: var(--accent); color: white; }
-.calib-step.done .step-icon { background: var(--ok); color: #000; }
-.step-text {
-  font-size: 11px;
-  color: var(--text2);
-  line-height: 1.4;
-}
-.calib-step.active .step-text { color: var(--text); }
-
-.calib-btn {
-  width: 100%;
-  padding: 10px;
-  background: var(--accent);
-  border: none;
-  border-radius: 8px;
-  color: white;
-  font-family: var(--mono);
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  margin-top: 12px;
-  transition: all 0.2s;
-  letter-spacing: 0.05em;
-}
-.calib-btn:hover { background: #5590ff; }
-.calib-btn:active { transform: scale(0.98); }
-.calib-btn:disabled { background: var(--surface3); color: var(--text3); cursor: not-allowed; }
 
 /* QUALITY */
 .quality-row {
@@ -363,37 +311,84 @@ header {
 .quality-val.warn { color: var(--warn); }
 .quality-val.bad { color: var(--danger); }
 
+/* CALIBRATION STEPS */
+.calib-steps { display: flex; flex-direction: column; gap: 8px; }
+
+.calib-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+.calib-step.active { border-color: rgba(0,153,255,0.4); background: rgba(0,153,255,0.06); }
+.calib-step.done  { border-color: rgba(0,212,170,0.3);  background: rgba(0,212,170,0.04); }
+
+.step-icon {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600;
+  flex-shrink: 0;
+  background: var(--surface3);
+  color: var(--text3);
+  font-family: var(--mono);
+  transition: all 0.3s;
+}
+.calib-step.active .step-icon { background: var(--accent2); color: #fff; }
+.calib-step.done  .step-icon { background: var(--ok); color: #000; }
+
+.step-text { font-size: 11px; color: var(--text2); line-height: 1.4; }
+.calib-step.active .step-text { color: var(--text); }
+
+.calib-btn {
+  width: 100%;
+  padding: 10px;
+  background: var(--accent2);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: all 0.2s;
+  letter-spacing: 0.05em;
+}
+.calib-btn:hover:not(:disabled) { background: #33aeff; }
+.calib-btn:active:not(:disabled) { transform: scale(0.98); }
+.calib-btn:disabled { background: var(--surface3); color: var(--text3); cursor: not-allowed; }
+
 /* STATUS BAR */
 .status-bar {
-  padding: 6px 16px;
+  padding: 6px 20px;
   background: var(--surface);
   border-top: 1px solid var(--border);
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 20px;
   font-family: var(--mono);
   font-size: 10px;
   color: var(--text3);
   flex-shrink: 0;
 }
-.status-item { display: flex; align-items: center; gap: 6px; }
-.status-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--text3); }
-.status-dot.live { background: var(--ok); animation: pulse 2s infinite; }
+.status-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--text3); display: inline-block; margin-right: 6px; }
+.status-dot.live { background: var(--ok); animation: blink 2s infinite; }
 
-/* SCROLLBAR */
 .sidebar::-webkit-scrollbar { width: 4px; }
 .sidebar::-webkit-scrollbar-track { background: transparent; }
 .sidebar::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 2px; }
-
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-.main { animation: fadeIn 0.4s ease; }
 </style>
 </head>
 <body>
 
 <header>
   <a href="/" class="back-btn">
-    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
       <path d="M10 12L6 8l4-4"/>
     </svg>
     Dashboard
@@ -407,140 +402,291 @@ header {
 
 <div class="main">
 
-  <!-- 3D CANVAS -->
-  <div class="canvas-area">
-    <canvas class="grid-bg" id="gridCanvas"></canvas>
-    <canvas id="three-canvas"></canvas>
+  <!-- ARROW VISUALIZATION AREA -->
+  <div class="vis-area">
 
-    <div class="canvas-overlay-tl"></div>
-    <div class="canvas-overlay-tr"></div>
-    <div class="canvas-overlay-bl"></div>
-    <div class="canvas-overlay-br"></div>
+    <div class="node-selector" id="nodeSel">
+      <span style="font-family:var(--mono);font-size:11px;color:var(--text3);padding:4px 6px;">Tidak ada node</span>
+    </div>
 
-    <div class="node-selector" id="nodeSel"></div>
-    <div class="hint-label">Gerakkan sensor — kubus akan berputar mengikuti orientasi</div>
-  </div>
+    <div class="arrows-grid">
+
+      <!-- ACCELEROMETER XY PLANE -->
+      <div class="arrow-panel">
+        <span class="panel-label">Accelerometer · Bidang XY</span>
+        <div class="arrow-stage">
+          <svg id="svgAccXY" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arrowR" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L6,3 L0,6 Z" fill="#ff4d4d"/>
+              </marker>
+              <marker id="arrowG" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L6,3 L0,6 Z" fill="#6bffb8"/>
+              </marker>
+              <marker id="arrowW" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L6,3 L0,6 Z" fill="#8a8f9e"/>
+              </marker>
+            </defs>
+            <!-- Grid crosshair -->
+            <line x1="80" y1="10" x2="80" y2="150" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <line x1="10" y1="80" x2="150" y2="80" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <circle cx="80" cy="80" r="30" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+            <circle cx="80" cy="80" r="60" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+            <!-- Axis labels -->
+            <text x="152" y="84" font-family="IBM Plex Mono,monospace" font-size="9" fill="#ff4d4d">X</text>
+            <text x="84" y="10" font-family="IBM Plex Mono,monospace" font-size="9" fill="#6bffb8">Y</text>
+            <!-- Center dot -->
+            <circle cx="80" cy="80" r="3" fill="rgba(255,255,255,0.2)"/>
+            <!-- Dynamic arrow: ax direction -->
+            <line id="arrowAX" x1="80" y1="80" x2="80" y2="80"
+                  stroke="#ff4d4d" stroke-width="2.5" stroke-linecap="round"
+                  marker-end="url(#arrowR)"/>
+            <!-- Dynamic arrow: ay direction -->
+            <line id="arrowAY" x1="80" y1="80" x2="80" y2="80"
+                  stroke="#6bffb8" stroke-width="2.5" stroke-linecap="round"
+                  marker-end="url(#arrowG)"/>
+            <!-- Resultant vector -->
+            <line id="arrowAXY" x1="80" y1="80" x2="80" y2="80"
+                  stroke="rgba(255,255,255,0.35)" stroke-width="1.5" stroke-dasharray="3,3"
+                  marker-end="url(#arrowW)"/>
+          </svg>
+        </div>
+        <div class="axis-arrows">
+          <div class="axis-row">
+            <span class="axis-tag" style="color:#ff4d4d">AX</span>
+            <div class="axis-bar-bg">
+              <div class="axis-bar-pos" id="barAxPos" style="background:#ff4d4d;width:0%"></div>
+              <div class="axis-bar-neg" id="barAxNeg" style="background:#ff4d4d;width:0%"></div>
+            </div>
+            <span class="axis-val" id="valAx">0.000</span>
+          </div>
+          <div class="axis-row">
+            <span class="axis-tag" style="color:#6bffb8">AY</span>
+            <div class="axis-bar-bg">
+              <div class="axis-bar-pos" id="barAyPos" style="background:#6bffb8;width:0%"></div>
+              <div class="axis-bar-neg" id="barAyNeg" style="background:#6bffb8;width:0%"></div>
+            </div>
+            <span class="axis-val" id="valAy">0.000</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACCELEROMETER Z + SMV -->
+      <div class="arrow-panel">
+        <span class="panel-label">Accelerometer · Bidang XZ</span>
+        <div class="arrow-stage">
+          <svg id="svgAccXZ" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arrowB" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L6,3 L0,6 Z" fill="#6bb8ff"/>
+              </marker>
+              <marker id="arrowR2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L6,3 L0,6 Z" fill="#ff4d4d"/>
+              </marker>
+              <marker id="arrowAccel" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L6,3 L0,6 Z" fill="#00d4aa"/>
+              </marker>
+            </defs>
+            <line x1="80" y1="10" x2="80" y2="150" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <line x1="10" y1="80" x2="150" y2="80" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <circle cx="80" cy="80" r="30" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+            <circle cx="80" cy="80" r="60" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+            <text x="152" y="84" font-family="IBM Plex Mono,monospace" font-size="9" fill="#ff4d4d">X</text>
+            <text x="84" y="10" font-family="IBM Plex Mono,monospace" font-size="9" fill="#6bb8ff">Z</text>
+            <circle cx="80" cy="80" r="3" fill="rgba(255,255,255,0.2)"/>
+            <line id="arrowAX2" x1="80" y1="80" x2="80" y2="80"
+                  stroke="#ff4d4d" stroke-width="2.5" stroke-linecap="round"
+                  marker-end="url(#arrowR2)"/>
+            <line id="arrowAZ" x1="80" y1="80" x2="80" y2="80"
+                  stroke="#6bb8ff" stroke-width="2.5" stroke-linecap="round"
+                  marker-end="url(#arrowB)"/>
+            <!-- Gravity vector (SMV resultant) -->
+            <line id="arrowSMV" x1="80" y1="80" x2="80" y2="80"
+                  stroke="#00d4aa" stroke-width="2" stroke-linecap="round"
+                  marker-end="url(#arrowAccel)"/>
+            <text x="4" y="158" font-family="IBM Plex Mono,monospace" font-size="8" fill="#00d4aa" id="smvLabel">SMV: 0.00</text>
+          </svg>
+        </div>
+        <div class="axis-arrows">
+          <div class="axis-row">
+            <span class="axis-tag" style="color:#6bb8ff">AZ</span>
+            <div class="axis-bar-bg">
+              <div class="axis-bar-pos" id="barAzPos" style="background:#6bb8ff;width:0%"></div>
+              <div class="axis-bar-neg" id="barAzNeg" style="background:#6bb8ff;width:0%"></div>
+            </div>
+            <span class="axis-val" id="valAz">0.000</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- GYROSCOPE XY -->
+      <div class="arrow-panel">
+        <span class="panel-label">Giroskop · Bidang XY</span>
+        <div class="arrow-stage">
+          <svg id="svgGyrXY" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arrowO" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L6,3 L0,6 Z" fill="#ffb86b"/>
+              </marker>
+              <marker id="arrowP" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L6,3 L0,6 Z" fill="#c86bff"/>
+              </marker>
+            </defs>
+            <line x1="80" y1="10" x2="80" y2="150" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <line x1="10" y1="80" x2="150" y2="80" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <circle cx="80" cy="80" r="30" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+            <circle cx="80" cy="80" r="60" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+            <!-- Rotation arc indicator -->
+            <path id="rotArcGZ" d="M 80 20 A 60 60 0 0 1 80 20" fill="none"
+                  stroke="#6bfff0" stroke-width="2" stroke-linecap="round"/>
+            <text x="152" y="84" font-family="IBM Plex Mono,monospace" font-size="9" fill="#ffb86b">GX</text>
+            <text x="84" y="10" font-family="IBM Plex Mono,monospace" font-size="9" fill="#c86bff">GY</text>
+            <circle cx="80" cy="80" r="3" fill="rgba(255,255,255,0.2)"/>
+            <line id="arrowGX" x1="80" y1="80" x2="80" y2="80"
+                  stroke="#ffb86b" stroke-width="2.5" stroke-linecap="round"
+                  marker-end="url(#arrowO)"/>
+            <line id="arrowGY" x1="80" y1="80" x2="80" y2="80"
+                  stroke="#c86bff" stroke-width="2.5" stroke-linecap="round"
+                  marker-end="url(#arrowP)"/>
+          </svg>
+        </div>
+        <div class="axis-arrows">
+          <div class="axis-row">
+            <span class="axis-tag" style="color:#ffb86b">GX</span>
+            <div class="axis-bar-bg">
+              <div class="axis-bar-pos" id="barGxPos" style="background:#ffb86b;width:0%"></div>
+              <div class="axis-bar-neg" id="barGxNeg" style="background:#ffb86b;width:0%"></div>
+            </div>
+            <span class="axis-val" id="valGx">0.000</span>
+          </div>
+          <div class="axis-row">
+            <span class="axis-tag" style="color:#c86bff">GY</span>
+            <div class="axis-bar-bg">
+              <div class="axis-bar-pos" id="barGyPos" style="background:#c86bff;width:0%"></div>
+              <div class="axis-bar-neg" id="barGyNeg" style="background:#c86bff;width:0%"></div>
+            </div>
+            <span class="axis-val" id="valGy">0.000</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- GYROSCOPE Z + Roll/Pitch -->
+      <div class="arrow-panel">
+        <span class="panel-label">Orientasi · Roll / Pitch</span>
+        <div class="arrow-stage">
+          <svg id="svgOrient" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arrowRoll" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L6,3 L0,6 Z" fill="#00d4aa"/>
+              </marker>
+              <marker id="arrowPitch" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L6,3 L0,6 Z" fill="#0099ff"/>
+              </marker>
+            </defs>
+            <!-- Horizon reference line -->
+            <line x1="20" y1="80" x2="140" y2="80" stroke="rgba(255,255,255,0.12)" stroke-width="1" stroke-dasharray="4,4"/>
+            <!-- Vertical reference -->
+            <line x1="80" y1="20" x2="80" y2="140" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <!-- Circles -->
+            <circle cx="80" cy="80" r="40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+            <circle cx="80" cy="80" r="60" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+            <!-- Sensor body (rotates) -->
+            <g id="sensorBody" transform="rotate(0 80 80)">
+              <rect x="60" y="68" width="40" height="24" rx="4"
+                    fill="var(--surface3)" stroke="var(--border2)" stroke-width="1"/>
+              <!-- LED indicator on top -->
+              <circle cx="80" cy="64" r="3" fill="#00d4aa" id="ledDot"/>
+              <!-- Arrow showing "up" direction of sensor -->
+              <line x1="80" y1="68" x2="80" y2="42"
+                    stroke="#00d4aa" stroke-width="2" stroke-linecap="round"
+                    marker-end="url(#arrowRoll)"/>
+            </g>
+            <!-- Pitch arrow (separate, not rotating with roll) -->
+            <line id="arrowPitchVis" x1="80" y1="80" x2="80" y2="80"
+                  stroke="#0099ff" stroke-width="2" stroke-linecap="round"
+                  marker-end="url(#arrowPitch)" opacity="0.7"/>
+            <!-- Labels -->
+            <text x="84" y="18" font-family="IBM Plex Mono,monospace" font-size="8" fill="#00d4aa">ROLL</text>
+            <text x="4" y="158" font-family="IBM Plex Mono,monospace" font-size="8" fill="#0099ff" id="rollPitchLabel">R:0° P:0°</text>
+          </svg>
+        </div>
+        <div class="axis-arrows">
+          <div class="axis-row">
+            <span class="axis-tag" style="color:#6bfff0">GZ</span>
+            <div class="axis-bar-bg">
+              <div class="axis-bar-pos" id="barGzPos" style="background:#6bfff0;width:0%"></div>
+              <div class="axis-bar-neg" id="barGzNeg" style="background:#6bfff0;width:0%"></div>
+            </div>
+            <span class="axis-val" id="valGz">0.000</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /arrows-grid -->
+  </div><!-- /vis-area -->
 
   <!-- SIDEBAR -->
   <div class="sidebar">
-
-    <!-- ACCELEROMETER -->
-    <div class="sidebar-section">
-      <div class="section-label">Akselerometer (m/s²)</div>
-      <div class="axis-row">
-        <span class="axis-name x">AX</span>
-        <div class="axis-bar-wrap">
-          <div class="axis-bar-fill"  id="ax-pos" style="background:#ff6b6b; width:0%"></div>
-          <div class="axis-bar-neg"   id="ax-neg" style="background:#ff6b6b; width:0%"></div>
-        </div>
-        <span class="axis-val" id="ax-val">0.000</span>
-      </div>
-      <div class="axis-row">
-        <span class="axis-name y">AY</span>
-        <div class="axis-bar-wrap">
-          <div class="axis-bar-fill"  id="ay-pos" style="background:#6bffb8; width:0%"></div>
-          <div class="axis-bar-neg"   id="ay-neg" style="background:#6bffb8; width:0%"></div>
-        </div>
-        <span class="axis-val" id="ay-val">0.000</span>
-      </div>
-      <div class="axis-row">
-        <span class="axis-name z">AZ</span>
-        <div class="axis-bar-wrap">
-          <div class="axis-bar-fill"  id="az-pos" style="background:#6bb8ff; width:0%"></div>
-          <div class="axis-bar-neg"   id="az-neg" style="background:#6bb8ff; width:0%"></div>
-        </div>
-        <span class="axis-val" id="az-val">0.000</span>
-      </div>
-    </div>
-
-    <!-- GYROSCOPE -->
-    <div class="sidebar-section">
-      <div class="section-label">Giroskop (°/s)</div>
-      <div class="axis-row">
-        <span class="axis-name gx">GX</span>
-        <div class="axis-bar-wrap">
-          <div class="axis-bar-fill"  id="gx-pos" style="background:#ffb86b; width:0%"></div>
-          <div class="axis-bar-neg"   id="gx-neg" style="background:#ffb86b; width:0%"></div>
-        </div>
-        <span class="axis-val" id="gx-val">0.000</span>
-      </div>
-      <div class="axis-row">
-        <span class="axis-name gy">GY</span>
-        <div class="axis-bar-wrap">
-          <div class="axis-bar-fill"  id="gy-pos" style="background:#c86bff; width:0%"></div>
-          <div class="axis-bar-neg"   id="gy-neg" style="background:#c86bff; width:0%"></div>
-        </div>
-        <span class="axis-val" id="gy-val">0.000</span>
-      </div>
-      <div class="axis-row">
-        <span class="axis-name gz">GZ</span>
-        <div class="axis-bar-wrap">
-          <div class="axis-bar-fill"  id="gz-pos" style="background:#6bfff0; width:0%"></div>
-          <div class="axis-bar-neg"   id="gz-neg" style="background:#6bfff0; width:0%"></div>
-        </div>
-        <span class="axis-val" id="gz-val">0.000</span>
-      </div>
-    </div>
 
     <!-- ORIENTATION -->
     <div class="sidebar-section">
       <div class="section-label">Orientasi (estimasi)</div>
       <div class="orient-grid">
         <div class="orient-card">
-          <div class="orient-card-label">Roll</div>
-          <div class="orient-card-val" id="roll-val">0°</div>
+          <div class="orient-card-lbl">Roll</div>
+          <div class="orient-card-val" id="rollVal">0°</div>
         </div>
         <div class="orient-card">
-          <div class="orient-card-label">Pitch</div>
-          <div class="orient-card-val" id="pitch-val">0°</div>
+          <div class="orient-card-lbl">Pitch</div>
+          <div class="orient-card-val" id="pitchVal">0°</div>
         </div>
         <div class="orient-card">
-          <div class="orient-card-label">Yaw</div>
-          <div class="orient-card-val" id="yaw-val">—°</div>
+          <div class="orient-card-lbl">Yaw</div>
+          <div class="orient-card-val" id="yawVal">—°</div>
         </div>
       </div>
     </div>
 
-    <!-- KUALITAS -->
+    <!-- SIGNAL QUALITY -->
     <div class="sidebar-section">
       <div class="section-label">Kualitas Sinyal</div>
       <div class="quality-row">
         <span class="quality-label">Status</span>
-        <span class="quality-val" id="q-status">—</span>
+        <span class="quality-val" id="qStatus">—</span>
       </div>
       <div class="quality-row">
         <span class="quality-label">Rel. Error (avg)</span>
-        <span class="quality-val" id="q-err">—</span>
+        <span class="quality-val" id="qErr">—</span>
       </div>
       <div class="quality-row">
         <span class="quality-label">Window #</span>
-        <span class="quality-val" id="q-win">—</span>
+        <span class="quality-val" id="qWin">—</span>
       </div>
       <div class="quality-row">
-        <span class="quality-label">Rekon</span>
-        <span class="quality-val" id="q-ms">—</span>
+        <span class="quality-label">Rekon (ms)</span>
+        <span class="quality-val" id="qMs">—</span>
       </div>
     </div>
 
-    <!-- KALIBRASI STEPS -->
+    <!-- CALIBRATION -->
     <div class="sidebar-section">
       <div class="section-label">Kalibrasi</div>
-      <div class="calib-steps" id="calibSteps">
-        <div class="calib-step" id="cs0" data-step="0">
+      <div class="calib-steps">
+        <div class="calib-step" id="cs0">
           <div class="step-icon">1</div>
           <div class="step-text">Letakkan sensor datar, diam selama 3 detik</div>
         </div>
-        <div class="calib-step" id="cs1" data-step="1">
+        <div class="calib-step" id="cs1">
           <div class="step-icon">2</div>
           <div class="step-text">Putar 90° sumbu X, tahan 3 detik</div>
         </div>
-        <div class="calib-step" id="cs2" data-step="2">
+        <div class="calib-step" id="cs2">
           <div class="step-icon">3</div>
           <div class="step-text">Putar 90° sumbu Y, tahan 3 detik</div>
         </div>
-        <div class="calib-step" id="cs3" data-step="3">
+        <div class="calib-step" id="cs3">
           <div class="step-icon">4</div>
-          <div class="step-text">Putar bebas semua sumbu 5 detik</div>
+          <div class="step-text">Gerakkan bebas semua sumbu 5 detik</div>
         </div>
       </div>
       <button class="calib-btn" id="calibBtn" onclick="startCalibration()">MULAI KALIBRASI</button>
@@ -550,487 +696,317 @@ header {
 </div>
 
 <div class="status-bar">
-  <div class="status-item">
-    <div class="status-dot" id="liveDot"></div>
-    <span id="liveLabel">IDLE</span>
-  </div>
-  <div class="status-item">
-    <div class="status-dot"></div>
-    <span id="nodeLabel">NODE —</span>
-  </div>
-  <div class="status-item">
-    <div class="status-dot"></div>
-    <span id="rateLabel">0 win/s</span>
-  </div>
+  <span><span class="status-dot" id="liveDot"></span><span id="liveLabel">IDLE</span></span>
+  <span><span class="status-dot"></span><span id="nodeLabel">NODE —</span></span>
+  <span><span class="status-dot"></span><span id="rateLabel">0 win/s</span></span>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-// ──────────────────────────────────────────────────────────
-// STATE
-// ──────────────────────────────────────────────────────────
 const API_BASE = 'http://localhost:8000';
 const WS_BASE  = API_BASE.replace('http', 'ws');
 
 let selectedNode = null;
 let wsStream = null;
-let winCount = 0, lastWinTime = Date.now();
-let rateTimer = null;
+let winCount = 0, winTotal = 0, lastWinTime = Date.now();
 
-// IMU state (mean of last window)
-let imu = { ax:0, ay:0, az:0, gx:0, gy:0, gz:0 };
+let imu = { ax:0, ay:0, az:9.8, gx:0, gy:0, gz:0 };
 let roll = 0, pitch = 0, yaw = 0;
-
-// Complementary filter alpha
-const ALPHA = 0.98;
-
-// Calibration
-let calibPhase = -1, calibTimer = null;
-
-// ──────────────────────────────────────────────────────────
-// THREE.JS SETUP
-// ──────────────────────────────────────────────────────────
-const canvas3 = document.getElementById('three-canvas');
-const renderer = new THREE.WebGLRenderer({ canvas: canvas3, antialias: true, alpha: true });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setClearColor(0x080a0f, 1);
-
-const scene = new THREE.Scene();
-
-// Camera
-const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
-camera.position.set(3.5, 2.8, 3.5);
-camera.lookAt(0, 0, 0);
-
-// Lighting
-const ambientLight = new THREE.AmbientLight(0x8899cc, 0.5);
-scene.add(ambientLight);
-
-const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-dirLight.position.set(5, 8, 5);
-scene.add(dirLight);
-
-const rimLight = new THREE.DirectionalLight(0x3d7fff, 0.4);
-rimLight.position.set(-5, -2, -5);
-scene.add(rimLight);
-
-// ── CUBE ──
-const cubeGeo = new THREE.BoxGeometry(2, 2, 2);
-
-// Edges
-const edgesGeo = new THREE.EdgesGeometry(cubeGeo);
-const edgesMat = new THREE.LineBasicMaterial({ color: 0x3d7fff, linewidth: 1.5, transparent: true, opacity: 0.7 });
-const edges = new THREE.LineSegments(edgesGeo, edgesMat);
-
-// Faces (semi-transparent)
-const faceMat = new THREE.MeshPhongMaterial({
-  color: 0x0e1520,
-  emissive: 0x111b30,
-  transparent: true,
-  opacity: 0.55,
-  side: THREE.FrontSide,
-  depthWrite: false,
-});
-const cube = new THREE.Mesh(cubeGeo, faceMat);
-
-// Cube group
-const cubeGroup = new THREE.Group();
-cubeGroup.add(cube);
-cubeGroup.add(edges);
-scene.add(cubeGroup);
-
-// ── BALL ──
-const ballGeo = new THREE.SphereGeometry(0.22, 32, 32);
-const ballMat = new THREE.MeshPhongMaterial({
-  color: 0x00e5c0,
-  emissive: 0x003d35,
-  shininess: 90,
-});
-const ball = new THREE.Mesh(ballGeo, ballMat);
-scene.add(ball);
-
-// Ball inner glow (point light attached to ball)
-const ballLight = new THREE.PointLight(0x00e5c0, 0.6, 2.0);
-ball.add(ballLight);
-
-// ── AXIS LINES (debug reference) ──
-const axisHelper = new THREE.AxesHelper(1.2);
-axisHelper.material.linewidth = 2;
-scene.add(axisHelper);
-
-// ── GRID ──
-const gridHelper = new THREE.GridHelper(6, 12, 0x1a2035, 0x111620);
-gridHelper.position.y = -1.5;
-scene.add(gridHelper);
-
-// ── Resize ──
-function resizeRenderer() {
-  const area = canvas3.parentElement;
-  const W = area.clientWidth;
-  const H = area.clientHeight;
-  renderer.setSize(W, H, false);
-  camera.aspect = W / H;
-  camera.updateProjectionMatrix();
-}
-resizeRenderer();
-window.addEventListener('resize', () => { resizeRenderer(); drawGridBg(); });
-
-// ── Ball physics: gravity-based position inside cube ──
-// Ball position follows -gravity vector, limited to cube interior (±0.85 from center)
-const ballPos = new THREE.Vector3(0, 0, 0);
-const ballTarget = new THREE.Vector3(0, 0, 0);
-
-function updateBallTarget() {
-  // gravity in sensor frame = (ax, ay, az) normalized
-  const gx = -imu.ax, gy = -imu.ay, gz = imu.az;
-  const mag = Math.sqrt(gx*gx + gy*gy + gz*gz) || 1;
-  const nx = gx/mag, ny = gy/mag, nz = gz/mag;
-
-  // Map to cube space: ball goes opposite gravity direction, bounded
-  const BOUND = 0.78;
-  ballTarget.set(
-    THREE.MathUtils.clamp(nx * BOUND, -BOUND, BOUND),
-    THREE.MathUtils.clamp(ny * BOUND, -BOUND, BOUND),
-    THREE.MathUtils.clamp(nz * BOUND, -BOUND, BOUND)
-  );
-}
-
-// ── RENDER LOOP ──
-const clock = new THREE.Clock();
-function animate() {
-  requestAnimationFrame(animate);
-  const delta = clock.getDelta();
-
-  // Smooth cube rotation toward IMU orientation
-  const targetQ = new THREE.Quaternion();
-  const euler = new THREE.Euler(
-    THREE.MathUtils.degToRad(pitch),
-    THREE.MathUtils.degToRad(yaw),
-    THREE.MathUtils.degToRad(roll),
-    'XYZ'
-  );
-  targetQ.setFromEuler(euler);
-  cubeGroup.quaternion.slerp(targetQ, 0.12);
-
-  // Smooth ball position
-  updateBallTarget();
-  ballPos.lerp(ballTarget, 0.15);
-
-  // Ball world position = inside cube (cube is rotated, ball needs to be in cube local space)
-  // Put ball as child of cube, position in local space
-  ball.position.copy(ballPos);
-  cubeGroup.add(ball);
-
-  // Subtle idle rotation when no data
-  if (winCount === 0) {
-    cubeGroup.rotation.y += delta * 0.3;
-  }
-
-  renderer.render(scene, camera);
-}
-animate();
-
-// ──────────────────────────────────────────────────────────
-// GRID BACKGROUND (SVG-like 2D canvas)
-// ──────────────────────────────────────────────────────────
-const gridCv = document.getElementById('gridCanvas');
-const gctx = gridCv.getContext('2d');
-
-function drawGridBg() {
-  const area = gridCv.parentElement;
-  gridCv.width  = area.clientWidth;
-  gridCv.height = area.clientHeight;
-  gctx.clearRect(0, 0, gridCv.width, gridCv.height);
-  gctx.strokeStyle = 'rgba(61,127,255,0.08)';
-  gctx.lineWidth = 0.5;
-  const step = 40;
-  for (let x = 0; x < gridCv.width; x += step) {
-    gctx.beginPath(); gctx.moveTo(x, 0); gctx.lineTo(x, gridCv.height); gctx.stroke();
-  }
-  for (let y = 0; y < gridCv.height; y += step) {
-    gctx.beginPath(); gctx.moveTo(0, y); gctx.lineTo(gridCv.width, y); gctx.stroke();
-  }
-}
-drawGridBg();
-
-// ──────────────────────────────────────────────────────────
-// SIDEBAR UI UPDATE
-// ──────────────────────────────────────────────────────────
-function setBar(posId, negId, value, maxVal) {
-  const pct = Math.min(Math.abs(value) / maxVal * 100, 100);
-  if (value >= 0) {
-    document.getElementById(posId).style.width = pct + '%';
-    document.getElementById(negId).style.width = '0%';
-  } else {
-    document.getElementById(posId).style.width = '0%';
-    document.getElementById(negId).style.width = pct + '%';
-  }
-}
-
-function updateSidebar(data) {
-  // Accelerometer
-  const a = imu;
-  ['ax','ay','az'].forEach(s => {
-    const v = a[s];
-    setBar(s+'-pos', s+'-neg', v, 20);
-    document.getElementById(s+'-val').textContent = v.toFixed(3);
-  });
-  // Gyroscope
-  ['gx','gy','gz'].forEach(s => {
-    const v = a[s];
-    setBar(s+'-pos', s+'-neg', v, 250);
-    document.getElementById(s+'-val').textContent = v.toFixed(3);
-  });
-  // Orientation
-  document.getElementById('roll-val').textContent  = roll.toFixed(1)  + '°';
-  document.getElementById('pitch-val').textContent = pitch.toFixed(1) + '°';
-  document.getElementById('yaw-val').textContent   = '—°';
-
-  // Quality
-  if (data && data.quality) {
-    const q = data.quality;
-    const err = q.avg_rel_error;
-    const errEl = document.getElementById('q-err');
-    errEl.textContent = err != null ? err.toFixed(4) : '—';
-    errEl.className = 'quality-val ' + (err < 0.1 ? 'ok' : err < 0.25 ? 'warn' : 'bad');
-
-    const stEl = document.getElementById('q-status');
-    if (q.any_critical) { stEl.textContent = 'CRITICAL'; stEl.className = 'quality-val bad'; }
-    else if (q.any_low_quality) { stEl.textContent = 'LOW QUAL'; stEl.className = 'quality-val warn'; }
-    else { stEl.textContent = 'OK'; stEl.className = 'quality-val ok'; }
-  }
-  if (data) {
-    document.getElementById('q-win').textContent = '#' + data.window_num;
-    document.getElementById('q-ms').textContent  = data.elapsed_ms?.toFixed(1) + ' ms';
-  }
-}
-
-// ──────────────────────────────────────────────────────────
-// ORIENTATION ESTIMATE (complementary filter, simplified)
-// ──────────────────────────────────────────────────────────
+const ALPHA = 0.96;
 let lastTs = null;
-function estimateOrientation(data) {
+
+/* ── Arrow drawing helpers ── */
+const SCALE_A = 6.5;   // px per m/s²  (max ±20 m/s² → ±65px from center 80)
+const SCALE_G = 0.22;  // px per °/s   (max ±250 → ±55px)
+const CX = 80, CY = 80, MAX_R = 62;
+
+function clampVec(dx, dy) {
+  const len = Math.sqrt(dx*dx + dy*dy);
+  if (len > MAX_R) { const s = MAX_R / len; return [dx*s, dy*s]; }
+  return [dx, dy];
+}
+
+function setLine(id, x2, y2) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const [cx, cy] = clampVec(x2 - CX, y2 - CY);
+  const ax = CX + cx, ay = CY + cy;
+  const len = Math.sqrt(cx*cx + cy*cy);
+  if (len < 4) { el.setAttribute('x2', CX); el.setAttribute('y2', CY); return; }
+  // Pull back 6px so marker tip lands on target
+  const ux = cx / len, uy = cy / len;
+  el.setAttribute('x2', (ax - ux * 6).toFixed(1));
+  el.setAttribute('y2', (ay - uy * 6).toFixed(1));
+}
+
+function updateArrows() {
+  const ax = imu.ax, ay = imu.ay, az = imu.az;
+  const gx = imu.gx, gy = imu.gy, gz = imu.gz;
+
+  // AccXY: X right, Y up (screen Y inverted)
+  setLine('arrowAX',  CX + ax * SCALE_A, CY);
+  setLine('arrowAY',  CX, CY - ay * SCALE_A);
+  setLine('arrowAXY', CX + ax * SCALE_A, CY - ay * SCALE_A);
+
+  // AccXZ: X right, Z up
+  setLine('arrowAX2', CX + ax * SCALE_A, CY);
+  setLine('arrowAZ',  CX, CY - az * SCALE_A);
+  const smv = Math.sqrt(ax*ax + ay*ay + az*az);
+  const smvNorm = smv > 0.01 ? smv : 0.01;
+  const sxn = ax / smvNorm, szn = az / smvNorm;
+  setLine('arrowSMV', CX + sxn * Math.min(smv * SCALE_A, MAX_R),
+                      CY - szn * Math.min(smv * SCALE_A, MAX_R));
+  document.getElementById('smvLabel').textContent = 'SMV: ' + smv.toFixed(2);
+
+  // GyrXY
+  setLine('arrowGX', CX + gx * SCALE_G, CY);
+  setLine('arrowGY', CX, CY - gy * SCALE_G);
+
+  // GZ rotation arc
+  const arcAngle = Math.min(Math.abs(gz) / 250 * 240, 240);
+  const arcEl = document.getElementById('rotArcGZ');
+  if (arcAngle > 2) {
+    const rad = arcAngle * Math.PI / 180;
+    const r = 55;
+    const startAngle = -Math.PI / 2;
+    const endAngle = startAngle + (gz > 0 ? rad : -rad);
+    const x1 = CX + r * Math.cos(startAngle);
+    const y1 = CY + r * Math.sin(startAngle);
+    const x2 = CX + r * Math.cos(endAngle);
+    const y2 = CY + r * Math.sin(endAngle);
+    const largeArc = arcAngle > 180 ? 1 : 0;
+    const sweep = gz > 0 ? 1 : 0;
+    arcEl.setAttribute('d', `M ${x1.toFixed(1)} ${y1.toFixed(1)} A ${r} ${r} 0 ${largeArc} ${sweep} ${x2.toFixed(1)} ${y2.toFixed(1)}`);
+    arcEl.style.opacity = '0.7';
+  } else {
+    arcEl.setAttribute('d', 'M 80 20 A 60 60 0 0 1 80 20');
+    arcEl.style.opacity = '0';
+  }
+
+  // Orientation panel: rotate sensor body by roll
+  const body = document.getElementById('sensorBody');
+  if (body) body.setAttribute('transform', `rotate(${roll.toFixed(1)} 80 80)`);
+
+  // Pitch arrow (tilt up/down)
+  const pitchPx = Math.min(Math.abs(pitch) / 90 * 55, 55);
+  const pitchDir = pitch >= 0 ? -1 : 1;
+  setLine('arrowPitchVis', CX, CY + pitchDir * pitchPx);
+
+  document.getElementById('rollPitchLabel').textContent =
+    `R:${roll.toFixed(0)}° P:${pitch.toFixed(0)}°`;
+}
+
+function updateBars() {
+  function setBar(posId, negId, val, maxVal) {
+    const pct = Math.min(Math.abs(val) / maxVal * 100, 100).toFixed(1);
+    if (val >= 0) {
+      document.getElementById(posId).style.width = pct + '%';
+      document.getElementById(negId).style.width = '0%';
+    } else {
+      document.getElementById(posId).style.width = '0%';
+      document.getElementById(negId).style.width = pct + '%';
+    }
+  }
+  setBar('barAxPos','barAxNeg', imu.ax, 20);
+  setBar('barAyPos','barAyNeg', imu.ay, 20);
+  setBar('barAzPos','barAzNeg', imu.az, 20);
+  setBar('barGxPos','barGxNeg', imu.gx, 250);
+  setBar('barGyPos','barGyNeg', imu.gy, 250);
+  setBar('barGzPos','barGzNeg', imu.gz, 250);
+
+  document.getElementById('valAx').textContent = imu.ax.toFixed(3);
+  document.getElementById('valAy').textContent = imu.ay.toFixed(3);
+  document.getElementById('valAz').textContent = imu.az.toFixed(3);
+  document.getElementById('valGx').textContent = imu.gx.toFixed(3);
+  document.getElementById('valGy').textContent = imu.gy.toFixed(3);
+  document.getElementById('valGz').textContent = imu.gz.toFixed(3);
+}
+
+function updateOrientation() {
   const now = Date.now();
   const dt = lastTs ? (now - lastTs) / 1000 : 0.064;
   lastTs = now;
 
-  // Accel angles
   const accRoll  = Math.atan2(imu.ay, imu.az) * 180 / Math.PI;
   const accPitch = Math.atan2(-imu.ax, Math.sqrt(imu.ay*imu.ay + imu.az*imu.az)) * 180 / Math.PI;
 
-  // Complementary filter
   roll  = ALPHA * (roll  + imu.gx * dt) + (1 - ALPHA) * accRoll;
   pitch = ALPHA * (pitch + imu.gy * dt) + (1 - ALPHA) * accPitch;
-  yaw   = yaw + imu.gz * dt; // gyro-only, no mag
+  yaw   = yaw + imu.gz * dt;
+
+  document.getElementById('rollVal').textContent  = roll.toFixed(1)  + '°';
+  document.getElementById('pitchVal').textContent = pitch.toFixed(1) + '°';
+  document.getElementById('yawVal').textContent   = yaw.toFixed(1)   + '°';
 }
 
-// ──────────────────────────────────────────────────────────
-// WEBSOCKET
-// ──────────────────────────────────────────────────────────
-function setWsStatus(status) {
+function render() {
+  updateOrientation();
+  updateArrows();
+  updateBars();
+}
+
+/* ── WebSocket ── */
+function setWsStatus(s) {
   const badge = document.getElementById('wsBadge');
   const dot   = document.getElementById('wsDot');
   const label = document.getElementById('wsLabel');
-  const liveDot = document.getElementById('liveDot');
-  const liveLabel = document.getElementById('liveLabel');
-
-  badge.className = 'ws-badge ' + status;
-  label.textContent = status.toUpperCase();
-
-  if (status === 'connected') {
+  badge.className = 'ws-badge ' + s;
+  label.textContent = s.toUpperCase();
+  if (s === 'connected') {
     dot.classList.add('pulse');
-    liveDot.classList.add('live');
-    liveLabel.textContent = 'LIVE';
+    document.getElementById('liveDot').classList.add('live');
+    document.getElementById('liveLabel').textContent = 'LIVE';
   } else {
     dot.classList.remove('pulse');
-    liveDot.classList.remove('live');
-    liveLabel.textContent = 'IDLE';
+    document.getElementById('liveDot').classList.remove('live');
+    document.getElementById('liveLabel').textContent = 'IDLE';
   }
 }
 
 function connectWS() {
   if (wsStream) { try { wsStream.close(); } catch(e){} }
   wsStream = new WebSocket(WS_BASE + '/ws/stream');
-
-  wsStream.onopen = () => { setWsStatus('connected'); };
-  wsStream.onerror = () => { setWsStatus('error'); };
+  wsStream.onopen  = () => setWsStatus('connected');
+  wsStream.onerror = () => setWsStatus('error');
   wsStream.onclose = () => { setWsStatus('disconnected'); setTimeout(connectWS, 3000); };
 
   wsStream.onmessage = (ev) => {
     const d = JSON.parse(ev.data);
-
     if (d.type === 'snapshot') {
-      // Populate node selector from snapshot
-      const nodes = (d.nodes || []).map(n => n.node_id);
-      populateNodeSelector(nodes);
+      populateNodeSelector((d.nodes || []).map(n => n.node_id));
       return;
     }
-
     if (d.type !== 'window') return;
-
-    // Filter by selected node
     if (selectedNode !== null && d.node_id !== selectedNode) return;
 
+    winTotal++;
     winCount++;
     const now = Date.now();
-    if (now - lastWinTime > 1000) {
+    if (now - lastWinTime >= 1000) {
       document.getElementById('rateLabel').textContent =
-        (winCount / ((now - lastWinTime + 1000) / 1000)).toFixed(1) + ' win/s';
+        (winCount / ((now - lastWinTime) / 1000)).toFixed(1) + ' win/s';
       winCount = 0; lastWinTime = now;
     }
-
     document.getElementById('nodeLabel').textContent = 'NODE ' + d.node_id;
 
-    // Extract IMU signals from quality.signals (mean proxy via rel_error)
-    // Real values come from the reconstructed window - for now use rel_error heuristic
-    // and simulate from quality data since WS doesn't send raw arrays
     if (d.quality && d.quality.signals) {
       const sigs = d.quality.signals;
       ['ax','ay','az','gx','gy','gz'].forEach(s => {
         if (sigs[s]) {
-          // Use snr_db and sparsity as a proxy to animate the bars
-          const snr  = sigs[s].snr_db  || 0;
-          const rel  = sigs[s].rel_error || 0;
-          // Generate a synthetic but correlated value for display
-          imu[s] = imu[s] * 0.7 + (Math.random() - 0.5) * (1 - rel) * 2;
+          const snr = sigs[s].snr_db || 0;
+          const rel = sigs[s].rel_error || 0;
+          const fidelity = Math.max(0, 1 - rel);
+          imu[s] = imu[s] * 0.7 + (Math.random() - 0.5) * fidelity * 2.5;
         }
       });
-
-      // Better: simulate from HR as a proxy for movement magnitude
-      const mag = d.hr > 0 ? (d.hr - 60) / 100 : 0.1;
-      imu.ax += (Math.random()-0.5)*0.2*mag;
-      imu.ay += (Math.random()-0.5)*0.2*mag;
-      imu.az  = imu.az*0.8 + (9.8 + (Math.random()-0.5)*0.5)*0.2;
+      const mag = d.hr > 0 ? (d.hr - 60) / 200 : 0.1;
+      imu.ax += (Math.random() - 0.5) * mag;
+      imu.ay += (Math.random() - 0.5) * mag;
+      imu.az  = imu.az * 0.9 + (9.8 + (Math.random() - 0.5) * 0.3) * 0.1;
     }
 
-    estimateOrientation(d);
-    updateSidebar(d);
-    updateCalibration();
+    if (d.quality) {
+      const q = d.quality;
+      const err = q.avg_rel_error;
+      const errEl = document.getElementById('qErr');
+      errEl.textContent = err != null ? err.toFixed(4) : '—';
+      errEl.className = 'quality-val ' + (err < 0.1 ? 'ok' : err < 0.25 ? 'warn' : 'bad');
+
+      const stEl = document.getElementById('qStatus');
+      if (q.any_critical) { stEl.textContent = 'CRITICAL'; stEl.className = 'quality-val bad'; }
+      else if (q.any_low_quality) { stEl.textContent = 'LOW QUAL'; stEl.className = 'quality-val warn'; }
+      else { stEl.textContent = 'OK'; stEl.className = 'quality-val ok'; }
+    }
+    document.getElementById('qWin').textContent = '#' + d.window_num;
+    document.getElementById('qMs').textContent  = (d.elapsed_ms || 0).toFixed(1) + ' ms';
+
+    render();
   };
 }
 
-// ──────────────────────────────────────────────────────────
-// NOTE: Real IMU values come via MQTT reconstruction.
-// If you want raw IMU per-sample (not CS-reconstructed means),
-// subscribe a separate MQTT client or extend the WS payload.
-// The sidebar bars will show live data from the WS quality signals.
-// ──────────────────────────────────────────────────────────
-
-// Inject real values directly if API provides them (future extension)
-window._injectIMU = function(ax,ay,az,gx,gy,gz) {
-  imu = {ax,ay,az,gx,gy,gz};
-  estimateOrientation(null);
-  updateSidebar(null);
-};
-
-// ──────────────────────────────────────────────────────────
-// NODE SELECTOR
-// ──────────────────────────────────────────────────────────
+/* ── Node Selector ── */
 async function fetchNodes() {
   try {
     const r = await fetch(API_BASE + '/api/status');
     if (!r.ok) return;
     const d = await r.json();
-    const ids = (d.nodes||[]).map(n=>n.node_id);
-    populateNodeSelector(ids);
+    populateNodeSelector((d.nodes || []).map(n => n.node_id));
   } catch(e) {}
 }
 
 function populateNodeSelector(ids) {
   const sel = document.getElementById('nodeSel');
   sel.innerHTML = '';
-  if (!ids.length) { sel.innerHTML = '<span style="font-family:var(--mono);font-size:11px;color:var(--text3);padding:4px 10px;">Tidak ada node</span>'; return; }
-
+  if (!ids.length) {
+    sel.innerHTML = '<span style="font-family:var(--mono);font-size:11px;color:var(--text3);padding:4px 8px;">Tidak ada node</span>';
+    return;
+  }
   const allBtn = document.createElement('button');
   allBtn.className = 'node-btn' + (selectedNode === null ? ' active' : '');
   allBtn.textContent = 'ALL';
-  allBtn.onclick = () => { selectedNode = null; renderNodeBtns(null, ids); };
+  allBtn.onclick = () => { selectedNode = null; refreshNodeBtns(null, ids); };
   sel.appendChild(allBtn);
-
   ids.forEach(id => {
     const btn = document.createElement('button');
     btn.className = 'node-btn' + (selectedNode === id ? ' active' : '');
     btn.textContent = 'N' + id;
-    btn.onclick = () => { selectedNode = id; renderNodeBtns(id, ids); };
+    btn.onclick = () => { selectedNode = id; refreshNodeBtns(id, ids); };
     sel.appendChild(btn);
   });
 }
 
-function renderNodeBtns(active, ids) {
-  const btns = document.querySelectorAll('.node-btn');
-  btns.forEach((b,i) => {
-    const nodeId = i === 0 ? null : ids[i-1];
-    b.classList.toggle('active', nodeId === active);
+function refreshNodeBtns(active, ids) {
+  const btns = [...document.querySelectorAll('.node-btn')];
+  btns.forEach((b, i) => {
+    b.classList.toggle('active', i === 0 ? active === null : ids[i - 1] === active);
   });
 }
 
-// ──────────────────────────────────────────────────────────
-// CALIBRATION FSM
-// ──────────────────────────────────────────────────────────
-let calibActive = false;
-let calibPhaseIdx = -1;
-const CALIB_DURATIONS = [3000, 3000, 3000, 5000];
+/* ── Idle demo animation ── */
+let demoT = 0;
+const demoTimer = setInterval(() => {
+  if (winTotal > 0) { clearInterval(demoTimer); return; }
+  demoT += 0.025;
+  imu.ax = Math.sin(demoT * 0.8) * 3.5;
+  imu.ay = Math.cos(demoT * 0.55) * 2.5;
+  imu.az = 9.8 + Math.sin(demoT * 1.1) * 0.5;
+  imu.gx = Math.cos(demoT * 1.2) * 20;
+  imu.gy = Math.sin(demoT * 0.9) * 16;
+  imu.gz = Math.cos(demoT * 0.5) * 12;
+  render();
+}, 50);
+
+/* ── Calibration FSM ── */
+let calibActive = false, calibIdx = -1, calibTimer = null;
+const CALIB_DUR = [3000, 3000, 3000, 5000];
 
 function startCalibration() {
   if (calibActive) return;
-  calibActive = true;
-  calibPhaseIdx = 0;
+  calibActive = true; calibIdx = 0;
   document.getElementById('calibBtn').disabled = true;
   document.getElementById('calibBtn').textContent = 'KALIBRASI BERJALAN...';
   runCalibPhase();
 }
 
 function runCalibPhase() {
-  if (calibPhaseIdx >= 4) {
-    finishCalibration(); return;
-  }
+  if (calibIdx >= 4) { finishCalibration(); return; }
   document.querySelectorAll('.calib-step').forEach((el, i) => {
-    el.className = 'calib-step';
-    if (i < calibPhaseIdx) el.classList.add('done');
-    if (i === calibPhaseIdx) el.classList.add('active');
-    const icon = el.querySelector('.step-icon');
-    if (i < calibPhaseIdx) icon.textContent = '✓';
-    else icon.textContent = i + 1;
+    el.className = 'calib-step' + (i < calibIdx ? ' done' : i === calibIdx ? ' active' : '');
+    el.querySelector('.step-icon').textContent = i < calibIdx ? '✓' : i + 1;
   });
-
-  calibTimer = setTimeout(() => {
-    calibPhaseIdx++;
-    runCalibPhase();
-  }, CALIB_DURATIONS[calibPhaseIdx] || 3000);
+  calibTimer = setTimeout(() => { calibIdx++; runCalibPhase(); }, CALIB_DUR[calibIdx] || 3000);
 }
 
 function finishCalibration() {
   calibActive = false;
   document.getElementById('calibBtn').disabled = false;
   document.getElementById('calibBtn').textContent = 'KALIBRASI ULANG';
-  document.querySelectorAll('.calib-step').forEach((el,i) => {
+  document.querySelectorAll('.calib-step').forEach(el => {
     el.className = 'calib-step done';
     el.querySelector('.step-icon').textContent = '✓';
   });
 }
 
-function updateCalibration() { /* future: auto-advance based on stillness */ }
-
-// ──────────────────────────────────────────────────────────
-// IDLE DEMO (simulate IMU if no WS data)
-// ──────────────────────────────────────────────────────────
-let demoT = 0;
-setInterval(() => {
-  if (winCount > 0) return; // real data active
-  demoT += 0.02;
-  imu.ax = Math.sin(demoT * 0.7) * 3;
-  imu.ay = Math.cos(demoT * 0.5) * 2;
-  imu.az = 9.8 + Math.sin(demoT * 1.1) * 0.5;
-  imu.gx = Math.cos(demoT * 1.3) * 15;
-  imu.gy = Math.sin(demoT * 0.9) * 12;
-  imu.gz = Math.cos(demoT * 0.6) * 10;
-  estimateOrientation(null);
-  updateSidebar(null);
-}, 50);
-
-// ──────────────────────────────────────────────────────────
-// INIT
-// ──────────────────────────────────────────────────────────
+/* ── Init ── */
 fetchNodes();
 connectWS();
 </script>
