@@ -47,6 +47,17 @@ extern QueueHandle_t g_mqttQueue;
 
 EspNowMesh* EspNowMesh::_instance = nullptr;
 
+// =============================================================================
+// Synchronous send: semaphore + result flag
+//
+// _send() memanggil esp_now_send() lalu BLOK menunggu callback.
+// Callback (_onDataSent) set s_sendResult lalu give semaphore.
+// Timeout 50ms — cukup untuk worst-case MAC retry (ESP-NOW internal retry
+// bisa sampai ~30ms sebelum menyerah dan NACK).
+// =============================================================================
+static SemaphoreHandle_t s_sendSem    = nullptr;
+static volatile bool     s_sendResult = false;
+
 
 // =============================================================================
 // _updateAllPeerChannels() — Update channel semua peer terdaftar
@@ -83,6 +94,17 @@ bool EspNowMesh::begin(bool senderMode)
     _instance     = this;
     _senderMode   = senderMode;
     s_espnowReady = false;
+
+    // Buat semaphore untuk synchronous send (sekali saja)
+    if (!s_sendSem)
+    {
+        s_sendSem = xSemaphoreCreateBinary();
+        if (!s_sendSem)
+        {
+            LOG_ERROR(TAG, "Gagal buat send semaphore!");
+            return false;
+        }
+    }
 
     if (senderMode)
     {
@@ -341,28 +363,56 @@ bool EspNowMesh::sendHeartbeat(uint8_t nodeId, uint32_t uptimeS)
 // =============================================================================
 static uint8_t s_lastSentChannel = 0;  // track channel terakhir yang dipakai
 
+// ACK/NACK counters (diakses oleh _send() dan _onDataSent())
+static volatile uint32_t _ackCount  = 0;
+static volatile uint32_t _nackCount = 0;
+
 bool EspNowMesh::_send(const void* data, size_t len, const uint8_t* dstMac)
 {
-    // Broadcast: tidak butuh channel management
+    // Broadcast: tidak butuh channel management & tidak ada ACK
     const bool isBroadcast = (dstMac[0] == 0xFF && dstMac[1] == 0xFF &&
                                dstMac[2] == 0xFF && dstMac[3] == 0xFF &&
                                dstMac[4] == 0xFF && dstMac[5] == 0xFF);
 
     if (!isBroadcast && s_lastSentChannel != s_channel)
     {
-        // Channel berubah sejak send terakhir — update semua peer terdaftar
-        // (ini jarang terjadi di v5.0, hanya jika gateway roam channel)
         _updateAllPeerChannels(s_channel);
         s_lastSentChannel = s_channel;
         LOG_WARN(TAG, "Peer channel diupdate ke ch=%d", s_channel);
     }
 
+    // Drain semaphore sebelum send (buang sisa dari callback sebelumnya)
+    xSemaphoreTake(s_sendSem, 0);
+
     const esp_err_t err = esp_now_send(
         dstMac, reinterpret_cast<const uint8_t*>(data), len);
     if (err != ESP_OK)
+    {
         LOG_EVERY_N(10, LOG_WARN, TAG, "esp_now_send err: 0x%X", err);
-    _lastSendOk = (err == ESP_OK);
-    return _lastSendOk;
+        _lastSendOk = false;
+        return false;
+    }
+
+    // Broadcast tidak punya ACK — anggap sukses
+    if (isBroadcast)
+    {
+        _lastSendOk = true;
+        return true;
+    }
+
+    // Unicast: tunggu callback ACK/NACK (max 50ms)
+    // ESP-NOW internal MAC retry butuh ~10-30ms sebelum menyerah.
+    if (xSemaphoreTake(s_sendSem, pdMS_TO_TICKS(50)) == pdTRUE)
+    {
+        _lastSendOk = s_sendResult;
+        return s_sendResult;
+    }
+
+    // Timeout — anggap NACK
+    _lastSendOk = false;
+    _nackCount++;
+    LOG_EVERY_N(10, LOG_WARN, TAG, "send timeout (50ms) — dianggap NACK");
+    return false;
 }
 
 bool EspNowMesh::_addPeer(const uint8_t* mac)
@@ -393,22 +443,28 @@ bool EspNowMesh::_isPeerRegistered(const uint8_t* mac)
 // =============================================================================
 // Callbacks
 // =============================================================================
-static volatile uint32_t _ackCount  = 0;
-static volatile uint32_t _nackCount = 0;
 
 void EspNowMesh::_onDataSent(const uint8_t* mac, esp_now_send_status_t status)
 {
     if (status == ESP_NOW_SEND_SUCCESS)
     {
         _ackCount++;
-        if (_instance) _instance->_lastSendOk = true;
+        s_sendResult = true;
     }
     else
     {
         _nackCount++;
-        if (_instance) _instance->_lastSendOk = false;
+        s_sendResult = false;
         LOG_EVERY_N(5, LOG_WARN, "MESH", "NACK total=%lu rate=%.1f%%",
                     _nackCount, 100.0f * _nackCount / (_ackCount + _nackCount));
+    }
+
+    // Sinyal ke _send() yang sedang menunggu
+    if (s_sendSem)
+    {
+        BaseType_t woken = pdFALSE;
+        xSemaphoreGiveFromISR(s_sendSem, &woken);
+        portYIELD_FROM_ISR(woken);
     }
 }
 

@@ -32,6 +32,7 @@
 #include <Arduino.h>
 #include <esp_wifi.h>
 #include <esp_now.h>
+#include <esp_random.h>
 #include "Config.h"
 
 #if NODE_ROLE == ROLE_SENSOR
@@ -345,29 +346,64 @@ void taskCSSender(void* param)
         else              relayedCount++;
 
         // ── Kirim 6 IMU axis + PPG ke tujuan yang dipilih ────────────────────
-        // ANTI-NACK: tambah jeda 2ms antar paket untuk menghindari tabrakan
-        // dengan AP beacon (dikirim gateway setiap 100ms, durasi ~1ms).
-        // Tanpa jeda: 7 paket dalam <5ms → P(tabrakan) ≈ 4–5%.
-        // Dengan jeda 2ms: paket tersebar 14ms → P(tabrakan) ≈ 0.1%.
-        // Total overhead: 6 × 2ms = 12ms per window (budget window = 640ms).
-        static constexpr uint8_t INTER_PKT_MS = 2;
+        // ANTI-NACK v2 — tiga strategi:
+        //
+        //   #1  INTER_PKT_MS = 5ms (naik dari 2ms)
+        //       Lebih menyebar paket, kurangi P(collision) dengan AP beacon.
+        //       Total overhead: 6 × 5ms = 30ms per window (budget = 640ms).
+        //
+        //   #2  RETRY: jika NACK, tunggu random 3–8ms lalu coba sekali lagi.
+        //       ESP-NOW NACK biasanya karena CCA (Clear Channel Assessment)
+        //       gagal — medium sibuk sesaat. Retry dengan jitter biasanya
+        //       berhasil karena collision bersifat transient.
+        //
+        //   #3  STAGGER: delay awal = NODE_ID × 50ms sebelum burst.
+        //       Desinkronisasi transmisi antar sensor agar dua node tidak
+        //       mengirim 7 paket bersamaan → menghilangkan self-collision.
+        //
+        //   Kombinasi #1+#2+#3: NACK diharapkan turun dari ~4.3% ke <0.5%.
+        static constexpr uint8_t INTER_PKT_MS       = 5;
+        static constexpr uint8_t RETRY_MIN_MS       = 3;
+        static constexpr uint8_t RETRY_MAX_MS       = 8;
+        static constexpr uint8_t NODE_STAGGER_MS    = 50;  // × NODE_ID
+        static bool              s_staggerDone      = false;
+
+        // #3: Stagger sekali di awal setiap window
+        if (!s_staggerDone)
+        {
+            vTaskDelay(pdMS_TO_TICKS(NODE_ID * NODE_STAGGER_MS));
+            s_staggerDone = true;
+        }
+
+        // Macro: kirim + retry 1x jika NACK
+        #define SEND_WITH_RETRY(sendExpr)                                     \
+            do {                                                               \
+                if (!(sendExpr)) {                                             \
+                    vTaskDelay(pdMS_TO_TICKS(RETRY_MIN_MS +                     \
+                        (esp_random() % (RETRY_MAX_MS - RETRY_MIN_MS + 1))));  \
+                    if (!(sendExpr)) nack++;                                    \
+                }                                                              \
+            } while (0)
+
         uint8_t nack = 0;
 
-        if (!g_mesh.sendCsAxis(PKT_CS_AX, NODE_ID, yAx, finger, tsNow, dstMac)) nack++;
+        SEND_WITH_RETRY(g_mesh.sendCsAxis(PKT_CS_AX, NODE_ID, yAx, finger, tsNow, dstMac));
         vTaskDelay(pdMS_TO_TICKS(INTER_PKT_MS));
-        if (!g_mesh.sendCsAxis(PKT_CS_AY, NODE_ID, yAy, finger, tsNow, dstMac)) nack++;
+        SEND_WITH_RETRY(g_mesh.sendCsAxis(PKT_CS_AY, NODE_ID, yAy, finger, tsNow, dstMac));
         vTaskDelay(pdMS_TO_TICKS(INTER_PKT_MS));
-        if (!g_mesh.sendCsAxis(PKT_CS_AZ, NODE_ID, yAz, finger, tsNow, dstMac)) nack++;
+        SEND_WITH_RETRY(g_mesh.sendCsAxis(PKT_CS_AZ, NODE_ID, yAz, finger, tsNow, dstMac));
         vTaskDelay(pdMS_TO_TICKS(INTER_PKT_MS));
-        if (!g_mesh.sendCsAxis(PKT_CS_GX, NODE_ID, yGx, finger, tsNow, dstMac)) nack++;
+        SEND_WITH_RETRY(g_mesh.sendCsAxis(PKT_CS_GX, NODE_ID, yGx, finger, tsNow, dstMac));
         vTaskDelay(pdMS_TO_TICKS(INTER_PKT_MS));
-        if (!g_mesh.sendCsAxis(PKT_CS_GY, NODE_ID, yGy, finger, tsNow, dstMac)) nack++;
+        SEND_WITH_RETRY(g_mesh.sendCsAxis(PKT_CS_GY, NODE_ID, yGy, finger, tsNow, dstMac));
         vTaskDelay(pdMS_TO_TICKS(INTER_PKT_MS));
-        if (!g_mesh.sendCsAxis(PKT_CS_GZ, NODE_ID, yGz, finger, tsNow, dstMac)) nack++;
+        SEND_WITH_RETRY(g_mesh.sendCsAxis(PKT_CS_GZ, NODE_ID, yGz, finger, tsNow, dstMac));
         vTaskDelay(pdMS_TO_TICKS(INTER_PKT_MS));
-        if (!g_mesh.sendCsPpg(NODE_ID, yIr, displayHR,
-                               displayValid, displaySpo2,
-                               finger, tsNow, dstMac))                           nack++;
+        SEND_WITH_RETRY(g_mesh.sendCsPpg(NODE_ID, yIr, displayHR,
+                                          displayValid, displaySpo2,
+                                          finger, tsNow, dstMac));
+
+        #undef SEND_WITH_RETRY
 
 
         windowCount++;

@@ -36,12 +36,18 @@ namespace Pin
 // ---------------------------------------------------------------------------
 // I2C Clock Speed
 //
-// Dikunci di 100 kHz karena sensor MPU6050 kloningan sering tidak stabil
-// di Fast Mode (400 kHz). Jangan naikkan kecuali sensor Anda original.
+// 50 kHz dipilih karena:
+//   1. Sensor PPG (MAX30102) menggunakan kabel perpanjangan ~1 meter
+//      → kapasitansi bus naik ~100-150pF → rise time memanjang
+//   2. Sensor MPU6050 kloningan sering tidak stabil di Fast Mode (400 kHz)
+//
+// I2C spec max 400pF total bus capacitance.
+// Di 100kHz + 1m kabel → borderline. 50kHz memberi margin aman.
+// MAX30102 & MPU6050 support hingga 400kHz, jadi 50kHz well within spec.
 // ---------------------------------------------------------------------------
 namespace I2CClock
 {
-    constexpr uint32_t SPEED = 100000UL; // 100 kHz (Standard Mode)
+    constexpr uint32_t SPEED = 50000UL; // 50 kHz — aman untuk kabel 1m
 }
 
 // ---------------------------------------------------------------------------
