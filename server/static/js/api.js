@@ -65,3 +65,8 @@ export async function fetchEvents(nodeId) {
   const d = await api(`/api/nodes/${nodeId}/events?n=30`);
   return d;
 }
+
+export async function fetchNodeVitalsHistory(nodeId, n = 60) {
+  const d = await api(`/api/nodes/${nodeId}/windows?signal=ir&n=${n}&include_values=false`);
+  return d ? d.windows : [];
+}

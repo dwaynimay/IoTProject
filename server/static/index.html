@@ -10,133 +10,13 @@
 </head>
 <body>
 
-<header id="commandBar">
-  <div class="brand">
-    <div class="brand-dot"></div>
-    <span class="brand-name">HEALTH MONITOR</span>
-    <span class="text-muted font-mono" style="font-size:10px; margin-left:6px;">v4.0 · ML ENABLED</span>
-  </div>
-  
-  <div class="server-stats-badge">
-    <div class="stat-item">UPTIME <strong id="cmd-uptime">—</strong></div>
-    <div class="stat-item">WINDOWS <strong id="cmd-windows">—</strong></div>
-    <div class="stat-item text-danger" id="cmd-alerts-wrap" style="display:none;">ALERTS <strong id="cmd-alerts">0</strong></div>
-    
-    <div style="width: 1px; height: 16px; background: var(--border); margin: 0 8px;"></div>
-    
-    <div class="toggle-group" style="margin-right: 12px;">
-      <button class="toggle-btn active" id="btn-stream-play">LIVE</button>
-      <button class="toggle-btn" id="btn-stream-pause">PAUSED</button>
-    </div>
-    
-    <button class="badge badge-info" id="wsStatus" style="cursor: pointer; padding: 4px 10px;" onclick="init()">
-      CONNECTING...
-    </button>
-  </div>
-</header>
-
 <div class="layout">
-  
-  <!-- SIDEBAR LEFT: Node List -->
-  <aside id="nodeList" style="border-right: 1px solid var(--border); overflow-y: auto; padding: 16px; background: var(--surface);">
-    <div style="font-family: var(--mono); font-size: 10px; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; display: flex; justify-content: space-between;">
-      <span>ACTIVE NODES</span>
-      <span id="nodeCount">0</span>
+  <div id="nodesContainer">
+    <div class="no-data" style="height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; grid-column: 1/-1;">
+      <div class="no-data-icon" style="font-size: 48px; margin-bottom: 16px;">📡</div>
+      <div style="font-size: 16px; color: var(--text2);">Menunggu koneksi node...</div>
     </div>
-    <div id="nodesContainer">
-      <div class="no-data" style="height: 100px;">
-        <div class="no-data-icon">📡</div>
-        <div>Menunggu node...</div>
-      </div>
-    </div>
-  </aside>
-
-  <!-- MAIN: Detail Panel -->
-  <main id="detailPanel" style="padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;">
-    
-    <!-- EKG Strip Chart -->
-    <section id="ekgSection" class="chart-wrapper">
-      <div class="chart-header">
-        <div class="chart-title">EKG / SIGNAL STRIP</div>
-        <div class="toggle-group" id="signalSelector">
-          <!-- Will be populated by JS or just keep it simple -->
-          <button class="toggle-btn active" data-sig="smv">SMV</button>
-          <button class="toggle-btn" data-sig="ir">IR</button>
-          <button class="toggle-btn" data-sig="ax">AX</button>
-        </div>
-      </div>
-      <div id="ekgChartContainer" class="chart-container">
-        <div class="chart-loading"><div class="skeleton-box"></div></div>
-      </div>
-    </section>
-
-    <!-- Middle Section: ML Panel & Vitals -->
-    <section id="midSection" style="display: flex; gap: 16px;">
-      
-      <!-- ML Probability Panel -->
-      <div id="mlPanel" class="chart-wrapper" style="flex: 1;">
-        <div class="chart-header">
-          <div class="chart-title">ML INFERENCE</div>
-          <div class="badge badge-outline" id="mlStatusBadge">WAITING</div>
-        </div>
-        <div id="mlPanelContainer" class="chart-container" style="display: flex; flex-direction: column; gap: 12px;">
-           <div class="chart-loading"><div class="skeleton-box"></div></div>
-        </div>
-      </div>
-
-      <!-- Vitals Trend -->
-      <div id="vitalsPanel" class="chart-wrapper" style="flex: 1;">
-        <div class="chart-header">
-          <div class="chart-title">VITALS TREND</div>
-          <div style="display:flex; gap: 12px;">
-            <div class="text-danger font-mono" style="font-size: 14px; font-weight: 600;" id="curr-hr">-- bpm</div>
-            <div class="text-accent font-mono" style="font-size: 14px; font-weight: 600;" id="curr-spo2">-- %</div>
-          </div>
-        </div>
-        <div id="vitalsChartContainer" class="chart-container">
-           <div class="chart-loading"><div class="skeleton-box"></div></div>
-        </div>
-      </div>
-
-    </section>
-
-    <!-- Activity Timeline -->
-    <section id="timelineSection" class="chart-wrapper">
-      <div class="chart-header">
-        <div class="chart-title">ACTIVITY TIMELINE</div>
-        <div class="toggle-group">
-          <button class="toggle-btn" data-hours="1">1H</button>
-          <button class="toggle-btn" data-hours="6">6H</button>
-          <button class="toggle-btn active" data-hours="24">24H</button>
-        </div>
-      </div>
-      <div id="timelineChartContainer" class="chart-container">
-         <div class="chart-loading"><div class="skeleton-box"></div></div>
-      </div>
-    </section>
-
-    <!-- Bottom Section: Quality Grid & Event Log -->
-    <section id="bottomSection" style="display: flex; gap: 16px;">
-      
-      <div class="chart-wrapper" style="flex: 1;">
-        <div class="chart-header"><div class="chart-title">SIGNAL QUALITY</div></div>
-        <div id="qualityGrid" style="padding: 16px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
-           <div class="no-data" style="grid-column: 1/-1; height: 100px;">Menunggu data...</div>
-        </div>
-      </div>
-
-      <div class="chart-wrapper" style="flex: 1;">
-        <div class="chart-header">
-          <div class="chart-title">EVENT LOG</div>
-          <div class="badge badge-outline" id="evCount">0</div>
-        </div>
-        <div id="eventLog" style="height: 160px; overflow-y: auto; padding: 8px 0;">
-           <div class="no-data" style="height: 100px;">Tidak ada event</div>
-        </div>
-      </div>
-
-    </section>
-  </main>
+  </div>
 </div>
 
 <!-- OVERLAYS -->

@@ -39,20 +39,24 @@ export function connectWS() {
     if (d.type === 'window') {
       state.windowCount++;
       
-      // We will call the UI handlers here once they are implemented
-      if (window.updateNodeCard) window.updateNodeCard(d.node_id, d);
-      if (window.updateEKGBuffer) window.updateEKGBuffer(d.node_id, d);
-      if (window.updateVitalsBuffer) window.updateVitalsBuffer(d.node_id, d);
+      // Update node details in node state
+      if (!state.nodes.has(d.node_id)) {
+        state.nodes.set(d.node_id, { node_id: d.node_id });
+      }
+      const node = state.nodes.get(d.node_id);
+      node.last_seen_ms = Date.now();
+      node.last_seen_ago_s = 0;
       
-      // Handle ML results
-      if (d.ml_results && window.updateMLPanel) {
-        window.updateMLPanel(d.node_id, d.ml_results);
-        
-        // Alert checking logic
+      // Update node card UI
+      if (window.updateNodeCard) {
+        window.updateNodeCard(d.node_id, d);
+      }
+      
+      // Alert checking logic
+      if (d.ml_results) {
         Object.values(d.ml_results).forEach(result => {
            if (!result.skipped && result.label) {
                const label = (result.label || '').toLowerCase();
-               // check if label is critical and confidence > 0.7
                const isCritical = ['jatuh', 'fall', 'critical', 'tachycardia'].some(k => label.includes(k));
                if (isCritical && result.confidence > 0.7) {
                    if (window.triggerAlert) {
