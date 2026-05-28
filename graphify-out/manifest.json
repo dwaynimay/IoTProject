@@ -1,7 +1,7 @@
 {
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\skills-lock.json": {
-    "mtime": 1779326689.7777207,
-    "ast_hash": "d689d3b8dacc519d9ec9609adf3b07cd",
+    "mtime": 1779893042.3706121,
+    "ast_hash": "8873c0fa60e70992c594866f8fc85289",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\caveman-compress\\scripts\\benchmark.py": {
@@ -39,29 +39,129 @@
     "ast_hash": "5bd0e02db4907bf4e435e5d770256fef",
     "semantic_hash": ""
   },
-  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\archive\\firmware\\CS_Sensor_gaussian_lasso.cpp": {
-    "mtime": 1779326689.637895,
-    "ast_hash": "64973de707f296155051a4eef4d3aba0",
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\claude-code-plugin-release\\scripts\\generate_changelog.js": {
+    "mtime": 1779892990.8761683,
+    "ast_hash": "cb97f1efa9dc987fef62a569dc3faa26",
     "semantic_hash": ""
   },
-  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\archive\\firmware\\CS_Sensor_gaussian_lasso.h": {
-    "mtime": 1779326689.640036,
-    "ast_hash": "be032befe4bbefee35120bd7c544d7cd",
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\scripts\\cleanup-deprecated.mjs": {
+    "mtime": 1779892772.2888472,
+    "ast_hash": "51208407b06e051bb6d8ceab244db39c",
     "semantic_hash": ""
   },
-  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\archive\\server\\config.py": {
-    "mtime": 1779326689.6410425,
-    "ast_hash": "335e13b0e7a937bcd95fb0f8124eee9b",
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\scripts\\command-metadata.json": {
+    "mtime": 1779892772.2898464,
+    "ast_hash": "b25ed9a4d6c24c83d5af46ec69b99a97",
     "semantic_hash": ""
   },
-  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\archive\\server\\cs_utils.py": {
-    "mtime": 1779326689.6410425,
-    "ast_hash": "a37427690b1766f774418177017a253a",
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\scripts\\critique-storage.mjs": {
+    "mtime": 1779892772.2898464,
+    "ast_hash": "69825b7f6236350030e72dd7dd3212b7",
     "semantic_hash": ""
   },
-  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\archive\\server\\test_single_signal.py": {
-    "mtime": 1779326689.6420417,
-    "ast_hash": "804dbde487d75ddf5b2216eb62509c1b",
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\scripts\\design-parser.mjs": {
+    "mtime": 1779892772.2918417,
+    "ast_hash": "df65268bfe73ad8202ca309c2da3805c",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\scripts\\detect-csp.mjs": {
+    "mtime": 1779892772.2918417,
+    "ast_hash": "0d3243060e66ba0d0a64684f9684ecc7",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\scripts\\detect.mjs": {
+    "mtime": 1779892772.292843,
+    "ast_hash": "db2157bcff7ab1b222d68cf96cb8643c",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\scripts\\impeccable-paths.mjs": {
+    "mtime": 1779892772.292843,
+    "ast_hash": "0e34c40e77c7a30eeabb1bac897f58a2",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\scripts\\is-generated.mjs": {
+    "mtime": 1779892772.2938437,
+    "ast_hash": "81ada1894b5f562b0993fdff1756d82c",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\scripts\\live-accept.mjs": {
+    "mtime": 1779892772.2938437,
+    "ast_hash": "feee297789fa52b5901e21bb354e8a4f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\scripts\\live-browser-session.js": {
+    "mtime": 1779892772.2948427,
+    "ast_hash": "e54c01fe1a8287f757161759beaab916",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\scripts\\live-browser.js": {
+    "mtime": 1779892772.2968416,
+    "ast_hash": "09d5959c4f68346ac3e032a1e16f8924",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\scripts\\live-complete.mjs": {
+    "mtime": 1779892772.2978435,
+    "ast_hash": "0ed6226feb3d80adf38f2098b6d7efd4",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\scripts\\live-completion.mjs": {
+    "mtime": 1779892772.2978435,
+    "ast_hash": "c51f1de5c7aae5aa3f2c67f5d9875d3e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\scripts\\live-inject.mjs": {
+    "mtime": 1779892772.2988422,
+    "ast_hash": "01365c3718e920dbeee5eeb9159093fa",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\scripts\\live-poll.mjs": {
+    "mtime": 1779892772.2988422,
+    "ast_hash": "7b78710647b202a90d99852bdb7a5135",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\scripts\\live-resume.mjs": {
+    "mtime": 1779892772.2998424,
+    "ast_hash": "9187fc4ae434c0573b7c84c95b05f744",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\scripts\\live-server.mjs": {
+    "mtime": 1779892772.2998424,
+    "ast_hash": "2754268fc4579377e0d40d6a2e34679a",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\scripts\\live-session-store.mjs": {
+    "mtime": 1779892772.3008423,
+    "ast_hash": "b0c628113419432d164204b18587d681",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\scripts\\live-status.mjs": {
+    "mtime": 1779892772.3008423,
+    "ast_hash": "f7f787396f44ef06c890f97c45d0ba75",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\scripts\\live-wrap.mjs": {
+    "mtime": 1779892772.3029869,
+    "ast_hash": "9612f1254ce763221690053592892110",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\scripts\\live.mjs": {
+    "mtime": 1779892772.3035448,
+    "ast_hash": "073965c7d10925f8ad9651a336220ee8",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\scripts\\load-context.mjs": {
+    "mtime": 1779892772.3035448,
+    "ast_hash": "f96317a92230153a77069e4f81bd8e11",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\scripts\\modern-screenshot.umd.js": {
+    "mtime": 1779892772.3045092,
+    "ast_hash": "c6afaf6ebceb162206f6a2e5b0ed653c",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\scripts\\pin.mjs": {
+    "mtime": 1779892772.3055441,
+    "ast_hash": "59e1f8315c2083fb7997e5ff3edfcb57",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_gateway\\ArduinoJson\\ArduinoJson.h": {
@@ -2330,43 +2430,38 @@
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.vscode\\c_cpp_properties.json": {
-    "mtime": 1779726873.5476992,
+    "mtime": 1779988058.7790196,
     "ast_hash": "5a8f6cabc0a2ad3872e7d54ab9be5936",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.vscode\\extensions.json": {
-    "mtime": 1779726873.5497231,
+    "mtime": 1779988058.7844043,
     "ast_hash": "41e5d8dec3ff179fe5aecb46632391ca",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.vscode\\launch.json": {
-    "mtime": 1779726873.5546863,
+    "mtime": 1779988058.794598,
     "ast_hash": "139d1d005d53b644bfcaee29a61b8196",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\include\\Config.h": {
-    "mtime": 1779326689.6747713,
-    "ast_hash": "08aaeb5087553d00e3cbc04c98d4ab76",
+    "mtime": 1779921709.119951,
+    "ast_hash": "5e4d71960e8bbe381fbd6a8258bb99df",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\include\\config\\features.h": {
-    "mtime": 1779864347.8389852,
-    "ast_hash": "610ecf6d536a7f1a990080ce22b29ef9",
+    "mtime": 1779976199.534187,
+    "ast_hash": "af8aba48d7c88975cdaa1f4b04724fd9",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\include\\config\\hardware.h": {
-    "mtime": 1779863865.3324065,
-    "ast_hash": "3892cc621e4ae151c510b2a12f50954c",
-    "semantic_hash": ""
-  },
-  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\include\\config\\mesh_settings.h": {
-    "mtime": 1779326689.6819146,
-    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "mtime": 1779921198.0770316,
+    "ast_hash": "48e44c0d927195d8d722787225b890ee",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\include\\config\\tuning.h": {
-    "mtime": 1779535831.0743725,
-    "ast_hash": "a9412d0a5946275c0fe24347c2f147c5",
+    "mtime": 1779921588.3784263,
+    "ast_hash": "3963d6dd47a8bd2438cdfa53f2e3924d",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\include\\utils\\Logger.h": {
@@ -2380,23 +2475,23 @@
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\lib\\CS_Model_Gaussian\\CS_Sensor.h": {
-    "mtime": 1779326689.6819146,
-    "ast_hash": "7be635c3d75d579e094345964731f366",
+    "mtime": 1779942512.7558663,
+    "ast_hash": "878738c681c5f615dc6e6d7580108961",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\lib\\CS_Model_Lasso\\CS_Sensor.cpp": {
-    "mtime": 1779326689.6819146,
-    "ast_hash": "64973de707f296155051a4eef4d3aba0",
+    "mtime": 1779922381.3436365,
+    "ast_hash": "c6bf4e0656e79f06b588b75b219c90b8",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\lib\\CS_Model_Lasso\\CS_Sensor.h": {
-    "mtime": 1779326689.6819146,
-    "ast_hash": "588247733c583bceb421e6a719abce7b",
+    "mtime": 1779922352.7924297,
+    "ast_hash": "9062bb0d23163592ce9e4bde0d24aab6",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\lib\\EspNowMesh\\EspNowMesh.cpp": {
-    "mtime": 1779864796.0805736,
-    "ast_hash": "264254507f86b8edb96077493c785d35",
+    "mtime": 1779922814.2701776,
+    "ast_hash": "fcb7d681fec3cc3b47cb6d47bf718474",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\lib\\EspNowMesh\\EspNowMesh.h": {
@@ -2470,18 +2565,18 @@
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\src\\main.cpp": {
-    "mtime": 1779797903.2428126,
-    "ast_hash": "7e98feb0e25a625a50f7de97678ebd41",
+    "mtime": 1779884987.1837742,
+    "ast_hash": "ad59b3dd9d10a8d79577562e9b28e0a9",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\src\\task_cs_sender.cpp": {
-    "mtime": 1779863936.5504339,
-    "ast_hash": "ed2937291057eaf54a6be74d7b4e1986",
+    "mtime": 1779948298.4274905,
+    "ast_hash": "8c289925fd0db78f38d3c80761c1afe1",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\src\\task_mesh_handler.cpp": {
-    "mtime": 1779326689.701756,
-    "ast_hash": "9cacffca186fd67c2674da24549aaf61",
+    "mtime": 1779983937.6044576,
+    "ast_hash": "c53ceb41aaf13bd096d5321533f7090c",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\test\\test_cs_encoder.cpp": {
@@ -2530,8 +2625,8 @@
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\dashboard\\websocket.py": {
-    "mtime": 1779457244.8878708,
-    "ast_hash": "5a136ad05c6d487fe190612bf37fadea",
+    "mtime": 1779974942.3090146,
+    "ast_hash": "c070c4690f79ed094cd0937bd19db049",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\dashboard\\__init__.py": {
@@ -2650,18 +2745,18 @@
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\reconstruct\\node_state.py": {
-    "mtime": 1779457244.900684,
-    "ast_hash": "2a8e1dab3cf44d95423ad6bf3e0dd34e",
+    "mtime": 1779975064.2061622,
+    "ast_hash": "27e14f5b8e39cde4415c6aeac6f3ffd7",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\reconstruct\\notifier.py": {
-    "mtime": 1779515447.9218335,
-    "ast_hash": "550df3a46f867d6e0a86c85a3b8d37a0",
+    "mtime": 1779973601.176197,
+    "ast_hash": "aea2cea48165316e55f394b21a2fab26",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\reconstruct\\processor.py": {
-    "mtime": 1779515439.6826553,
-    "ast_hash": "dc4cf49e288491564cab8052ac43ca12",
+    "mtime": 1779973614.299626,
+    "ast_hash": "b90f00b9be4f9c62eb07612e969a9944",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\apps\\reconstruct\\__init__.py": {
@@ -2695,8 +2790,8 @@
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\core\\validator.py": {
-    "mtime": 1779457244.9103398,
-    "ast_hash": "19d07ad5c94486331840f5ad947d64f1",
+    "mtime": 1779944648.1295333,
+    "ast_hash": "678084f98572489f6d3485fa249ab57c",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\core\\__init__.py": {
@@ -2730,13 +2825,13 @@
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\static\\js\\api.js": {
-    "mtime": 1779515777.380894,
-    "ast_hash": "d60e12fb82999cf2b4c2f8418014b73a",
+    "mtime": 1779893406.5398932,
+    "ast_hash": "9c1f8d3f03421077c25fdbaf398b964e",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\static\\js\\app.js": {
-    "mtime": 1779515982.5576565,
-    "ast_hash": "8222c1d2e2249d044bbe4fc0b23dbc77",
+    "mtime": 1779893976.606757,
+    "ast_hash": "c267f4f824149131cd0ba54d641f0b42",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\static\\js\\ml.js": {
@@ -2745,8 +2840,8 @@
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\static\\js\\nodes.js": {
-    "mtime": 1779872977.3873885,
-    "ast_hash": "976eefde1e96f72ffa8d96d677b80471",
+    "mtime": 1779974335.016074,
+    "ast_hash": "bf5decce0bcb78643f58ee420dfebd8b",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\static\\js\\state.js": {
@@ -2760,8 +2855,8 @@
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\static\\js\\ws.js": {
-    "mtime": 1779872992.9331,
-    "ast_hash": "8973d1ddae7a4e7188887696496b3f48",
+    "mtime": 1779893540.2101183,
+    "ast_hash": "87490a091a5c9cdbd4d7daed788e0078",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\static\\js\\charts\\activity_timeline.js": {
@@ -2849,6 +2944,16 @@
     "ast_hash": "a0e4d192b9e2e17256124dbfc8e24e6a",
     "semantic_hash": ""
   },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\babysit\\SKILL.md": {
+    "mtime": 1779892990.8671656,
+    "ast_hash": "738bb09a4f3a2b8aedda8a89a12f6e73",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\brandkit\\SKILL.md": {
+    "mtime": 1779893040.9530888,
+    "ast_hash": "7491f8fb77b0ebf517b758d096ac4ab4",
+    "semantic_hash": ""
+  },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\cavecrew\\README.md": {
     "mtime": 1779326689.6175032,
     "ast_hash": "8b7ca548bd36b6db39006bac6cd54759",
@@ -2924,19 +3029,339 @@
     "ast_hash": "e9966f688641209792719474f241a6ef",
     "semantic_hash": ""
   },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\claude-code-plugin-release\\SKILL.md": {
+    "mtime": 1779892990.8761683,
+    "ast_hash": "2b6d6f1abbfd23c67851570fcef9e665",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\design-is\\SKILL.md": {
+    "mtime": 1779892990.8681374,
+    "ast_hash": "3d5080c379883f7d80d5f590c8076074",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\design-taste-frontend\\SKILL.md": {
+    "mtime": 1779893040.966854,
+    "ast_hash": "648c8bf98f84fbe7f14bf2da035c57fe",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\design-taste-frontend-v1\\SKILL.md": {
+    "mtime": 1779893040.9658544,
+    "ast_hash": "e109588218fb2a3411cb5110f93bb634",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\do\\SKILL.md": {
+    "mtime": 1779892990.8691342,
+    "ast_hash": "23893e23d9843ebe7e7c2142da7743e7",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\full-output-enforcement\\SKILL.md": {
+    "mtime": 1779893040.9616134,
+    "ast_hash": "2072dc2c1357dc9cd6384d1f441e05c3",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\gpt-taste\\SKILL.md": {
+    "mtime": 1779893040.9550886,
+    "ast_hash": "e2a7560cbfce7a853dd8f65eca12c103",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\high-end-visual-design\\SKILL.md": {
+    "mtime": 1779893040.9637468,
+    "ast_hash": "64f7c1069a5a3d18797950d8fac7b63a",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\how-it-works\\onboarding-explainer.md": {
+    "mtime": 1779892990.8701358,
+    "ast_hash": "1d40d1d890d238ea04b603faa1303102",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\how-it-works\\SKILL.md": {
+    "mtime": 1779892990.8691342,
+    "ast_hash": "8e5ff280f2113157818e68e5df04c451",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\image-to-code\\SKILL.md": {
+    "mtime": 1779893040.9570925,
+    "ast_hash": "b18a810930da9c6b558b15c85bc74007",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\imagegen-frontend-mobile\\SKILL.md": {
+    "mtime": 1779893040.958089,
+    "ast_hash": "6253c18387ca5d561a945ffe14e70d54",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\imagegen-frontend-web\\SKILL.md": {
+    "mtime": 1779893040.959088,
+    "ast_hash": "728f55ab7e44330e78aac4ca8331d83a",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\SKILL.md": {
+    "mtime": 1779892772.2674727,
+    "ast_hash": "259cfd39515b1b390c02c811de7491f9",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\agents\\impeccable-asset-producer.md": {
+    "mtime": 1779892772.2684715,
+    "ast_hash": "892906b3db9443e58267e77d4038a0fb",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\adapt.md": {
+    "mtime": 1779892772.2684715,
+    "ast_hash": "27c29f5a41c6104b89a5ac22d6476853",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\animate.md": {
+    "mtime": 1779892772.2694714,
+    "ast_hash": "b62d806becc589f6e322568dbf1643ec",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\audit.md": {
+    "mtime": 1779892772.2694714,
+    "ast_hash": "bfa673574701e2910ca2b3473aa1c6ad",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\bolder.md": {
+    "mtime": 1779892772.2706096,
+    "ast_hash": "633d0f931184a8aac040a37ba0c2c0f6",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\brand.md": {
+    "mtime": 1779892772.271132,
+    "ast_hash": "74e97fbbaad8eba976b3fd29943f4424",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\clarify.md": {
+    "mtime": 1779892772.2723393,
+    "ast_hash": "9dc6a767d5bbd31e9117d36d06e1261e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\codex.md": {
+    "mtime": 1779892772.2723393,
+    "ast_hash": "c044e7cf44c58dea75e9c6a3413e8d70",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\cognitive-load.md": {
+    "mtime": 1779892772.2732747,
+    "ast_hash": "464d1b1b3566c74909fadcd2c13bc544",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\color-and-contrast.md": {
+    "mtime": 1779892772.274263,
+    "ast_hash": "c51e5bca12b63f220ad15454852a8594",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\colorize.md": {
+    "mtime": 1779892772.2752616,
+    "ast_hash": "c9702b3f0c17fa6846747d369ad82699",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\craft.md": {
+    "mtime": 1779892772.2752616,
+    "ast_hash": "59729d8216df64493363d604df736563",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\critique.md": {
+    "mtime": 1779892772.2762613,
+    "ast_hash": "ccf66bd0f3b8fd0d11592290d078418e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\delight.md": {
+    "mtime": 1779892772.2762613,
+    "ast_hash": "c302379f6c88c20d4886636aaf5e6dde",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\distill.md": {
+    "mtime": 1779892772.277353,
+    "ast_hash": "15b690d4b8f6bf9c8a0d5208f1f6f1fb",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\document.md": {
+    "mtime": 1779892772.2782612,
+    "ast_hash": "8faba1b504418148860d159448194fc9",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\extract.md": {
+    "mtime": 1779892772.2782612,
+    "ast_hash": "bcbed7005945d9de131f69985cbc5e6f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\harden.md": {
+    "mtime": 1779892772.2782612,
+    "ast_hash": "b8c6ce7f60733c8dab39b12c7957750b",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\heuristics-scoring.md": {
+    "mtime": 1779892772.279258,
+    "ast_hash": "f1606921268571e14591682483b595ef",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\interaction-design.md": {
+    "mtime": 1779892772.279258,
+    "ast_hash": "ea39b98601f17b5a87f7de799b953000",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\layout.md": {
+    "mtime": 1779892772.2802596,
+    "ast_hash": "400e8cbbc0688d27d288f80c5b52314a",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\live.md": {
+    "mtime": 1779892772.2802596,
+    "ast_hash": "443d531ec715bb64e48b660671e3ad78",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\motion-design.md": {
+    "mtime": 1779892772.2812593,
+    "ast_hash": "95de769ab6e30a4214a969ebb25ebe89",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\onboard.md": {
+    "mtime": 1779892772.2812593,
+    "ast_hash": "8def483b066f2c7fb906c313e3653c10",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\optimize.md": {
+    "mtime": 1779892772.2822595,
+    "ast_hash": "613f211310d45abd984d0bd610abc1fb",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\overdrive.md": {
+    "mtime": 1779892772.2822595,
+    "ast_hash": "891190b0148e5156aa007ca5917a0bb4",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\personas.md": {
+    "mtime": 1779892772.2822595,
+    "ast_hash": "3022b396ec3f0977be627875594bfa81",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\polish.md": {
+    "mtime": 1779892772.283326,
+    "ast_hash": "5ba31783c05352cbda780abd9e12d969",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\product.md": {
+    "mtime": 1779892772.283326,
+    "ast_hash": "c073e67bbcec51f31af4ba132730aca9",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\quieter.md": {
+    "mtime": 1779892772.2842734,
+    "ast_hash": "9b34ed291f042b1dad31f66f487c4137",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\responsive-design.md": {
+    "mtime": 1779892772.2842734,
+    "ast_hash": "3a0e2834961edfe9d44cef19ffc84737",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\shape.md": {
+    "mtime": 1779892772.2852762,
+    "ast_hash": "aab83193a1a58010b1de9f67074b5915",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\spatial-design.md": {
+    "mtime": 1779892772.2852762,
+    "ast_hash": "28fd3d7f36c9ad72fdc5c3a90c7f5505",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\teach.md": {
+    "mtime": 1779892772.2852762,
+    "ast_hash": "ab273dd5cd15e248ebdf7f52671e3f81",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\typeset.md": {
+    "mtime": 1779892772.2868464,
+    "ast_hash": "3b4d239361890c9db44b5484d002f2d2",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\typography.md": {
+    "mtime": 1779892772.2868464,
+    "ast_hash": "841fa5dc3d8cf998ecb63b211b766c7c",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\impeccable\\reference\\ux-writing.md": {
+    "mtime": 1779892772.2878425,
+    "ast_hash": "74e4aac960c114a7b8761210f80a8cc5",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\industrial-brutalist-ui\\SKILL.md": {
+    "mtime": 1779893040.9540865,
+    "ast_hash": "da7f92d7e3b8b526ecbd71009fe973ca",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\knowledge-agent\\SKILL.md": {
+    "mtime": 1779892990.8701358,
+    "ast_hash": "f102ee3a9b78f2d140c55a6eca79b83e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\learn-codebase\\SKILL.md": {
+    "mtime": 1779892990.8711338,
+    "ast_hash": "9101c521452e8dfb3f8dcd5d88950c67",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\make-plan\\SKILL.md": {
+    "mtime": 1779892990.8721354,
+    "ast_hash": "3b9eb2e477a780e60a1fe59d6c2ae218",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\mem-search\\SKILL.md": {
+    "mtime": 1779892990.8721354,
+    "ast_hash": "bc93ed17f083df4124ba0d9593ca4e07",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\minimalist-ui\\SKILL.md": {
+    "mtime": 1779893040.9606194,
+    "ast_hash": "32f8681f79a681d00a4b72ddce4415b1",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\oh-my-issues\\SKILL.md": {
+    "mtime": 1779892990.8731334,
+    "ast_hash": "89c28bd4c5b6d47ad8ce67897da21bdf",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\pathfinder\\SKILL.md": {
+    "mtime": 1779892990.8741329,
+    "ast_hash": "11830fabd88b88947463fd640837638f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\redesign-existing-projects\\SKILL.md": {
+    "mtime": 1779893040.962701,
+    "ast_hash": "c8d729e3e807df37dcd5e6262c9b8843",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\smart-explore\\SKILL.md": {
+    "mtime": 1779892990.8751323,
+    "ast_hash": "b8bfefcd6bfb1a598608dd63f6fc0e07",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\stitch-design-taste\\DESIGN.md": {
+    "mtime": 1779893040.9643366,
+    "ast_hash": "7f8c91aeecc8983b687965c2fc23438c",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\stitch-design-taste\\SKILL.md": {
+    "mtime": 1779893040.9648552,
+    "ast_hash": "782a1107366a3490dc52ab8b032f05ef",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\timeline-report\\SKILL.md": {
+    "mtime": 1779892990.8756475,
+    "ast_hash": "57f41204b6f5ab7d9f7a7f7b32574c47",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\weekly-digests\\SKILL.md": {
+    "mtime": 1779892990.8771646,
+    "ast_hash": "9ddbd4829aefa0288358629871dc5fe9",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\skills\\wowerpoint\\SKILL.md": {
+    "mtime": 1779892990.8771646,
+    "ast_hash": "65a1a5484e8ebb6bc693cea9af52847d",
+    "semantic_hash": ""
+  },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\.agents\\workflows\\graphify.md": {
     "mtime": 1779326689.6306162,
     "ast_hash": "84de69efd46ab0b8430393bd4188f8f2",
-    "semantic_hash": ""
-  },
-  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\archive\\README.md": {
-    "mtime": 1779326689.637895,
-    "ast_hash": "fec51cd232899d35db00b4b1484afb42",
-    "semantic_hash": ""
-  },
-  "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\docs\\mesh_architecture.md": {
-    "mtime": 1779326689.6618114,
-    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\firmware\\.pio\\libdeps\\node_gateway\\ArduinoJson\\LICENSE.txt": {
@@ -3195,13 +3620,13 @@
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\static\\calibration.html": {
-    "mtime": 1779528455.3272288,
-    "ast_hash": "2d157691967db4de3c702c0bc45b2062",
+    "mtime": 1779878391.315049,
+    "ast_hash": "b2149ad5bc93295fe903cbbf6a74fbff",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\server\\static\\index.html": {
-    "mtime": 1779517150.563487,
-    "ast_hash": "18a03346a6c470b49a4d5e8d436f85c6",
+    "mtime": 1779893965.7681327,
+    "ast_hash": "0c57b26abd0e9d437b0133c012292958",
     "semantic_hash": ""
   },
   "C:\\Users\\Administrator\\Documents\\GitHub\\IoTProject\\docs\\breadboard_v01.png": {
