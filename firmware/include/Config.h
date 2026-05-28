@@ -11,7 +11,8 @@
 //   1. config/credentials.h → isi SSID, password WiFi, IP broker MQTT
 //   2. config/hardware.h    → isi MAC address ketiga ESP32
 //   3. config/features.h    → atur LOG_LEVEL dan fitur on/off
-//   4. Compile & upload
+//   4. config/tuning.h      → atur timing & priority
+//   5. Compile & upload
 //
 // STRUKTUR INCLUDE (urutan penting):
 //   features.h   → #define LOG_LEVEL, flag fitur

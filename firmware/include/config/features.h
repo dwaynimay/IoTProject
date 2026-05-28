@@ -2,14 +2,12 @@
 
 #pragma once
 // =============================================================================
-// config/features.h — FITUR ON/OFF & KONSTANTA OPERASIONAL
+// features.h — FITUR ON/OFF & KONSTANTA OPERASIONAL
 // =============================================================================
-// Ubah nilai true/false di sini lalu compile ulang.
 //
 // Catatan namespace Mqtt:
-//   credentials.h  → BROKER, PORT, CLIENT_ID, USER, PASSWORD  (sensitif)
-//   features.h     → TOPIC_BASE, KEEPALIVE, RECONNECT_DELAY_MS (operasional)
-// Keduanya di-include oleh Config.h sehingga namespace Mqtt tergabung otomatis.
+//   credentials.h  → BROKER, PORT, CLIENT_ID, USER, PASSWORD
+//   features.h     → TOPIC_BASE, KEEPALIVE, RECONNECT_DELAY_MS
 // =============================================================================
 
 
@@ -27,7 +25,7 @@
 // Di LOG_LEVEL=3: ~50 calls/detik → overhead CPU signifikan.
 // Di LOG_LEVEL=2: hanya WARN/ERROR → hampir tidak ada Serial overhead.
 // ---------------------------------------------------------------------------
-#define LOG_LEVEL        3   // WARN — ubah ke 3 untuk debugging
+#define LOG_LEVEL        3  
 #define LOG_ENABLE_COLOR 0
 
 
@@ -41,7 +39,7 @@ namespace EdgeConfig
 
 
 // ---------------------------------------------------------------------------
-// MQTT — Konstanta operasional (bukan kredensial)
+// MQTT — Konstanta operasional
 //
 // Network_Mqtt.cpp membutuhkan:
 //   Mqtt::TOPIC_BASE        → prefix topic MQTT

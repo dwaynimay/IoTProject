@@ -197,8 +197,7 @@ bool EspNowMesh::begin(bool senderMode)
 
         if (!_addPeer(BROADCAST_MAC)) return false;
 
-        // v5.0: tidak ada background discovery task — channel sudah pasti
-        LOG_INFO(TAG, "Mode: SENSOR | MAC: %s | ch=%d | channelConfirmed=YES",
+        LOG_INFO(TAG, "Mode: SENSOR | MAC: %s | ch=%d",
                  WiFi.macAddress().c_str(), s_channel);
     }
     else

@@ -14,12 +14,11 @@
 // Pin I2C
 //
 // Sistem ini memakai DUA bus I2C terpisah agar MPU6050 dan MAX30102
-// tidak saling mengganggu (terutama pada sensor kloningan/KW).
+// tidak saling mengganggu.
 //
 //   Wire  (bus 1) → MAX30102 PPG   : pin 18 (SDA) & 19 (SCL)
 //   Wire1 (bus 2) → MPU6050 IMU   : pin 21 (SDA) & 22 (SCL)
 //
-// Jika ingin menyatukan ke satu bus, pastikan sensor Anda kompatibel.
 // ---------------------------------------------------------------------------
 namespace Pin
 {
@@ -47,11 +46,11 @@ namespace Pin
 // ---------------------------------------------------------------------------
 namespace I2CClock
 {
-    constexpr uint32_t SPEED = 50000UL; // 50 kHz — aman untuk kabel 1m
+    constexpr uint32_t SPEED = 50000UL; // 50 kHz
 }
 
 // ---------------------------------------------------------------------------
-// Alamat I2C (tidak perlu diubah kecuali sensor Anda berbeda)
+// Alamat I2C
 // ---------------------------------------------------------------------------
 namespace I2CAddr
 {
@@ -68,16 +67,10 @@ namespace I2CAddr
 //     void setup() { Serial.begin(115200); WiFi.mode(WIFI_STA); Serial.println(WiFi.macAddress()); }
 //     void loop() {}
 //
-// Ganti nilai di bawah dengan MAC address ESP32 Anda masing-masing.
 // ---------------------------------------------------------------------------
 namespace MacAddr
 {
-    // Node A (Sensor 1) — cek log boot: "[ESP-NOW] MAC lokal: XX:XX:XX:XX:XX:XX"
     constexpr uint8_t NODE_A[6]  = {0xF4, 0x2D, 0xC9, 0x6F, 0x5C, 0x40};
-
-    // Node B (Sensor 2) — ganti dengan MAC ESP32 kedua Anda
     constexpr uint8_t NODE_B[6]  = {0x28, 0x05, 0xA5, 0x31, 0xF4, 0x94};
-
-    // Node C (Gateway) — ganti dengan MAC ESP32 gateway Anda
     constexpr uint8_t GATEWAY[6] = {0xF4, 0x2D, 0xC9, 0x70, 0xD1, 0x34};
 }

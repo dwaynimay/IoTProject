@@ -164,24 +164,23 @@ static const uint8_t* _selectDstMac(const RouteDecision& dec)
 
 
 // =============================================================================
-// taskRssiExchange — tidak berubah dari v3.0
+// taskRssiExchange — v3.1: tambah retry & INFO log
 // =============================================================================
 void taskRssiExchange(void* param)
 {
     static constexpr char RTAG[] = "RSSI_EX";
 
-    // v4.0: Tunggu gateway ditemukan sebelum mulai exchange
-    LOG_INFO(RTAG, "Menunggu koneksi gateway (background discovery)...");
+    // Tunggu gateway ditemukan sebelum mulai exchange
+    LOG_INFO(RTAG, "Menunggu koneksi gateway...");
     while (!g_mesh.isChannelConfirmed())
-    {
         vTaskDelay(pdMS_TO_TICKS(1000));
-    }
-    LOG_INFO(RTAG, "Gateway terdeteksi — mulai RSSI exchange");
-
-    LOG_INFO(RTAG, "taskRssiExchange dimulai | interval=%lu ms",
+    LOG_INFO(RTAG, "Gateway terdeteksi — mulai RSSI exchange | interval=%lu ms",
              (unsigned long)RoutingCfg::RSSI_EXCHANGE_MS);
 
     vTaskDelay(pdMS_TO_TICKS(RoutingCfg::DISCOVERY_PHASE_MS));
+
+    uint32_t txCount   = 0;
+    uint32_t failCount = 0;
 
     for (;;)
     {
@@ -189,26 +188,22 @@ void taskRssiExchange(void* param)
 
         const int8_t myRssi = g_mesh.getLastBeaconRssi();
 
-        // ── SEBELUM: langsung skip jika -127
-        // ── SESUDAH: update router dulu, baru putuskan kirim exchange
         if (myRssi != RoutingCfg::RSSI_UNKNOWN)
-        {
             g_router.updateSelfRssi(myRssi);
-        }
         else
-        {
-            LOG_EVERY_N(5, LOG_WARN, RTAG,
-                        "Belum terima beacon dari gateway — RSSI belum valid");
-            // Tidak continue — tetap kirim report ke neighbor
-            // agar neighbor tahu kita ada, walau RSSI belum valid
-        }
+            LOG_WARN(RTAG, "Belum terima beacon dari gateway — RSSI belum valid");
 
-        // Kirim RSSI report ke neighbor terlepas dari validitas RSSI self
-        // Gunakan nilai terbaik yang ada (bisa RSSI_UNKNOWN)
+        // Kirim RSSI report ke neighbor — best-effort, tidak perlu retry.
+        // Jika gagal, exchange berikutnya (RSSI_EXCHANGE_MS) akan kirim ulang.
+        // Retry langsung hanya menambah NACK count saat neighbor sedang offline/restart.
         const bool ok = g_mesh.sendRssiReport(NODE_ID, myRssi);
 
-        LOG_DEBUG(RTAG, "RSSI exchange | self=%d dBm | ok=%s",
-                  myRssi, ok ? "Y" : "N");
+        txCount++;
+        if (!ok) failCount++;
+
+        // Log setiap exchange agar mudah dimonitor (INFO level)
+        LOG_INFO(RTAG, "RSSI report | self=%d dBm | ok=%s | fail=%lu/%lu",
+                 myRssi, ok ? "Y" : "N", failCount, txCount);
 
         if ((millis() / RoutingCfg::RSSI_EXCHANGE_MS) % 5 == 0)
             g_router.printStatus();
@@ -365,15 +360,13 @@ void taskCSSender(void* param)
         static constexpr uint8_t INTER_PKT_MS       = 5;
         static constexpr uint8_t RETRY_MIN_MS       = 3;
         static constexpr uint8_t RETRY_MAX_MS       = 8;
-        static constexpr uint8_t NODE_STAGGER_MS    = 50;  // × NODE_ID
-        static bool              s_staggerDone      = false;
+        // v3.2: Stagger setiap window, bukan hanya sekali.
+        // 10ms × NODE_ID = overhead kecil (10-20ms) tapi cukup untuk
+        // desinkronisasi transmisi antar node dan mengurangi NACK.
+        static constexpr uint8_t NODE_STAGGER_MS    = 10;  // × NODE_ID, setiap window
 
-        // #3: Stagger sekali di awal setiap window
-        if (!s_staggerDone)
-        {
-            vTaskDelay(pdMS_TO_TICKS(NODE_ID * NODE_STAGGER_MS));
-            s_staggerDone = true;
-        }
+        // #3: Stagger setiap window untuk desinkronisasi antar node
+        vTaskDelay(pdMS_TO_TICKS(NODE_ID * NODE_STAGGER_MS));
 
         // Macro: kirim + retry 1x jika NACK
         #define SEND_WITH_RETRY(sendExpr)                                     \
