@@ -147,6 +147,7 @@ def process_window(
         report     = report,
         elapsed_ms = elapsed_ms,
         ml_results = ml_results_dict,
+        results    = results,
     )
 
     # ── Log anomali ke storage + dashboard ───────────────────────────────────

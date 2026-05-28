@@ -3,19 +3,25 @@ node_state.py — State management per node: buffer imu/ppg, timestamp spread ch
 
 Tanggung jawab tunggal:
     Menyimpan buffer cs_imu dan cs_ppg per node. Saat keduanya siap dan timestamp
-    spread dalam toleransi, memanggil processor.process_window().
+    spread dalam toleransi, memanggil processor.process_window() via thread pool
+    agar MQTT callback thread tidak diblokir selama proses berat (CS rekon + ML).
 
 Tidak ada MQTT di sini. Tidak ada logika rekonstruksi di sini.
 """
 
 import logging
 import threading
+from concurrent.futures import ThreadPoolExecutor
 from typing import Callable
 
 from core import ValidatorRegistry, StorageManager, QualityAssessor
 from core.config import TS_SPREAD_TOLERANCE_MS
 
 logger = logging.getLogger(__name__)
+
+# Thread pool terpisah untuk proses berat (CS rekon + ML inference + DB write).
+# max_workers=2: cukup untuk 2-3 node paralel tanpa membebani CPU.
+_PROCESSOR_POOL = ThreadPoolExecutor(max_workers=2, thread_name_prefix="proc")
 
 
 class NodeState:
@@ -90,7 +96,7 @@ class NodeState:
     # ── Internal ──────────────────────────────────────────────────────────────
 
     def _try_dispatch(self) -> None:
-        """Cek apakah kedua buffer siap. Jika ya, dispatch ke processor."""
+        """Cek apakah kedua buffer siap. Jika ya, submit ke thread pool."""
         if self._imu_buf is None or self._ppg_buf is None:
             return
 
@@ -99,29 +105,37 @@ class NodeState:
         spread = abs(ts_imu - ts_ppg)
 
         if spread > TS_SPREAD_TOLERANCE_MS:
-            if ts_imu < ts_ppg:
-                logger.warning("Node %d | ts spread=%dms > %dms — reset imu buf",
-                               self.node_id, spread, TS_SPREAD_TOLERANCE_MS)
-                self._imu_buf = None
-            else:
-                logger.warning("Node %d | ts spread=%dms > %dms — reset ppg buf",
-                               self.node_id, spread, TS_SPREAD_TOLERANCE_MS)
-                self._ppg_buf = None
-            return
+            # v3.2: Log warning saja, tetap dispatch (tidak drop window)
+            logger.warning("Node %d | ts spread=%dms > %dms — accepting anyway "
+                           "(imu_ts=%d ppg_ts=%d)",
+                           self.node_id, spread, TS_SPREAD_TOLERANCE_MS,
+                           ts_imu, ts_ppg)
 
-        # Kedua buffer valid dan dalam toleransi — ambil dan kosongkan
+        # Ambil dan kosongkan buffer — MQTT thread langsung bebas setelah ini
         imu_data, ppg_data = self._imu_buf, self._ppg_buf
         self._imu_buf = None
         self._ppg_buf = None
 
         self.windows_done += 1
+        window_num = self.windows_done
 
-        self._processor(
-            node_id    = self.node_id,
-            window_num = self.windows_done,
-            imu_data   = imu_data,
-            ppg_data   = ppg_data,
-            assessor   = self._assessor,
-            storage    = self._storage,
-            timing     = self._timing,
+        # Submit ke thread pool — proses berat tidak memblokir MQTT thread
+        _PROCESSOR_POOL.submit(
+            self._run_processor, window_num, imu_data, ppg_data
         )
+
+    def _run_processor(self, window_num: int, imu_data: dict, ppg_data: dict) -> None:
+        """Dijalankan di thread pool — boleh lambat tanpa memblokir MQTT."""
+        try:
+            self._processor(
+                node_id    = self.node_id,
+                window_num = window_num,
+                imu_data   = imu_data,
+                ppg_data   = ppg_data,
+                assessor   = self._assessor,
+                storage    = self._storage,
+                timing     = self._timing,
+            )
+        except Exception as exc:
+            logger.error("Node %d | processor error: %s", self.node_id, exc,
+                         exc_info=True)

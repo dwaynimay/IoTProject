@@ -38,12 +38,17 @@ async def ws_stream(websocket: WebSocket):
             "ts_ms":   _now_ms(),
         })
 
-        # Keep-alive loop
+        # Keep-alive loop — tunggu pesan dari client (disconnect) atau kirim ping
         while True:
-            await asyncio.sleep(30)
-            await websocket.send_json({"type": "ping", "ts_ms": _now_ms()})
+            try:
+                # Tunggu pesan dari client (termasuk close frame) dengan timeout 30s
+                await asyncio.wait_for(websocket.receive_text(), timeout=30)
+            except asyncio.TimeoutError:
+                # Timeout → kirim ping, lanjut loop
+                await websocket.send_json({"type": "ping", "ts_ms": _now_ms()})
+            # WebSocketDisconnect akan di-raise oleh receive_text() saat client disconnect
 
-    except WebSocketDisconnect:
+    except (WebSocketDisconnect, RuntimeError):
         pass
     finally:
         await hub.disconnect(websocket)
@@ -64,10 +69,12 @@ async def ws_events(websocket: WebSocket):
         })
 
         while True:
-            await asyncio.sleep(30)
-            await websocket.send_json({"type": "ping", "ts_ms": _now_ms()})
+            try:
+                await asyncio.wait_for(websocket.receive_text(), timeout=30)
+            except asyncio.TimeoutError:
+                await websocket.send_json({"type": "ping", "ts_ms": _now_ms()})
 
-    except WebSocketDisconnect:
+    except (WebSocketDisconnect, RuntimeError):
         pass
     finally:
         await hub.disconnect(websocket)

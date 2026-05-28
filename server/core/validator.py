@@ -52,8 +52,10 @@ ALLOWED_NODE_IDS: Optional[set[int]] = None  # None = nonaktif
 # Jika ts melompat lebih dari nilai ini ke DEPAN, dianggap reboot atau
 # clock skew — tetap diterima tapi dicatat.
 # Jika ts mundur lebih dari TS_BACKWARD_TOLERANCE_MS, paket ditolak.
-TS_MAX_JUMP_MS: int        = 60_000   # 60 detik ke depan = toleransi
-TS_BACKWARD_TOLERANCE_MS: int = 100   # 100 ms ke belakang = masih oke (jitter)
+TS_MAX_JUMP_MS: int           = 60_000   # 60 detik ke depan = toleransi
+TS_BACKWARD_TOLERANCE_MS: int = 100      # 100 ms ke belakang = masih oke (jitter)
+# Jika ts mundur lebih dari ini, dianggap ESP32 reboot → reset tracker, paket diterima.
+TS_REBOOT_THRESHOLD_MS: int   = 30_000   # ts mundur > 30 detik = reboot
 
 # Batas absolut nilai elemen measurement vector y[i].
 # Nilai di luar range ini hampir pasti corrupt (overflow, NaN propagation).
@@ -125,8 +127,18 @@ class _MonotonicityTracker:
         prev = self._last_ts[node_id]
         diff = ts - prev  # positif = maju, negatif = mundur
 
+        if diff < -TS_REBOOT_THRESHOLD_MS:
+            # Ts mundur sangat jauh -> ESP32 reboot (millis() reset ke 0)
+            # Reset tracker agar sesi baru tidak terus ditolak
+            self._last_ts[node_id] = ts
+            return True, (
+                f"[WARN] reboot terdeteksi: node={node_id} "
+                f"prev={prev}ms current={ts}ms diff={diff}ms "
+                f"-- tracker direset"
+            )
+
         if diff < -TS_BACKWARD_TOLERANCE_MS:
-            # Ts mundur signifikan — tolak
+            # Ts mundur signifikan tapi bukan reboot -- tolak (jitter/replay)
             return False, (
                 f"ts mundur: node={node_id} "
                 f"prev={prev}ms current={ts}ms diff={diff}ms "
@@ -134,7 +146,7 @@ class _MonotonicityTracker:
             )
 
         if diff > TS_MAX_JUMP_MS:
-            # Lompat jauh ke depan — kemungkinan reboot, tetap diterima
+            # Lompat jauh ke depan -- kemungkinan clock skew, tetap diterima
             # tapi update state dan beri warning (bukan error)
             self._last_ts[node_id] = ts
             return True, f"[WARN] ts lompat besar: node={node_id} diff={diff}ms (kemungkinan reboot)"
@@ -142,6 +154,7 @@ class _MonotonicityTracker:
         # Normal
         self._last_ts[node_id] = ts
         return True, ""
+
 
     def reset(self, node_id: int) -> None:
         """Reset state node tertentu (misalnya saat reboot terdeteksi)."""
