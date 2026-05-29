@@ -73,3 +73,26 @@ export function getLabelColor(label) {
   
   return state.mlLabelColors.get(label);
 }
+
+export function getLabelBgColor(label) {
+  if (!label) return '#f1f5f9';
+  
+  const lowerLabel = label.toLowerCase();
+  
+  // Danger checks (reddish background)
+  if (DANGER_KEYWORDS.some(k => lowerLabel.includes(k))) return '#fef2f2';
+  
+  // Warn checks (yellowish background)
+  if (WARN_KEYWORDS.some(k => lowerLabel.includes(k))) return '#fefce8';
+  
+  // OK defaults (greenish background)
+  if (lowerLabel === 'ok' || lowerLabel === 'normal' || lowerLabel.includes('jalan') || lowerLabel.includes('walking')) return '#f0fdf4';
+  
+  if (lowerLabel.includes('duduk') || lowerLabel.includes('sitting') || lowerLabel.includes('tidur') || lowerLabel.includes('lying') || lowerLabel.includes('rest')) {
+    return '#eff6ff';
+  }
+
+  // Generate dynamic very light background color for unmapped labels
+  const hue = hashCode(label) % 360;
+  return `hsl(${hue}, 80%, 96%)`; // High lightness for background
+}

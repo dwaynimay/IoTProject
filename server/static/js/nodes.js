@@ -1,23 +1,13 @@
-import { state, getLabelColor, SIG_COLORS, SIG_UNITS } from './state.js';
-import { fetchNodeVitalsHistory } from './api.js';
+import { state, getLabelColor, getLabelBgColor, SIG_COLORS, SIG_UNITS } from './state.js';
+import { fetchNodeVitalsHistory, fetchNodeIMUHistory } from './api.js';
 
 const trendCharts = new Map(); // nodeId -> echarts instance (vitals trend)
 const imuCharts   = new Map(); // nodeId -> echarts instance (IMU waveform)
 
-function getLabelBgColor(label) {
-  if (!label) return '#f1f5f9';
-  const lowerLabel = label.toLowerCase();
-  if (lowerLabel.includes('jatuh') || lowerLabel.includes('fall') || lowerLabel.includes('critical') || lowerLabel.includes('danger')) {
-    return '#fef2f2'; // light crimson
-  }
-  if (lowerLabel.includes('duduk') || lowerLabel.includes('sitting') || lowerLabel.includes('tidur') || lowerLabel.includes('lying') || lowerLabel.includes('rest')) {
-    return '#eff6ff'; // light blue
-  }
-  if (lowerLabel.includes('jalan') || lowerLabel.includes('walking') || lowerLabel.includes('normal') || lowerLabel.includes('ok')) {
-    return '#f0fdf4'; // light green
-  }
-  return '#f8fafc'; // light slate
-}
+const IMU_BUFFER_SIZE = 256;
+const imuBuffers = new Map(); // nodeId -> { ax, ay, az, gx, gy, gz }
+
+// ── playbackQueue DIHAPUS — rendering sekarang via global setInterval seperti kode 2 ──
 
 function formatDuration(sec) {
   if (sec < 60) return `${sec}s`;
@@ -43,7 +33,6 @@ export function renderNodeList() {
     return;
   }
 
-  // Remove loading / no-data
   const noDataEl = container.querySelector('.no-data');
   if (noDataEl) {
     container.innerHTML = '';
@@ -52,7 +41,6 @@ export function renderNodeList() {
   Array.from(state.nodes.values()).sort((a,b) => a.node_id - b.node_id).forEach(node => {
     let shell = document.getElementById(`node-card-shell-${node.node_id}`);
     
-    // If card shell doesn't exist, create it
     if (!shell) {
       shell = document.createElement('div');
       shell.className = 'node-card-shell';
@@ -67,7 +55,6 @@ export function renderNodeList() {
       shell.classList.remove('active');
     }
     
-    // Get last data
     const hr = node.last_hr > 0 ? Math.round(node.last_hr) : '--';
     const spo2 = node.last_spo2 > 0 ? `${node.last_spo2.toFixed(1)}%` : '--%';
     
@@ -139,19 +126,17 @@ export function renderNodeList() {
           </div>
         </div>
         <div class="card-trend" id="chart-${node.node_id}"></div>
-        <div class="card-imu-header">IMU Signal — Last Window</div>
+        <div class="card-imu-header">IMU Signal — Historical Stream</div>
         <div class="card-imu" id="imu-chart-${node.node_id}"></div>
       </div>
     `;
     
-    // Init trend chart + IMU chart
-    setTimeout(() => {
+    setTimeout(async () => {
       initTrendChart(node.node_id);
-      initIMUChart(node.node_id);
+      await initIMUChart(node.node_id);
     }, 10);
   });
 
-  // Run immediate connection check
   updateConnectionStatuses();
 }
 
@@ -224,11 +209,9 @@ export function initTrendChart(nodeId) {
   chart.setOption(option);
   trendCharts.set(nodeId, chart);
   
-  // Load data from buffer or server API
   if (state.vitalsBuffer.has(nodeId)) {
     updateChartData(nodeId);
   } else {
-    // Put temporary null buffer while fetching
     state.vitalsBuffer.set(nodeId, Array(60).fill(null));
     fetchNodeVitalsHistory(nodeId).then(windows => {
       const buffer = Array(60).fill(null);
@@ -260,8 +243,12 @@ function updateChartData(nodeId) {
 }
 
 // ── IMU Chart ─────────────────────────────────────────────────────────────────
+// Menerapkan improvement dari kode 2:
+// 1. Y-axis soft padding 10% — mencegah zoom artifact antara history & live data
+// 2. Rendering dipisah ke global setInterval — tidak perlu playbackQueue
+// 3. Buffer push/shift langsung per sample — lebih sederhana & konsisten
 
-export function initIMUChart(nodeId) {
+export async function initIMUChart(nodeId) {
   const el = document.getElementById(`imu-chart-${nodeId}`);
   if (!el || typeof echarts === 'undefined') return;
 
@@ -270,7 +257,7 @@ export function initIMUChart(nodeId) {
   }
 
   const chart = echarts.init(el);
-  const xData = Array.from({ length: 64 }, (_, i) => i);
+  const xData = Array.from({ length: IMU_BUFFER_SIZE }, (_, i) => i);
 
   chart.setOption({
     backgroundColor: 'rgba(0,0,0,0.015)',
@@ -324,6 +311,10 @@ export function initIMUChart(nodeId) {
       {
         type: 'value', name: 'm/s²', nameTextStyle: { fontSize: 8, color: '#94a3b8' },
         position: 'left',
+        // IMPROVEMENT: Soft 10% padding — mencegah Y-axis snap ke extreme saat
+        // history range berbeda dengan live data range (zoom-out/zoom-in artifact)
+        min: value => { const r = value.max - value.min || 1; return value.min - r * 0.1; },
+        max: value => { const r = value.max - value.min || 1; return value.max + r * 0.1; },
         splitLine: { lineStyle: { color: 'rgba(0,0,0,0.04)' } },
         axisLabel: { fontSize: 8, fontFamily: 'var(--mono)', color: '#94a3b8',
           formatter: v => Math.abs(v) >= 1000 ? (v/1000).toFixed(1)+'k' : v.toFixed(1) }
@@ -331,6 +322,8 @@ export function initIMUChart(nodeId) {
       {
         type: 'value', name: '°/s', nameTextStyle: { fontSize: 8, color: '#94a3b8' },
         position: 'right',
+        min: value => { const r = value.max - value.min || 1; return value.min - r * 0.1; },
+        max: value => { const r = value.max - value.min || 1; return value.max + r * 0.1; },
         splitLine: { show: false },
         axisLabel: { fontSize: 8, fontFamily: 'var(--mono)', color: '#94a3b8',
           formatter: v => Math.abs(v) >= 1000 ? (v/1000).toFixed(1)+'k' : v.toFixed(1) }
@@ -338,46 +331,128 @@ export function initIMUChart(nodeId) {
     ],
     series: [
       { name: 'ax', type: 'line', smooth: false, symbol: 'none', yAxisIndex: 0,
-        lineStyle: { color: SIG_COLORS.ax, width: 1.2 }, data: Array(64).fill(null) },
+        lineStyle: { color: SIG_COLORS.ax, width: 1.2 }, data: Array(IMU_BUFFER_SIZE).fill(null) },
       { name: 'ay', type: 'line', smooth: false, symbol: 'none', yAxisIndex: 0,
-        lineStyle: { color: SIG_COLORS.ay, width: 1.2 }, data: Array(64).fill(null) },
+        lineStyle: { color: SIG_COLORS.ay, width: 1.2 }, data: Array(IMU_BUFFER_SIZE).fill(null) },
       { name: 'az', type: 'line', smooth: false, symbol: 'none', yAxisIndex: 0,
-        lineStyle: { color: SIG_COLORS.az, width: 1.2 }, data: Array(64).fill(null) },
+        lineStyle: { color: SIG_COLORS.az, width: 1.2 }, data: Array(IMU_BUFFER_SIZE).fill(null) },
       { name: 'gx', type: 'line', smooth: false, symbol: 'none', yAxisIndex: 1,
-        lineStyle: { color: SIG_COLORS.gx, width: 1.2, type: 'dashed' }, data: Array(64).fill(null) },
+        lineStyle: { color: SIG_COLORS.gx, width: 1.2, type: 'dashed' }, data: Array(IMU_BUFFER_SIZE).fill(null) },
       { name: 'gy', type: 'line', smooth: false, symbol: 'none', yAxisIndex: 1,
-        lineStyle: { color: SIG_COLORS.gy, width: 1.2, type: 'dashed' }, data: Array(64).fill(null) },
+        lineStyle: { color: SIG_COLORS.gy, width: 1.2, type: 'dashed' }, data: Array(IMU_BUFFER_SIZE).fill(null) },
       { name: 'gz', type: 'line', smooth: false, symbol: 'none', yAxisIndex: 1,
-        lineStyle: { color: SIG_COLORS.gz, width: 1.2, type: 'dashed' }, data: Array(64).fill(null) },
+        lineStyle: { color: SIG_COLORS.gz, width: 1.2, type: 'dashed' }, data: Array(IMU_BUFFER_SIZE).fill(null) },
     ],
     animation: false
   });
 
   imuCharts.set(nodeId, chart);
   window.addEventListener('resize', () => chart && chart.resize());
+
+  // Pre-fill imuBuffers dari API history jika belum ada
+  // IMPROVEMENT: Skip fetch jika buffer sudah ada (node re-render) agar live data tidak hilang
+  if (!imuBuffers.has(nodeId)) {
+    const buffers = {
+      ax: Array(IMU_BUFFER_SIZE).fill(null),
+      ay: Array(IMU_BUFFER_SIZE).fill(null),
+      az: Array(IMU_BUFFER_SIZE).fill(null),
+      gx: Array(IMU_BUFFER_SIZE).fill(null),
+      gy: Array(IMU_BUFFER_SIZE).fill(null),
+      gz: Array(IMU_BUFFER_SIZE).fill(null)
+    };
+    imuBuffers.set(nodeId, buffers);
+
+    fetchNodeIMUHistory(nodeId, 4).then(history => {
+      const keys = ['ax', 'ay', 'az', 'gx', 'gy', 'gz'];
+      keys.forEach(k => {
+        const vals = history[k] || [];
+        if (vals.length > 0) {
+          const len = Math.min(vals.length, IMU_BUFFER_SIZE);
+          for (let i = 0; i < len; i++) {
+            buffers[k][IMU_BUFFER_SIZE - len + i] = vals[vals.length - len + i];
+          }
+        }
+      });
+      // Render chart dengan history (nodata label hilang)
+      const c = imuCharts.get(nodeId);
+      if (c) {
+        c.setOption({
+          graphic: [{ id: 'nodata', style: { text: '' } }],
+          series: [
+            { name: 'ax', data: buffers.ax.slice() },
+            { name: 'ay', data: buffers.ay.slice() },
+            { name: 'az', data: buffers.az.slice() },
+            { name: 'gx', data: buffers.gx.slice() },
+            { name: 'gy', data: buffers.gy.slice() },
+            { name: 'gz', data: buffers.gz.slice() },
+          ]
+        });
+      }
+    }).catch(err => {
+      console.warn(`IMU history fetch failed for node ${nodeId}:`, err);
+    });
+  }
 }
 
+// IMPROVEMENT: updateIMUChart sekarang hanya push/shift ke buffer,
+// rendering diserahkan ke global setInterval di bawah — sama seperti kode 2.
+// playbackQueue dihilangkan karena buffer push/shift sudah cukup smooth pada 66ms interval.
 export function updateIMUChart(nodeId, imuSignals) {
-  const chart = imuCharts.get(nodeId);
-  if (!chart || !imuSignals) return;
+  if (!imuSignals) return;
 
-  chart.setOption({
-    // Hapus teks placeholder saat data masuk
-    graphic: [{ id: 'nodata', style: { text: '' } }],
-    series: [
-      { name: 'ax', data: imuSignals.ax || [] },
-      { name: 'ay', data: imuSignals.ay || [] },
-      { name: 'az', data: imuSignals.az || [] },
-      { name: 'gx', data: imuSignals.gx || [] },
-      { name: 'gy', data: imuSignals.gy || [] },
-      { name: 'gz', data: imuSignals.gz || [] },
-    ]
+  if (!imuBuffers.has(nodeId)) {
+    imuBuffers.set(nodeId, {
+      ax: Array(IMU_BUFFER_SIZE).fill(null),
+      ay: Array(IMU_BUFFER_SIZE).fill(null),
+      az: Array(IMU_BUFFER_SIZE).fill(null),
+      gx: Array(IMU_BUFFER_SIZE).fill(null),
+      gy: Array(IMU_BUFFER_SIZE).fill(null),
+      gz: Array(IMU_BUFFER_SIZE).fill(null)
+    });
+  }
+
+  const buffers = imuBuffers.get(nodeId);
+  const keys = ['ax', 'ay', 'az', 'gx', 'gy', 'gz'];
+
+  // Jika data berupa array (burst per window), push tiap sample satu per satu
+  // Jika data berupa scalar, push langsung
+  keys.forEach(k => {
+    if (imuSignals[k] === undefined) return;
+    if (Array.isArray(imuSignals[k])) {
+      imuSignals[k].forEach(val => {
+        buffers[k].push(val);
+        buffers[k].shift();
+      });
+    } else {
+      buffers[k].push(imuSignals[k]);
+      buffers[k].shift();
+    }
   });
 }
 window.updateIMUChart = updateIMUChart;
 
+// Global setInterval untuk render IMU chart — ~15fps, konsisten untuk semua node
+// Sama dengan pola kode 2: render dipisah dari update data
+setInterval(() => {
+  for (const [nodeId, chart] of imuCharts.entries()) {
+    const buffers = imuBuffers.get(nodeId);
+    if (!buffers) continue;
+
+    chart.setOption({
+      graphic: [{ id: 'nodata', style: { text: '' } }],
+      series: [
+        { name: 'ax', data: buffers.ax.slice() },
+        { name: 'ay', data: buffers.ay.slice() },
+        { name: 'az', data: buffers.az.slice() },
+        { name: 'gx', data: buffers.gx.slice() },
+        { name: 'gy', data: buffers.gy.slice() },
+        { name: 'gz', data: buffers.gz.slice() },
+      ]
+    });
+  }
+}, 66);
+
 export function updateNodeCard(nodeId, data) {
-  // If card shell doesn't exist in DOM, trigger complete render
   if (!document.getElementById(`node-card-shell-${nodeId}`)) {
     if (!state.nodes.has(nodeId)) {
       state.nodes.set(nodeId, {
@@ -399,7 +474,6 @@ export function updateNodeCard(nodeId, data) {
     node.total_windows = data.window_num;
   }
 
-  // Update text elements
   const hrEl = document.getElementById(`vit-hr-${nodeId}`);
   if (hrEl) hrEl.textContent = data.hr > 0 ? Math.round(data.hr) : '--';
   
@@ -409,14 +483,12 @@ export function updateNodeCard(nodeId, data) {
   const winEl = document.getElementById(`win-${nodeId}`);
   if (winEl) winEl.textContent = data.window_num;
   
-  // Set badge immediately to connected
   const badge = document.getElementById(`status-${nodeId}`);
   if (badge) {
     badge.className = 'node-status-badge connected';
     badge.querySelector('.status-text').textContent = 'Connected';
   }
   
-  // Update ML label
   if (data.ml_results) {
     let topLabel = null;
     let topConf = 0;
@@ -442,7 +514,6 @@ export function updateNodeCard(nodeId, data) {
     }
   }
   
-  // Update trend chart buffer
   if (!state.vitalsBuffer.has(nodeId)) {
     state.vitalsBuffer.set(nodeId, Array(60).fill(null));
   }
@@ -454,7 +525,7 @@ export function updateNodeCard(nodeId, data) {
   });
   updateChartData(nodeId);
 
-  // Update IMU waveform chart
+  // Update IMU waveform — hanya push ke buffer, render via setInterval
   if (data.imu_signals && Object.keys(data.imu_signals).length > 0) {
     if (!imuCharts.has(nodeId)) initIMUChart(nodeId);
     updateIMUChart(nodeId, data.imu_signals);
@@ -481,11 +552,9 @@ export function setNodeAlert(nodeId, isAlert) {
 }
 window.setNodeAlert = setNodeAlert;
 
-// Periodic connection status checker
 export function updateConnectionStatuses() {
   const now = Date.now();
   
-  // Calculate uptime
   const uptimeSec = state.server_start_time_offset ? Math.floor((now - state.server_start_time_offset) / 1000) : null;
   const uptimeStr = uptimeSec !== null ? formatDuration(uptimeSec) : '--';
 
@@ -505,7 +574,6 @@ export function updateConnectionStatuses() {
       }
     }
 
-    // Update card-level uptime
     const uptimeEl = document.getElementById(`uptime-${node.node_id}`);
     if (uptimeEl) {
       uptimeEl.textContent = uptimeStr;
@@ -513,5 +581,4 @@ export function updateConnectionStatuses() {
   });
 }
 
-// Check connection status every 3 seconds
 setInterval(updateConnectionStatuses, 3000);

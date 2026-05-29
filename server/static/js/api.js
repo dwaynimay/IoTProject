@@ -70,3 +70,18 @@ export async function fetchNodeVitalsHistory(nodeId, n = 60) {
   const d = await api(`/api/nodes/${nodeId}/windows?signal=ir&n=${n}&include_values=false`);
   return d ? d.windows : [];
 }
+
+export async function fetchNodeIMUHistory(nodeId, nWindows = 4) {
+  const IMU_KEYS = ['ax', 'ay', 'az', 'gx', 'gy', 'gz'];
+  const result = {};
+  await Promise.all(IMU_KEYS.map(async sig => {
+    const d = await api(`/api/nodes/${nodeId}/windows?signal=${sig}&n=${nWindows}&include_values=true`);
+    if (d && d.windows) {
+      // Flatten semua windows menjadi satu array kontinu
+      result[sig] = d.windows.flatMap(w => w.values || []);
+    } else {
+      result[sig] = [];
+    }
+  }));
+  return result;
+}
