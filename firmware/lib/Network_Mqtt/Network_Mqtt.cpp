@@ -175,6 +175,10 @@ bool NetworkMqtt::_connectWifi()
         delay(500);
     }
 
+    // Matikan mode hemat daya WiFi agar pengiriman paket ESP-NOW dan MQTT 
+    // tidak terganggu oleh fase radio tidur (menghindari antrean burst)
+    // esp_wifi_set_ps(WIFI_PS_NONE);
+
     uint8_t ch;
     wifi_second_chan_t sch;
     esp_wifi_get_channel(&ch, &sch);
@@ -204,6 +208,10 @@ bool NetworkMqtt::_connectMqtt()
 
     if (ok)
     {
+        // Matikan Nagle's Algorithm agar setiap bagian payload (header, topik, data)
+        // langsung dikirim tanpa ditahan TCP buffer (menghindari burst delay)
+        // _wifiClient.setNoDelay(true);
+
         // Reset timer reconnect saat berhasil connect
         // Mencegah tryReconnect() langsung jalan setelah begin()
         _lastReconnectAttempt = millis();

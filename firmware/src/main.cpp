@@ -102,7 +102,10 @@ static void taskReadPPG(void *param)
         g_latestPpg = snap;
         taskEXIT_CRITICAL(&g_stateMux);
 
-        vTaskDelay(pdMS_TO_TICKS(20)); // MAX30102 sample rate ~100Hz = 10ms/sample. 20ms cukup.
+        // MAX30102 sample rate ~100Hz (10ms/sample).
+        // Delay 2ms memastikan kita tidak pernah melewatkan sample dan mencegah FIFO overflow,
+        // yang sebelumnya menyebabkan nilai HR turun (time dilation) dan SpO2 rusak.
+        vTaskDelay(pdMS_TO_TICKS(2)); 
     }
 }
 
