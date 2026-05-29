@@ -1,46 +1,38 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Geist+Mono:wght@300;400;500;600;700&display=swap');
 
 :root {
   /* Colors */
-  --bg: #0a0c0f;
-  --surface: #111318;
-  --surface2: #181b22;
-  --surface3: #222630;
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --surface2: #f1f5f9;
+  --surface3: #e2e8f0;
   
-  --border: rgba(255,255,255,0.07);
-  --border2: rgba(255,255,255,0.12);
-  --border-light: rgba(255,255,255,0.2);
+  --border: rgba(0,0,0,0.06);
+  --border2: rgba(0,0,0,0.1);
+  --border-light: rgba(0,0,0,0.15);
   
-  --text: #e8eaf0;
-  --text2: #8a8f9e;
-  --text3: #555a6a;
+  --text: #0f172a;
+  --text2: #475569;
+  --text3: #94a3b8;
   
-  --accent: #00d4aa;
-  --accent2: #0099ff;
-  --warn: #f5a623;
-  --danger: #ff4d4d;
-  --ok: #00d4aa;
+  --accent: #0f766e;
+  --accent2: #0284c7;
+  --warn: #d97706;
+  --danger: #dc2626;
+  --ok: #16a34a;
   
   /* Component Specific */
-  --ekg-bg: #060809;
-  --ekg-grid: rgba(0, 212, 170, 0.05);
-  --ekg-line: #00d4aa;
-  --ekg-line-ir: #ff6bc6;
-
-  --card-active-border: rgba(0, 212, 170, 0.4);
-  --card-alert-border: rgba(255, 77, 77, 0.6);
-  --card-alert-glow: 0 0 20px rgba(255, 77, 77, 0.3);
-
-  --timeline-row-height: 32px;
-  --timeline-label-width: 80px;
+  --card-active-border: #cbd5e1;
+  --card-alert-border: rgba(220, 38, 38, 0.4);
+  --card-alert-glow: 0 0 15px rgba(220, 38, 38, 0.15);
 
   /* Typography */
-  --mono: 'IBM Plex Mono', monospace;
-  --sans: 'IBM Plex Sans', sans-serif;
+  --mono: 'Geist Mono', monospace;
+  --sans: 'Plus Jakarta Sans', sans-serif;
   
   /* Layout */
-  --header-height: 56px;
-  --sidebar-width: 260px;
+  --header-height: 0px;
+  --sidebar-width: 0px;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -52,7 +44,8 @@ body {
   font-size: 14px;
   line-height: 1.5;
   min-height: 100vh;
-  overflow: hidden; /* App-like layout */
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 /* ── Typography Utilities ── */
@@ -65,12 +58,12 @@ body {
 
 /* ── Glow Utilities ── */
 .glow-danger { box-shadow: var(--card-alert-glow); }
-.glow-accent { box-shadow: 0 0 15px rgba(0, 212, 170, 0.2); }
+.glow-accent { box-shadow: 0 0 15px rgba(15, 118, 110, 0.2); }
 
 /* ── Animations ── */
 @keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 10px rgba(255, 77, 77, 0.2); border-color: rgba(255, 77, 77, 0.4); }
-  50% { box-shadow: 0 0 25px rgba(255, 77, 77, 0.6); border-color: rgba(255, 77, 77, 0.8); }
+  0%, 100% { box-shadow: 0 0 10px rgba(220, 38, 38, 0.15); border-color: rgba(220, 38, 38, 0.3); }
+  50% { box-shadow: 0 0 25px rgba(220, 38, 38, 0.4); border-color: rgba(220, 38, 38, 0.6); }
 }
 
 @keyframes slide-in-right {
@@ -90,9 +83,8 @@ body {
 
 /* ── Base Layout ── */
 .layout {
-  display: grid;
-  grid-template-columns: var(--sidebar-width) 1fr;
-  height: calc(100vh - var(--header-height));
+  display: block;
+  min-height: calc(100vh - var(--header-height));
   width: 100vw;
 }
 
@@ -107,6 +99,7 @@ body {
   border-bottom: 1px solid var(--border);
   position: relative;
   z-index: 100;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 .brand {

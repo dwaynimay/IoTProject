@@ -1,5 +1,5 @@
 // =============================================================================
-// CS_Sensor.cpp — Definisi static member CSPhiMatrix
+// CS_Sensor.cpp — Definisi static member CSPhiMatrix [DEPRECATED]
 //
 // File ini WAJIB ada agar linker tidak error:
 //   "undefined reference to CSPhiMatrix::_phi"

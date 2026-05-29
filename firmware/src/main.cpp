@@ -102,7 +102,7 @@ static void taskReadPPG(void *param)
         g_latestPpg = snap;
         taskEXIT_CRITICAL(&g_stateMux);
 
-        taskYIELD();
+        vTaskDelay(pdMS_TO_TICKS(20)); // MAX30102 sample rate ~100Hz = 10ms/sample. 20ms cukup.
     }
 }
 

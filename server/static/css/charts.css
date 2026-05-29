@@ -37,6 +37,25 @@
 #timelineChartContainer { height: 160px; }
 #mlPanelContainer { min-height: 180px; padding: 16px; }
 
+/* IMU chart inside node card */
+.card-imu {
+  height: 180px;
+  width: 100%;
+}
+
+.card-imu-header {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text3);
+  padding: 6px 2px 2px;
+  border-top: 1px solid rgba(0, 0, 0, 0.04);
+  margin-top: -4px;
+}
+
+
 /* ── States ── */
 .chart-loading,
 .chart-no-data {

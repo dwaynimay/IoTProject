@@ -27,6 +27,7 @@
 // =============================================================================
 
 #include <Arduino.h>
+#include "../../include/Config.h"
 
 // ── Parameter utama ──────────────────────────────────────────────────────────
 static constexpr uint8_t  CS_N        = 64;  // panjang window — HARUS pangkat 2
@@ -59,9 +60,9 @@ public:
 
     static void printInfo()
     {
-        Serial.printf("[CS PHI] Hadamard-Gaussian | M=%d N=%d seed=%lu | %d bytes\n",
-                      CS_M, CS_N, CS_PHI_SEED,
-                      (int)(CS_M * CS_N * sizeof(float)));
+        LOG_INFO("CS", "Hadamard-Gaussian | M=%d N=%d seed=%lu | %d bytes",
+                 CS_M, CS_N, CS_PHI_SEED,
+                 (int)(CS_M * CS_N * sizeof(float)));
     }
 
     // Cetak baris pertama Φ untuk verifikasi sinkronisasi dengan Python.
@@ -69,23 +70,19 @@ public:
     // Bandingkan output ini dengan: python -m server.verify_phi
     static void printSyncDebug()
     {
-        // Pastikan sudah di-generate
         get();
 
-        Serial.printf("[PHI SYNC] PHI[0][0..7]: "
-                      "%.6f %.6f %.6f %.6f %.6f %.6f %.6f %.6f\n",
-                      _phi[0][0], _phi[0][1], _phi[0][2], _phi[0][3],
-                      _phi[0][4], _phi[0][5], _phi[0][6], _phi[0][7]);
-        Serial.printf("[PHI SYNC] PHI[1][0..7]: "
-                      "%.6f %.6f %.6f %.6f %.6f %.6f %.6f %.6f\n",
-                      _phi[1][0], _phi[1][1], _phi[1][2], _phi[1][3],
-                      _phi[1][4], _phi[1][5], _phi[1][6], _phi[1][7]);
+        LOG_INFO("CS", "PHI[0][0..7]: %.6f %.6f %.6f %.6f %.6f %.6f %.6f %.6f",
+                 _phi[0][0], _phi[0][1], _phi[0][2], _phi[0][3],
+                 _phi[0][4], _phi[0][5], _phi[0][6], _phi[0][7]);
+        LOG_INFO("CS", "PHI[1][0..7]: %.6f %.6f %.6f %.6f %.6f %.6f %.6f %.6f",
+                 _phi[1][0], _phi[1][1], _phi[1][2], _phi[1][3],
+                 _phi[1][4], _phi[1][5], _phi[1][6], _phi[1][7]);
 
         float norm0 = 0.0f;
         for (uint8_t n = 0; n < CS_N; n++) norm0 += _phi[0][n] * _phi[0][n];
-        Serial.printf("[PHI SYNC] norm(PHI[0]) = %.6f  (harus 0.176777 = 1/sqrt(32))\n",
-                      sqrtf(norm0));
-        Serial.printf("[PHI SYNC] Bandingkan dengan: python -m server.verify_phi\n");
+        LOG_INFO("CS", "norm(PHI[0]) = %.6f (harus 0.176777)",
+                 sqrtf(norm0));
     }
 
 private:

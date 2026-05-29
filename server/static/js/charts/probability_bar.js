@@ -119,8 +119,8 @@ export function updateMLPanel(nodeId, mlResults) {
     if (badgeEl) badgeEl.style.display = 'none';
     
     // Map probabilities to labels order
-    const probs = result.probabilities || {};
-    const topLabel = result.prediction;
+    const probs = result.proba || {};
+    const topLabel = result.label;
     
     const data = chartObj.labels.map(l => {
       const val = probs[l] || 0;

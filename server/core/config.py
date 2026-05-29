@@ -102,7 +102,7 @@ LOG_LEVEL = _get("LOG_LEVEL", "INFO")
 # =============================================================================
 # Storage SQLite
 # =============================================================================
-DB_PATH         = _get("DB_PATH", "health_monitor.db")
+DB_PATH         = _get("DB_PATH", "server/data/health_monitor.db")
 RETENTION_HOURS = _get_int("RETENTION_HOURS", 24)
 
 # =============================================================================

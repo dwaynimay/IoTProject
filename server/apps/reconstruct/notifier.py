@@ -26,6 +26,7 @@ def notify_window(
     report,                         # WindowReport dari quality.py
     elapsed_ms: float,
     ml_results: dict = None,
+    results:    dict = None,        # dict sig -> np.ndarray hasil rekonstruksi
 ) -> None:
     """
     Dipanggil setelah window selesai direkonstruksi.
@@ -46,22 +47,31 @@ def notify_window(
                 "snr_db":    round(snr, 1) if snr != float("inf") else 999.0,
             }
 
+    # Serialize sinyal IMU ke array float (dibulatkan untuk hemat bandwidth)
+    _IMU_KEYS = ["ax", "ay", "az", "gx", "gy", "gz"]
+    imu_signals: dict = {}
+    if results:
+        for sig in _IMU_KEYS:
+            if sig in results:
+                imu_signals[sig] = [round(float(v), 3) for v in results[sig]]
+
     data = {
-        "type":       "window",
-        "node_id":    node_id,
-        "window_num": window_num,
-        "ts":         ts,
-        "hr":         hr,
-        "spo2":       spo2,
-        "finger":     finger,
-        "elapsed_ms": round(elapsed_ms, 1),
+        "type":        "window",
+        "node_id":     node_id,
+        "window_num":  window_num,
+        "ts":          ts,
+        "hr":          hr,
+        "spo2":        spo2,
+        "finger":      finger,
+        "elapsed_ms":  round(elapsed_ms, 1),
         "quality": {
             "avg_rel_error":   round(report.mean_relative_error(), 4) if report else None,
             "any_low_quality": report.has_low_quality() if report else False,
             "any_critical":    report.has_critical()    if report else False,
             "signals":         signals_quality,
         },
-        "ml_results": ml_results if ml_results is not None else {},
+        "ml_results":  ml_results if ml_results is not None else {},
+        "imu_signals": imu_signals,
     }
 
     # Update statistik server

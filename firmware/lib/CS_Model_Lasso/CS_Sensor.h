@@ -1,6 +1,6 @@
 #pragma once
 // =============================================================================
-// CS_Sensor.h — Compressive Sensing Encoder (M=32, N=64)
+// CS_Sensor.h — Compressive Sensing Encoder (M=32, N=64) [DEPRECATED]
 //
 // PERUBAHAN dari versi sebelumnya:
 //   Sebelum: setiap CSEncoder simpan salinan Φ sendiri → 7 × 8KB = 56KB
@@ -56,9 +56,9 @@ public:
     // Untuk diagnostic — cetak info ke Serial
     static void printInfo()
     {
-        Serial.printf("[CS PHI] Singleton | M=%d N=%d seed=%lu | size=%d bytes\n",
-                      CS_M, CS_N, CS_PHI_SEED,
-                      (int)(CS_M * CS_N * sizeof(float)));
+        LOG_INFO("CS", "Hadamard-Gaussian | M=%d N=%d seed=%lu | %d bytes",
+                 CS_M, CS_N, CS_PHI_SEED,
+                 (int)(CS_M * CS_N * sizeof(float)));
     }
 
 private:

@@ -2,8 +2,7 @@
 // =============================================================================
 // config/tuning.h — PARAMETER PERFORMA & TIMING
 // =============================================================================
-// File ini untuk pengguna yang ingin menyetel performa sistem.
-// Penggunaan normal tidak perlu mengubah file ini.
+// File ini untuk menyetel performa sistem.
 //
 // ⚠️  Perubahan di sini bisa memengaruhi stabilitas — ubah satu per satu
 //     dan test setelah setiap perubahan.
@@ -18,11 +17,10 @@
 //   200ms =  5 Hz  → balance antara detail dan beban jaringan (default)
 //   500ms =  2 Hz  → monitoring santai (postur, SpO2 jangka panjang)
 //
-// Nilai ini juga mempengaruhi latensi MQTT Batching jika diaktifkan.
 // ---------------------------------------------------------------------------
 namespace Timing
 {
-    constexpr uint32_t SEND_INTERVAL_MS = 200; // ← UBAH INI untuk kontrol kecepatan kirim
+    constexpr uint32_t SEND_INTERVAL_MS = 200;
 
     // Internal — jangan diubah kecuali ada alasan hardware
     constexpr uint32_t PPG_POLL_MS = 0;         // PPG polling secepat mungkin
@@ -76,7 +74,7 @@ namespace StackSize
 {
     constexpr uint32_t SENSOR_PPG = 4096;
     constexpr uint32_t SENSOR_IMU = 4096;
-    constexpr uint32_t ESPNOW_TX = 12288; // CS TX butuh stack besar
+    constexpr uint32_t ESPNOW_TX = 12288;
     constexpr uint32_t MQTT_PUB = 8192;
     constexpr uint32_t MONITOR = 4096;
 }
@@ -128,21 +126,21 @@ namespace QueueLen
 namespace MeshTopology
 {
     // Untuk sistem 3-node:
-    // static constexpr uint8_t nodeNeighbors[3][2] = {
-    //     {0},     // Node 0 (GATEWAY): no neighbors
-    //     {2, 0},  // Node 1: neighbors = [2, 0] — relay via 2 prioritas, fallback 0 (gateway)
-    //     {1, 0}   // Node 2: neighbors = [1, 0]
-    // };
-
-    // Untuk sistem 2-node (saat ini):
-    static constexpr uint8_t nodeNeighbors[3][1] = {
-        {0}, // Node 0 (GATEWAY): no neighbors
-        {0}, // Node 1 (SENSOR_A): only gateway (no relay)
-        {0}  // Node 2 (SENSOR_B): only gateway (no relay)
+    static constexpr uint8_t nodeNeighbors[3][2] = {
+        {0, 0},  // Node 0 (GATEWAY): no neighbors
+        {2, 0},  // Node 1: neighbors = [2, 0] — relay via 2 prioritas, fallback 0 (gateway)
+        {1, 0}   // Node 2: neighbors = [1, 0] — relay via 1 prioritas, fallback 0
     };
 
+    // Untuk sistem 2-node (saat ini):
+    // static constexpr uint8_t nodeNeighbors[3][1] = {
+    //     {0}, // Node 0 (GATEWAY): no neighbors
+    //     {0}, // Node 1 (SENSOR_A): only gateway (no relay)
+    //     {0}  // Node 2 (SENSOR_B): only gateway (no relay)
+    // };
+
     // Ukuran neighbors per node (untuk bounds checking)
-    static constexpr uint8_t maxNeighborsPerNode = 1;
+    static constexpr uint8_t maxNeighborsPerNode = 2;
 
     // Total nodes dalam mesh
     static constexpr uint8_t totalNodes = 3;

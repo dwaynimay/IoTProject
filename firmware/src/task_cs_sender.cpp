@@ -32,6 +32,7 @@
 #include <Arduino.h>
 #include <esp_wifi.h>
 #include <esp_now.h>
+#include <esp_random.h>
 #include "Config.h"
 
 #if NODE_ROLE == ROLE_SENSOR
@@ -163,24 +164,23 @@ static const uint8_t* _selectDstMac(const RouteDecision& dec)
 
 
 // =============================================================================
-// taskRssiExchange — tidak berubah dari v3.0
+// taskRssiExchange — v3.1: tambah retry & INFO log
 // =============================================================================
 void taskRssiExchange(void* param)
 {
     static constexpr char RTAG[] = "RSSI_EX";
 
-    // v4.0: Tunggu gateway ditemukan sebelum mulai exchange
-    LOG_INFO(RTAG, "Menunggu koneksi gateway (background discovery)...");
+    // Tunggu gateway ditemukan sebelum mulai exchange
+    LOG_INFO(RTAG, "Menunggu koneksi gateway...");
     while (!g_mesh.isChannelConfirmed())
-    {
         vTaskDelay(pdMS_TO_TICKS(1000));
-    }
-    LOG_INFO(RTAG, "Gateway terdeteksi — mulai RSSI exchange");
-
-    LOG_INFO(RTAG, "taskRssiExchange dimulai | interval=%lu ms",
+    LOG_INFO(RTAG, "Gateway terdeteksi — mulai RSSI exchange | interval=%lu ms",
              (unsigned long)RoutingCfg::RSSI_EXCHANGE_MS);
 
     vTaskDelay(pdMS_TO_TICKS(RoutingCfg::DISCOVERY_PHASE_MS));
+
+    uint32_t txCount   = 0;
+    uint32_t failCount = 0;
 
     for (;;)
     {
@@ -188,26 +188,22 @@ void taskRssiExchange(void* param)
 
         const int8_t myRssi = g_mesh.getLastBeaconRssi();
 
-        // ── SEBELUM: langsung skip jika -127
-        // ── SESUDAH: update router dulu, baru putuskan kirim exchange
         if (myRssi != RoutingCfg::RSSI_UNKNOWN)
-        {
             g_router.updateSelfRssi(myRssi);
-        }
         else
-        {
-            LOG_EVERY_N(5, LOG_WARN, RTAG,
-                        "Belum terima beacon dari gateway — RSSI belum valid");
-            // Tidak continue — tetap kirim report ke neighbor
-            // agar neighbor tahu kita ada, walau RSSI belum valid
-        }
+            LOG_WARN(RTAG, "Belum terima beacon dari gateway — RSSI belum valid");
 
-        // Kirim RSSI report ke neighbor terlepas dari validitas RSSI self
-        // Gunakan nilai terbaik yang ada (bisa RSSI_UNKNOWN)
+        // Kirim RSSI report ke neighbor — best-effort, tidak perlu retry.
+        // Jika gagal, exchange berikutnya (RSSI_EXCHANGE_MS) akan kirim ulang.
+        // Retry langsung hanya menambah NACK count saat neighbor sedang offline/restart.
         const bool ok = g_mesh.sendRssiReport(NODE_ID, myRssi);
 
-        LOG_DEBUG(RTAG, "RSSI exchange | self=%d dBm | ok=%s",
-                  myRssi, ok ? "Y" : "N");
+        txCount++;
+        if (!ok) failCount++;
+
+        // Log setiap exchange agar mudah dimonitor (INFO level)
+        LOG_INFO(RTAG, "RSSI report | self=%d dBm | ok=%s | fail=%lu/%lu",
+                 myRssi, ok ? "Y" : "N", failCount, txCount);
 
         if ((millis() / RoutingCfg::RSSI_EXCHANGE_MS) % 5 == 0)
             g_router.printStatus();
@@ -262,9 +258,10 @@ void taskCSSender(void* param)
         ppg = g_latestPpg;
         taskEXIT_CRITICAL(&g_stateMux);
 
-        // ── Deferred channel sync (dari _promiscuousRxCb) ────────────────────────
-        // Proses update peer dan channel yang ditunda.
-        g_mesh.processPendingChannelSync();
+        // ── Deferred channel sync — tidak diperlukan lagi di v5.0 ──────────────
+        // processPendingChannelSync() dihapus: v5.0 WiFi-channel-sync menjamin
+        // s_channelConfirmed = true sejak begin(), channel tidak pernah berubah.
+        // Jika channel berubah (gateway roam), _send() handle via _updateAllPeerChannels().
 
         // ── F2: Sanity check IMU sebelum push ke encoder ──────────────────────
         // Drop window jika ada axis yang di luar batas fisis.
@@ -327,6 +324,15 @@ void taskCSSender(void* param)
         const bool     finger = (ppg.irRaw >= EdgeConfig::IR_FINGER_THRESHOLD);
         const uint32_t tsNow  = millis();
 
+        // ── PPG values: nolkan jika tidak ada jari (seperti monitor RS) ───────
+        // Ketika jari tidak menempel, HR dan SpO2 tidak bisa diukur.
+        // Setel ke 0 agar tampilan di dashboard seperti monitor rumah sakit:
+        //   - Finger ON  → tampilkan nilai HR dan SpO2 aktual
+        //   - Finger OFF → tampilkan 0 / garis datar
+        const int8_t displayHR   = finger ? ppg.heartRate : 0;
+        const float  displaySpo2 = finger ? (ppg.spo2 > 0 ? ppg.spo2 : 0.0f) : 0.0f;
+        const bool   displayValid = finger ? ppg.valid : false;
+
         // ── Dynamic Routing Decision ──────────────────────────────────────────
         const RouteDecision dec = g_router.decide();
         const uint8_t* dstMac  = _selectDstMac(dec);
@@ -335,17 +341,63 @@ void taskCSSender(void* param)
         else              relayedCount++;
 
         // ── Kirim 6 IMU axis + PPG ke tujuan yang dipilih ────────────────────
+        // ANTI-NACK v2 — tiga strategi:
+        //
+        //   #1  INTER_PKT_MS = 5ms (naik dari 2ms)
+        //       Lebih menyebar paket, kurangi P(collision) dengan AP beacon.
+        //       Total overhead: 6 × 5ms = 30ms per window (budget = 640ms).
+        //
+        //   #2  RETRY: jika NACK, tunggu random 3–8ms lalu coba sekali lagi.
+        //       ESP-NOW NACK biasanya karena CCA (Clear Channel Assessment)
+        //       gagal — medium sibuk sesaat. Retry dengan jitter biasanya
+        //       berhasil karena collision bersifat transient.
+        //
+        //   #3  STAGGER: delay awal = NODE_ID × 50ms sebelum burst.
+        //       Desinkronisasi transmisi antar sensor agar dua node tidak
+        //       mengirim 7 paket bersamaan → menghilangkan self-collision.
+        //
+        //   Kombinasi #1+#2+#3: NACK diharapkan turun dari ~4.3% ke <0.5%.
+        static constexpr uint8_t INTER_PKT_MS       = 5;
+        static constexpr uint8_t RETRY_MIN_MS       = 3;
+        static constexpr uint8_t RETRY_MAX_MS       = 8;
+        // v3.2: Stagger setiap window, bukan hanya sekali.
+        // 10ms × NODE_ID = overhead kecil (10-20ms) tapi cukup untuk
+        // desinkronisasi transmisi antar node dan mengurangi NACK.
+        static constexpr uint8_t NODE_STAGGER_MS    = 10;  // × NODE_ID, setiap window
+
+        // #3: Stagger setiap window untuk desinkronisasi antar node
+        vTaskDelay(pdMS_TO_TICKS(NODE_ID * NODE_STAGGER_MS));
+
+        // Macro: kirim + retry 1x jika NACK
+        #define SEND_WITH_RETRY(sendExpr)                                     \
+            do {                                                               \
+                if (!(sendExpr)) {                                             \
+                    vTaskDelay(pdMS_TO_TICKS(RETRY_MIN_MS +                     \
+                        (esp_random() % (RETRY_MAX_MS - RETRY_MIN_MS + 1))));  \
+                    if (!(sendExpr)) nack++;                                    \
+                }                                                              \
+            } while (0)
+
         uint8_t nack = 0;
 
-        if (!g_mesh.sendCsAxis(PKT_CS_AX, NODE_ID, yAx, finger, tsNow, dstMac)) nack++;
-        if (!g_mesh.sendCsAxis(PKT_CS_AY, NODE_ID, yAy, finger, tsNow, dstMac)) nack++;
-        if (!g_mesh.sendCsAxis(PKT_CS_AZ, NODE_ID, yAz, finger, tsNow, dstMac)) nack++;
-        if (!g_mesh.sendCsAxis(PKT_CS_GX, NODE_ID, yGx, finger, tsNow, dstMac)) nack++;
-        if (!g_mesh.sendCsAxis(PKT_CS_GY, NODE_ID, yGy, finger, tsNow, dstMac)) nack++;
-        if (!g_mesh.sendCsAxis(PKT_CS_GZ, NODE_ID, yGz, finger, tsNow, dstMac)) nack++;
-        if (!g_mesh.sendCsPpg(NODE_ID, yIr, ppg.heartRate,
-                               ppg.valid, ppg.spo2,
-                               finger, tsNow, dstMac))                           nack++;
+        SEND_WITH_RETRY(g_mesh.sendCsAxis(PKT_CS_AX, NODE_ID, yAx, finger, tsNow, dstMac));
+        vTaskDelay(pdMS_TO_TICKS(INTER_PKT_MS));
+        SEND_WITH_RETRY(g_mesh.sendCsAxis(PKT_CS_AY, NODE_ID, yAy, finger, tsNow, dstMac));
+        vTaskDelay(pdMS_TO_TICKS(INTER_PKT_MS));
+        SEND_WITH_RETRY(g_mesh.sendCsAxis(PKT_CS_AZ, NODE_ID, yAz, finger, tsNow, dstMac));
+        vTaskDelay(pdMS_TO_TICKS(INTER_PKT_MS));
+        SEND_WITH_RETRY(g_mesh.sendCsAxis(PKT_CS_GX, NODE_ID, yGx, finger, tsNow, dstMac));
+        vTaskDelay(pdMS_TO_TICKS(INTER_PKT_MS));
+        SEND_WITH_RETRY(g_mesh.sendCsAxis(PKT_CS_GY, NODE_ID, yGy, finger, tsNow, dstMac));
+        vTaskDelay(pdMS_TO_TICKS(INTER_PKT_MS));
+        SEND_WITH_RETRY(g_mesh.sendCsAxis(PKT_CS_GZ, NODE_ID, yGz, finger, tsNow, dstMac));
+        vTaskDelay(pdMS_TO_TICKS(INTER_PKT_MS));
+        SEND_WITH_RETRY(g_mesh.sendCsPpg(NODE_ID, yIr, displayHR,
+                                          displayValid, displaySpo2,
+                                          finger, tsNow, dstMac));
+
+        #undef SEND_WITH_RETRY
+
 
         windowCount++;
 
@@ -363,7 +415,7 @@ void taskCSSender(void* param)
             LOG_INFO(TAG,
                      "Win #%lu [%s] | self=%d dBm neighbor=%d dBm | "
                      "relay=%.0f%% | dropped=%lu(%.1f%%) | nack=%d | "
-                     "HR=%d SpO2=%.1f%%",
+                     "HR=%d SpO2=%.1f%% finger=%s",
                      windowCount,
                      dec.isDirect ? "DIRECT" : "RELAY",
                      dec.rssiSelf,
@@ -372,8 +424,9 @@ void taskCSSender(void* param)
                      g_droppedWindows,
                      dropPct,
                      nack,
-                     ppg.heartRate,
-                     ppg.spo2 > 0 ? ppg.spo2 : 0.0f);
+                     displayHR,
+                     displaySpo2,
+                     finger ? "ON" : "OFF");
         }
 
         if (nack > 0)

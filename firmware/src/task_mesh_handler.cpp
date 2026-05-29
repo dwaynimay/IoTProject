@@ -192,8 +192,14 @@ void taskMqttPublish(void* param)
             }
             else
             {
-                // Publish gagal — kemungkinan koneksi putus di tengah drain
-                LOG_WARN(TAG_PUBLISH, "Publish gagal di tengah drain — skip");
+                // Publish gagal — kembalikan pesan ke depan queue agar tidak hilang.
+                // Sebelumnya pesan yang sudah di-dequeue hilang selamanya (data loss).
+                if (xQueueSendToFront(g_mqttQueue, &msg, 0) != pdTRUE)
+                    LOG_ERROR(TAG_PUBLISH,
+                              "Gagal kembalikan pesan ke queue — DATA LOST!");
+                else
+                    LOG_WARN(TAG_PUBLISH,
+                             "Publish gagal — pesan dikembalikan ke queue, retry next loop");
                 break;
             }
         }
@@ -203,7 +209,7 @@ void taskMqttPublish(void* param)
         // keepalive tetap terjaga meski tidak ada data masuk.
         if (published == 0)
         {
-            if (xQueueReceive(g_mqttQueue, &msg, pdMS_TO_TICKS(100)) == pdTRUE)
+            if (xQueueReceive(g_mqttQueue, &msg, pdMS_TO_TICKS(10)) == pdTRUE)
             {
                 // Pesan valid diterima — publish langsung
                 if (!g_mqtt.publish(msg.topic, msg.payload))
