@@ -82,7 +82,7 @@ CS_ALGORITHM = _get("CS_ALGORITHM", "omp")
 # =============================================================================
 CS_N        = 64   # panjang window — harus pangkat 2
 CS_M        = 32   # jumlah pengukuran (50% kompresi)
-CS_PHI_SEED = 42   # seed Φ — HARUS identik dengan CS_PHI_SEED di firmware
+CS_PHI_SEED = 0    # seed Φ — HARUS identik dengan CS_PHI_SEED di firmware
 OMP_K       = 20   # sparsity level OMP
 
 # =============================================================================

@@ -32,7 +32,7 @@
 // ── Parameter utama ──────────────────────────────────────────────────────────
 static constexpr uint8_t  CS_N        = 64;  // panjang window — HARUS pangkat 2
 static constexpr uint8_t  CS_M        = 32;  // jumlah pengukuran (50% kompresi)
-static constexpr uint32_t CS_PHI_SEED = 42;  // seed — HARUS sama dengan server
+static constexpr uint32_t CS_PHI_SEED = 0;   // seed — HARUS sama dengan server
 
 // =============================================================================
 // CSPhiMatrix — Singleton Hadamard-Gaussian Φ (M × N)
