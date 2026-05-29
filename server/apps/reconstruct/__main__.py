@@ -1,12 +1,20 @@
 """
-Entry point: python -m apps.reconstruct
+Entry point: python -m server.apps.reconstruct  (dari root project)
+         atau python -m apps.reconstruct         (dari folder server/)
 
 Inisialisasi singleton (validator, assessor, storage), lalu jalankan MQTT listener.
 """
 
 import logging
+import os
 import sys
 import warnings
+
+# Pastikan folder server/ ada di sys.path agar import 'core', 'cs', 'apps' bisa resolve
+# baik saat dijalankan dari root project maupun dari dalam folder server/
+_SERVER_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if _SERVER_DIR not in sys.path:
+    sys.path.insert(0, _SERVER_DIR)
 
 from core import (
     ValidatorRegistry, QualityAssessor, StorageManager, PHI,

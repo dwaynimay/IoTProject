@@ -1,4 +1,4 @@
-import { state, getLabelColor, SIG_COLORS } from './state.js';
+import { state, getLabelColor, SIG_COLORS, SIG_UNITS } from './state.js';
 import { fetchNodeVitalsHistory } from './api.js';
 
 const trendCharts = new Map(); // nodeId -> echarts instance (vitals trend)
@@ -292,10 +292,12 @@ export function initIMUChart(nodeId) {
       formatter(params) {
         let s = `<div style="font-size:10px;color:#64748b;margin-bottom:4px">Sample ${params[0].axisValue}</div>`;
         params.forEach(p => {
-          if (p.value != null)
+          if (p.value != null) {
+            const unit = SIG_UNITS[p.seriesName] || '';
             s += `<div style="display:flex;justify-content:space-between;gap:12px">`
               + `<span style="color:${p.color}">${p.seriesName}</span>`
-              + `<span style="font-family:var(--mono)">${Number(p.value).toFixed(3)}</span></div>`;
+              + `<span style="font-family:var(--mono)">${Number(p.value).toFixed(3)} <span style="color:#94a3b8;font-size:9px">${unit}</span></span></div>`;
+          }
         });
         return s;
       }
@@ -304,7 +306,11 @@ export function initIMUChart(nodeId) {
       top: 0, right: 0,
       textStyle: { fontSize: 9, fontFamily: 'var(--mono)', color: '#64748b' },
       itemWidth: 10, itemHeight: 3,
-      data: ['ax','ay','az','gx','gy','gz']
+      data: [
+        { name: 'ax', icon: 'rect' }, { name: 'ay', icon: 'rect' }, { name: 'az', icon: 'rect' },
+        { name: 'gx', icon: 'rect' }, { name: 'gy', icon: 'rect' }, { name: 'gz', icon: 'rect' }
+      ],
+      formatter: name => `${name} (${SIG_UNITS[name] || ''})`
     },
     xAxis: {
       type: 'category',
