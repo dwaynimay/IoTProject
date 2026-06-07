@@ -1,0 +1,108 @@
+{
+    "model_name": "stress_detection_ppg_svm_v1",
+    "model_version": "1.0.0",
+    "description": "Stress detection 2-class dari sinyal PPG (IR) — SVM RBF, Mental Stress PPG dataset",
+    "author": "ppg-team",
+    "trained_at": "2026-06",
+    "labels": [
+        "normal",
+        "stress"
+    ],
+    "features": [
+        {
+            "name": "ir_mean",
+            "type": "stat",
+            "signal": "ir",
+            "stat": "mean",
+            "default": 0.0
+        },
+        {
+            "name": "ir_std",
+            "type": "stat",
+            "signal": "ir",
+            "stat": "std",
+            "default": 0.0
+        },
+        {
+            "name": "ir_min",
+            "type": "stat",
+            "signal": "ir",
+            "stat": "min",
+            "default": 0.0
+        },
+        {
+            "name": "ir_max",
+            "type": "stat",
+            "signal": "ir",
+            "stat": "max",
+            "default": 0.0
+        },
+        {
+            "name": "ir_rms",
+            "type": "stat",
+            "signal": "ir",
+            "stat": "rms",
+            "default": 0.0
+        },
+        {
+            "name": "ir_range",
+            "type": "stat",
+            "signal": "ir",
+            "stat": "range",
+            "default": 0.0
+        },
+        {
+            "name": "ir_skew",
+            "type": "stat",
+            "signal": "ir",
+            "stat": "skew",
+            "default": 0.0
+        },
+        {
+            "name": "ir_kurt",
+            "type": "stat",
+            "signal": "ir",
+            "stat": "kurt",
+            "default": 0.0
+        },
+        {
+            "name": "ir_peak_freq",
+            "type": "stat",
+            "signal": "ir",
+            "stat": "peak_freq",
+            "default": 0.0
+        },
+        {
+            "name": "ir_spectral_energy",
+            "type": "stat",
+            "signal": "ir",
+            "stat": "spectral_energy",
+            "default": 0.0
+        }
+    ],
+    "skip_if": {
+        "finger_required": true,
+        "require_signals": [
+            "ir"
+        ]
+    },
+    "output": {
+        "confidence_threshold": 0.35
+    },
+    "_training_info": {
+        "window_size": 64,
+        "step_size": 32,
+        "fs_hz": 64,
+        "n_features": 10,
+        "n_subjects": 54,
+        "n_train": 864,
+        "n_test": 216,
+        "best_params": {
+            "svm__C": 1,
+            "svm__gamma": "scale"
+        },
+        "test_accuracy": 0.5787,
+        "test_f1_macro": 0.5776,
+        "test_f1_weighted": 0.5776
+    }
+}
