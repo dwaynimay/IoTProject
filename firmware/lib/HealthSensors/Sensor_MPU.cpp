@@ -18,20 +18,20 @@ static constexpr char TAG[] = "MPU";
 // =============================================================================
 bool SensorMPU::begin()
 {
-    Wire1.begin(Pin::MPU_SDA, Pin::MPU_SCL);
-    Wire1.setClock(I2CClock::SPEED);
-    delay(100);
+    Wire.begin(Pin::I2C_SDA, Pin::I2C_SCL);
+    Wire.setClock(I2CClock::SPEED);
+    delay(10); // Kurangi delay awal karena tidak pakai kabel panjang
 
     // ── Wake sensor dari sleep mode ───────────────────────────────────────────
-    Wire1.beginTransmission(I2CAddr::MPU6050);
-    Wire1.write(Mpu6050Reg::PWR_MGMT_1);
-    Wire1.write(0x00); // 0x00 = wake up (clear sleep bit)
-    const uint8_t err = Wire1.endTransmission();
+    Wire.beginTransmission(I2CAddr::MPU6050);
+    Wire.write(Mpu6050Reg::PWR_MGMT_1);
+    Wire.write(0x00); // 0x00 = wake up (clear sleep bit)
+    const uint8_t err = Wire.endTransmission();
 
     if (err != 0)
     {
         LOG_ERROR(TAG, "Tidak ada respons I2C (err=%d). Cek wiring pin %d/%d",
-                  err, Pin::MPU_SDA, Pin::MPU_SCL);
+                  err, Pin::I2C_SDA, Pin::I2C_SCL);
         _connected = false;
         return false;
     }
@@ -39,17 +39,17 @@ bool SensorMPU::begin()
     // ── Verifikasi burst read ─────────────────────────────────────────────────
     // Pastikan sensor bisa mengembalikan 14 byte sekaligus sebelum dinyatakan OK.
     // Ini penting untuk sensor KW yang kadang ACK tapi tidak bisa burst read.
-    Wire1.beginTransmission(I2CAddr::MPU6050);
-    Wire1.write(Mpu6050Reg::ACCEL_XOUT_H);
-    Wire1.endTransmission(false); // repeated start — jangan lepas bus
+    Wire.beginTransmission(I2CAddr::MPU6050);
+    Wire.write(Mpu6050Reg::ACCEL_XOUT_H);
+    Wire.endTransmission(false); // repeated start — jangan lepas bus
 
-    const int received = Wire1.requestFrom((int)I2CAddr::MPU6050, 14);
-    const int avail    = Wire1.available();
+    const int received = Wire.requestFrom((int)I2CAddr::MPU6050, 14);
+    const int avail    = Wire.available();
 
     LOG_DEBUG(TAG, "Verifikasi burst read: requestFrom=%d available=%d", received, avail);
 
     // Kosongkan buffer — data ini tidak valid (belum dikalibrasi)
-    while (Wire1.available()) Wire1.read();
+    while (Wire.available()) Wire.read();
 
     if (avail < 14)
     {
@@ -60,8 +60,8 @@ bool SensorMPU::begin()
     }
 
     _connected = true;
-    LOG_INFO(TAG, "MPU6050 siap | Wire1 pin SDA=%d SCL=%d | clock=%lu Hz",
-             Pin::MPU_SDA, Pin::MPU_SCL, I2CClock::SPEED);
+    LOG_INFO(TAG, "MPU6050 siap | Wire pin SDA=%d SCL=%d | clock=%lu Hz",
+             Pin::I2C_SDA, Pin::I2C_SCL, I2CClock::SPEED);
     return true;
 }
 
@@ -151,10 +151,10 @@ void SensorMPU::setSleep(bool enable)
 {
     if (!_connected) return;
 
-    Wire1.beginTransmission(I2CAddr::MPU6050);
-    Wire1.write(Mpu6050Reg::PWR_MGMT_1);
-    Wire1.write(enable ? 0x40 : 0x00); // bit 6 = SLEEP
-    Wire1.endTransmission();
+    Wire.beginTransmission(I2CAddr::MPU6050);
+    Wire.write(Mpu6050Reg::PWR_MGMT_1);
+    Wire.write(enable ? 0x40 : 0x00); // bit 6 = SLEEP
+    Wire.endTransmission();
 
     LOG_DEBUG(TAG, "Sleep mode: %s", enable ? "ON" : "OFF");
 }
@@ -171,23 +171,23 @@ void SensorMPU::setSleep(bool enable)
 bool SensorMPU::_burstRead(int16_t& ax, int16_t& ay, int16_t& az,
                             int16_t& gx, int16_t& gy, int16_t& gz)
 {
-    Wire1.beginTransmission(I2CAddr::MPU6050);
-    Wire1.write(Mpu6050Reg::ACCEL_XOUT_H);
-    Wire1.endTransmission(false); // repeated start
+    Wire.beginTransmission(I2CAddr::MPU6050);
+    Wire.write(Mpu6050Reg::ACCEL_XOUT_H);
+    Wire.endTransmission(false); // repeated start
 
-    Wire1.requestFrom((int)I2CAddr::MPU6050, 14);
-    if (Wire1.available() < 14) return false;
+    Wire.requestFrom((int)I2CAddr::MPU6050, 14);
+    if (Wire.available() < 14) return false;
 
     // High byte dulu, lalu low byte — big-endian sesuai datasheet MPU6050
-    ax = Wire1.read() << 8 | Wire1.read();
-    ay = Wire1.read() << 8 | Wire1.read();
-    az = Wire1.read() << 8 | Wire1.read();
+    ax = Wire.read() << 8 | Wire.read();
+    ay = Wire.read() << 8 | Wire.read();
+    az = Wire.read() << 8 | Wire.read();
 
-    Wire1.read(); Wire1.read(); // skip TEMP_OUT (2 byte)
+    Wire.read(); Wire.read(); // skip TEMP_OUT (2 byte)
 
-    gx = Wire1.read() << 8 | Wire1.read();
-    gy = Wire1.read() << 8 | Wire1.read();
-    gz = Wire1.read() << 8 | Wire1.read();
+    gx = Wire.read() << 8 | Wire.read();
+    gy = Wire.read() << 8 | Wire.read();
+    gz = Wire.read() << 8 | Wire.read();
 
     return true;
 }

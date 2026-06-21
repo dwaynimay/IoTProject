@@ -21,8 +21,9 @@
 // =============================================================================
 
 // Node Role — di-inject oleh platformio.ini, jangan diubah di sini
-#define ROLE_SENSOR  1
-#define ROLE_GATEWAY 2
+#define ROLE_SENSOR_IMU 1
+#define ROLE_SENSOR_PPG 2
+#define ROLE_GATEWAY 3
 
 // ── Urutan include DI BAWAH INI TIDAK BOLEH DIUBAH ──────────────────────────
 // features.h HARUS sebelum Logger.h karena Logger membaca LOG_LEVEL dari sana.

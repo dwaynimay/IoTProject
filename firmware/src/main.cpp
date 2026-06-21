@@ -57,11 +57,12 @@ portMUX_TYPE g_stateMux = portMUX_INITIALIZER_UNLOCKED;
 ImuSample g_latestImu = {};
 PpgSample g_latestPpg = {};
 
-SemaphoreHandle_t g_wire0Mutex = nullptr;
-SemaphoreHandle_t g_wire1Mutex = nullptr;
+SemaphoreHandle_t g_wireMutex = nullptr;
 
-#if NODE_ROLE == ROLE_SENSOR
+#if NODE_ROLE == ROLE_SENSOR_IMU
 static SensorMPU g_imu;
+EspNowMesh g_mesh;
+#elif NODE_ROLE == ROLE_SENSOR_PPG
 static SensorPPG g_ppg;
 EspNowMesh g_mesh;
 #endif
@@ -75,8 +76,8 @@ DynamicRouter *g_routerPtr = nullptr; // gateway tidak punya router
 // =============================================================================
 // SENSOR NODE — Tasks
 // =============================================================================
-#if NODE_ROLE == ROLE_SENSOR
 
+#if NODE_ROLE == ROLE_SENSOR_PPG
 static void taskReadPPG(void *param)
 {
     g_watchdog.registerTask();
@@ -85,14 +86,14 @@ static void taskReadPPG(void *param)
     {
         g_watchdog.feed();
 
-        if (xSemaphoreTake(g_wire0Mutex, pdMS_TO_TICKS(200)) == pdTRUE)
+        if (xSemaphoreTake(g_wireMutex, pdMS_TO_TICKS(200)) == pdTRUE)
         {
             g_ppg.update();
-            xSemaphoreGive(g_wire0Mutex);
+            xSemaphoreGive(g_wireMutex);
         }
         else
         {
-            LOG_WARN(TAG, "Wire0 mutex timeout di taskReadPPG");
+            LOG_WARN(TAG, "Wire mutex timeout di taskReadPPG");
         }
 
         PpgSample snap{};
@@ -102,13 +103,24 @@ static void taskReadPPG(void *param)
         g_latestPpg = snap;
         taskEXIT_CRITICAL(&g_stateMux);
 
-        // MAX30102 sample rate ~100Hz (10ms/sample).
-        // Delay 2ms memastikan kita tidak pernah melewatkan sample dan mencegah FIFO overflow,
-        // yang sebelumnya menyebabkan nilai HR turun (time dilation) dan SpO2 rusak.
         vTaskDelay(pdMS_TO_TICKS(2)); 
     }
 }
 
+static void taskMonitorSensor(void *param)
+{
+    for (;;)
+    {
+        g_watchdog.healthCheck();
+        g_watchdog.checkTaskStack("PPG");
+        g_watchdog.checkTaskStack("CS_TX");
+        g_watchdog.checkTaskStack("RSSI_EX");
+        vTaskDelay(pdMS_TO_TICKS(HEALTH_CHECK_MS));
+    }
+}
+#endif // ROLE_SENSOR_PPG
+
+#if NODE_ROLE == ROLE_SENSOR_IMU
 static void taskReadIMU(void *param)
 {
     g_watchdog.registerTask();
@@ -125,10 +137,10 @@ static void taskReadIMU(void *param)
             ImuSample snap{};
             bool ok = false;
 
-            if (xSemaphoreTake(g_wire1Mutex, portMAX_DELAY) == pdTRUE)
+            if (xSemaphoreTake(g_wireMutex, portMAX_DELAY) == pdTRUE)
             {
                 ok = g_imu.read(snap);
-                xSemaphoreGive(g_wire1Mutex);
+                xSemaphoreGive(g_wireMutex);
             }
 
             if (ok)
@@ -157,15 +169,13 @@ static void taskMonitorSensor(void *param)
     for (;;)
     {
         g_watchdog.healthCheck();
-        g_watchdog.checkTaskStack("PPG");
         g_watchdog.checkTaskStack("IMU");
         g_watchdog.checkTaskStack("CS_TX");
         g_watchdog.checkTaskStack("RSSI_EX");
         vTaskDelay(pdMS_TO_TICKS(HEALTH_CHECK_MS));
     }
 }
-
-#endif // ROLE_SENSOR
+#endif // ROLE_SENSOR_IMU
 
 // =============================================================================
 // GATEWAY NODE — Tasks
@@ -247,7 +257,8 @@ void setup()
     LOG_INFO(TAG, "  Health Monitor Mesh v3.1 — Multi-Hop Routing");
     LOG_INFO(TAG, "  Node %d | Role: %s",
              NODE_ID,
-             (NODE_ROLE == ROLE_SENSOR) ? "SENSOR" : "GATEWAY");
+             (NODE_ROLE == ROLE_SENSOR_IMU) ? "SENSOR IMU" :
+             (NODE_ROLE == ROLE_SENSOR_PPG) ? "SENSOR PPG" : "GATEWAY");
     LOG_INFO(TAG, "  Discovery: %lu ms | Beacon: %lu ms | Threshold: %d dBm",
              (unsigned long)RoutingCfg::DISCOVERY_PHASE_MS,
              (unsigned long)RoutingCfg::BEACON_INTERVAL_MS,
@@ -256,27 +267,19 @@ void setup()
 
     g_watchdog.begin(true);
 
-// ── SENSOR NODE ──────────────────────────────────────────────────────────────
-#if NODE_ROLE == ROLE_SENSOR
+// ── SENSOR NODE IMU ──────────────────────────────────────────────────────────
+#if NODE_ROLE == ROLE_SENSOR_IMU
 
-    g_wire0Mutex = xSemaphoreCreateMutex();
-    g_wire1Mutex = xSemaphoreCreateMutex();
-    if (!g_wire0Mutex || !g_wire1Mutex)
+    g_wireMutex = xSemaphoreCreateMutex();
+    if (!g_wireMutex)
         g_watchdog.triggerRestart("Gagal buat I2C mutex");
 
     if (!g_imu.begin())
         g_watchdog.triggerRestart("MPU6050 init gagal");
 
-    // ESP-NOW: init non-blocking (v4.0)
-    // begin(true) langsung return, channel discovery di background task
     if (!g_mesh.begin(true))
         g_watchdog.triggerRestart("ESP-NOW init gagal");
 
-    if (!g_ppg.begin())
-        LOG_WARN(TAG, "MAX30102 gagal — lanjut tanpa PPG");
-
-    xTaskCreatePinnedToCore(taskReadPPG, "PPG", StackSize::SENSOR_PPG,
-                            nullptr, TaskPrio::SENSOR_PPG, nullptr, 1);
     xTaskCreatePinnedToCore(taskReadIMU, "IMU", StackSize::SENSOR_IMU,
                             nullptr, TaskPrio::SENSOR_IMU, nullptr, 1);
     xTaskCreatePinnedToCore(taskCSSender, "CS_TX", StackSize::ESPNOW_TX,
@@ -286,7 +289,31 @@ void setup()
     xTaskCreatePinnedToCore(taskMonitorSensor, "MONITOR", StackSize::MONITOR,
                             nullptr, 1, nullptr, 0);
 
-    LOG_INFO(TAG, "Sensor node siap — 5 task terdaftar");
+    LOG_INFO(TAG, "Sensor IMU node siap — 4 task terdaftar");
+
+// ── SENSOR NODE PPG ──────────────────────────────────────────────────────────
+#elif NODE_ROLE == ROLE_SENSOR_PPG
+
+    g_wireMutex = xSemaphoreCreateMutex();
+    if (!g_wireMutex)
+        g_watchdog.triggerRestart("Gagal buat I2C mutex");
+
+    if (!g_mesh.begin(true))
+        g_watchdog.triggerRestart("ESP-NOW init gagal");
+
+    if (!g_ppg.begin())
+        g_watchdog.triggerRestart("MAX30102 init gagal");
+
+    xTaskCreatePinnedToCore(taskReadPPG, "PPG", StackSize::SENSOR_PPG,
+                            nullptr, TaskPrio::SENSOR_PPG, nullptr, 1);
+    xTaskCreatePinnedToCore(taskCSSender, "CS_TX", StackSize::ESPNOW_TX,
+                            nullptr, TaskPrio::ESPNOW_TX, nullptr, 0);
+    xTaskCreatePinnedToCore(taskRssiExchange, "RSSI_EX", 4096,
+                            nullptr, 1, nullptr, 0);
+    xTaskCreatePinnedToCore(taskMonitorSensor, "MONITOR", StackSize::MONITOR,
+                            nullptr, 1, nullptr, 0);
+
+    LOG_INFO(TAG, "Sensor PPG node siap — 4 task terdaftar");
 
 // ── GATEWAY NODE ─────────────────────────────────────────────────────────────
 #elif NODE_ROLE == ROLE_GATEWAY

@@ -13,40 +13,34 @@
 // ---------------------------------------------------------------------------
 // Pin I2C
 //
-// Sistem ini memakai DUA bus I2C terpisah agar MPU6050 dan MAX30102
-// tidak saling mengganggu.
-//
-//   Wire  (bus 1) → MAX30102 PPG   : pin 18 (SDA) & 19 (SCL)
-//   Wire1 (bus 2) → MPU6050 IMU   : pin 21 (SDA) & 22 (SCL)
+// Karena sekarang IMU dan PPG berada di Node (ESP32) yang berbeda,
+// keduanya dapat menggunakan I2C bus utama (Wire) dengan pin standar.
 //
 // ---------------------------------------------------------------------------
 namespace Pin
 {
-    // Bus 1 — MAX30102 (PPG / Heart Rate)
-    constexpr uint8_t PPG_SDA = 18;
-    constexpr uint8_t PPG_SCL = 19;
+#if NODE_ROLE == ROLE_SENSOR_PPG
+    // ESP32 khusus PPG menggunakan pin 18 & 19
+    constexpr uint8_t I2C_SDA = 18;
+    constexpr uint8_t I2C_SCL = 19;
     constexpr uint8_t PPG_INT = 23; // Interrupt MAX30102 (aktif-low, open-drain)
-
-    // Bus 2 — MPU6050 (Accelerometer + Gyroscope)
-    constexpr uint8_t MPU_SDA = 21;
-    constexpr uint8_t MPU_SCL = 22;
+#else
+    // ESP32 khusus IMU (dan Gateway jika butuh) menggunakan pin standar
+    constexpr uint8_t I2C_SDA = 21;
+    constexpr uint8_t I2C_SCL = 22;
+#endif
 }
 
 // ---------------------------------------------------------------------------
 // I2C Clock Speed
 //
-// 50 kHz dipilih karena:
-//   1. Sensor PPG (MAX30102) menggunakan kabel perpanjangan ~1 meter
-//      → kapasitansi bus naik ~100-150pF → rise time memanjang
-//   2. Sensor MPU6050 kloningan sering tidak stabil di Fast Mode (400 kHz)
-//
-// I2C spec max 400pF total bus capacitance.
-// Di 100kHz + 1m kabel → borderline. 50kHz memberi margin aman.
-// MAX30102 & MPU6050 support hingga 400kHz, jadi 50kHz well within spec.
+// Karena sensor PPG menempel pada board (tidak menggunakan kabel 1 meter),
+// kapasitansi bus kembali normal. Kita dapat menggunakan Fast Mode (400kHz)
+// untuk pembacaan yang lebih cepat dan latensi rendah.
 // ---------------------------------------------------------------------------
 namespace I2CClock
 {
-    constexpr uint32_t SPEED = 50000UL; // 50 kHz
+    constexpr uint32_t SPEED = 400000UL; // 400 kHz (Fast Mode)
 }
 
 // ---------------------------------------------------------------------------

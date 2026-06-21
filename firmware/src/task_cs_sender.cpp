@@ -35,7 +35,7 @@
 #include <esp_random.h>
 #include "Config.h"
 
-#if NODE_ROLE == ROLE_SENSOR
+#if NODE_ROLE == ROLE_SENSOR_IMU || NODE_ROLE == ROLE_SENSOR_PPG
 #include "CS_Sensor.h"
 #include "EspNowMesh.h"
 #include "MeshPackets.h"
@@ -86,9 +86,12 @@ uint32_t g_droppedWindows = 0; // window yang dibuang karena sanity check gagal
 // =============================================================================
 // Encoder instances
 // =============================================================================
+#if NODE_ROLE == ROLE_SENSOR_IMU
 static CSEncoder g_encAx, g_encAy, g_encAz;
 static CSEncoder g_encGx, g_encGy, g_encGz;
+#elif NODE_ROLE == ROLE_SENSOR_PPG
 static CSEncoder g_encIr;
+#endif
 
 
 // =============================================================================
@@ -141,9 +144,12 @@ static bool _imuInRange(const ImuSample& imu)
 // =============================================================================
 static void _resetAllEncoders()
 {
+#if NODE_ROLE == ROLE_SENSOR_IMU
     g_encAx.reset(); g_encAy.reset(); g_encAz.reset();
     g_encGx.reset(); g_encGy.reset(); g_encGz.reset();
+#elif NODE_ROLE == ROLE_SENSOR_PPG
     g_encIr.reset();
+#endif
 }
 
 
@@ -218,8 +224,6 @@ void taskCSSender(void* param)
 {
     g_watchdog.registerTask();
 
-    // v4.0: Tunggu gateway ditemukan sebelum mulai encode & kirim
-    // Task sensor (IMU, PPG) sudah jalan — hanya TX yang menunggu.
     LOG_INFO(TAG, "Menunggu koneksi gateway (background discovery)...");
     while (!g_mesh.isChannelConfirmed())
     {
@@ -228,29 +232,25 @@ void taskCSSender(void* param)
     }
     LOG_INFO(TAG, "Gateway terdeteksi — mulai encode & kirim data");
 
-    float yAx[CS_M], yAy[CS_M], yAz[CS_M];
-    float yGx[CS_M], yGy[CS_M], yGz[CS_M];
-    float yIr[CS_M];
-
     uint32_t windowCount  = 0;
     uint32_t directCount  = 0;
     uint32_t relayedCount = 0;
 
     CSPhiMatrix::printInfo();
-    CSPhiMatrix::printSyncDebug();
 
-    LOG_INFO(TAG, "7 encoder aktif | N=%d M=%d | Sanity check AKTIF",
-             CS_N, CS_M);
-    LOG_INFO(TAG, "Limit: accel=±%.0f m/s² gyro=±%.0f °/s | IR_zero_no_finger=%s",
-             SanityLimit::ACCEL_MAX_MS2,
-             SanityLimit::GYRO_MAX_DEGS,
-             SanityLimit::IR_ZERO_IF_NO_FINGER ? "ON" : "OFF");
+#if NODE_ROLE == ROLE_SENSOR_IMU
+    float yAx[CS_M], yAy[CS_M], yAz[CS_M];
+    float yGx[CS_M], yGy[CS_M], yGz[CS_M];
+    LOG_INFO(TAG, "6 encoder aktif (IMU) | N=%d M=%d | Sanity check AKTIF", CS_N, CS_M);
+#elif NODE_ROLE == ROLE_SENSOR_PPG
+    float yIr[CS_M];
+    LOG_INFO(TAG, "1 encoder aktif (PPG) | N=%d M=%d", CS_N, CS_M);
+#endif
 
     for (;;)
     {
         g_watchdog.feed();
 
-        // ── Snapshot shared state ─────────────────────────────────────────────
         ImuSample imu{};
         PpgSample ppg{};
         taskENTER_CRITICAL(&g_stateMux);
@@ -258,117 +258,63 @@ void taskCSSender(void* param)
         ppg = g_latestPpg;
         taskEXIT_CRITICAL(&g_stateMux);
 
-        // ── Deferred channel sync — tidak diperlukan lagi di v5.0 ──────────────
-        // processPendingChannelSync() dihapus: v5.0 WiFi-channel-sync menjamin
-        // s_channelConfirmed = true sejak begin(), channel tidak pernah berubah.
-        // Jika channel berubah (gateway roam), _send() handle via _updateAllPeerChannels().
-
-        // ── F2: Sanity check IMU sebelum push ke encoder ──────────────────────
-        // Drop window jika ada axis yang di luar batas fisis.
-        // Reset semua encoder agar sampel lama tidak tercampur ke window baru.
+#if NODE_ROLE == ROLE_SENSOR_IMU
         if (!_imuInRange(imu))
         {
             g_droppedWindows++;
             _resetAllEncoders();
-
             if (g_droppedWindows % SanityLimit::LOG_DROP_EVERY == 0)
-            {
-                LOG_WARN(TAG,
-                         "DROPPED: IMU out of range "
-                         "| ax=%.1f ay=%.1f az=%.1f m/s² "
-                         "| gx=%.1f gy=%.1f gz=%.1f °/s "
-                         "| total_dropped=%lu",
-                         imu.accelX, imu.accelY, imu.accelZ,
-                         imu.gyroX,  imu.gyroY,  imu.gyroZ,
-                         g_droppedWindows);
-            }
-
+                LOG_WARN(TAG, "DROPPED: IMU out of range");
             vTaskDelay(pdMS_TO_TICKS(Timing::IMU_SAMPLE_MS));
             continue;
         }
 
-        // ── F2: IR sample — nolkan jika tidak ada jari ────────────────────────
-        // Mencegah encoder menyimpan noise DC MAX30102 sebagai sinyal valid.
-        // Server tetap menerima paket (finger=false sudah ada di payload),
-        // tapi measurement vector IR akan berisi nol sehingga rekonstruksi
-        // menghasilkan sinyal nol — lebih bersih daripada noise.
-        const float irSample = (SanityLimit::IR_ZERO_IF_NO_FINGER &&
-                                !(ppg.irRaw >= EdgeConfig::IR_FINGER_THRESHOLD))
-                               ? 0.0f
-                               : static_cast<float>(ppg.irRaw);
-
-        // ── Push sample ke semua encoder ──────────────────────────────────────
         const bool axRdy = g_encAx.pushSample(imu.accelX);
         const bool ayRdy = g_encAy.pushSample(imu.accelY);
         const bool azRdy = g_encAz.pushSample(imu.accelZ);
         const bool gxRdy = g_encGx.pushSample(imu.gyroX);
         const bool gyRdy = g_encGy.pushSample(imu.gyroY);
         const bool gzRdy = g_encGz.pushSample(imu.gyroZ);
-        const bool irRdy = g_encIr.pushSample(irSample);
 
-        if (!(axRdy && ayRdy && azRdy && gxRdy && gyRdy && gzRdy && irRdy))
+        if (!(axRdy && ayRdy && azRdy && gxRdy && gyRdy && gzRdy))
         {
             vTaskDelay(pdMS_TO_TICKS(Timing::IMU_SAMPLE_MS));
             continue;
         }
 
-        // ── Encode semua sinyal ───────────────────────────────────────────────
-        g_encAx.encode(yAx);
-        g_encAy.encode(yAy);
-        g_encAz.encode(yAz);
-        g_encGx.encode(yGx);
-        g_encGy.encode(yGy);
-        g_encGz.encode(yGz);
+        g_encAx.encode(yAx); g_encAy.encode(yAy); g_encAz.encode(yAz);
+        g_encGx.encode(yGx); g_encGy.encode(yGy); g_encGz.encode(yGz);
+
+#elif NODE_ROLE == ROLE_SENSOR_PPG
+        const float irSample = (SanityLimit::IR_ZERO_IF_NO_FINGER &&
+                                !(ppg.irRaw >= EdgeConfig::IR_FINGER_THRESHOLD))
+                               ? 0.0f
+                               : static_cast<float>(ppg.irRaw);
+
+        if (!g_encIr.pushSample(irSample))
+        {
+            vTaskDelay(pdMS_TO_TICKS(Timing::IMU_SAMPLE_MS));
+            continue;
+        }
         g_encIr.encode(yIr);
+#endif
 
         const bool     finger = (ppg.irRaw >= EdgeConfig::IR_FINGER_THRESHOLD);
         const uint32_t tsNow  = millis();
 
-        // ── PPG values: nolkan jika tidak ada jari (seperti monitor RS) ───────
-        // Ketika jari tidak menempel, HR dan SpO2 tidak bisa diukur.
-        // Setel ke 0 agar tampilan di dashboard seperti monitor rumah sakit:
-        //   - Finger ON  → tampilkan nilai HR dan SpO2 aktual
-        //   - Finger OFF → tampilkan 0 / garis datar
-        const int8_t displayHR   = finger ? ppg.heartRate : 0;
-        const float  displaySpo2 = finger ? (ppg.spo2 > 0 ? ppg.spo2 : 0.0f) : 0.0f;
-        const bool   displayValid = finger ? ppg.valid : false;
-
-        // ── Dynamic Routing Decision ──────────────────────────────────────────
         const RouteDecision dec = g_router.decide();
         const uint8_t* dstMac  = _selectDstMac(dec);
 
         if (dec.isDirect) directCount++;
         else              relayedCount++;
 
-        // ── Kirim 6 IMU axis + PPG ke tujuan yang dipilih ────────────────────
-        // ANTI-NACK v2 — tiga strategi:
-        //
-        //   #1  INTER_PKT_MS = 5ms (naik dari 2ms)
-        //       Lebih menyebar paket, kurangi P(collision) dengan AP beacon.
-        //       Total overhead: 6 × 5ms = 30ms per window (budget = 640ms).
-        //
-        //   #2  RETRY: jika NACK, tunggu random 3–8ms lalu coba sekali lagi.
-        //       ESP-NOW NACK biasanya karena CCA (Clear Channel Assessment)
-        //       gagal — medium sibuk sesaat. Retry dengan jitter biasanya
-        //       berhasil karena collision bersifat transient.
-        //
-        //   #3  STAGGER: delay awal = NODE_ID × 50ms sebelum burst.
-        //       Desinkronisasi transmisi antar sensor agar dua node tidak
-        //       mengirim 7 paket bersamaan → menghilangkan self-collision.
-        //
-        //   Kombinasi #1+#2+#3: NACK diharapkan turun dari ~4.3% ke <0.5%.
         static constexpr uint8_t INTER_PKT_MS       = 5;
         static constexpr uint8_t RETRY_MIN_MS       = 3;
         static constexpr uint8_t RETRY_MAX_MS       = 8;
-        // v3.2: Stagger setiap window, bukan hanya sekali.
-        // 10ms × NODE_ID = overhead kecil (10-20ms) tapi cukup untuk
-        // desinkronisasi transmisi antar node dan mengurangi NACK.
-        static constexpr uint8_t NODE_STAGGER_MS    = 10;  // × NODE_ID, setiap window
-
-        // #3: Stagger setiap window untuk desinkronisasi antar node
+        static constexpr uint8_t NODE_STAGGER_MS    = 10;
+        
         vTaskDelay(pdMS_TO_TICKS(NODE_ID * NODE_STAGGER_MS));
 
-        // Macro: kirim + retry 1x jika NACK
         #define SEND_WITH_RETRY(sendExpr)                                     \
             do {                                                               \
                 if (!(sendExpr)) {                                             \
@@ -380,6 +326,7 @@ void taskCSSender(void* param)
 
         uint8_t nack = 0;
 
+#if NODE_ROLE == ROLE_SENSOR_IMU
         SEND_WITH_RETRY(g_mesh.sendCsAxis(PKT_CS_AX, NODE_ID, yAx, finger, tsNow, dstMac));
         vTaskDelay(pdMS_TO_TICKS(INTER_PKT_MS));
         SEND_WITH_RETRY(g_mesh.sendCsAxis(PKT_CS_AY, NODE_ID, yAy, finger, tsNow, dstMac));
@@ -391,59 +338,27 @@ void taskCSSender(void* param)
         SEND_WITH_RETRY(g_mesh.sendCsAxis(PKT_CS_GY, NODE_ID, yGy, finger, tsNow, dstMac));
         vTaskDelay(pdMS_TO_TICKS(INTER_PKT_MS));
         SEND_WITH_RETRY(g_mesh.sendCsAxis(PKT_CS_GZ, NODE_ID, yGz, finger, tsNow, dstMac));
-        vTaskDelay(pdMS_TO_TICKS(INTER_PKT_MS));
+#elif NODE_ROLE == ROLE_SENSOR_PPG
+        const int8_t displayHR   = finger ? ppg.heartRate : 0;
+        const float  displaySpo2 = finger ? (ppg.spo2 > 0 ? ppg.spo2 : 0.0f) : 0.0f;
+        const bool   displayValid = finger ? ppg.valid : false;
         SEND_WITH_RETRY(g_mesh.sendCsPpg(NODE_ID, yIr, displayHR,
                                           displayValid, displaySpo2,
                                           finger, tsNow, dstMac));
+#endif
 
         #undef SEND_WITH_RETRY
 
-
         windowCount++;
 
-        // ── Log periodik ──────────────────────────────────────────────────────
         if (windowCount % 5 == 0)
         {
-            const float relayPct = windowCount > 0
-                                   ? 100.0f * relayedCount / windowCount
-                                   : 0.0f;
-            const float dropPct  = (windowCount + g_droppedWindows) > 0
-                                   ? 100.0f * g_droppedWindows
-                                     / (windowCount + g_droppedWindows)
-                                   : 0.0f;
-
-            LOG_INFO(TAG,
-                     "Win #%lu [%s] | self=%d dBm neighbor=%d dBm | "
-                     "relay=%.0f%% | dropped=%lu(%.1f%%) | nack=%d | "
-                     "HR=%d SpO2=%.1f%% finger=%s",
-                     windowCount,
-                     dec.isDirect ? "DIRECT" : "RELAY",
-                     dec.rssiSelf,
-                     dec.rssiNeighbor,
-                     relayPct,
-                     g_droppedWindows,
-                     dropPct,
-                     nack,
-                     displayHR,
-                     displaySpo2,
-                     finger ? "ON" : "OFF");
+            LOG_INFO(TAG, "Win #%lu [%s] | nack=%d | dropped=%lu",
+                     windowCount, dec.isDirect ? "DIRECT" : "RELAY", nack, g_droppedWindows);
         }
-
-        if (nack > 0)
-        {
-            LOG_WARN(TAG, "Window #%lu — %d/7 paket gagal TX ke %s!",
-                     windowCount,
-                     nack,
-                     dec.isDirect ? "GATEWAY" : "RELAY");
-        }
-
-        LOG_EVERY_N(500, LOG_DEBUG, TAG,
-                    "Stack: %u bytes | heap: %lu KB",
-                    uxTaskGetStackHighWaterMark(NULL),
-                    esp_get_free_heap_size() / 1024);
 
         vTaskDelay(pdMS_TO_TICKS(Timing::IMU_SAMPLE_MS));
     }
 }
 
-#endif // NODE_ROLE == ROLE_SENSOR
+#endif // NODE_ROLE == ROLE_SENSOR_IMU || NODE_ROLE == ROLE_SENSOR_PPG
