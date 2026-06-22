@@ -22,7 +22,7 @@
 //   hr.reset();
 //   // tiap sampel:
 //   hr.update(irValue, millis());
-//   int bpm = hr.bpm();          // 0 jika belum siap
+//   int bpm = hr.getBpm();       // 0 jika belum siap
 //   bool ok = hr.isValid();
 // =============================================================================
 
@@ -156,20 +156,20 @@ public:
     }
 
     // ── Output ────────────────────────────────────────────────────────────────
-    int   bpm()       const { return _bpmEst.bpm(); }
-    bool  isValid()   const { return _settled && !_stale && _bpmEst.ready()
+    int   getBpm()       const { return _bpmEst.bpm(); }
+    bool  isValid()      const { return _settled && !_stale && _bpmEst.ready()
                                      && !_inMotion
                                      && _bpmEst.bpm() > 30 && _bpmEst.bpm() < 200; }
-    bool  inMotion()  const { return _inMotion; }
-    bool  signalLost() const { return _stale; }
-    bool  settled()   const { return _settled; }
+    bool  isMotion()     const { return _inMotion; }
+    bool  isSignalLost() const { return _stale; }
+    bool  isSettled()    const { return _settled; }
 
     // ── Monitoring (Serial Plotter) ─────────────────────────────────────────────
-    float filteredSignal() const { return _lastBpf; }   // sinyal band-pass
-    float threshold()      const { return _lastEnv * 0.60f; }
-    float envelope()       const { return _lastEnv; }
-    float imuDynamic()     const { return _imuGate.lastDynamic(); }  // akselerasi gerakan
-    bool  imuMotion()      const { return _hasImu && _imuMotion; }
+    float getFilteredSignal() const { return _lastBpf; }   // sinyal band-pass
+    float getThreshold()      const { return _lastEnv * 0.60f; }
+    float getEnvelope()       const { return _lastEnv; }
+    float getImuDynamic()     const { return _imuGate.lastDynamic(); }  // akselerasi gerakan
+    bool  isImuMotion()       const { return _hasImu && _imuMotion; }
 
 private:
     // Komponen DSP (konfigurasi default sudah dituning untuk wrist).

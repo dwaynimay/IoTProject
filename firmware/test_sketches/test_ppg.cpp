@@ -33,8 +33,8 @@ void loop() {
 
         // Status gabungan: 100=sinyal hilang, 50=motion, 0=normal
         int status = 0;
-        if (sensor.signalLost()) status = 100;
-        else if (sensor.inMotion()) status = 50;
+        if (sensor.isSignalLost()) status = 100;
+        else if (sensor.isMotion()) status = 50;
 
         Serial.print(sensor.getAcIr());        // sinyal band-pass
         Serial.print(",");

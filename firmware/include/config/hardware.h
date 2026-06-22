@@ -68,3 +68,16 @@ namespace MacAddr
     constexpr uint8_t NODE_B[6]  = {0x28, 0x05, 0xA5, 0x31, 0xF4, 0x94};
     constexpr uint8_t GATEWAY[6] = {0xF4, 0x2D, 0xC9, 0x70, 0xD1, 0x34};
 }
+
+// ---------------------------------------------------------------------------
+// PPG Hardware Config
+// ---------------------------------------------------------------------------
+namespace PpgConfig
+{
+    constexpr uint8_t  LED_POWER_WRIST = 0x7F;  // ~25.4mA (wrist butuh terang)
+    constexpr uint8_t  SAMPLE_AVG      = 4;
+    constexpr uint8_t  LED_MODE        = 2;     // Red + IR
+    constexpr uint16_t SAMPLE_RATE     = 400;
+    constexpr uint16_t PULSE_WIDTH     = 411;
+    constexpr uint16_t ADC_RANGE       = 16384;
+}

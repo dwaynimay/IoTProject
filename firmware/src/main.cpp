@@ -96,11 +96,15 @@ static void taskReadPPG(void *param)
             LOG_WARN(TAG, "Wire mutex timeout di taskReadPPG");
         }
 
-        PpgSample snap{};
+        PpgMeasurement snap{};
         g_ppg.read(snap);
 
         taskENTER_CRITICAL(&g_stateMux);
-        g_latestPpg = snap;
+        g_latestPpg.irRaw = snap.irRaw;
+        g_latestPpg.redRaw = snap.redRaw;
+        g_latestPpg.heartRate = snap.heartRate;
+        g_latestPpg.spo2 = snap.spo2;
+        g_latestPpg.valid = snap.valid;
         taskEXIT_CRITICAL(&g_stateMux);
 
         vTaskDelay(pdMS_TO_TICKS(2)); 

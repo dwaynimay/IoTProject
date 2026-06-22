@@ -39,8 +39,16 @@
 
 #include <Arduino.h>
 #include <MAX30105.h>
-#include "MeshPackets.h"
 #include "HeartRateMonitor.h"
+
+// ── Tipe data khusus layer driver ───────────────────────────────────────────
+struct PpgMeasurement {
+    uint32_t irRaw = 0;
+    uint32_t redRaw = 0;
+    int8_t   heartRate = -1;
+    float    spo2 = 0.0f;
+    bool     valid = false;
+};
 
 
 class SensorPPG
@@ -51,7 +59,7 @@ public:
     // ── Lifecycle ─────────────────────────────────────────────────────────────
     bool begin();
     void update();
-    bool read(PpgSample& out);
+    bool read(PpgMeasurement& out);
 
     // ── Motion compensation via IMU (opsional) ──────────────────────────────────
     // Panggil tiap loop SEBELUM update() dengan magnitudo akselerasi dari
@@ -60,15 +68,15 @@ public:
     void setAccel(float accelMag) { _hr.setAccel(accelMag, millis()); }
 
     // ── Monitoring untuk Serial Plotter / debugging ─────────────────────────────
-    float getAcIr()       const { return _hr.filteredSignal(); }
-    float getThreshold()  const { return _hr.threshold(); }
-    float getEnvelope()   const { return _hr.envelope(); }
-    float getBpm()        const { return static_cast<float>(_hr.bpm()); }
-    bool  inMotion()      const { return _hr.inMotion(); }
-    bool  signalLost()    const { return _hr.signalLost(); }
-    bool  imuMotion()     const { return _hr.imuMotion(); }
-    float imuDynamic()    const { return _hr.imuDynamic(); }
-    bool  fingerPresent() const { return _contact; }
+    float getAcIr()       const { return _hr.getFilteredSignal(); }
+    float getThreshold()  const { return _hr.getThreshold(); }
+    float getEnvelope()   const { return _hr.getEnvelope(); }
+    float getBpm()        const { return static_cast<float>(_hr.getBpm()); }
+    bool  isMotion()      const { return _hr.isMotion(); }
+    bool  isSignalLost()  const { return _hr.isSignalLost(); }
+    bool  isImuMotion()   const { return _hr.isImuMotion(); }
+    float getImuDynamic() const { return _hr.getImuDynamic(); }
+    bool  hasFinger()     const { return _contact; }
 
 private:
     void setPower(bool enable);
@@ -113,12 +121,4 @@ private:
 
     // ── Contact threshold ───────────────────────────────────────────────────────
     static constexpr uint32_t IR_CONTACT_MIN = 30000;
-
-    // ── Hardware config ─────────────────────────────────────────────────────────
-    static constexpr uint8_t  LED_POWER_WRIST = 0x7F;  // ~25.4mA (wrist butuh terang)
-    static constexpr uint8_t  SAMPLE_AVG      = 4;
-    static constexpr uint8_t  LED_MODE        = 2;     // Red + IR
-    static constexpr uint16_t SAMPLE_RATE     = 400;
-    static constexpr uint16_t PULSE_WIDTH     = 411;
-    static constexpr uint16_t ADC_RANGE       = 16384;
 };

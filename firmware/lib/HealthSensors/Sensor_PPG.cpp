@@ -61,16 +61,16 @@ bool SensorPPG::begin()
     }
 
     // Konfigurasi eksplisit (parameter benar-benar dipakai, bukan default).
-    _sensor.setup(LED_POWER_WRIST, SAMPLE_AVG, LED_MODE,
-                  SAMPLE_RATE, PULSE_WIDTH, ADC_RANGE);
-    _sensor.setPulseAmplitudeRed(LED_POWER_WRIST);
-    _sensor.setPulseAmplitudeIR(LED_POWER_WRIST);
+    _sensor.setup(PpgConfig::LED_POWER_WRIST, PpgConfig::SAMPLE_AVG, PpgConfig::LED_MODE,
+                  PpgConfig::SAMPLE_RATE, PpgConfig::PULSE_WIDTH, PpgConfig::ADC_RANGE);
+    _sensor.setPulseAmplitudeRed(PpgConfig::LED_POWER_WRIST);
+    _sensor.setPulseAmplitudeIR(PpgConfig::LED_POWER_WRIST);
 
     _hr.reset();
     _connected = true;
 
     LOG_INFO(TAG, "MAX30102 siap (WRIST) | SDA=%d SCL=%d | LED=0x%02X",
-             Pin::I2C_SDA, Pin::I2C_SCL, LED_POWER_WRIST);
+             Pin::I2C_SDA, Pin::I2C_SCL, PpgConfig::LED_POWER_WRIST);
     LOG_INFO(TAG, "Pipeline: bandpass -> motion-gate -> envelope -> beat -> bpm");
     return true;
 }
@@ -128,7 +128,7 @@ void SensorPPG::update()
     if (beat)
     {
         LOG_DEBUG(TAG, "Beat! BPM=%d | bpf=%.1f thr=%.1f",
-                  _hr.bpm(), _hr.filteredSignal(), _hr.threshold());
+                  _hr.getBpm(), _hr.getFilteredSignal(), _hr.getThreshold());
 
         // ── Hitung SpO2 saat detak terdeteksi & buffer penuh ──────────────────
         if (_bufFill >= SPO2_FIFO_SIZE)
@@ -241,9 +241,9 @@ float SensorPPG::_rToSpo2(float R)
 
 
 // =============================================================================
-// read() — Salin state ke PpgSample
+// read() — Salin state ke PpgMeasurement
 // =============================================================================
-bool SensorPPG::read(PpgSample& out)
+bool SensorPPG::read(PpgMeasurement& out)
 {
     if (!_connected)
     {
@@ -256,7 +256,7 @@ bool SensorPPG::read(PpgSample& out)
 
     out.irRaw     = static_cast<uint32_t>(_lastIr);
     out.redRaw    = static_cast<uint32_t>(_lastRed);
-    out.heartRate = static_cast<int8_t>(constrain(_hr.bpm(), 0, 127));
+    out.heartRate = static_cast<int8_t>(constrain(_hr.getBpm(), 0, 127));
     out.spo2      = _spo2Valid ? _spo2 : 0.0f;
     out.valid     = _hr.isValid() && _spo2Valid;
     return true;
