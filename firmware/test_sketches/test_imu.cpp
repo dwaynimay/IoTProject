@@ -41,7 +41,7 @@ void loop() {
     if (millis() - lastPrintMs >= 20) {   // 50 Hz (sama seperti test_ppg)
         lastPrintMs = millis();
 
-        ImuSample data;
+        ImuMeasurement data;
         if (imu.read(data)) {
             // Hitung magnitudo akselerasi dalam satuan g
             // Saat diam & datar, seharusnya ~1.00 g (gravitasi saja)

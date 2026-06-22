@@ -19,7 +19,7 @@
 //   imu.begin();              // inisialisasi & verifikasi koneksi
 //   imu.calibrate();          // opsional, kurangi offset bias
 //
-//   ImuSample data;
+//   ImuMeasurement data;
 //   if (imu.read(data)) {     // baca satu sampel
 //       // gunakan data.accel_x, data.gyro_y, dsb.
 //   }
@@ -31,7 +31,13 @@
 
 #include <Arduino.h>
 #include <Wire.h>
-#include "MeshPackets.h"
+
+// ── Tipe data khusus layer driver ───────────────────────────────────────────
+struct ImuMeasurement {
+    float accelX = 0, accelY = 0, accelZ = 0; // m/s²
+    float gyroX = 0, gyroY = 0, gyroZ = 0;    // °/s
+    float tempC = 0;
+};
 
 
 // =============================================================================
@@ -39,9 +45,10 @@
 // =============================================================================
 namespace Mpu6050Reg
 {
-    constexpr uint8_t PWR_MGMT_1   = 0x6B; // power management — tulis 0x00 untuk wake
-    constexpr uint8_t CONFIG       = 0x1A; // Digital Low Pass Filter (DLPF) configuration
-    constexpr uint8_t ACCEL_XOUT_H = 0x3B; // awal burst read 14 byte (accel + temp + gyro)
+    constexpr uint8_t PWR_MGMT_1    = 0x6B; // power management — tulis 0x00 untuk wake
+    constexpr uint8_t CONFIG        = 0x1A; // Digital Low Pass Filter (DLPF) configuration
+    constexpr uint8_t DLPF_CFG_21HZ = 0x04; // 21 Hz bandwidth
+    constexpr uint8_t ACCEL_XOUT_H  = 0x3B; // awal burst read 14 byte (accel + temp + gyro)
 }
 
 
@@ -64,7 +71,7 @@ public:
     // Baca satu sampel IMU ke dalam `out`.
     // Kembalikan false jika Wire1 tidak mengembalikan 14 byte.
     // Nilai sudah dikonversi ke satuan fisik (m/s² dan °/s).
-    bool read(ImuSample& out);
+    bool read(ImuMeasurement& out);
 
     // ── Kalibrasi & NVS ───────────────────────────────────────────────────────
 

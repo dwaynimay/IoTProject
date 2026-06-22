@@ -43,7 +43,7 @@ bool SensorMPU::begin()
     // dan membersihkan noise frekuensi tinggi tanpa beban komputasi di ESP32.
     Wire.beginTransmission(I2CAddr::MPU6050);
     Wire.write(Mpu6050Reg::CONFIG);
-    Wire.write(0x04);
+    Wire.write(Mpu6050Reg::DLPF_CFG_21HZ);
     Wire.endTransmission();
 
     // ── Verifikasi burst read ─────────────────────────────────────────────────
@@ -83,7 +83,7 @@ bool SensorMPU::begin()
 // =============================================================================
 // read() — Baca Satu Sampel IMU
 // =============================================================================
-bool SensorMPU::read(ImuSample& out)
+bool SensorMPU::read(ImuMeasurement& out)
 {
     if (!_connected) return false;
 

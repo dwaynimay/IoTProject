@@ -138,7 +138,7 @@ static void taskReadIMU(void *param)
 
         if (millis() - lastReadMs >= Timing::IMU_SAMPLE_MS)
         {
-            ImuSample snap{};
+            ImuMeasurement snap{};
             bool ok = false;
 
             if (xSemaphoreTake(g_wireMutex, portMAX_DELAY) == pdTRUE)
@@ -151,7 +151,13 @@ static void taskReadIMU(void *param)
             {
                 failCount = 0;
                 taskENTER_CRITICAL(&g_stateMux);
-                g_latestImu = snap;
+                g_latestImu.accelX = snap.accelX;
+                g_latestImu.accelY = snap.accelY;
+                g_latestImu.accelZ = snap.accelZ;
+                g_latestImu.gyroX = snap.gyroX;
+                g_latestImu.gyroY = snap.gyroY;
+                g_latestImu.gyroZ = snap.gyroZ;
+                g_latestImu.tempC = snap.tempC;
                 taskEXIT_CRITICAL(&g_stateMux);
             }
             else
