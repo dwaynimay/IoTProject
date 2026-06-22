@@ -40,6 +40,7 @@
 namespace Mpu6050Reg
 {
     constexpr uint8_t PWR_MGMT_1   = 0x6B; // power management — tulis 0x00 untuk wake
+    constexpr uint8_t CONFIG       = 0x1A; // Digital Low Pass Filter (DLPF) configuration
     constexpr uint8_t ACCEL_XOUT_H = 0x3B; // awal burst read 14 byte (accel + temp + gyro)
 }
 
@@ -65,12 +66,19 @@ public:
     // Nilai sudah dikonversi ke satuan fisik (m/s² dan °/s).
     bool read(ImuSample& out);
 
-    // ── Kalibrasi ─────────────────────────────────────────────────────────────
+    // ── Kalibrasi & NVS ───────────────────────────────────────────────────────
 
     // Hitung offset bias rata-rata dari `samples` pembacaan.
     // Letakkan sensor dalam posisi datar & diam saat memanggil ini.
-    // Offset disimpan internal dan diaplikasikan otomatis di read().
+    // Offset otomatis disimpan ke NVS (Preferences) setelah selesai.
     void calibrate(uint16_t samples = 500);
+
+    // Muat offset kalibrasi dari NVS (Preferences).
+    // Kembalikan true jika data kalibrasi ditemukan, false jika kosong.
+    bool loadCalibration();
+
+    // Hapus data kalibrasi dari NVS (kembali ke default pabrik / offset 0).
+    void clearCalibration();
 
     // ── Power Management ──────────────────────────────────────────────────────
 

@@ -9,6 +9,7 @@
 
 #include "Sensor_MPU.h"
 #include "../../include/Config.h"
+#include <Preferences.h>
 
 static constexpr char TAG[] = "MPU";
 
@@ -36,6 +37,15 @@ bool SensorMPU::begin()
         return false;
     }
 
+    // ── Konfigurasi DLPF (Digital Low Pass Filter) ────────────────────────────
+    // Filter internal hardware diset ke bandwidth ~21Hz (DLPF_CFG = 4).
+    // Sangat krusial untuk anti-aliasing sebelum CS sampling di 50Hz (Nyquist 25Hz),
+    // dan membersihkan noise frekuensi tinggi tanpa beban komputasi di ESP32.
+    Wire.beginTransmission(I2CAddr::MPU6050);
+    Wire.write(Mpu6050Reg::CONFIG);
+    Wire.write(0x04);
+    Wire.endTransmission();
+
     // ── Verifikasi burst read ─────────────────────────────────────────────────
     // Pastikan sensor bisa mengembalikan 14 byte sekaligus sebelum dinyatakan OK.
     // Ini penting untuk sensor KW yang kadang ACK tapi tidak bisa burst read.
@@ -58,6 +68,10 @@ bool SensorMPU::begin()
         _connected = false;
         return false;
     }
+
+    // ── Muat Kalibrasi NVS ────────────────────────────────────────────────────
+    // Jika ada data tersimpan, langsung pakai agar tidak perlu kalibrasi ulang
+    loadCalibration();
 
     _connected = true;
     LOG_INFO(TAG, "MPU6050 siap | Wire pin SDA=%d SCL=%d | clock=%lu Hz",
@@ -141,6 +155,14 @@ void SensorMPU::calibrate(uint16_t samples)
     LOG_INFO(TAG, "Kalibrasi selesai (%d/%d valid)", valid, samples);
     LOG_DEBUG(TAG, "Offset accel: ax=%d ay=%d az=%d", _axOff, _ayOff, _azOff);
     LOG_DEBUG(TAG, "Offset gyro : gx=%d gy=%d gz=%d", _gxOff, _gyOff, _gzOff);
+
+    // ── Simpan ke NVS ─────────────────────────────────────────────────────────
+    Preferences prefs;
+    prefs.begin("imu_cal", false); // read-write
+    int16_t offsets[6] = {_axOff, _ayOff, _azOff, _gxOff, _gyOff, _gzOff};
+    prefs.putBytes("offsets", offsets, sizeof(offsets));
+    prefs.end();
+    LOG_INFO(TAG, "Offset kalibrasi berhasil disimpan ke NVS.");
 }
 
 
@@ -190,4 +212,49 @@ bool SensorMPU::_burstRead(int16_t& ax, int16_t& ay, int16_t& az,
     gz = Wire.read() << 8 | Wire.read();
 
     return true;
+}
+
+
+// =============================================================================
+// loadCalibration() — Muat Offset Bias dari NVS
+// =============================================================================
+bool SensorMPU::loadCalibration()
+{
+    Preferences prefs;
+    prefs.begin("imu_cal", true); // read-only
+    
+    // Cek apakah key "offsets" ada dan ukurannya pas (6 * 2 = 12 byte)
+    if (prefs.getBytesLength("offsets") != 12)
+    {
+        prefs.end();
+        LOG_INFO(TAG, "Tidak ada data kalibrasi NVS (gunakan default pabrik)");
+        return false;
+    }
+
+    int16_t offsets[6];
+    prefs.getBytes("offsets", offsets, sizeof(offsets));
+    prefs.end();
+
+    _axOff = offsets[0]; _ayOff = offsets[1]; _azOff = offsets[2];
+    _gxOff = offsets[3]; _gyOff = offsets[4]; _gzOff = offsets[5];
+
+    LOG_INFO(TAG, "Kalibrasi NVS dimuat: A[%d,%d,%d] G[%d,%d,%d]",
+             _axOff, _ayOff, _azOff, _gxOff, _gyOff, _gzOff);
+    return true;
+}
+
+// =============================================================================
+// clearCalibration() — Hapus Offset Bias dari NVS
+// =============================================================================
+void SensorMPU::clearCalibration()
+{
+    Preferences prefs;
+    prefs.begin("imu_cal", false);
+    prefs.clear();
+    prefs.end();
+    
+    _axOff = 0; _ayOff = 0; _azOff = 0;
+    _gxOff = 0; _gyOff = 0; _gzOff = 0;
+    
+    LOG_INFO(TAG, "Data kalibrasi NVS dihapus.");
 }
