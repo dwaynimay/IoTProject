@@ -21,7 +21,7 @@
 // meneruskan sampel ke pipeline.
 //
 // Hardware:
-//   Sensor  : MAX30102          Bus : Wire (SDA=18, SCL=19)
+//   Sensor  : MAX30102          Bus : Wire (pin dikonfigurasi via hardware.h)
 //   Library : SparkFun MAX3010x Posisi : pergelangan tangan
 //
 // URUTAN INISIALISASI KRITIS:
@@ -32,7 +32,7 @@
 //   ppg.begin();
 //   // loop (panggil secepat mungkin, >=50 Hz):
 //   ppg.update();
-//   PpgSample s; ppg.read(s);
+//   PpgMeasurement m; ppg.read(m);
 //
 // THREAD SAFETY: tidak thread-safe.
 // =============================================================================

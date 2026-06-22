@@ -7,8 +7,8 @@
 //
 // Hardware:
 //   Sensor : MPU6050 (termasuk varian KW/clone)
-//   Bus    : Wire1 (I2C bus kedua) — pin SDA=21, SCL=22
-//   Alasan bus terpisah: mencegah konflik dengan MAX30102 di Wire (pin 18/19)
+//   Bus    : Wire (bus I2C utama, pin dikonfigurasi via hardware.h)
+//   Catatan: Berjalan di ESP32 terpisah (Node IMU), sehingga tidak konflik dengan PPG.
 //
 // Kenapa implementasi manual (tanpa library)?
 //   Library MPU6050 umum tidak kompatibel dengan sensor kloningan.
@@ -21,12 +21,12 @@
 //
 //   ImuMeasurement data;
 //   if (imu.read(data)) {     // baca satu sampel
-//       // gunakan data.accel_x, data.gyro_y, dsb.
+//       // gunakan data.accelX, data.gyroY, dsb.
 //   }
 //
 // THREAD SAFETY:
 //   Tidak thread-safe secara bawaan.
-//   Gunakan mutex (Wire1Mutex) di luar modul ini jika diakses dari beberapa task.
+//   Gunakan mutex (misal g_wireMutex) di luar modul ini jika diakses dari beberapa task.
 // =============================================================================
 
 #include <Arduino.h>
@@ -69,7 +69,7 @@ public:
     // ── Data API ──────────────────────────────────────────────────────────────
 
     // Baca satu sampel IMU ke dalam `out`.
-    // Kembalikan false jika Wire1 tidak mengembalikan 14 byte.
+    // Kembalikan false jika Wire (I2C) tidak mengembalikan 14 byte.
     // Nilai sudah dikonversi ke satuan fisik (m/s² dan °/s).
     bool read(ImuMeasurement& out);
 
@@ -112,7 +112,7 @@ private:
     static constexpr float GRAVITY     = 9.80665f;  // m/s² per g
 
     // Helper: baca 14 byte sekaligus dari register ACCEL_XOUT_H.
-    // Return false jika Wire1.available() < 14.
+    // Return false jika Wire.available() < 14.
     bool _burstRead(int16_t& ax, int16_t& ay, int16_t& az,
                     int16_t& gx, int16_t& gy, int16_t& gz);
 };
