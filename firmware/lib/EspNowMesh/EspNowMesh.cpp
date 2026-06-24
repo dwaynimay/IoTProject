@@ -42,7 +42,6 @@ static volatile bool s_espnowReady = false;
 
 static const uint8_t BROADCAST_MAC[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
-QueueHandle_t g_rawQueue = nullptr;
 extern QueueHandle_t g_mqttQueue;
 
 EspNowMesh* EspNowMesh::_instance = nullptr;
@@ -57,6 +56,11 @@ EspNowMesh* EspNowMesh::_instance = nullptr;
 // =============================================================================
 static SemaphoreHandle_t s_sendSem    = nullptr;
 static volatile bool     s_sendResult = false;
+
+// Mutex untuk serialisasi _send(): hanya satu unicast in-flight pada satu waktu.
+// Mencegah race antara taskCSSender, taskRssiExchange, dan taskSensorReceiver
+// yang sama-sama memanggil _send() (terutama di node yang jadi relay).
+static SemaphoreHandle_t s_sendMutex  = nullptr;
 
 
 // =============================================================================
@@ -106,6 +110,26 @@ bool EspNowMesh::begin(bool senderMode)
         }
     }
 
+    if (!s_sendMutex)
+    {
+        s_sendMutex = xSemaphoreCreateMutex();
+        if (!s_sendMutex)
+        {
+            LOG_ERROR(TAG, "Gagal buat send mutex!");
+            return false;
+        }
+    }
+
+    if (!_rxQueue)
+    {
+        _rxQueue = xQueueCreate(20, sizeof(RawPacket));
+        if (!_rxQueue)
+        {
+            LOG_ERROR(TAG, "Gagal buat rxQueue!");
+            return false;
+        }
+    }
+
     if (senderMode)
     {
         // ── SENSOR: WiFi-Channel-Sync (v5.0) ─────────────────────────────────
@@ -138,7 +162,8 @@ bool EspNowMesh::begin(bool senderMode)
 
     wifi_done:
         // Keluar dari WiFi — radio akan dipakai oleh ESP-NOW
-        WiFi.disconnect(true);      // true = juga erase credentials dari NVS
+        WiFi.disconnect(true);      // arg1=wifioff: matikan radio WiFi.
+                                    // JANGAN tambah arg2 (eraseap) — biarkan NVS utuh.
         WiFi.mode(WIFI_OFF);
         vTaskDelay(pdMS_TO_TICKS(300));  // beri waktu radio reset
 
@@ -188,11 +213,11 @@ bool EspNowMesh::begin(bool senderMode)
         if (!_addPeer(MacAddr::GATEWAY)) return false;
 
         #if NODE_ID == 1
-            if (!_addPeer(MacAddr::NODE_B)) return false;
-            LOG_INFO(TAG, "Sensor %d: GATEWAY + NODE_B | ch=%d", NODE_ID, s_channel);
+            if (!_addPeer(MacAddr::NODE_PPG)) return false;
+            LOG_INFO(TAG, "Sensor %d: GATEWAY + NODE_PPG | ch=%d", NODE_ID, s_channel);
         #else
-            if (!_addPeer(MacAddr::NODE_A)) return false;
-            LOG_INFO(TAG, "Sensor %d: GATEWAY + NODE_A | ch=%d", NODE_ID, s_channel);
+            if (!_addPeer(MacAddr::NODE_IMU)) return false;
+            LOG_INFO(TAG, "Sensor %d: GATEWAY + NODE_IMU | ch=%d", NODE_ID, s_channel);
         #endif
 
         if (!_addPeer(BROADCAST_MAC)) return false;
@@ -202,8 +227,8 @@ bool EspNowMesh::begin(bool senderMode)
     }
     else
     {
-        if (!_addPeer(MacAddr::NODE_A)) return false;
-        if (!_addPeer(MacAddr::NODE_B)) return false;
+        if (!_addPeer(MacAddr::NODE_IMU)) return false;
+        if (!_addPeer(MacAddr::NODE_PPG)) return false;
         if (!_addPeer(BROADCAST_MAC))   return false;
         LOG_INFO(TAG, "Mode: GATEWAY | MAC: %s | ch=%d",
                  WiFi.macAddress().c_str(), s_channel);
@@ -218,6 +243,17 @@ bool EspNowMesh::begin(bool senderMode)
     }
 
     return true;
+}
+
+void EspNowMesh::getQueueMetrics(UBaseType_t& used, UBaseType_t& free) const
+{
+    if (_rxQueue) {
+        used = uxQueueMessagesWaiting(_rxQueue);
+        free = uxQueueSpacesAvailable(_rxQueue);
+    } else {
+        used = 0;
+        free = 0;
+    }
 }
 
 
@@ -278,9 +314,9 @@ bool EspNowMesh::sendRssiReport(uint8_t selfNodeId, int8_t rssiToGateway)
     pkt.reserved      = 0;
 
     #if NODE_ID == 1
-        const uint8_t* neighborMac = MacAddr::NODE_B;
+        const uint8_t* neighborMac = MacAddr::NODE_PPG;
     #else
-        const uint8_t* neighborMac = MacAddr::NODE_A;
+        const uint8_t* neighborMac = MacAddr::NODE_IMU;
     #endif
     return _send(&pkt, sizeof(RssiReportPacket), neighborMac);
 }
@@ -362,12 +398,23 @@ bool EspNowMesh::sendHeartbeat(uint8_t nodeId, uint32_t uptimeS)
 // =============================================================================
 static uint8_t s_lastSentChannel = 0;  // track channel terakhir yang dipakai
 
-// ACK/NACK counters (diakses oleh _send() dan _onDataSent())
-static volatile uint32_t _ackCount  = 0;
-static volatile uint32_t _nackCount = 0;
+// ACK/NACK counters terpisah
+static volatile uint32_t _ackCountGw  = 0;
+static volatile uint32_t _nackCountGw = 0;
+static volatile uint32_t _ackCountNode  = 0;
+static volatile uint32_t _nackCountNode = 0;
 
 bool EspNowMesh::_send(const void* data, size_t len, const uint8_t* dstMac)
 {
+    // Ambil mutex — serialisasi seluruh transaksi send+ack.
+    // Timeout 100ms cukup longgar; jika gagal ambil, anggap send gagal.
+    if (s_sendMutex &&
+        xSemaphoreTake(s_sendMutex, pdMS_TO_TICKS(100)) != pdTRUE)
+    {
+        _lastSendOk = false;
+        return false;
+    }
+
     // Broadcast: tidak butuh channel management & tidak ada ACK
     const bool isBroadcast = (dstMac[0] == 0xFF && dstMac[1] == 0xFF &&
                                dstMac[2] == 0xFF && dstMac[3] == 0xFF &&
@@ -389,6 +436,7 @@ bool EspNowMesh::_send(const void* data, size_t len, const uint8_t* dstMac)
     {
         LOG_EVERY_N(10, LOG_WARN, TAG, "esp_now_send err: 0x%X", err);
         _lastSendOk = false;
+        if (s_sendMutex) xSemaphoreGive(s_sendMutex);
         return false;
     }
 
@@ -396,6 +444,7 @@ bool EspNowMesh::_send(const void* data, size_t len, const uint8_t* dstMac)
     if (isBroadcast)
     {
         _lastSendOk = true;
+        if (s_sendMutex) xSemaphoreGive(s_sendMutex);
         return true;
     }
 
@@ -404,13 +453,18 @@ bool EspNowMesh::_send(const void* data, size_t len, const uint8_t* dstMac)
     if (xSemaphoreTake(s_sendSem, pdMS_TO_TICKS(50)) == pdTRUE)
     {
         _lastSendOk = s_sendResult;
-        return s_sendResult;
+        const bool result = s_sendResult;
+        if (s_sendMutex) xSemaphoreGive(s_sendMutex);
+        return result;
     }
 
     // Timeout — anggap NACK
     _lastSendOk = false;
-    _nackCount++;
-    LOG_EVERY_N(10, LOG_WARN, TAG, "send timeout (50ms) — dianggap NACK");
+    bool isGw = (memcmp(dstMac, MacAddr::GATEWAY, 6) == 0);
+    if (isGw) _nackCountGw++; else _nackCountNode++;
+    
+    LOG_EVERY_N(10, LOG_WARN, TAG, "send timeout (50ms) to %s — dianggap NACK", isGw ? "GW" : "NODE");
+    if (s_sendMutex) xSemaphoreGive(s_sendMutex);
     return false;
 }
 
@@ -445,17 +499,25 @@ bool EspNowMesh::_isPeerRegistered(const uint8_t* mac)
 
 void EspNowMesh::_onDataSent(const uint8_t* mac, esp_now_send_status_t status)
 {
+    bool isGw = (memcmp(mac, MacAddr::GATEWAY, 6) == 0);
+
     if (status == ESP_NOW_SEND_SUCCESS)
     {
-        _ackCount++;
+        if (isGw) _ackCountGw++; else _ackCountNode++;
         s_sendResult = true;
     }
     else
     {
-        _nackCount++;
-        s_sendResult = false;
-        LOG_EVERY_N(5, LOG_WARN, "MESH", "NACK total=%lu rate=%.1f%%",
-                    _nackCount, 100.0f * _nackCount / (_ackCount + _nackCount));
+        if (isGw)
+        {
+            _nackCountGw++;
+            s_sendResult = false;
+        }
+        else
+        {
+            _nackCountNode++;
+            s_sendResult = false;
+        }
     }
 
     // Sinyal ke _send() yang sedang menunggu
@@ -472,27 +534,33 @@ void EspNowMesh::_onDataRecv(const uint8_t* mac, const uint8_t* data, int len)
     if (len < 1) return;
     const uint8_t pktType = data[0];
 
-    if (pktType == static_cast<uint8_t>(PacketType::RSSI_REPORT))
+    if (pktType == static_cast<uint8_t>(PacketType::BEACON))
     {
-        if (len >= static_cast<int>(sizeof(RssiReportPacket)) && g_routerPtr)
-        {
-            const auto* pkt = reinterpret_cast<const RssiReportPacket*>(data);
-            g_routerPtr->updateNeighborRssi(pkt->header.nodeId,
-                                            pkt->rssiToGateway);
-        }
+        // Beacon hanya digunakan untuk RSSI tracking di promiscuous mode,
+        // abaikan payload data-nya agar tidak memenuhi queue
         return;
     }
 
-    if (!g_rawQueue) return;
+    if (_instance && _instance->_rxQueue)
+    {
+        RawPacket raw{};
+        raw.len = static_cast<uint8_t>(len <= 250 ? len : 250);
+        memcpy(raw.data,   data, raw.len);
+        memcpy(raw.srcMac, mac,  6);
 
-    RawPacket raw{};
-    raw.len = static_cast<uint8_t>(len <= 250 ? len : 250);
-    memcpy(raw.data,   data, raw.len);
-    memcpy(raw.srcMac, mac,  6);
+        BaseType_t woken = pdFALSE;
+        xQueueSendFromISR(_instance->_rxQueue, &raw, &woken);
+        if (woken == pdTRUE) portYIELD_FROM_ISR();
+    }
+}
 
-    BaseType_t woken = pdFALSE;
-    xQueueSendFromISR(g_rawQueue, &raw, &woken);
-    if (woken == pdTRUE) portYIELD_FROM_ISR();
+// =============================================================================
+// readPacket() — Ambil paket dari internal queue
+// =============================================================================
+bool EspNowMesh::readPacket(RawPacket& out)
+{
+    if (!_rxQueue) return false;
+    return xQueueReceive(_rxQueue, &out, 0) == pdTRUE;
 }
 
 
@@ -549,22 +617,6 @@ bool EspNowMesh::processPendingChannelSync()
     return true;
 }
 
-
-// =============================================================================
-// _taskChannelDiscovery() — DIHAPUS di v5.0
-//
-// Digantikan oleh WiFi-channel-sync di begin().
-// Fungsi ini dikosongkan dan tidak dipanggil di manapun.
-// Tetap ada untuk menghindari linker error jika ada referensi tersisa.
-// =============================================================================
-void EspNowMesh::_taskChannelDiscovery(void* param)
-{
-    // Tidak dipakai di v5.0 — channel sudah diketahui via WiFi AP
-    LOG_WARN("DISC", "_taskChannelDiscovery dipanggil tapi tidak seharusnya di v5.0!");
-    vTaskDelete(NULL);
-}
-
-
 void EspNowMesh::_promiscuousRxCb(void* buf, wifi_promiscuous_pkt_type_t type)
 {
     if (type != WIFI_PKT_DATA) return;
@@ -576,7 +628,9 @@ void EspNowMesh::_promiscuousRxCb(void* buf, wifi_promiscuous_pkt_type_t type)
     const uint8_t*  payload    = ppkt->payload;
     const uint16_t  payloadLen = ppkt->rx_ctrl.sig_len;
 
-    if (payloadLen < 50) return;
+    // ESP-NOW action frame minimum size ~35 bytes.
+    // Beacon packet kita total = 42 bytes (termasuk MAC header).
+    if (payloadLen < 35) return;
 
     // Cek apakah frame dari gateway MAC (transmitter addr di byte 10..15)
     bool fromGateway = (
@@ -597,10 +651,6 @@ void EspNowMesh::_promiscuousRxCb(void* buf, wifi_promiscuous_pkt_type_t type)
 
     // Update RSSI — aman dari ISR (hanya write ke volatile variable)
     _instance->_lastBeaconRssi = rssi;
-
-    // Update router — hanya write ke int8_t dengan critical section
-    if (g_routerPtr != nullptr)
-        g_routerPtr->updateSelfRssi(rssi);
 
     // --- Deteksi gateway restart ---
     // Jika beacon sempat hilang lama lalu muncul lagi, gateway kemungkinan restart.

@@ -18,7 +18,7 @@
 //
 // LAYOUT UKURAN (verify < 250 byte):
 //   BeaconPacket    =  7 bytes  ✓
-//   RssiReportPacket= 10 bytes  ✓
+//   RssiReportPacket=  9 bytes  ✓
 //   RoutedCsPacket  = 143 bytes ✓ (6 + 1 + 136) atau (6 + 1 + 142)
 //   CS1AxisPacket   = 136 bytes ✓
 //   CSPpgPacket     = 142 bytes ✓
@@ -231,25 +231,10 @@ static constexpr uint8_t IMU_ALL_RECEIVED = 0x3F;
 struct MqttMessage
 {
     char topic[80];
-    char payload[1800]; // cs_imu: 6 axis × 32 float × "0.12345," ≈ 1600 byte
+    char payload[2048]; // cs_imu: 6 axis × 32 float ≈ 1620 byte + margin relay
 };
 
-// =============================================================================
-// EspNowPayload — union cast helper (diperluas untuk packet baru)
-// =============================================================================
-union EspNowPayload
-{
-    uint8_t raw[250];
-    BeaconPacket beacon;
-    RssiReportPacket rssiReport;
-    RoutedCsPacket routedCs;
-    CombinedPacket combined;
-    HeartbeatPacket heartbeat;
-    CS1AxisPacket csAxis;
-    CSPpgPacket csPpg;
 
-    PacketType type() const { return static_cast<PacketType>(raw[0]); }
-};
 
 // =============================================================================
 // Konstanta Routing
@@ -258,11 +243,6 @@ namespace RoutingCfg
 {
     // Node ID khusus untuk gateway
     static constexpr uint8_t GATEWAY_NODE_ID = 0;
-
-    // Timeout untuk channel sweep pada sensor node boot (ms)
-    // Extended dari default ~5.2s (13ch × 400ms) untuk mengakomodasi
-    // startup asinkron: sensor dan gateway bisa boot dengan delay 1-5s
-    static constexpr uint32_t CHANNEL_SWEEP_TIMEOUT_MS = 8000;
 
     // Interval gateway kirim beacon (ms)
     static constexpr uint32_t BEACON_INTERVAL_MS = 1000;

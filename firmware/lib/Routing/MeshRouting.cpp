@@ -381,7 +381,7 @@ RouteResult MeshRouting::_routeCsAxis(const RawPacket& raw, MqttMessage& out)
 
     // Guard: jika payload mendekati batas, log warning
     const size_t used = strlen(out.payload);
-    if (used > 1700)
+    if (used > 1900)
     {
         LOG_WARN(TAG, "cs_imu payload besar: %d bytes — pertimbangkan kurangi presisi", used);
     }
@@ -455,16 +455,4 @@ int MeshRouting::_writeFloatArray(char* dst, int rem,
     return total;
 }
 
-const char* MeshRouting::_axisName(uint8_t rawType)
-{
-    switch (rawType)
-    {
-        case PKT_CS_AX: return "ax";
-        case PKT_CS_AY: return "ay";
-        case PKT_CS_AZ: return "az";
-        case PKT_CS_GX: return "gx";
-        case PKT_CS_GY: return "gy";
-        case PKT_CS_GZ: return "gz";
-        default:        return "unknown";
-    }
-}
+

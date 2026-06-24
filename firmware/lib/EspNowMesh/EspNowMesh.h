@@ -29,13 +29,6 @@
 #include <WiFi.h>
 #include "MeshPackets.h"
 #include "../../include/Config.h"
-#include "../Routing/DynamicRouter.h"
-
-extern QueueHandle_t g_rawQueue;
-extern QueueHandle_t g_mqttQueue;
-
-// Pointer ke router sensor node — nullptr di gateway
-extern DynamicRouter* g_routerPtr;
 
 
 class EspNowMesh
@@ -96,6 +89,14 @@ public:
     bool sendCombined(const CombinedPacket& pkt);
     bool sendHeartbeat(uint8_t nodeId, uint32_t uptimeS);
 
+    // ── Receive API ───────────────────────────────────────────────────────────
+
+    // Ambil paket dari internal queue (non-blocking). Return true jika ada.
+    bool readPacket(RawPacket& out);
+
+    // Ambil metrik queue untuk keperluan monitoring (Gateway)
+    void getQueueMetrics(UBaseType_t& used, UBaseType_t& free) const;
+
     // ── RSSI Measurement ──────────────────────────────────────────────────────
 
     int8_t getLastBeaconRssi() const { return _lastBeaconRssi; }
@@ -112,6 +113,8 @@ private:
     uint8_t _beaconSeqNum  = 0;
 
     volatile int8_t _lastBeaconRssi = RoutingCfg::RSSI_UNKNOWN;
+    
+    QueueHandle_t _rxQueue = nullptr;
 
     bool _send(const void* data, size_t len, const uint8_t* dstMac);
     bool _addPeer(const uint8_t* mac);
@@ -120,7 +123,6 @@ private:
     static void _onDataSent(const uint8_t* mac, esp_now_send_status_t status);
     static void _onDataRecv(const uint8_t* mac, const uint8_t* data, int len);
     static void _promiscuousRxCb(void* buf, wifi_promiscuous_pkt_type_t type);
-    static void _taskChannelDiscovery(void* param);
 
     static EspNowMesh* _instance;
 };

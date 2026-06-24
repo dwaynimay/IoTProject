@@ -18,8 +18,8 @@
 //   MeshRouting hanya jalan di GATEWAY.
 // =============================================================================
 
-#include "MeshPackets.h"
-#include "../Routing/DynamicRouter.h"
+#include "../EspNowMesh/MeshPackets.h"
+#include "DynamicRouter.h"
 
 
 enum class RouteResult
@@ -62,7 +62,6 @@ private:
     // ── Helpers ───────────────────────────────────────────────────────────────
     static int _writeFloatArray(char* dst, int rem,
                                 const float* arr, uint8_t len);
-    static const char* _axisName(uint8_t rawType);
 
     // Buffer akumulasi IMU — index 0 = node 1, index 1 = node 2
     static ImuWindowBuffer _imuBuf[2];

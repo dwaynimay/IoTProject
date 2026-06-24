@@ -23,26 +23,7 @@
 // TEST SUITE 1: Channel Sweep Timeout (Phase 1)
 // =============================================================================
 
-void test_phase1_sweep_timeout_constant_defined()
-{
-    // Verify that CHANNEL_SWEEP_TIMEOUT_MS is defined and set to 8000ms
-    TEST_ASSERT_EQUAL(8000, RoutingCfg::CHANNEL_SWEEP_TIMEOUT_MS);
-}
 
-void test_phase1_sweep_timeout_within_discovery_window()
-{
-    // Sweep timeout (8s) should be within or close to discovery phase (6s)
-    // to allow sensor to search while CS_TX is blocked
-    // Technically sweep now extends beyond discovery, but sensor will use
-    // whatever channel it found, then promiscuous continues
-    uint32_t sweepMs = RoutingCfg::CHANNEL_SWEEP_TIMEOUT_MS;
-    uint32_t discoveryMs = RoutingCfg::DISCOVERY_PHASE_MS;
-
-    // Sweep should give sensor enough time (at least close to discovery window)
-    // This is a design check, not a hard constraint
-    TEST_ASSERT_GREATER_THAN_UINT32(discoveryMs - 2000, sweepMs);
-    TEST_ASSERT_LESS_THAN_UINT32(discoveryMs + 5000, sweepMs);
-}
 
 void test_phase1_channel_range_valid()
 {
@@ -240,8 +221,6 @@ void setup()
     UNITY_BEGIN();
 
     // Phase 1 tests
-    RUN_TEST(test_phase1_sweep_timeout_constant_defined);
-    RUN_TEST(test_phase1_sweep_timeout_within_discovery_window);
     RUN_TEST(test_phase1_channel_range_valid);
 
     // Phase 2 tests
