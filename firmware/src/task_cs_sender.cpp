@@ -162,9 +162,9 @@ static const uint8_t* _selectDstMac(const RouteDecision& dec)
         return MacAddr::GATEWAY;
 
     #if NODE_ID == 1
-        return MacAddr::NODE_B;
+        return MacAddr::NODE_PPG;
     #else
-        return MacAddr::NODE_A;
+        return MacAddr::NODE_IMU;
     #endif
 }
 
@@ -250,6 +250,11 @@ void taskCSSender(void* param)
     for (;;)
     {
         g_watchdog.feed();
+
+        // Proses channel drift dari promiscuous (deferred dari ISR).
+        // Tanpa ini, sensor stuck di channel lama saat gateway pindah channel.
+        if (g_mesh.processPendingChannelSync())
+            LOG_WARN(TAG, "Channel di-resync — peer di-update");
 
         ImuSample imu{};
         PpgSample ppg{};

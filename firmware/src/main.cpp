@@ -41,11 +41,15 @@
 #include "Sensor_PPG.h"
 #include "EspNowMesh.h"
 #include "Network_Mqtt.h"
+#include "DynamicRouter.h"
 
 extern void taskCSSender(void *param);
 extern void taskRssiExchange(void *param);
 extern void taskMeshHandler(void *param);
 extern void taskMqttPublish(void *param);
+
+extern DynamicRouter* g_routerPtr;
+extern QueueHandle_t g_mqttQueue;
 
 static constexpr char TAG[] = "MAIN";
 
@@ -68,7 +72,7 @@ EspNowMesh g_mesh;
 #endif
 
 #if NODE_ROLE == ROLE_GATEWAY
-static EspNowMesh g_mesh;
+EspNowMesh g_mesh;
 NetworkMqtt g_mqtt;
 DynamicRouter *g_routerPtr = nullptr; // gateway tidak punya router
 #endif
@@ -76,6 +80,53 @@ DynamicRouter *g_routerPtr = nullptr; // gateway tidak punya router
 // =============================================================================
 // SENSOR NODE — Tasks
 // =============================================================================
+
+#if NODE_ROLE != ROLE_GATEWAY
+static void taskSensorReceiver(void *param)
+{
+    g_watchdog.registerTask();
+    RawPacket raw{};
+    for (;;)
+    {
+        g_watchdog.feed();
+        if (g_mesh.readPacket(raw))
+        {
+            const uint8_t pktType = raw.data[0];
+            if (pktType == static_cast<uint8_t>(PacketType::RSSI_REPORT))
+            {
+                if (raw.len >= static_cast<int>(sizeof(RssiReportPacket)) && g_routerPtr)
+                {
+                    const auto* pkt = reinterpret_cast<const RssiReportPacket*>(raw.data);
+                    g_routerPtr->updateNeighborRssi(pkt->header.nodeId, pkt->rssiToGateway);
+                }
+            }
+            else if (pktType >= static_cast<uint8_t>(PacketType::CS_AX) && 
+                     pktType <= static_cast<uint8_t>(PacketType::CS_IR))
+            {
+                // Baca nodeId pengirim asli via cast eksplisit (bukan byte mentah)
+                const auto* hdr = reinterpret_cast<const PacketHeader*>(raw.data);
+                const uint8_t originalNodeId = hdr->nodeId;
+
+                // Anti-loop: jangan relay paket yang sumber aslinya kita sendiri.
+                if (originalNodeId == NODE_ID)
+                {
+                    LOG_EVERY_N(20, LOG_WARN, TAG,
+                                "Skip relay: paket asal node sendiri (loop guard)");
+                }
+                else
+                {
+                    // Relay packet dari neighbor
+                    g_mesh.forwardRoutedCs(NODE_ID, originalNodeId, raw.data, raw.len);
+                }
+            }
+        }
+        else
+        {
+            vTaskDelay(pdMS_TO_TICKS(10));
+        }
+    }
+}
+#endif
 
 #if NODE_ROLE == ROLE_SENSOR_PPG
 static void taskReadPPG(void *param)
@@ -224,8 +275,8 @@ static void taskMonitorGateway(void *param)
     {
         g_watchdog.healthCheck();
 
-        const UBaseType_t rawUsed = uxQueueMessagesWaiting(g_rawQueue);
-        const UBaseType_t rawFree = uxQueueSpacesAvailable(g_rawQueue);
+        UBaseType_t rawUsed = 0, rawFree = 0;
+        g_mesh.getQueueMetrics(rawUsed, rawFree);
         const UBaseType_t mqttUsed = uxQueueMessagesWaiting(g_mqttQueue);
         const UBaseType_t mqttFree = uxQueueSpacesAvailable(g_mqttQueue);
         const float mqttPct = 100.0f * mqttUsed / (mqttUsed + mqttFree);
@@ -298,8 +349,10 @@ void setup()
                             nullptr, 1, nullptr, 0);
     xTaskCreatePinnedToCore(taskMonitorSensor, "MONITOR", StackSize::MONITOR,
                             nullptr, 1, nullptr, 0);
+    xTaskCreatePinnedToCore(taskSensorReceiver, "RX", 4096,
+                            nullptr, TaskPrio::ESPNOW_TX + 1, nullptr, 1);
 
-    LOG_INFO(TAG, "Sensor IMU node siap — 4 task terdaftar");
+    LOG_INFO(TAG, "Sensor IMU node siap — 5 task terdaftar");
 
 // ── SENSOR NODE PPG ──────────────────────────────────────────────────────────
 #elif NODE_ROLE == ROLE_SENSOR_PPG
@@ -322,15 +375,16 @@ void setup()
                             nullptr, 1, nullptr, 0);
     xTaskCreatePinnedToCore(taskMonitorSensor, "MONITOR", StackSize::MONITOR,
                             nullptr, 1, nullptr, 0);
+    xTaskCreatePinnedToCore(taskSensorReceiver, "RX", 4096,
+                            nullptr, TaskPrio::ESPNOW_TX + 1, nullptr, 1);
 
-    LOG_INFO(TAG, "Sensor PPG node siap — 4 task terdaftar");
+    LOG_INFO(TAG, "Sensor PPG node siap — 5 task terdaftar");
 
 // ── GATEWAY NODE ─────────────────────────────────────────────────────────────
 #elif NODE_ROLE == ROLE_GATEWAY
 
-    g_rawQueue  = xQueueCreate(10, sizeof(RawPacket));
     g_mqttQueue = xQueueCreate(QueueLen::MQTT_MSG, sizeof(MqttMessage));
-    if (!g_rawQueue || !g_mqttQueue)
+    if (!g_mqttQueue)
         g_watchdog.triggerRestart("Gagal buat queue");
 
     // ── URUTAN KRITIS: WiFi/MQTT DULU, baru ESP-NOW ──────────────────────────

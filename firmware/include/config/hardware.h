@@ -20,12 +20,12 @@
 namespace Pin
 {
 #if NODE_ROLE == ROLE_SENSOR_PPG
-    // ESP32 khusus PPG menggunakan pin 18 & 19
+    // PPG menggunakan pin 18 & 19
     constexpr uint8_t I2C_SDA = 18;
     constexpr uint8_t I2C_SCL = 19;
     constexpr uint8_t PPG_INT = 23; // Interrupt MAX30102 (aktif-low, open-drain)
 #else
-    // ESP32 khusus IMU (dan Gateway jika butuh) menggunakan pin standar
+    // IMU menggunakan pin 21 & 22
     constexpr uint8_t I2C_SDA = 21;
     constexpr uint8_t I2C_SCL = 22;
 #endif
@@ -33,10 +33,6 @@ namespace Pin
 
 // ---------------------------------------------------------------------------
 // I2C Clock Speed
-//
-// Karena sensor PPG menempel pada board (tidak menggunakan kabel 1 meter),
-// kapasitansi bus kembali normal. Kita dapat menggunakan Fast Mode (400kHz)
-// untuk pembacaan yang lebih cepat dan latensi rendah.
 // ---------------------------------------------------------------------------
 namespace I2CClock
 {
@@ -49,23 +45,16 @@ namespace I2CClock
 namespace I2CAddr
 {
     constexpr uint8_t MPU6050  = 0x68; // AD0 pin → GND
-    constexpr uint8_t MAX30102 = 0x57;
+    constexpr uint8_t MAX30102 = 0x57; 
 }
 
 // ---------------------------------------------------------------------------
 // MAC Address ESP32
-//
-// CARA CEK MAC ADDRESS:
-//   Upload sketch sederhana, buka Serial Monitor:
-//     #include <WiFi.h>
-//     void setup() { Serial.begin(115200); WiFi.mode(WIFI_STA); Serial.println(WiFi.macAddress()); }
-//     void loop() {}
-//
 // ---------------------------------------------------------------------------
 namespace MacAddr
 {
-    constexpr uint8_t NODE_A[6]  = {0xF4, 0x2D, 0xC9, 0x6F, 0x5C, 0x40};
-    constexpr uint8_t NODE_B[6]  = {0x28, 0x05, 0xA5, 0x31, 0xF4, 0x94};
+    constexpr uint8_t NODE_IMU[6]  = {0xF4, 0x2D, 0xC9, 0x6F, 0x5C, 0x40};
+    constexpr uint8_t NODE_PPG[6]  = {0x28, 0x05, 0xA5, 0x31, 0xF4, 0x94};
     constexpr uint8_t GATEWAY[6] = {0xF4, 0x2D, 0xC9, 0x70, 0xD1, 0x34};
 }
 

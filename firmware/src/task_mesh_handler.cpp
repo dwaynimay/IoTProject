@@ -20,13 +20,14 @@
 #include "MeshPackets.h"
 #include "MeshRouting.h"
 #include "Network_Mqtt.h"
+#include "EspNowMesh.h"
 #include "Watchdog.h"
 
 // g_mqttQueue dimiliki oleh file ini
 QueueHandle_t g_mqttQueue = nullptr;
 
-// g_rawQueue dimiliki oleh EspNowMesh.cpp
-extern QueueHandle_t g_rawQueue;
+// g_mesh didefinisikan di main.cpp
+extern EspNowMesh g_mesh;
 
 // g_mqtt didefinisikan di main.cpp
 extern NetworkMqtt g_mqtt;
@@ -60,8 +61,11 @@ void taskMeshHandler(void* param)
     {
         g_watchdog.feed();
 
-        if (xQueueReceive(g_rawQueue, &raw, pdMS_TO_TICKS(500)) != pdTRUE)
+        if (!g_mesh.readPacket(raw))
+        {
+            vTaskDelay(pdMS_TO_TICKS(10));
             continue;
+        }
 
         receivedCount++;
         iRecv++;
@@ -117,7 +121,7 @@ void taskMeshHandler(void* param)
                      "| rawQ=%u mqttQ=%u",
                      iRecv, iAccum, accumRate,
                      iPub, iDrop, dropRate,
-                     uxQueueMessagesWaiting(g_rawQueue),
+                     0, // rawQ tracking internal sekarang
                      uxQueueMessagesWaiting(g_mqttQueue));
 
             iRecv = iAccum = iPub = iDrop = 0;
