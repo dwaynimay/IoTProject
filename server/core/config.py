@@ -121,6 +121,24 @@ UNITS = {
 TS_SPREAD_TOLERANCE_MS = _get_int("TS_SPREAD_TOLERANCE_MS", 500)
 
 # =============================================================================
+# Node Grouping — 1 sensor per ESP
+# =============================================================================
+# Saat firmware menggunakan 1 sensor per ESP (bukan 2 sensor per ESP),
+# server perlu mempasangkan data cs_imu dari satu node dengan cs_ppg
+# dari node lain menjadi 1 window rekonstruksi.
+#
+# Format: group_id → { "imu_node": node_id, "ppg_node": node_id }
+#   - group_id   : ID virtual yang dipakai untuk output (storage, dashboard)
+#   - imu_node   : node_id fisik yang kirim cs_imu
+#   - ppg_node   : node_id fisik yang kirim cs_ppg
+#
+# Jika NODE_GROUPS kosong ({}), server fallback ke behavior lama
+# (cs_imu + cs_ppg harus dari node yang sama).
+NODE_GROUPS: dict[int, dict[str, int]] = {
+    1: {"imu_node": 1, "ppg_node": 2},
+}
+
+# =============================================================================
 # Visualizer (tidak berubah)
 # =============================================================================
 HISTORY_WINDOWS = 5

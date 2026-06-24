@@ -55,7 +55,7 @@ ALLOWED_NODE_IDS: Optional[set[int]] = None  # None = nonaktif
 TS_MAX_JUMP_MS: int           = 60_000   # 60 detik ke depan = toleransi
 TS_BACKWARD_TOLERANCE_MS: int = 100      # 100 ms ke belakang = masih oke (jitter)
 # Jika ts mundur lebih dari ini, dianggap ESP32 reboot → reset tracker, paket diterima.
-TS_REBOOT_THRESHOLD_MS: int   = 30_000   # ts mundur > 30 detik = reboot
+TS_REBOOT_THRESHOLD_MS: int   = 5_000    # ts mundur > 5 detik = reboot (sebelumnya 30000)
 
 # Batas absolut nilai elemen measurement vector y[i].
 # Nilai di luar range ini hampir pasti corrupt (overflow, NaN propagation).

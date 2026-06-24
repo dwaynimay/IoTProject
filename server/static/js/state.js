@@ -1,5 +1,5 @@
 export const state = {
-  apiBase: 'http://localhost:8000',
+  apiBase: window.location.origin,
   wsStream: null,
   wsEvents: null,
   
