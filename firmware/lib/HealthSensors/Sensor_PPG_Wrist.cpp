@@ -1,7 +1,9 @@
-// File: firmware/lib/HealthSensors/Sensor_PPG.cpp
+// File: firmware/lib/HealthSensors/Sensor_PPG_Wrist.cpp
+
+#ifndef USE_PPG_FINGER
 
 // =============================================================================
-// Sensor_PPG.cpp — Driver MAX30102 (WRIST). Implementasi tipis.
+// Sensor_PPG_Wrist.cpp — Driver MAX30102 (WRIST). Implementasi tipis.
 // =============================================================================
 //
 // Tanggung jawab file ini hanya:
@@ -273,3 +275,5 @@ void SensorPPG::setPower(bool enable)
     else        _sensor.shutDown();
     LOG_DEBUG(TAG, "Power: %s", enable ? "ON" : "OFF");
 }
+
+#endif // USE_PPG_FINGER

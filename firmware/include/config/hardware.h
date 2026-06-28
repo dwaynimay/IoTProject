@@ -64,6 +64,7 @@ namespace MacAddr
 namespace PpgConfig
 {
     constexpr uint8_t  LED_POWER_WRIST = 0x7F;  // ~25.4mA (wrist butuh terang)
+    constexpr uint8_t  LED_POWER_FINGER = 0x1F; // ~6.4mA (jari butuh sangat redup agar tidak jenuh)
     constexpr uint8_t  SAMPLE_AVG      = 4;
     constexpr uint8_t  LED_MODE        = 2;     // Red + IR
     constexpr uint16_t SAMPLE_RATE     = 400;

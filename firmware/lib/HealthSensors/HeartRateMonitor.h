@@ -178,10 +178,17 @@ private:
     ppgdsp::BandPass     _bandpass{0.90f, 0.55f, 8000.0f};
     ppgdsp::PeakEnvelope _envelope{0.05f, 5.0f, 0.40f};
     ppgdsp::BeatDetector _detector{0.60f, 400, 2000};
-    // MotionGate: factor 4.0 + absMin 60 — gerakan kecil tidak memicu;
+    
+#ifdef USE_PPG_FINGER
+    // MotionGate (FINGER): Sinyal denyut jauh lebih besar & dalam, toleransi dinaikkan ke 150
+    // agar detak jantung asli tidak disalahartikan sebagai gangguan gerakan.
+    ppgdsp::MotionGate   _motion{4.0f, 400, 1500, 8.0f, 150.0f};
+#else
+    // MotionGate (WRIST): factor 4.0 + absMin 60 — gerakan kecil tidak memicu;
     // hanya lonjakan besar (>60 DAN >4x envelope) dianggap motion.
     // hold 400ms = pulih cepat setelah gerakan berhenti.
     ppgdsp::MotionGate   _motion{4.0f, 400, 1500, 8.0f, 60.0f};
+#endif
     // ImuMotionGate: deteksi motion langsung dari accelerometer (lebih andal).
     // accelThreshold 0.10g, hold 400ms. Aktif hanya jika setAccel() dipanggil.
     ppgdsp::ImuMotionGate _imuGate{0.10f, 400, 0.90f};
