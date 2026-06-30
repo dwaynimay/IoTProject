@@ -57,17 +57,17 @@ static constexpr char TAG[] = "MAIN";
 // Instance & Shared State Global
 // =============================================================================
 
-portMUX_TYPE g_stateMux = portMUX_INITIALIZER_UNLOCKED;
-ImuSample g_latestImu = {};
-PpgSample g_latestPpg = {};
-
+// I2C mutex tetap dipakai: taskCSSender membaca sensor langsung
+// (single synchronous pipeline), dan taskSensorReceiver bisa pakai bus juga.
 SemaphoreHandle_t g_wireMutex = nullptr;
 
+// NOTE: g_imu / g_ppg TIDAK boleh `static` — diakses via extern dari
+// task_cs_sender.cpp. `static` = file-local → gagal link.
 #if NODE_ROLE == ROLE_SENSOR_IMU
-static SensorMPU g_imu;
+SensorMPU g_imu;
 EspNowMesh g_mesh;
 #elif NODE_ROLE == ROLE_SENSOR_PPG
-static SensorPPG g_ppg;
+SensorPPG g_ppg;
 EspNowMesh g_mesh;
 #endif
 
@@ -126,117 +126,20 @@ static void taskSensorReceiver(void *param)
         }
     }
 }
+
+static void taskMonitorSensor(void *param)
+{
+    for (;;)
+    {
+        g_watchdog.healthCheck();
+        // taskReadIMU/taskReadPPG sudah dihapus (single synchronous pipeline) —
+        // pembacaan sensor kini di dalam CS_TX, jadi cukup pantau CS_TX & RSSI_EX.
+        g_watchdog.checkTaskStack("CS_TX");
+        g_watchdog.checkTaskStack("RSSI_EX");
+        vTaskDelay(pdMS_TO_TICKS(HEALTH_CHECK_MS));
+    }
+}
 #endif
-
-#if NODE_ROLE == ROLE_SENSOR_PPG
-static void taskReadPPG(void *param)
-{
-    g_watchdog.registerTask();
-
-    for (;;)
-    {
-        g_watchdog.feed();
-
-        if (xSemaphoreTake(g_wireMutex, pdMS_TO_TICKS(200)) == pdTRUE)
-        {
-            g_ppg.update();
-            xSemaphoreGive(g_wireMutex);
-        }
-        else
-        {
-            LOG_WARN(TAG, "Wire mutex timeout di taskReadPPG");
-        }
-
-        PpgMeasurement snap{};
-        g_ppg.read(snap);
-
-        taskENTER_CRITICAL(&g_stateMux);
-        g_latestPpg.irRaw = snap.irRaw;
-        g_latestPpg.redRaw = snap.redRaw;
-        g_latestPpg.heartRate = snap.heartRate;
-        g_latestPpg.spo2 = snap.spo2;
-        g_latestPpg.valid = snap.valid;
-        taskEXIT_CRITICAL(&g_stateMux);
-
-        vTaskDelay(pdMS_TO_TICKS(2)); 
-    }
-}
-
-static void taskMonitorSensor(void *param)
-{
-    for (;;)
-    {
-        g_watchdog.healthCheck();
-        g_watchdog.checkTaskStack("PPG");
-        g_watchdog.checkTaskStack("CS_TX");
-        g_watchdog.checkTaskStack("RSSI_EX");
-        vTaskDelay(pdMS_TO_TICKS(HEALTH_CHECK_MS));
-    }
-}
-#endif // ROLE_SENSOR_PPG
-
-#if NODE_ROLE == ROLE_SENSOR_IMU
-static void taskReadIMU(void *param)
-{
-    g_watchdog.registerTask();
-
-    uint32_t lastReadMs = 0;
-    uint8_t failCount = 0;
-
-    for (;;)
-    {
-        g_watchdog.feed();
-
-        if (millis() - lastReadMs >= Timing::IMU_SAMPLE_MS)
-        {
-            ImuMeasurement snap{};
-            bool ok = false;
-
-            if (xSemaphoreTake(g_wireMutex, portMAX_DELAY) == pdTRUE)
-            {
-                ok = g_imu.read(snap);
-                xSemaphoreGive(g_wireMutex);
-            }
-
-            if (ok)
-            {
-                failCount = 0;
-                taskENTER_CRITICAL(&g_stateMux);
-                g_latestImu.accelX = snap.accelX;
-                g_latestImu.accelY = snap.accelY;
-                g_latestImu.accelZ = snap.accelZ;
-                g_latestImu.gyroX = snap.gyroX;
-                g_latestImu.gyroY = snap.gyroY;
-                g_latestImu.gyroZ = snap.gyroZ;
-                g_latestImu.tempC = snap.tempC;
-                taskEXIT_CRITICAL(&g_stateMux);
-            }
-            else
-            {
-                failCount++;
-                if (failCount > 50)
-                    g_watchdog.triggerRestart("IMU read fail 50x");
-            }
-
-            lastReadMs = millis();
-        }
-
-        vTaskDelay(pdMS_TO_TICKS(1));
-    }
-}
-
-static void taskMonitorSensor(void *param)
-{
-    for (;;)
-    {
-        g_watchdog.healthCheck();
-        g_watchdog.checkTaskStack("IMU");
-        g_watchdog.checkTaskStack("CS_TX");
-        g_watchdog.checkTaskStack("RSSI_EX");
-        vTaskDelay(pdMS_TO_TICKS(HEALTH_CHECK_MS));
-    }
-}
-#endif // ROLE_SENSOR_IMU
 
 // =============================================================================
 // GATEWAY NODE — Tasks
@@ -341,8 +244,6 @@ void setup()
     if (!g_mesh.begin(true))
         g_watchdog.triggerRestart("ESP-NOW init gagal");
 
-    xTaskCreatePinnedToCore(taskReadIMU, "IMU", StackSize::SENSOR_IMU,
-                            nullptr, TaskPrio::SENSOR_IMU, nullptr, 1);
     xTaskCreatePinnedToCore(taskCSSender, "CS_TX", StackSize::ESPNOW_TX,
                             nullptr, TaskPrio::ESPNOW_TX, nullptr, 0);
     xTaskCreatePinnedToCore(taskRssiExchange, "RSSI_EX", 4096,
@@ -352,7 +253,7 @@ void setup()
     xTaskCreatePinnedToCore(taskSensorReceiver, "RX", 4096,
                             nullptr, TaskPrio::ESPNOW_TX + 1, nullptr, 1);
 
-    LOG_INFO(TAG, "Sensor IMU node siap — 5 task terdaftar");
+    LOG_INFO(TAG, "Sensor IMU node siap — 4 task terdaftar");
 
 // ── SENSOR NODE PPG ──────────────────────────────────────────────────────────
 #elif NODE_ROLE == ROLE_SENSOR_PPG
@@ -367,8 +268,6 @@ void setup()
     if (!g_ppg.begin())
         g_watchdog.triggerRestart("MAX30102 init gagal");
 
-    xTaskCreatePinnedToCore(taskReadPPG, "PPG", StackSize::SENSOR_PPG,
-                            nullptr, TaskPrio::SENSOR_PPG, nullptr, 1);
     xTaskCreatePinnedToCore(taskCSSender, "CS_TX", StackSize::ESPNOW_TX,
                             nullptr, TaskPrio::ESPNOW_TX, nullptr, 0);
     xTaskCreatePinnedToCore(taskRssiExchange, "RSSI_EX", 4096,
@@ -378,7 +277,7 @@ void setup()
     xTaskCreatePinnedToCore(taskSensorReceiver, "RX", 4096,
                             nullptr, TaskPrio::ESPNOW_TX + 1, nullptr, 1);
 
-    LOG_INFO(TAG, "Sensor PPG node siap — 5 task terdaftar");
+    LOG_INFO(TAG, "Sensor PPG node siap — 4 task terdaftar");
 
 // ── GATEWAY NODE ─────────────────────────────────────────────────────────────
 #elif NODE_ROLE == ROLE_GATEWAY

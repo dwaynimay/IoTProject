@@ -41,11 +41,17 @@
 #include "MeshPackets.h"
 #include "Watchdog.h"
 #include "DynamicRouter.h"
+#include "Sensor_MPU.h"
+#include "Sensor_PPG.h"
 
-extern portMUX_TYPE g_stateMux;
-extern ImuSample    g_latestImu;
-extern PpgSample    g_latestPpg;
-extern EspNowMesh   g_mesh;
+extern EspNowMesh        g_mesh;
+extern SemaphoreHandle_t g_wireMutex;
+
+#if NODE_ROLE == ROLE_SENSOR_IMU
+extern SensorMPU g_imu;
+#elif NODE_ROLE == ROLE_SENSOR_PPG
+extern SensorPPG g_ppg;
+#endif
 
 static constexpr char TAG[] = "CS_TX";
 
@@ -244,6 +250,7 @@ void taskCSSender(void* param)
     LOG_INFO(TAG, "6 encoder aktif (IMU) | N=%d M=%d | Sanity check AKTIF", CS_N, CS_M);
 #elif NODE_ROLE == ROLE_SENSOR_PPG
     float yIr[CS_M];
+    float meanIr = 0.0f;
     LOG_INFO(TAG, "1 encoder aktif (PPG) | N=%d M=%d", CS_N, CS_M);
 #endif
 
@@ -258,18 +265,33 @@ void taskCSSender(void* param)
 
         ImuSample imu{};
         PpgSample ppg{};
-        taskENTER_CRITICAL(&g_stateMux);
-        imu = g_latestImu;
-        ppg = g_latestPpg;
-        taskEXIT_CRITICAL(&g_stateMux);
 
 #if NODE_ROLE == ROLE_SENSOR_IMU
+        // ── Baca IMU LANGSUNG (synchronous, tanpa task perantara) ────────────
+        ImuMeasurement snapImu{};
+        bool imuOk = false;
+        if (xSemaphoreTake(g_wireMutex, portMAX_DELAY) == pdTRUE)
+        {
+            imuOk = g_imu.read(snapImu);
+            xSemaphoreGive(g_wireMutex);
+        }
+        if (!imuOk)
+        {
+            vTaskDelay(pdMS_TO_TICKS(Timing::IMU_SAMPLE_MS));
+            continue;
+        }
+        imu.accelX = snapImu.accelX; imu.accelY = snapImu.accelY; imu.accelZ = snapImu.accelZ;
+        imu.gyroX  = snapImu.gyroX;  imu.gyroY  = snapImu.gyroY;  imu.gyroZ  = snapImu.gyroZ;
+        imu.tempC  = snapImu.tempC;
+
+        // Sanity check sebelum encode — drop window jika di luar batas fisis.
         if (!_imuInRange(imu))
         {
             g_droppedWindows++;
-            _resetAllEncoders();
             if (g_droppedWindows % SanityLimit::LOG_DROP_EVERY == 0)
-                LOG_WARN(TAG, "DROPPED: IMU out of range");
+                LOG_WARN(TAG, "IMU di luar batas fisis — window di-drop (total=%lu)",
+                         g_droppedWindows);
+            _resetAllEncoders();
             vTaskDelay(pdMS_TO_TICKS(Timing::IMU_SAMPLE_MS));
             continue;
         }
@@ -287,10 +309,31 @@ void taskCSSender(void* param)
             continue;
         }
 
-        g_encAx.encode(yAx); g_encAy.encode(yAy); g_encAz.encode(yAz);
-        g_encGx.encode(yGx); g_encGy.encode(yGy); g_encGz.encode(yGz);
+        float meanAx, meanAy, meanAz, meanGx, meanGy, meanGz;
+        g_encAx.encode(yAx, meanAx); g_encAy.encode(yAy, meanAy); g_encAz.encode(yAz, meanAz);
+        g_encGx.encode(yGx, meanGx); g_encGy.encode(yGy, meanGy); g_encGz.encode(yGz, meanGz);
 
 #elif NODE_ROLE == ROLE_SENSOR_PPG
+        // ── Baca PPG LANGSUNG (synchronous) ──────────────────────────────────
+        PpgMeasurement snapPpg{};
+        bool ppgOk = false;
+        if (xSemaphoreTake(g_wireMutex, pdMS_TO_TICKS(200)) == pdTRUE)
+        {
+            g_ppg.update();
+            ppgOk = g_ppg.read(snapPpg);
+            xSemaphoreGive(g_wireMutex);
+        }
+        if (!ppgOk)
+        {
+            vTaskDelay(pdMS_TO_TICKS(Timing::IMU_SAMPLE_MS));
+            continue;
+        }
+        ppg.irRaw     = snapPpg.irRaw;
+        ppg.redRaw    = snapPpg.redRaw;
+        ppg.heartRate = snapPpg.heartRate;
+        ppg.spo2      = snapPpg.spo2;
+        ppg.valid     = snapPpg.valid;
+
         const float irSample = (SanityLimit::IR_ZERO_IF_NO_FINGER &&
                                 !(ppg.irRaw >= EdgeConfig::IR_FINGER_THRESHOLD))
                                ? 0.0f
@@ -301,7 +344,7 @@ void taskCSSender(void* param)
             vTaskDelay(pdMS_TO_TICKS(Timing::IMU_SAMPLE_MS));
             continue;
         }
-        g_encIr.encode(yIr);
+        g_encIr.encode(yIr, meanIr);
 #endif
 
         const bool     finger = (ppg.irRaw >= EdgeConfig::IR_FINGER_THRESHOLD);
@@ -332,22 +375,22 @@ void taskCSSender(void* param)
         uint8_t nack = 0;
 
 #if NODE_ROLE == ROLE_SENSOR_IMU
-        SEND_WITH_RETRY(g_mesh.sendCsAxis(PKT_CS_AX, NODE_ID, yAx, finger, tsNow, dstMac));
+        SEND_WITH_RETRY(g_mesh.sendCsAxis(PKT_CS_AX, NODE_ID, yAx, meanAx, finger, tsNow, dstMac));
         vTaskDelay(pdMS_TO_TICKS(INTER_PKT_MS));
-        SEND_WITH_RETRY(g_mesh.sendCsAxis(PKT_CS_AY, NODE_ID, yAy, finger, tsNow, dstMac));
+        SEND_WITH_RETRY(g_mesh.sendCsAxis(PKT_CS_AY, NODE_ID, yAy, meanAy, finger, tsNow, dstMac));
         vTaskDelay(pdMS_TO_TICKS(INTER_PKT_MS));
-        SEND_WITH_RETRY(g_mesh.sendCsAxis(PKT_CS_AZ, NODE_ID, yAz, finger, tsNow, dstMac));
+        SEND_WITH_RETRY(g_mesh.sendCsAxis(PKT_CS_AZ, NODE_ID, yAz, meanAz, finger, tsNow, dstMac));
         vTaskDelay(pdMS_TO_TICKS(INTER_PKT_MS));
-        SEND_WITH_RETRY(g_mesh.sendCsAxis(PKT_CS_GX, NODE_ID, yGx, finger, tsNow, dstMac));
+        SEND_WITH_RETRY(g_mesh.sendCsAxis(PKT_CS_GX, NODE_ID, yGx, meanGx, finger, tsNow, dstMac));
         vTaskDelay(pdMS_TO_TICKS(INTER_PKT_MS));
-        SEND_WITH_RETRY(g_mesh.sendCsAxis(PKT_CS_GY, NODE_ID, yGy, finger, tsNow, dstMac));
+        SEND_WITH_RETRY(g_mesh.sendCsAxis(PKT_CS_GY, NODE_ID, yGy, meanGy, finger, tsNow, dstMac));
         vTaskDelay(pdMS_TO_TICKS(INTER_PKT_MS));
-        SEND_WITH_RETRY(g_mesh.sendCsAxis(PKT_CS_GZ, NODE_ID, yGz, finger, tsNow, dstMac));
+        SEND_WITH_RETRY(g_mesh.sendCsAxis(PKT_CS_GZ, NODE_ID, yGz, meanGz, finger, tsNow, dstMac));
 #elif NODE_ROLE == ROLE_SENSOR_PPG
         const int8_t displayHR   = finger ? ppg.heartRate : 0;
         const float  displaySpo2 = finger ? (ppg.spo2 > 0 ? ppg.spo2 : 0.0f) : 0.0f;
         const bool   displayValid = finger ? ppg.valid : false;
-        SEND_WITH_RETRY(g_mesh.sendCsPpg(NODE_ID, yIr, displayHR,
+        SEND_WITH_RETRY(g_mesh.sendCsPpg(NODE_ID, yIr, meanIr, displayHR,
                                           displayValid, displaySpo2,
                                           finger, tsNow, dstMac));
 #endif
