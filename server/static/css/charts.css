@@ -39,7 +39,8 @@
 
 /* IMU chart inside node card */
 .card-imu {
-  height: 180px;
+  flex: 1;
+  min-height: 100px;
   width: 100%;
 }
 

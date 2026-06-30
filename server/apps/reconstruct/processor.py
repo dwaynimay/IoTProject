@@ -63,7 +63,8 @@ def process_window(
     """
     global _global_window_count
 
-    results:      dict[str, np.ndarray] = {}
+    centered_results: dict[str, np.ndarray] = {}
+    results:          dict[str, np.ndarray] = {}
     measurements: dict[str, list]       = {}
     t0 = time.time()
 
@@ -71,7 +72,10 @@ def process_window(
     for sig in IMU_SIGNALS:
         y = imu_data.get(sig, [])
         if len(y) == CS_M:
-            results[sig]      = reconstruct(y)
+            mean_val = float(imu_data.get(f"mean_{sig}", 0.0))
+            x_hat = reconstruct(y)
+            centered_results[sig] = x_hat
+            results[sig]          = x_hat + mean_val
             measurements[sig] = y
         else:
             logger.warning("Node %d | %s: len=%d expected %d — skip",
@@ -80,7 +84,10 @@ def process_window(
     # ── Rekonstruksi PPG ──────────────────────────────────────────────────────
     y_ir = ppg_data.get("ir", [])
     if len(y_ir) == CS_M:
-        results["ir"]      = reconstruct(y_ir)
+        mean_ir = float(ppg_data.get("mean_ir", 0.0))
+        x_hat_ir = reconstruct(y_ir)
+        centered_results["ir"] = x_hat_ir
+        results["ir"]          = x_hat_ir + mean_ir
         measurements["ir"] = y_ir
 
     elapsed_ms = (time.time() - t0) * 1000
@@ -100,7 +107,7 @@ def process_window(
 
     # ── F3: Quality assessment ────────────────────────────────────────────────
     report = assessor.assess_window(
-        results      = results,
+        results      = centered_results,
         measurements = measurements,
         node_id      = node_id,
         window_num   = window_num,

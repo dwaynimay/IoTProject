@@ -18,6 +18,7 @@ Tidak ada MQTT di sini. Tidak ada logika rekonstruksi di sini.
 
 import logging
 import threading
+import time
 from concurrent.futures import ThreadPoolExecutor
 from typing import Callable
 
@@ -69,10 +70,17 @@ class NodeState:
 
         self._imu_buf: dict | None = None
         self._ppg_buf: dict | None = None
+        self._imu_recv_t: float = 0.0   # waktu (time.time) saat imu_buf diisi
+        self._ppg_recv_t: float = 0.0   # waktu (time.time) saat ppg_buf diisi
         self._lock        = threading.Lock()
 
         self.windows_done = 0
         self._timing: dict = {}  # dict mutable untuk timing stats (lihat processor.py)
+
+        # Timeout buffer: jika salah satu buffer sudah menunggu lebih lama
+        # dari ini tanpa pasangannya datang, buang buffer yang basi.
+        # 3 detik = ~4-5 window pada kecepatan normal (640ms/window).
+        self._BUFFER_STALE_MS = 3000
 
     # ── Public API ────────────────────────────────────────────────────────────
 
@@ -90,7 +98,10 @@ class NodeState:
             return
 
         with self._lock:
+            # Pengecekan expire dilakukan SEBELUM merekam payload baru
+            self._expire_stale_buffers()
             self._imu_buf = payload
+            self._imu_recv_t = time.time()
             self._try_dispatch()
 
     def on_ppg(self, payload: dict) -> None:
@@ -107,10 +118,30 @@ class NodeState:
             return
 
         with self._lock:
+            # Pengecekan expire dilakukan SEBELUM merekam payload baru
+            self._expire_stale_buffers()
             self._ppg_buf = payload
+            self._ppg_recv_t = time.time()
             self._try_dispatch()
 
     # ── Internal ──────────────────────────────────────────────────────────────
+
+    def _expire_stale_buffers(self) -> None:
+        """Buang buffer yang sudah menunggu terlalu lama tanpa pasangannya."""
+        now = time.time()
+        stale_s = self._BUFFER_STALE_MS / 1000.0
+
+        if self._imu_buf is not None and (now - self._imu_recv_t) > stale_s:
+            logger.warning("Group %d | imu_buf expired (%.1fs old) — discarding",
+                           self.group_id, now - self._imu_recv_t)
+            self._imu_buf = None
+            self._imu_recv_t = 0.0
+
+        if self._ppg_buf is not None and (now - self._ppg_recv_t) > stale_s:
+            logger.warning("Group %d | ppg_buf expired (%.1fs old) — discarding",
+                           self.group_id, now - self._ppg_recv_t)
+            self._ppg_buf = None
+            self._ppg_recv_t = 0.0
 
     def _try_dispatch(self) -> None:
         """Cek apakah kedua buffer siap. Jika ya, submit ke thread pool."""

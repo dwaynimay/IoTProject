@@ -23,7 +23,10 @@ export function renderNodeList() {
   const container = document.getElementById('nodesContainer');
   if (!container) return;
 
-  if (state.nodes.size === 0) {
+  const nodeCount = state.nodes.size;
+  container.setAttribute('data-nodes', nodeCount > 6 ? 'many' : nodeCount);
+
+  if (nodeCount === 0) {
     container.innerHTML = `
       <div class="no-data" style="height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; grid-column: 1/-1;">
         <div class="no-data-icon" style="font-size: 48px; margin-bottom: 16px;">📡</div>
@@ -98,8 +101,10 @@ export function renderNodeList() {
             <span class="meta-value" id="win-${node.node_id}">${node.total_windows || 0}</span>
           </div>
         </div>
-        <div class="card-activity" id="act-lbl-${node.node_id}" style="color: ${color}; background-color: ${bgColor};">
-          ${label}${conf}
+        <div class="ml-activities-container" id="ml-acts-${node.node_id}" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
+          <div class="card-activity" style="color: ${color}; background-color: ${bgColor};">
+            ${label}${conf}
+          </div>
         </div>
         <div class="card-vitals">
           <div class="vital-item hr">
@@ -290,7 +295,7 @@ export async function initIMUChart(nodeId) {
       }
     },
     legend: {
-      top: 0, right: 0,
+      bottom: 0, left: 'center',
       textStyle: { fontSize: 9, fontFamily: 'var(--mono)', color: '#64748b' },
       itemWidth: 10, itemHeight: 3,
       data: [
@@ -394,9 +399,13 @@ export async function initIMUChart(nodeId) {
   }
 }
 
-// IMPROVEMENT: updateIMUChart sekarang hanya push/shift ke buffer,
-// rendering diserahkan ke global setInterval di bawah — sama seperti kode 2.
-// playbackQueue dihilangkan karena buffer push/shift sudah cukup smooth pada 66ms interval.
+// ── Drip Queue: antrian sampel yang akan di-drip secara bertahap ─────────────
+// Setiap window (64 sampel) di-drip selama ~640ms (10ms/sampel asli).
+// Render interval 66ms → ~10 frame per window → ~6-7 sampel per frame.
+// Ini mencegah "speed ramp" / "muter" saat server mengirim burst data.
+const imuDripQueues = new Map(); // nodeId -> { ax: [], ay: [], ... }
+const DRIP_SAMPLES_PER_TICK = 7; // 64 sampel / ~10 frame = ~6-7 per tick
+
 export function updateIMUChart(nodeId, imuSignals) {
   if (!imuSignals) return;
 
@@ -411,32 +420,71 @@ export function updateIMUChart(nodeId, imuSignals) {
     });
   }
 
-  const buffers = imuBuffers.get(nodeId);
+  if (!imuDripQueues.has(nodeId)) {
+    imuDripQueues.set(nodeId, {
+      ax: [], ay: [], az: [], gx: [], gy: [], gz: []
+    });
+  }
+
+  const dripQ = imuDripQueues.get(nodeId);
   const keys = ['ax', 'ay', 'az', 'gx', 'gy', 'gz'];
 
-  // Jika data berupa array (burst per window), push tiap sample satu per satu
-  // Jika data berupa scalar, push langsung
+  // Masukkan data baru ke antrian drip (bukan langsung ke buffer tampilan)
   keys.forEach(k => {
     if (imuSignals[k] === undefined) return;
     if (Array.isArray(imuSignals[k])) {
-      imuSignals[k].forEach(val => {
-        buffers[k].push(val);
-        buffers[k].shift();
-      });
+      dripQ[k].push(...imuSignals[k]);
     } else {
-      buffers[k].push(imuSignals[k]);
-      buffers[k].shift();
+      dripQ[k].push(imuSignals[k]);
     }
   });
 }
 window.updateIMUChart = updateIMUChart;
 
 // Global setInterval untuk render IMU chart — ~15fps, konsisten untuk semua node
-// Sama dengan pola kode 2: render dipisah dari update data
+// PERBAIKAN: Setiap tick hanya drip beberapa sampel dari antrian, bukan semua sekaligus.
+// Ini membuat grafik bergeser halus seperti alat monitor detak jantung di RS.
 setInterval(() => {
   for (const [nodeId, chart] of imuCharts.entries()) {
     const buffers = imuBuffers.get(nodeId);
-    if (!buffers) continue;
+    const dripQ   = imuDripQueues.get(nodeId);
+    if (!buffers || !dripQ) continue;
+
+    // Hitung berapa sampel yang harus di-drip frame ini
+    // Ambil dari sumbu yang paling panjang antriannya
+    const maxQueued = Math.max(
+      dripQ.ax.length, dripQ.ay.length, dripQ.az.length,
+      dripQ.gx.length, dripQ.gy.length, dripQ.gz.length
+    );
+
+    if (maxQueued === 0) {
+      // Tidak ada data baru — tetap render agar chart tidak freeze
+      chart.setOption({
+        graphic: [{ id: 'nodata', style: { text: '' } }],
+        series: [
+          { name: 'ax', data: buffers.ax.slice() },
+          { name: 'ay', data: buffers.ay.slice() },
+          { name: 'az', data: buffers.az.slice() },
+          { name: 'gx', data: buffers.gx.slice() },
+          { name: 'gy', data: buffers.gy.slice() },
+          { name: 'gz', data: buffers.gz.slice() },
+        ]
+      });
+      continue;
+    }
+
+    // Drip N sampel per tick — jika antrian menumpuk, percepat sedikit
+    // agar tidak terlalu tertinggal, tapi tetap tidak burst sekaligus
+    const count = Math.min(maxQueued, Math.max(DRIP_SAMPLES_PER_TICK, Math.ceil(maxQueued / 8)));
+
+    const keys = ['ax', 'ay', 'az', 'gx', 'gy', 'gz'];
+    keys.forEach(k => {
+      const toDrip = Math.min(count, dripQ[k].length);
+      for (let i = 0; i < toDrip; i++) {
+        buffers[k].push(dripQ[k].shift());
+        buffers[k].shift();
+      }
+    });
 
     chart.setOption({
       graphic: [{ id: 'nodata', style: { text: '' } }],
@@ -490,26 +538,68 @@ export function updateNodeCard(nodeId, data) {
   }
   
   if (data.ml_results) {
-    let topLabel = null;
-    let topConf = 0;
-    
-    Object.values(data.ml_results).forEach(res => {
-      if (!res.skipped && res.confidence > topConf) {
-        topConf = res.confidence;
-        topLabel = res.label;
+    const container = document.getElementById(`ml-acts-${nodeId}`);
+    if (container) {
+      container.innerHTML = '';
+      let overallTopLabel = null;
+      let overallTopConf = 0;
+      
+      Object.entries(data.ml_results).forEach(([modelName, res]) => {
+        if (res.skipped) return;
+        
+        let topConf = res.confidence;
+        let topLabel = res.label;
+        
+        if (topConf > overallTopConf) {
+            overallTopConf = topConf;
+            overallTopLabel = topLabel;
+        }
+        
+        let probText = '';
+        if (res.proba && Object.keys(res.proba).length > 0) {
+            const sortedProbs = Object.entries(res.proba).sort((a, b) => b[1] - a[1]);
+            probText = sortedProbs.map(([lbl, val]) => `${lbl} ${(val*100).toFixed(0)}%`).join(' • ');
+        } else {
+            probText = `${topLabel} ${(topConf*100).toFixed(0)}%`;
+        }
+        
+        const actLbl = document.createElement('div');
+        actLbl.className = 'card-activity';
+        actLbl.textContent = `${modelName.toUpperCase()} — ${probText}`;
+        
+        let isCritical = false;
+        if (topLabel) {
+            isCritical = topLabel.toLowerCase().includes('jatuh') || 
+                         topLabel.toLowerCase().includes('fall') || 
+                         topLabel.toLowerCase().includes('stress');
+        }
+                           
+        if (isCritical) {
+            actLbl.style.color = '#ff3333';
+            actLbl.style.backgroundColor = 'rgba(255, 51, 51, 0.15)';
+            actLbl.style.boxShadow = 'none';
+        } else {
+            actLbl.style.color = getLabelColor(topLabel || 'OK');
+            actLbl.style.backgroundColor = getLabelBgColor(topLabel || 'OK');
+            actLbl.style.boxShadow = 'none';
+        }
+        
+        container.appendChild(actLbl);
+      });
+      
+      if (node && overallTopLabel) {
+          node.last_activity = overallTopLabel;
+          node.last_confidence = overallTopConf;
       }
-    });
-    
-    if (topLabel) {
-      if (node) {
-        node.last_activity = topLabel;
-        node.last_confidence = topConf;
-      }
-      const actLbl = document.getElementById(`act-lbl-${nodeId}`);
-      if (actLbl) {
-        actLbl.textContent = `${topLabel} (${(topConf*100).toFixed(0)}%)`;
-        actLbl.style.color = getLabelColor(topLabel);
-        actLbl.style.backgroundColor = getLabelBgColor(topLabel);
+      
+      if (container.children.length === 0) {
+        const actLbl = document.createElement('div');
+        actLbl.className = 'card-activity';
+        const lbl = node.last_activity || "OK";
+        actLbl.textContent = lbl;
+        actLbl.style.color = getLabelColor(lbl);
+        actLbl.style.backgroundColor = getLabelBgColor(lbl);
+        container.appendChild(actLbl);
       }
     }
   }
