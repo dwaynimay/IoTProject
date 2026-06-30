@@ -41,6 +41,9 @@ enum class PacketType : uint8_t
     // ── Data (existing) ───────────────────────────────────────────────────────
     COMBINED_DATA = 0x03,
 
+    // ── Time Synchronization ──────────────────────────────────────────────────
+    TIME_SYNC = 0x05,
+
     // ── Compressive Sensing ───────────────────────────────────────────────────
     CS_AX = 0x10,
     CS_AY = 0x11,
@@ -117,6 +120,17 @@ struct __attribute__((packed)) BeaconPacket
 }; // Total: 7 bytes ✓
 
 // ---------------------------------------------------------------------------
+// TimeSyncPacket — Gateway → broadcast setiap TIME_SYNC_MS
+//
+// Digunakan untuk menyamakan waktu (millis) semua sensor dengan waktu gateway
+// agar timestamp IMU dan PPG bisa dipasangkan dengan akurat di server.
+// ---------------------------------------------------------------------------
+struct __attribute__((packed)) TimeSyncPacket
+{
+    PacketHeader header; // 6 bytes (nodeId = GATEWAY_NODE_ID = 0, timestamp = gateway millis)
+}; // Total: 6 bytes ✓
+
+// ---------------------------------------------------------------------------
 // RssiReportPacket — Node → Neighbor (tukar info RSSI ke gateway)
 //
 // Alur:
@@ -162,8 +176,8 @@ struct __attribute__((packed)) RoutedCsHeader
 struct __attribute__((packed)) RoutedCsPacket
 {
     RoutedCsHeader header;
-    uint8_t inner[142]; // inner = CS1AxisPacket atau CSPpgPacket
-}; // max 150 bytes ✓
+    uint8_t inner[200]; // inner = CS1AxisPacket atau CSPpgPacket
+}; // max 208 bytes ✓
 
 // =============================================================================
 // CS Packet Types (tidak berubah dari v2)
@@ -188,18 +202,20 @@ struct __attribute__((packed)) CS1AxisPacket
 {
     PacketHeader header;
     float y[CS_M];
+    float mean;
     EdgeResult edge;
-}; // 136 bytes ✓
+}; // 140 bytes ✓
 
 struct __attribute__((packed)) CSPpgPacket
 {
     PacketHeader header;
     float yIr[CS_M];
+    float mean;
     int8_t heartRate;
     bool ppgValid;
     float spo2;
     EdgeResult edge;
-}; // 142 bytes ✓
+}; // 146 bytes ✓
 
 // =============================================================================
 // Internal structs
@@ -218,6 +234,8 @@ struct ImuWindowBuffer
 {
     float ax[CS_M], ay[CS_M], az[CS_M];
     float gx[CS_M], gy[CS_M], gz[CS_M];
+    float meanAx, meanAy, meanAz;
+    float meanGx, meanGy, meanGz;
     uint32_t timestamp;
     bool fingerOn;
     uint8_t receivedMask;

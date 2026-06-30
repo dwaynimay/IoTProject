@@ -335,9 +335,15 @@ RouteResult MeshRouting::_routeCsAxis(const RawPacket& raw, MqttMessage& out)
 
     // Simpan axis
     float* dsts[] = {buf.ax, buf.ay, buf.az, buf.gx, buf.gy, buf.gz};
+    float* means[] = {&buf.meanAx, &buf.meanAy, &buf.meanAz, &buf.meanGx, &buf.meanGy, &buf.meanGz};
     memcpy(dsts[axIdx], pkt->y, CS_M * sizeof(float));
+    *(means[axIdx])   = pkt->mean;
     buf.receivedMask |= (1u << axIdx);
-    buf.timestamp     = pkt->header.timestamp;
+    // Timestamp diambil dari paket PERTAMA yang masuk untuk window ini.
+    // Paket berikutnya (sumbu lain) tidak menimpa — menjaga konsistensi
+    // timing antar window sehingga dashboard tidak mengalami drift/muter.
+    if (buf.receivedMask == (1u << axIdx))
+        buf.timestamp = pkt->header.timestamp;  // paket pertama → set timestamp
     buf.fingerOn      = pkt->edge.fingerOn;
     buf.nodeId        = pkt->header.nodeId;
     buf.lastUpdateMs  = millis();
@@ -367,9 +373,12 @@ RouteResult MeshRouting::_routeCsAxis(const RawPacket& raw, MqttMessage& out)
 
     const char* names[] = {"ax","ay","az","gx","gy","gz"};
     float*      arrs[]  = {buf.ax,buf.ay,buf.az,buf.gx,buf.gy,buf.gz};
+    float       meanVals[] = {buf.meanAx, buf.meanAy, buf.meanAz, buf.meanGx, buf.meanGy, buf.meanGz};
 
     for (uint8_t i = 0; i < 6; i++)
     {
+        w = snprintf(p, rem, ",\"mean_%s\":%.4f", names[i], meanVals[i]);
+        p += w; rem -= w;
         w = snprintf(p, rem, ",\"%s\":[", names[i]);
         p += w; rem -= w;
         w = _writeFloatArray(p, rem, arrs[i], CS_M);
@@ -414,21 +423,23 @@ RouteResult MeshRouting::_routeCsIr(const RawPacket& raw, MqttMessage& out)
     {
         w = snprintf(p, rem,
                      "{\"ts\":%lu,\"hr\":%d,\"spo2\":%.1f,"
-                     "\"ppg_valid\":%s,\"finger\":%s,\"ir\":[",
+                     "\"ppg_valid\":%s,\"finger\":%s,\"mean_ir\":%.4f,\"ir\":[",
                      (unsigned long)pkt->header.timestamp,
                      pkt->heartRate, pkt->spo2,
                      pkt->ppgValid      ? "true" : "false",
-                     pkt->edge.fingerOn ? "true" : "false");
+                     pkt->edge.fingerOn ? "true" : "false",
+                     pkt->mean);
     }
     else
     {
         w = snprintf(p, rem,
                      "{\"ts\":%lu,\"hr\":%d,\"spo2\":null,"
-                     "\"ppg_valid\":%s,\"finger\":%s,\"ir\":[",
+                     "\"ppg_valid\":%s,\"finger\":%s,\"mean_ir\":%.4f,\"ir\":[",
                      (unsigned long)pkt->header.timestamp,
                      pkt->heartRate,
                      pkt->ppgValid      ? "true" : "false",
-                     pkt->edge.fingerOn ? "true" : "false");
+                     pkt->edge.fingerOn ? "true" : "false",
+                     pkt->mean);
     }
     p += w; rem -= w;
 

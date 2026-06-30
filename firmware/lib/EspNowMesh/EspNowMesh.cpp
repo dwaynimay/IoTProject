@@ -302,6 +302,21 @@ bool EspNowMesh::sendBeacon()
 
 
 // =============================================================================
+// sendTimeSync() — (Gateway Only)
+// =============================================================================
+bool EspNowMesh::sendTimeSync(uint32_t gatewayMillis)
+{
+    TimeSyncPacket pkt{};
+    pkt.header = { PacketType::TIME_SYNC, RoutingCfg::GATEWAY_NODE_ID, gatewayMillis };
+    
+    // Broadcast ke semua node
+    const bool ok = _send(&pkt, sizeof(TimeSyncPacket), BROADCAST_MAC);
+    LOG_INFO(TAG, "TimeSync sent: %lu ms | ok=%s", gatewayMillis, ok ? "Y" : "N");
+    return ok;
+}
+
+
+// =============================================================================
 // sendRssiReport()
 // =============================================================================
 bool EspNowMesh::sendRssiReport(uint8_t selfNodeId, int8_t rssiToGateway)
@@ -327,25 +342,27 @@ bool EspNowMesh::sendRssiReport(uint8_t selfNodeId, int8_t rssiToGateway)
 // (tidak ada perubahan dari v3.3)
 // =============================================================================
 bool EspNowMesh::sendCsAxis(uint8_t pktType, uint8_t nodeId,
-                             const float y[CS_M], bool fingerOn,
+                             const float y[CS_M], float mean, bool fingerOn,
                              uint32_t timestamp, const uint8_t* dstMac)
 {
     CS1AxisPacket pkt{};
     pkt.header = { static_cast<PacketType>(pktType), nodeId, timestamp };
     memcpy(pkt.y, y, CS_M * sizeof(float));
+    pkt.mean   = mean;
     pkt.edge   = { fingerOn, 0 };
     // vTaskDelay(1ms) dihapus v5.1 — eliminasi 7ms blocking per window
     return _send(&pkt, sizeof(CS1AxisPacket), dstMac);
 }
 
 bool EspNowMesh::sendCsPpg(uint8_t nodeId, const float yIr[CS_M],
-                            int8_t heartRate, bool ppgValid, float spo2,
+                            float mean, int8_t heartRate, bool ppgValid, float spo2,
                             bool fingerOn, uint32_t timestamp,
                             const uint8_t* dstMac)
 {
     CSPpgPacket pkt{};
     pkt.header    = { PacketType::CS_IR, nodeId, timestamp };
     memcpy(pkt.yIr, yIr, CS_M * sizeof(float));
+    pkt.mean      = mean;
     pkt.heartRate = heartRate;
     pkt.ppgValid  = ppgValid;
     pkt.spo2      = spo2;

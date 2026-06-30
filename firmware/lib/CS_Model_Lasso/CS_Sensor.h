@@ -137,15 +137,21 @@ public:
 
     // Hitung y = Φ · x, simpan ke out[CS_M], lalu reset buffer.
     // Kembalikan false jika buffer belum penuh (hasil tidak valid).
-    bool encode(float out[CS_M])
+    bool encode(float out[CS_M], float& out_mean)
     {
         if (_count < CS_N) return false;
 
+        // 1. Hitung mean
+        float sum_val = 0.0f;
+        for (uint8_t n = 0; n < CS_N; n++) sum_val += _buf[n];
+        out_mean = sum_val / CS_N;
+
+        // 2. Lakukan perkalian matrix dengan mean terpusat di 0
         for (uint8_t m = 0; m < CS_M; m++)
         {
             float sum = 0.0f;
             for (uint8_t n = 0; n < CS_N; n++)
-                sum += _phi[m][n] * _buf[n];
+                sum += _phi[m][n] * (_buf[n] - out_mean);
             out[m] = sum;
         }
 

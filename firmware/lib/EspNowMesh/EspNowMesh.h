@@ -60,6 +60,9 @@ public:
     // Broadcast beacon ke semua node untuk RSSI discovery.
     bool sendBeacon();
 
+    // Broadcast time sync ke semua node (Gateway Node Only)
+    bool sendTimeSync(uint32_t gatewayMillis);
+
     // ── RSSI Exchange API (Sensor Node) ───────────────────────────────────────
 
     bool sendRssiReport(uint8_t selfNodeId, int8_t rssiToGateway);
@@ -67,12 +70,12 @@ public:
     // ── CS Send API (Sensor Node) ─────────────────────────────────────────────
 
     bool sendCsAxis(uint8_t pktType, uint8_t nodeId,
-                    const float y[CS_M], bool fingerOn,
+                    const float y[CS_M], float mean, bool fingerOn,
                     uint32_t timestamp,
                     const uint8_t* dstMac);
 
     bool sendCsPpg(uint8_t nodeId, const float yIr[CS_M],
-                   int8_t heartRate, bool ppgValid,
+                   float mean, int8_t heartRate, bool ppgValid,
                    float spo2, bool fingerOn,
                    uint32_t timestamp,
                    const uint8_t* dstMac);
