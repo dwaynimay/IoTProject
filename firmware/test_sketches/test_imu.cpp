@@ -20,13 +20,13 @@ void setup() {
 
     // imu.begin() sudah otomatis me-load kalibrasi dari memori NVS.
     // Jika Anda ingin mengkalibrasi ulang, hapus tanda komentar (/* ... */) di bawah:
-    /*
-    Serial.println("Sensor siap. Kalibrasi dimulai...");
-    Serial.println(">> Letakkan sensor DATAR & DIAM selama ~2.5 detik <<");
-    delay(500);
-    imu.calibrate(500);
-    Serial.println("Kalibrasi selesai dan disimpan ke NVS!\n");
-    */
+
+    // Serial.println("Sensor siap. Kalibrasi dimulai...");
+    // Serial.println(">> Letakkan sensor DATAR & DIAM selama ~2.5 detik <<");
+    // delay(500);
+    // imu.calibrate(500);
+    // Serial.println("Kalibrasi selesai dan disimpan ke NVS!\n");
+
     Serial.println("Menggunakan data kalibrasi NVS tersimpan.");
 
     // Header CSV
