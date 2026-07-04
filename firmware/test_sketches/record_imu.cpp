@@ -23,7 +23,10 @@ WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 
 const char* topic_cs_imu = "health_monitor/node_" STRINGIFY(NODE_ID) "/cs_imu";
-const char* topic_cs_ppg = "health_monitor/node_" STRINGIFY(NODE_ID) "/cs_ppg";
+#ifndef PPG_NODE_ID
+#define PPG_NODE_ID 2
+#endif
+const char* topic_cs_ppg = "health_monitor/node_" STRINGIFY(PPG_NODE_ID) "/cs_ppg";
 
 void setup_wifi() {
     delay(10);
