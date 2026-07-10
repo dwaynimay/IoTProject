@@ -4,22 +4,34 @@ echo  IoT Server - Menginstal Dependensi Python
 echo ================================================================
 echo.
 
-echo [1/2] Membuat Virtual Environment Python (.venv)...
-python -m venv .venv
+:: Pastikan Python tersedia
+python --version >nul 2>&1
 if %errorLevel% neq 0 (
-    echo [ERROR] Gagal membuat virtual environment. Pastikan Python terinstal dan ada di PATH.
+    echo [ERROR] Python tidak ditemukan. Pastikan Python sudah terinstal dan ada di PATH.
+    pause
+    exit /b 1
+)
+
+echo [1/2] Membuat Virtual Environment Python di server\.venv ...
+python -m venv server\.venv
+if %errorLevel% neq 0 (
+    echo [ERROR] Gagal membuat virtual environment.
     pause
     exit /b %errorLevel%
 )
 echo [OK] Virtual Environment berhasil dibuat.
 echo.
 
-echo [2/2] Menginstal dependensi dari requirements.txt...
-call .venv\Scripts\activate.bat
-cd server
-pip install -r requirements.txt
-cd ..
-echo [OK] Dependensi Python selesai diinstal.
+echo [2/2] Menginstal semua dependensi dari server\requirements.txt ...
+call server\.venv\Scripts\activate.bat
+pip install --upgrade pip >nul
+pip install -r server\requirements.txt
+if %errorLevel% neq 0 (
+    echo [ERROR] Gagal menginstal dependensi.
+    pause
+    exit /b %errorLevel%
+)
+echo [OK] Semua dependensi selesai diinstal.
 echo.
 
 echo ================================================================

@@ -30,9 +30,17 @@ if %errorLevel% == 0 (
     echo             Jika Mosquitto sudah jalan di background, abaikan pesan ini.
 )
 
+:: Cek apakah venv sudah diinstall
+if not exist "%~dp0server\.venv\Scripts\activate.bat" (
+    echo [ERROR] Virtual environment tidak ditemukan di server\.venv\
+    echo         Jalankan dulu: install_all.bat
+    pause
+    exit /b 1
+)
+
 :: 2. Backend Python — buka di jendela baru
 echo [2/2] Membuka Python Server (FastAPI + MQTT + Dashboard)...
-start "IoT Python Server" cmd /k "call %~dp0.venv\Scripts\activate.bat && cd /d %~dp0 && python -m server"
+start "IoT Python Server" cmd /k "call %~dp0server\.venv\Scripts\activate.bat && cd /d %~dp0 && python -m server"
 
 echo.
 echo ================================================================
