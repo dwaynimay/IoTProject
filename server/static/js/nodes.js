@@ -43,8 +43,9 @@ export function renderNodeList() {
   
   Array.from(state.nodes.values()).sort((a,b) => a.node_id - b.node_id).forEach(node => {
     let shell = document.getElementById(`node-card-shell-${node.node_id}`);
-    
-    if (!shell) {
+    const isNew = !shell;
+
+    if (isNew) {
       shell = document.createElement('div');
       shell.className = 'node-card-shell';
       shell.id = `node-card-shell-${node.node_id}`;
@@ -57,89 +58,92 @@ export function renderNodeList() {
     } else {
       shell.classList.remove('active');
     }
-    
-    const hr = node.last_hr > 0 ? Math.round(node.last_hr) : '--';
-    const spo2 = node.last_spo2 > 0 ? `${node.last_spo2.toFixed(1)}%` : '--%';
-    
-    const label = node.last_activity || "OK";
-    const conf = node.last_confidence ? ` (${(node.last_confidence * 100).toFixed(0)}%)` : "";
-    const color = getLabelColor(label);
-    const bgColor = getLabelBgColor(label);
 
-    const now = Date.now();
-    const uptimeSec = state.server_start_time_offset ? Math.floor((now - state.server_start_time_offset) / 1000) : null;
-    const uptimeStr = uptimeSec !== null ? formatDuration(uptimeSec) : '--';
+    // ── Hanya render ulang HTML untuk node BARU ──────────────────────────────
+    // Node yang sudah ada hanya di-update elemen spesifik saja,
+    // agar DOM yang diupdate live oleh updateNodeCard() tidak tertimpa.
+    if (isNew) {
+      const hr = node.last_hr > 0 ? Math.round(node.last_hr) : '--';
+      const spo2 = node.last_spo2 > 0 ? `${node.last_spo2.toFixed(1)}%` : '--%';
+      const label = node.last_activity || "OK";
+      const conf = node.last_confidence ? ` (${(node.last_confidence * 100).toFixed(0)}%)` : "";
+      const color = getLabelColor(label);
+      const bgColor = getLabelBgColor(label);
+      const now = Date.now();
+      const uptimeSec = state.server_start_time_offset ? Math.floor((now - state.server_start_time_offset) / 1000) : null;
+      const uptimeStr = uptimeSec !== null ? formatDuration(uptimeSec) : '--';
 
-    shell.innerHTML = `
-      <div class="node-card" id="node-card-${node.node_id}">
-        <div class="card-header">
-          <span class="node-name">Node ${node.node_id}</span>
-          <span class="node-status-badge disconnected" id="status-${node.node_id}">
-            <span class="status-dot"></span>
-            <span class="status-text">Disconnected</span>
-          </span>
-        </div>
-        <div class="card-meta">
-          <div class="meta-item">
-            <span class="meta-icon">
-              <svg class="icon-svg mini" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-              </svg>
+      shell.innerHTML = `
+        <div class="node-card" id="node-card-${node.node_id}">
+          <div class="card-header">
+            <span class="node-name">Node ${node.node_id}</span>
+            <span class="node-status-badge disconnected" id="status-${node.node_id}">
+              <span class="status-dot"></span>
+              <span class="status-text">Disconnected</span>
             </span>
-            <span class="meta-label">Uptime:</span>
-            <span class="meta-value" id="uptime-${node.node_id}">${uptimeStr}</span>
           </div>
-          <div class="meta-item">
-            <span class="meta-icon">
-              <svg class="icon-svg mini" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-                <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
-                <line x1="12" y1="22.08" x2="12" y2="12"/>
-              </svg>
-            </span>
-            <span class="meta-label">Windows:</span>
-            <span class="meta-value" id="win-${node.node_id}">${node.total_windows || 0}</span>
-          </div>
-        </div>
-        <div class="ml-activities-container" id="ml-acts-${node.node_id}" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
-          <div class="card-activity" style="color: ${color}; background-color: ${bgColor};">
-            ${label}${conf}
-          </div>
-        </div>
-        <div class="card-vitals">
-          <div class="vital-item hr">
-            <span class="vital-icon">
-              <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
-              </svg>
-            </span>
-            <div class="vital-details">
-              <span class="vital-value" id="vit-hr-${node.node_id}">${hr}</span>
-              <span class="vital-label">Heart Rate (bpm)</span>
+          <div class="card-meta">
+            <div class="meta-item">
+              <span class="meta-icon">
+                <svg class="icon-svg mini" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                </svg>
+              </span>
+              <span class="meta-label">Uptime:</span>
+              <span class="meta-value" id="uptime-${node.node_id}">${uptimeStr}</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-icon">
+                <svg class="icon-svg mini" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                  <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                  <line x1="12" y1="22.08" x2="12" y2="12"/>
+                </svg>
+              </span>
+              <span class="meta-label">Windows:</span>
+              <span class="meta-value" id="win-${node.node_id}">${node.total_windows || 0}</span>
             </div>
           </div>
-          <div class="vital-item spo2">
-            <span class="vital-icon">
-              <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 22a7 7 0 0 0 7-7c0-4.3-7-11-7-11S5 10.7 5 15a7 7 0 0 0 7 7Z"/>
-              </svg>
-            </span>
-            <div class="vital-details">
-              <span class="vital-value" id="vit-spo2-${node.node_id}">${spo2}</span>
-              <span class="vital-label">Oxygen Level</span>
+          <div class="ml-activities-container" id="ml-acts-${node.node_id}" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
+            <div class="card-activity" style="color: ${color}; background-color: ${bgColor};">
+              ${label}${conf}
             </div>
           </div>
+          <div class="card-vitals">
+            <div class="vital-item hr">
+              <span class="vital-icon">
+                <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                </svg>
+              </span>
+              <div class="vital-details">
+                <span class="vital-value" id="vit-hr-${node.node_id}">${hr}</span>
+                <span class="vital-label">Heart Rate (bpm)</span>
+              </div>
+            </div>
+            <div class="vital-item spo2">
+              <span class="vital-icon">
+                <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22a7 7 0 0 0 7-7c0-4.3-7-11-7-11S5 10.7 5 15a7 7 0 0 0 7 7Z"/>
+                </svg>
+              </span>
+              <div class="vital-details">
+                <span class="vital-value" id="vit-spo2-${node.node_id}">${spo2}</span>
+                <span class="vital-label">Oxygen Level</span>
+              </div>
+            </div>
+          </div>
+          <div class="card-trend" id="chart-${node.node_id}"></div>
+          <div class="card-imu-header">IMU Signal — Historical Stream</div>
+          <div class="card-imu" id="imu-chart-${node.node_id}"></div>
         </div>
-        <div class="card-trend" id="chart-${node.node_id}"></div>
-        <div class="card-imu-header">IMU Signal — Historical Stream</div>
-        <div class="card-imu" id="imu-chart-${node.node_id}"></div>
-      </div>
-    `;
-    
-    setTimeout(async () => {
-      initTrendChart(node.node_id);
-      await initIMUChart(node.node_id);
-    }, 10);
+      `;
+
+      setTimeout(async () => {
+        initTrendChart(node.node_id);
+        await initIMUChart(node.node_id);
+      }, 10);
+    }
   });
 
   updateConnectionStatuses();
