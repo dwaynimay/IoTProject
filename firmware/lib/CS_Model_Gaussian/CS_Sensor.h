@@ -205,16 +205,31 @@ public:
         return (_count >= CS_N);
     }
 
-    // Hitung y = Φ · x, simpan ke out[CS_M], reset buffer.
-    // Return false jika buffer belum penuh.
     bool encode(float out[CS_M], float& out_mean)
     {
         if (_count < CS_N) return false;
+
+        // --- DEBUG STAGE 1: Data Asli ---
+        Serial.println("\n[CS STAGE 1] Data Asli (Original Signal):");
+        for (uint8_t n = 0; n < CS_N; n++) {
+            Serial.print(_buf[n]); Serial.print(" ");
+        }
+        Serial.println();
 
         // 1. Hitung mean
         float sum_val = 0.0f;
         for (uint8_t n = 0; n < CS_N; n++) sum_val += _buf[n];
         out_mean = sum_val / CS_N;
+
+        Serial.print("[CS STAGE 2] Mean: ");
+        Serial.println(out_mean, 4);
+
+        // --- DEBUG STAGE 3: Data Terpusat ---
+        Serial.println("[CS STAGE 3] Data Terpusat (Centered Signal):");
+        for (uint8_t n = 0; n < CS_N; n++) {
+            Serial.print(_buf[n] - out_mean); Serial.print(" ");
+        }
+        Serial.println();
 
         // 2. Lakukan perkalian matrix dengan mean terpusat di 0
         for (uint8_t m = 0; m < CS_M; m++)
@@ -224,6 +239,13 @@ public:
                 sum += _phi[m][n] * (_buf[n] - out_mean);
             out[m] = sum;
         }
+
+        // --- DEBUG STAGE 4: Hasil Kompresi (y = Phi * x) ---
+        Serial.println("[CS STAGE 4] Hasil Kompresi (Compressed Data):");
+        for (uint8_t m = 0; m < CS_M; m++) {
+            Serial.print(out[m]); Serial.print(" ");
+        }
+        Serial.println("\n------------------------------------------------");
 
         _count = 0;
         return true;

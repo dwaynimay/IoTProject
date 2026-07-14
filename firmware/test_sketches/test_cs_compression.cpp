@@ -64,8 +64,9 @@ void setup() {
             Serial.println("--> Buffer penuh (64 sampel). Memulai kompresi...");
             
             // 3. Tes Encoding
+            float out_mean = 0.0f;
             encodeStart = micros();
-            bool success = encoder.encode(compressedData);
+            bool success = encoder.encode(compressedData, out_mean);
             encodeEnd = micros();
 
             if (success) {

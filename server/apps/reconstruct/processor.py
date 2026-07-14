@@ -1,4 +1,4 @@
-"""
+     """
 processor.py — Logika rekonstruksi, quality assessment, storage, dan dashboard push.
 
 Tanggung jawab tunggal:
@@ -139,6 +139,16 @@ def process_window(
         )
         ml_result = registry.predict_all(window_input)
         ml_results_dict = ml_result.to_dict()["models"] if ml_result else {}
+        
+        # DEBUG: Log ax standard deviation and ML proba to verify dynamic data
+        if "ax" in results:
+            ax_std = np.std(results["ax"])
+            proba_str = ""
+            for m_name, res in ml_results_dict.items():
+                if not res.get("skipped"):
+                    proba_str += f"[{m_name}: {res.get('proba')}] "
+            logger.info("DEBUG WIN %d | ax_std: %.4f | PROBA: %s", window_num, ax_std, proba_str)
+            
     except Exception as e:
         logger.error("ML Inference error: %s", e)
         ml_results_dict = {}
