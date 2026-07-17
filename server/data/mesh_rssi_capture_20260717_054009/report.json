@@ -1,0 +1,30 @@
+{
+  "ports": {
+    "gateway": "COM7",
+    "imu": "COM15",
+    "ppg": "COM3"
+  },
+  "duration_s": 430,
+  "tx_total": 132,
+  "gateway_total": 132,
+  "phase_total": 264,
+  "done_total": 93,
+  "tx_expect_match_ok": 130,
+  "tx_success_rate_pct": 98.48,
+  "route_counts_tx": {
+    "DIRECT": 64,
+    "RELAY": 68
+  },
+  "route_counts_gateway": {
+    "DIRECT": 64,
+    "RELAYED": 68
+  },
+  "packet_loss_count": 0,
+  "packet_loss_pct": 0.0,
+  "throughput_tx_Bps": 46.08,
+  "throughput_rx_Bps": 46.08,
+  "latency_avg_ms": 73.49,
+  "latency_direct_avg_ms": 70.58,
+  "latency_relay_avg_ms": 76.24,
+  "efficiency_compression_pct": 50.0
+}

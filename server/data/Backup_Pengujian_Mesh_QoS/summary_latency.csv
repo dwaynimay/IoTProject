@@ -1,0 +1,4 @@
+route,count,avg_ms,min_ms,max_ms,std_ms
+ALL,132,73.49,59.0,96.0,6.87
+DIRECT,64,70.58,59.0,96.0,6.56
+RELAYED,68,76.24,64.0,90.0,5.96

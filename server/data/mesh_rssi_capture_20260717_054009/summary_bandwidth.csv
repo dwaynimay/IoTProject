@@ -1,0 +1,3 @@
+side,packet_count,total_bytes,throughput_Bps
+TX_NODE,132,19816,46.08
+GW_RX,132,19816,46.08

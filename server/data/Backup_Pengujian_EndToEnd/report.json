@@ -1,0 +1,17 @@
+{
+  "ports": {
+    "gateway": "COM7",
+    "imu": "COM15",
+    "ppg": "COM3"
+  },
+  "mqtt_broker": "localhost:1883",
+  "duration_s": 430,
+  "tx_imu_total": 132,
+  "tx_ppg_total": 132,
+  "gateway_mqtt_publish_total": 260,
+  "broker_receive_total": 260,
+  "broker_topics": {
+    "health_monitor/node_2/cs_ppg": 130,
+    "health_monitor/node_1/cs_imu": 130
+  }
+}

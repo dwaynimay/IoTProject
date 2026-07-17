@@ -1,0 +1,18 @@
+{
+  "ports": {
+    "gateway": "COM7",
+    "imu": "COM15",
+    "ppg": "COM3"
+  },
+  "duration_s": 430,
+  "tx_total": 29,
+  "gateway_total": 30,
+  "phase_total": 259,
+  "done_total": 715,
+  "tx_expect_match_ok": 28,
+  "tx_success_rate_pct": 96.55,
+  "route_counts": {
+    "DIRECT": 15,
+    "RELAY": 14
+  }
+}
