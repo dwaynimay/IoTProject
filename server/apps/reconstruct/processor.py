@@ -1,4 +1,4 @@
-     """
+"""
 processor.py — Logika rekonstruksi, quality assessment, storage, dan dashboard push.
 
 Tanggung jawab tunggal:
@@ -146,7 +146,10 @@ def process_window(
             proba_str = ""
             for m_name, res in ml_results_dict.items():
                 if not res.get("skipped"):
-                    proba_str += f"[{m_name}: {res.get('proba')}] "
+                    # Get actual InferenceResult to access feature_vec
+                    inf_res = ml_result.results.get(m_name)
+                    feat_part = inf_res.feature_vec[:5] if inf_res else []
+                    proba_str += f"[{m_name}: {res.get('proba')} FEAT_5={feat_part}] "
             logger.info("DEBUG WIN %d | ax_std: %.4f | PROBA: %s", window_num, ax_std, proba_str)
             
     except Exception as e:

@@ -73,12 +73,24 @@ export async function fetchNodeVitalsHistory(nodeId, n = 60) {
 
 export async function fetchNodeIMUHistory(nodeId, nWindows = 4) {
   const IMU_KEYS = ['ax', 'ay', 'az', 'gx', 'gy', 'gz'];
-  const result = {};
+  const result = {
+    timestamps: []
+  };
   await Promise.all(IMU_KEYS.map(async sig => {
     const d = await api(`/api/nodes/${nodeId}/windows?signal=${sig}&n=${nWindows}&include_values=true`);
     if (d && d.windows) {
       // Flatten semua windows menjadi satu array kontinu
       result[sig] = d.windows.flatMap(w => w.values || []);
+      // Populasi timestamps dari sinyal ax (cukup sekali saja)
+      if (sig === 'ax') {
+        d.windows.forEach(w => {
+          const startTs = w.ts_server_ms;
+          const vals = w.values || [];
+          for (let i = 0; i < vals.length; i++) {
+            result.timestamps.push(startTs + i * 10);
+          }
+        });
+      }
     } else {
       result[sig] = [];
     }

@@ -1,0 +1,267 @@
+{
+    "model_name": "fall_detection_svm_final",
+    "model_version": "1.0.0",
+    "labels": [
+        "jalan",
+        "duduk",
+        "tidur",
+        "jatuh"
+    ],
+    "features": [
+        {
+            "name": "ax_min",
+            "type": "stat",
+            "signal": "ax",
+            "stat": "min"
+        },
+        {
+            "name": "ax_mean",
+            "type": "stat",
+            "signal": "ax",
+            "stat": "mean"
+        },
+        {
+            "name": "ax_rms",
+            "type": "stat",
+            "signal": "ax",
+            "stat": "rms"
+        },
+        {
+            "name": "ax_p25",
+            "type": "stat",
+            "signal": "ax",
+            "stat": "p25"
+        },
+        {
+            "name": "ax_p75",
+            "type": "stat",
+            "signal": "ax",
+            "stat": "p75"
+        },
+        {
+            "name": "gx_std",
+            "type": "stat",
+            "signal": "gx",
+            "stat": "std"
+        },
+        {
+            "name": "smv_gyro_p25",
+            "type": "derived",
+            "formula": "smv_gyro",
+            "stat": "p25"
+        },
+        {
+            "name": "smv_acc_min",
+            "type": "derived",
+            "formula": "smv",
+            "stat": "min"
+        },
+        {
+            "name": "az_rms",
+            "type": "stat",
+            "signal": "az",
+            "stat": "rms"
+        },
+        {
+            "name": "gy_std",
+            "type": "stat",
+            "signal": "gy",
+            "stat": "std"
+        },
+        {
+            "name": "smv_acc_kurt",
+            "type": "derived",
+            "formula": "smv",
+            "stat": "kurt"
+        },
+        {
+            "name": "smv_gyro_min",
+            "type": "derived",
+            "formula": "smv_gyro",
+            "stat": "min"
+        },
+        {
+            "name": "ax_range",
+            "type": "stat",
+            "signal": "ax",
+            "stat": "range"
+        },
+        {
+            "name": "az_std",
+            "type": "stat",
+            "signal": "az",
+            "stat": "std"
+        },
+        {
+            "name": "smv_gyro_mean",
+            "type": "derived",
+            "formula": "smv_gyro",
+            "stat": "mean"
+        },
+        {
+            "name": "gz_p25",
+            "type": "stat",
+            "signal": "gz",
+            "stat": "p25"
+        },
+        {
+            "name": "gy_max",
+            "type": "stat",
+            "signal": "gy",
+            "stat": "max"
+        },
+        {
+            "name": "smv_gyro_kurt",
+            "type": "derived",
+            "formula": "smv_gyro",
+            "stat": "kurt"
+        },
+        {
+            "name": "smv_gyro_std",
+            "type": "derived",
+            "formula": "smv_gyro",
+            "stat": "std"
+        },
+        {
+            "name": "smv_acc_max",
+            "type": "derived",
+            "formula": "smv",
+            "stat": "max"
+        },
+        {
+            "name": "az_max",
+            "type": "stat",
+            "signal": "az",
+            "stat": "max"
+        },
+        {
+            "name": "smv_gyro_skew",
+            "type": "derived",
+            "formula": "smv_gyro",
+            "stat": "skew"
+        },
+        {
+            "name": "az_min",
+            "type": "stat",
+            "signal": "az",
+            "stat": "min"
+        },
+        {
+            "name": "smv_acc_std",
+            "type": "derived",
+            "formula": "smv",
+            "stat": "std"
+        },
+        {
+            "name": "smv_acc_range",
+            "type": "derived",
+            "formula": "smv",
+            "stat": "range"
+        },
+        {
+            "name": "smv_acc_p75",
+            "type": "derived",
+            "formula": "smv",
+            "stat": "p75"
+        },
+        {
+            "name": "ax_std",
+            "type": "stat",
+            "signal": "ax",
+            "stat": "std"
+        },
+        {
+            "name": "gy_zcr",
+            "type": "stat",
+            "signal": "gy",
+            "stat": "zcr"
+        },
+        {
+            "name": "smv_acc_p25",
+            "type": "derived",
+            "formula": "smv",
+            "stat": "p25"
+        },
+        {
+            "name": "gx_p25",
+            "type": "stat",
+            "signal": "gx",
+            "stat": "p25"
+        },
+        {
+            "name": "ay_std",
+            "type": "stat",
+            "signal": "ay",
+            "stat": "std"
+        },
+        {
+            "name": "ay_rms",
+            "type": "stat",
+            "signal": "ay",
+            "stat": "rms"
+        },
+        {
+            "name": "smv_acc_mean",
+            "type": "derived",
+            "formula": "smv",
+            "stat": "mean"
+        },
+        {
+            "name": "gy_min",
+            "type": "stat",
+            "signal": "gy",
+            "stat": "min"
+        },
+        {
+            "name": "ax_max",
+            "type": "stat",
+            "signal": "ax",
+            "stat": "max"
+        },
+        {
+            "name": "az_mean",
+            "type": "stat",
+            "signal": "az",
+            "stat": "mean"
+        },
+        {
+            "name": "ay_max",
+            "type": "stat",
+            "signal": "ay",
+            "stat": "max"
+        },
+        {
+            "name": "gz_std",
+            "type": "stat",
+            "signal": "gz",
+            "stat": "std"
+        },
+        {
+            "name": "gy_p75",
+            "type": "stat",
+            "signal": "gy",
+            "stat": "p75"
+        },
+        {
+            "name": "corr_ax_az",
+            "type": "cross",
+            "signal_a": "ax",
+            "signal_b": "az",
+            "cross_type": "corr",
+            "default": 0.0
+        }
+    ],
+    "skip_if": {
+        "require_signals": [
+            "ax",
+            "ay",
+            "az",
+            "gx",
+            "gy",
+            "gz"
+        ]
+    },
+    "output": {
+        "confidence_threshold": 0.35
+    }
+}

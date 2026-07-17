@@ -84,12 +84,14 @@ def _stat(arr: np.ndarray, stat_name: str) -> float:
         sig = np.std(arr)
         return float(np.mean(((arr - mu) / (sig + 1e-9)) ** 4) - 3)
     elif stat_name == "peak_freq":
-        # Frekuensi dominan via FFT magnitude
+        # Frekuensi dominan via FFT magnitude (dalam Hz, dengan FS=20Hz)
         fft_mag = np.abs(np.fft.rfft(arr))
-        return float(np.argmax(fft_mag[1:]) + 1)
+        idx = np.argmax(fft_mag[1:]) + 1
+        return float(idx * 20.0 / len(arr))
     elif stat_name == "spectral_energy":
+        # Energi spektral ternormalisasi (dibagi panjang sinyal)
         fft_mag = np.abs(np.fft.rfft(arr))
-        return float(np.sum(fft_mag ** 2))
+        return float(np.sum(fft_mag ** 2) / len(arr))
     else:
         logger.warning("Stat '%s' tidak dikenal, return 0.0", stat_name)
         return 0.0

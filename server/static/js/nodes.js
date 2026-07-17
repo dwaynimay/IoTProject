@@ -174,7 +174,13 @@ export function initTrendChart(nodeId) {
       boundaryGap: false,
       data: Array(60).fill(''),
       axisLine: { lineStyle: { color: 'rgba(0, 0, 0, 0.05)' } },
-      axisLabel: { show: false }
+      axisLabel: { 
+        show: true, 
+        color: '#64748b', 
+        fontSize: 9, 
+        fontFamily: 'var(--mono)',
+        interval: 9 // show label every 10th index
+      }
     },
     yAxis: [
       {
@@ -221,14 +227,15 @@ export function initTrendChart(nodeId) {
   if (state.vitalsBuffer.has(nodeId)) {
     updateChartData(nodeId);
   } else {
-    state.vitalsBuffer.set(nodeId, Array(60).fill(null));
+    state.vitalsBuffer.set(nodeId, Array.from({ length: 60 }, () => ({ hr: null, spo2: null, time: '' })));
     fetchNodeVitalsHistory(nodeId).then(windows => {
-      const buffer = Array(60).fill(null);
+      const buffer = Array.from({ length: 60 }, () => ({ hr: null, spo2: null, time: '' }));
       const startIdx = 60 - windows.length;
       for (let i = 0; i < windows.length; i++) {
         buffer[startIdx + i] = {
           hr: windows[i].hr > 0 ? windows[i].hr : null,
-          spo2: windows[i].spo2 > 0 ? windows[i].spo2 : null
+          spo2: windows[i].spo2 > 0 ? windows[i].spo2 : null,
+          time: windows[i].ts_server_ms ? new Date(windows[i].ts_server_ms).toTimeString().split(' ')[0] : ''
         };
       }
       state.vitalsBuffer.set(nodeId, buffer);
@@ -244,6 +251,9 @@ function updateChartData(nodeId) {
   if (!chart) return;
   const buffer = state.vitalsBuffer.get(nodeId) || [];
   chart.setOption({
+    xAxis: {
+      data: buffer.map(b => b ? b.time : '')
+    },
     series: [
       { data: buffer.map(b => b ? b.hr : null) },
       { data: buffer.map(b => b ? b.spo2 : null) }
@@ -313,7 +323,13 @@ export async function initIMUChart(nodeId) {
       boundaryGap: false,
       data: xData,
       axisLine: { lineStyle: { color: 'rgba(0,0,0,0.05)' } },
-      axisLabel: { show: false },
+      axisLabel: { 
+        show: true, 
+        color: '#94a3b8', 
+        fontSize: 8, 
+        fontFamily: 'var(--mono)',
+        interval: 31 // show label every 32 samples to prevent overlap
+      },
       splitLine: { show: true, lineStyle: { color: 'rgba(0,0,0,0.03)', type: 'dashed' } }
     },
     yAxis: [
@@ -354,14 +370,15 @@ export async function initIMUChart(nodeId) {
     ],
     animation: false
   });
-
+ 
   imuCharts.set(nodeId, chart);
   window.addEventListener('resize', () => chart && chart.resize());
-
+ 
   // Pre-fill imuBuffers dari API history jika belum ada
   // IMPROVEMENT: Skip fetch jika buffer sudah ada (node re-render) agar live data tidak hilang
   if (!imuBuffers.has(nodeId)) {
     const buffers = {
+      timestamps: Array(IMU_BUFFER_SIZE).fill(''),
       ax: Array(IMU_BUFFER_SIZE).fill(null),
       ay: Array(IMU_BUFFER_SIZE).fill(null),
       az: Array(IMU_BUFFER_SIZE).fill(null),
@@ -370,7 +387,7 @@ export async function initIMUChart(nodeId) {
       gz: Array(IMU_BUFFER_SIZE).fill(null)
     };
     imuBuffers.set(nodeId, buffers);
-
+ 
     fetchNodeIMUHistory(nodeId, 4).then(history => {
       const keys = ['ax', 'ay', 'az', 'gx', 'gy', 'gz'];
       keys.forEach(k => {
@@ -382,11 +399,26 @@ export async function initIMUChart(nodeId) {
           }
         }
       });
+      
+      // Populasi timestamps
+      const tvals = history.timestamps || [];
+      if (tvals.length > 0) {
+        const len = Math.min(tvals.length, IMU_BUFFER_SIZE);
+        for (let i = 0; i < len; i++) {
+          const date = new Date(tvals[tvals.length - len + i]);
+          const timeStr = date.toTimeString().split(' ')[0] + '.' + String(Math.floor(date.getMilliseconds() / 10)).padStart(2, '0');
+          buffers.timestamps[IMU_BUFFER_SIZE - len + i] = timeStr;
+        }
+      }
+
       // Render chart dengan history (nodata label hilang)
       const c = imuCharts.get(nodeId);
       if (c) {
         c.setOption({
           graphic: [{ id: 'nodata', style: { text: '' } }],
+          xAxis: {
+            data: buffers.timestamps.slice()
+          },
           series: [
             { name: 'ax', data: buffers.ax.slice() },
             { name: 'ay', data: buffers.ay.slice() },
@@ -415,6 +447,7 @@ export function updateIMUChart(nodeId, imuSignals) {
 
   if (!imuBuffers.has(nodeId)) {
     imuBuffers.set(nodeId, {
+      timestamps: Array(IMU_BUFFER_SIZE).fill(''),
       ax: Array(IMU_BUFFER_SIZE).fill(null),
       ay: Array(IMU_BUFFER_SIZE).fill(null),
       az: Array(IMU_BUFFER_SIZE).fill(null),
@@ -426,12 +459,25 @@ export function updateIMUChart(nodeId, imuSignals) {
 
   if (!imuDripQueues.has(nodeId)) {
     imuDripQueues.set(nodeId, {
+      timestamps: [],
       ax: [], ay: [], az: [], gx: [], gy: [], gz: []
     });
   }
 
   const dripQ = imuDripQueues.get(nodeId);
   const keys = ['ax', 'ay', 'az', 'gx', 'gy', 'gz'];
+
+  // Generate timestamps untuk sampel baru
+  const len = Array.isArray(imuSignals.ax) ? imuSignals.ax.length : 1;
+  const startTs = Date.now() - len * 10; // estimasi waktu mulai (10ms per sampel)
+  const sampleTimeStr = [];
+  for (let i = 0; i < len; i++) {
+    const t = startTs + i * 10;
+    const date = new Date(t);
+    const timeStr = date.toTimeString().split(' ')[0] + '.' + String(Math.floor(date.getMilliseconds() / 10)).padStart(2, '0');
+    sampleTimeStr.push(timeStr);
+  }
+  dripQ.timestamps.push(...sampleTimeStr);
 
   // Masukkan data baru ke antrian drip (bukan langsung ke buffer tampilan)
   keys.forEach(k => {
@@ -465,6 +511,9 @@ setInterval(() => {
       // Tidak ada data baru — tetap render agar chart tidak freeze
       chart.setOption({
         graphic: [{ id: 'nodata', style: { text: '' } }],
+        xAxis: {
+          data: buffers.timestamps || Array(IMU_BUFFER_SIZE).fill('')
+        },
         series: [
           { name: 'ax', data: buffers.ax.slice() },
           { name: 'ay', data: buffers.ay.slice() },
@@ -481,6 +530,16 @@ setInterval(() => {
     // agar tidak terlalu tertinggal, tapi tetap tidak burst sekaligus
     const count = Math.min(maxQueued, Math.max(DRIP_SAMPLES_PER_TICK, Math.ceil(maxQueued / 8)));
 
+    // Drip timestamps
+    if (dripQ.timestamps) {
+      const toDripTs = Math.min(count, dripQ.timestamps.length);
+      for (let i = 0; i < toDripTs; i++) {
+        if (!buffers.timestamps) buffers.timestamps = Array(IMU_BUFFER_SIZE).fill('');
+        buffers.timestamps.push(dripQ.timestamps.shift());
+        buffers.timestamps.shift();
+      }
+    }
+
     const keys = ['ax', 'ay', 'az', 'gx', 'gy', 'gz'];
     keys.forEach(k => {
       const toDrip = Math.min(count, dripQ[k].length);
@@ -492,6 +551,9 @@ setInterval(() => {
 
     chart.setOption({
       graphic: [{ id: 'nodata', style: { text: '' } }],
+      xAxis: {
+        data: buffers.timestamps || Array(IMU_BUFFER_SIZE).fill('')
+      },
       series: [
         { name: 'ax', data: buffers.ax.slice() },
         { name: 'ay', data: buffers.ay.slice() },
@@ -609,13 +671,14 @@ export function updateNodeCard(nodeId, data) {
   }
   
   if (!state.vitalsBuffer.has(nodeId)) {
-    state.vitalsBuffer.set(nodeId, Array(60).fill(null));
+    state.vitalsBuffer.set(nodeId, Array.from({ length: 60 }, () => ({ hr: null, spo2: null, time: '' })));
   }
   const buffer = state.vitalsBuffer.get(nodeId);
   buffer.shift();
   buffer.push({
     hr: data.hr > 0 ? data.hr : null,
-    spo2: data.spo2 > 0 ? data.spo2 : null
+    spo2: data.spo2 > 0 ? data.spo2 : null,
+    time: new Date().toTimeString().split(' ')[0]
   });
   updateChartData(nodeId);
 

@@ -45,6 +45,13 @@ def from_processor(
         arr = results.get(sig)
         if arr is None:
             return None
+        # Convert accelerometer signals from m/s^2 to Gs (gravity units)
+        # to match model training dataset (UMA ADL dataset in Gs)
+        if sig in ["ax", "ay", "az"]:
+            arr = arr / 9.80665
+        # Convert PPG signals to match model training dataset baseline (around 600-700)
+        elif sig == "ir":
+            arr = arr / 180.88
         return arr.tolist() if isinstance(arr, np.ndarray) else list(arr)
 
     hr     = ppg_data.get("hr", -1)
@@ -115,13 +122,25 @@ def from_storage_rows(
             signal_rows=signals, hr=hr, spo2=spo2, finger=finger
         )
     """
+    def _to_g(sig: str) -> Optional[list[float]]:
+        vals = signal_rows.get(sig)
+        if vals is None:
+            return None
+        # Convert accelerometer signals from m/s^2 to Gs
+        if sig in ["ax", "ay", "az"]:
+            return [v / 9.80665 for v in vals]
+        # Convert PPG signals to match model training dataset baseline
+        if sig == "ir":
+            return [v / 180.88 for v in vals]
+        return vals
+
     return WindowInput(
         node_id    = node_id,
         window_num = window_num,
         ts         = ts,
-        ax = signal_rows.get("ax"),
-        ay = signal_rows.get("ay"),
-        az = signal_rows.get("az"),
+        ax = _to_g("ax"),
+        ay = _to_g("ay"),
+        az = _to_g("az"),
         gx = signal_rows.get("gx"),
         gy = signal_rows.get("gy"),
         gz = signal_rows.get("gz"),
