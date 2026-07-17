@@ -1,20 +1,16 @@
 // File: firmware/lib/Routing/DynamicRouter.cpp
-
 // =============================================================================
-// DynamicRouter.cpp — Implementasi Dynamic Routing Decision Engine
+// DynamicRouter — Dynamic Routing Decision Engine Implementation
 // =============================================================================
 //
-// PERBAIKAN v3.1:
-//   [FIX-4] Constructor: loop init _validNeighbors diperbaiki.
-//           Sebelumnya ada break condition yang salah (hardcoded `if (i >= 1) break`)
-//           yang membuat loop tidak pernah memproses entry pertama dengan benar.
-//           Sekarang menggunakan MeshTopology::maxNeighborsPerNode langsung.
-//
-//   [FIX-5] updateNeighborRssi: untuk sistem 2-node (saat ini) di mana
-//           neighbor = gateway (nodeId=0), validasi diizinkan agar
-//           router tidak selalu log "bukan valid neighbor".
-//           Juga menambahkan guard jika _validNeighborCount == 0
-//           (mode direct-only, tidak perlu relay).
+// Implementation Details & Notes:
+//   - Constructor: Neighbor initialization iterates up to maxNeighborsPerNode
+//     to properly record valid peers.
+//   - updateNeighborRssi: Supported for 2-node environments where the gateway (ID=0)
+//     might act as a direct neighbor, preventing redundant "invalid neighbor" log
+//     events.
+//   - Direct-Only Fallback: If no valid neighbors are present (_validNeighborCount == 0),
+//     routing skips evaluation and falls back immediately to direct transmission mode.
 // =============================================================================
 
 #include "DynamicRouter.h"

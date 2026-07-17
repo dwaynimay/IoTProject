@@ -2,35 +2,36 @@
 
 #pragma once
 // =============================================================================
-// DynamicRouter.h — Dynamic Routing Decision Engine
+// DynamicRouter — Dynamic Routing Decision Engine for Multi-Hop Mesh
 // =============================================================================
 //
-// Tanggung jawab modul ini:
-//   1. Menyimpan tabel RSSI: rssi_self_to_gw & rssi_neighbor_to_gw
-//   2. Memutuskan rute per-window: DIRECT atau RELAYED
-//   3. Mendeteksi RSSI stale (beacon hilang > RSSI_STALE_MS)
+// Hardware  : none (pure logic / mathematics)
+// Why this implementation:
+//             Tracks relative signal strengths (RSSI) between self-to-gateway
+//             and neighbor-to-gateway to dynamically select the best route
+//             (Direct vs. Relayed) on a per-transmission-window basis.
 //
-// CARA PAKAI (di sensor node):
+// USAGE:
 //   DynamicRouter router(NODE_ID);
 //
-//   // Saat terima beacon dari gateway:
-//   router.updateSelfRssi(rssi_dari_recv_cb);
+//   // Upon receiving a gateway beacon:
+//   router.updateSelfRssi(rssi_from_beacon);
 //
-//   // Saat terima RssiReport dari neighbor:
-//   router.updateNeighborRssi(neighborNodeId, rssi_neighbor_ke_gw);
+//   // Upon receiving an RSSI report from a neighbor:
+//   router.updateNeighborRssi(neighborId, neighbor_rssi_to_gateway);
 //
-//   // Sebelum kirim data:
+//   // Before sending data:
 //   RouteDecision dec = router.decide();
 //   if (dec.isDirect) {
 //       mesh.sendCsAxis(..., MacAddr::GATEWAY);
 //   } else {
-//       mesh.sendCsAxis(..., MacAddr::NEIGHBOR);  // relay
+//       mesh.sendCsAxis(..., MacAddr::NEIGHBOR); // relay
 //   }
 //
 // THREAD SAFETY:
-//   updateSelfRssi() dipanggil dari recv callback (WiFi task context).
-//   decide() dipanggil dari taskCSSender (Core 0).
-//   Gunakan _mux untuk proteksi akses _rssiSelf dan _rssiNeighbor.
+//   The updateSelfRssi() function is called within the WiFi receive callback context,
+//   while decide() is evaluated within the taskCSSender loop. Internal state updates
+//   are protected via a FreeRTOS mutex (_mux).
 // =============================================================================
 
 #include <Arduino.h>

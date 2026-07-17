@@ -2,30 +2,36 @@
 
 #pragma once
 // =============================================================================
-// EspNowMesh.h — Transport Layer ESP-NOW dengan Multi-Hop Support
+// EspNowMesh — Transport Layer ESP-NOW with Multi-Hop and Channel Synchronization
 // =============================================================================
 //
-// PERBAIKAN v3.1:
-//   [FIX-1] begin(false) di gateway tidak lagi memanggil esp_wifi_get_channel()
-//           sebelum WiFi diinisialisasi. Channel sementara = 1.
+// Hardware  : ESP32 WiFi radio
+// Why this implementation:
+//             Orchestrates raw ESP-NOW communications with low-latency and
+//             determines the target transmission channel without manual timing.
 //
-//   [FIX-2] setGatewayChannel(ch) ditambahkan — dipanggil dari main.cpp
-//           setelah g_mqtt.begin() untuk update semua peer ke channel WiFi asli.
+// GATEWAY INITIALIZATION SEQUENCE (Critical Flow):
+//   1. g_mesh.begin(false)          <- ESP-NOW initialized (temporary channel = 1)
+//   2. taskBeacon created           <- starts broadcasting beacons on temporary channel
+//   3. g_mqtt.begin()               <- connects to WiFi AP, retrieves active AP channel (e.g. 11)
+//   4. g_mesh.setGatewayChannel(ch) <- updates ESP-NOW and all registered peers to channel 11
 //
-//   [FIX-3] _promiscuousRxCb debounce diperbaiki (lihat EspNowMesh.cpp).
+//   Note: Sensor nodes do not need to call setGatewayChannel() as they detect and
+//   align to the AP channel automatically during startup (WiFi-Channel-Sync).
 //
-// URUTAN INISIALISASI GATEWAY (penting):
-//   1. g_mesh.begin(false)         ← ESP-NOW init, channel sementara = 1
-//   2. taskBeacon created          ← mulai broadcast di ch 1 (sementara)
-//   3. g_mqtt.begin()              ← WiFi connect, dapat channel asli (mis. 11)
-//   4. g_mesh.setGatewayChannel(ch)← update semua peer ke ch 11
+// USAGE:
+//   EspNowMesh mesh;
+//   mesh.begin(true); // sender Mode
+//   mesh.sendCsAxis(...);
 //
-// Sensor node tidak perlu setGatewayChannel() karena channel dideteksi
-// via promiscuous callback dari beacon gateway.
+// THREAD SAFETY:
+//   Functions sending data are thread-safe and serialized internally using a
+//   FreeRTOS mutex. Callbacks and data queuing use thread-safe FreeRTOS queues.
 // =============================================================================
 
 #include <Arduino.h>
 #include <esp_now.h>
+#include <esp_wifi.h>
 #include <WiFi.h>
 #include "MeshPackets.h"
 #include "../../include/Config.h"

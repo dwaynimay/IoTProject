@@ -2,32 +2,33 @@
 
 #pragma once
 // =============================================================================
-// Watchdog.h — System Health Monitor & Auto-Recovery
+// SystemWatchdog — System Health Monitor & Auto-Recovery Engine
 // =============================================================================
 //
-// Tanggung jawab modul ini:
-//   1. Hardware WDT  — restart otomatis jika task hang lebih dari WDT_TIMEOUT_S
-//   2. Heap monitor  — restart preventif jika free heap di bawah threshold
-//   3. Stack monitor — warning jika stack watermark mendekati habis
-//   4. Restart log   — catat alasan restart ke RTC memory (bertahan power cycle)
+// Hardware  : ESP32 internal watchdog timer & RTC fast memory
+// Why this implementation:
+//             Combines hardware Watchdog Timer (WDT) and software task monitoring
+//             to automatically restart the system upon task hangs.
+//             - Monitored tasks must call feed() in each loop iteration.
+//             - Monitors stack watermarks and free heap space, triggering preventive
+//               restarts before Out-Of-Memory (OOM) faults occur.
+//             - Retains diagnostic logs across software restarts using RTC memory
+//               (g_restartLog).
 //
-// CARA PAKAI:
-//   // Di setup():
+// USAGE:
+//   // In setup():
 //   g_watchdog.begin();
 //
-//   // Di setiap task yang ingin dimonitor hardware WDT:
-//   g_watchdog.registerTask();   // panggil sekali di awal task
-//   g_watchdog.feed();           // panggil di setiap iterasi loop task
+//   // In a task loop to monitor:
+//   g_watchdog.registerTask(); // call once at task start
+//   g_watchdog.feed();         // call in each task loop iteration
 //
-//   // Health check periodik (panggil dari task monitor):
+//   // Periodic monitoring task:
 //   g_watchdog.healthCheck();
 //
-//   // Restart terencana dengan alasan tercatat:
-//   g_watchdog.triggerRestart("alasan");
-//
-// KONFIGURASI:
-//   Semua threshold ada di dalam file ini (WDT_TIMEOUT_S, MIN_STACK_WATERMARK).
-//   Threshold heap per-role (gateway vs sensor) otomatis dipilih dari NODE_ROLE.
+// THREAD SAFETY:
+//   Functions like feed() and registerTask() are thread-safe and can be called from
+//   distinct FreeRTOS task contexts, operating directly on the underlying ESP WDT API.
 // =============================================================================
 
 #include <Arduino.h>
@@ -50,37 +51,36 @@ static constexpr uint32_t HEALTH_CHECK_MS   = 5000;
 // Batas minimum stack watermark sebelum LOG_WARN dicetak.
 static constexpr uint32_t MIN_STACK_WATERMARK = 512; // bytes
 
-// Batas minimum free heap sebelum restart preventif.
+// Minimum free heap threshold (KB) before triggering preventive restarts.
 //
-// ⚠️  Gateway dan sensor punya budget heap yang sangat berbeda:
-//   SENSOR  : tanpa WiFi aktif → free heap ~50–80 KB → threshold 20 KB aman
-//   GATEWAY : WiFi AP_STA + ESP-NOW + MQTT → free heap normal ~8–12 KB
-//             Threshold 20 KB akan SELALU trigger restart di gateway!
+// ⚠️ Gateway and Sensor nodes operate under very different memory budgets:
+//   SENSOR  : Without active WiFi STA/MQTT -> Free heap ~50–80 KB -> 20 KB threshold is safe.
+//   GATEWAY : Running WiFi AP_STA + ESP-NOW + MQTT -> Free heap normal ~8–12 KB.
+//             A 20 KB threshold would cause immediate restarts on the Gateway!
 //
-// NODE_ROLE di-inject oleh platformio.ini — tidak perlu ubah di sini.
+// NODE_ROLE is injected by platformio.ini configuration flags.
 #if NODE_ROLE == ROLE_GATEWAY
   static constexpr uint32_t MIN_FREE_HEAP_KB = 4;   // gateway: absolute minimum
 #else
-  static constexpr uint32_t MIN_FREE_HEAP_KB = 20;  // sensor: lebih konservatif
+  static constexpr uint32_t MIN_FREE_HEAP_KB = 20;  // sensor: more conservative
 #endif
 
 
 // =============================================================================
-// RestartLog — Data yang bertahan di RTC memory saat restart
+// RestartLog — Diagnostic log retained in RTC fast memory across soft restarts.
 //
-// RTC_DATA_ATTR memastikan struct ini tidak terhapus saat software restart
-// (esp_restart()), sehingga kita bisa tahu alasan restart sebelumnya.
+// RTC_DATA_ATTR ensures this structure is not cleared during software resets
+// (esp_restart()), allowing us to retrieve the previous restart reason.
 //
-// Variabel g_restartLog didefinisikan di Watchdog.cpp dan di-extern di sini
-// agar modul lain bisa membacanya jika diperlukan (misalnya untuk diagnostik).
+// Defined in Watchdog.cpp and declared extern here for system-wide access.
 // =============================================================================
 struct __attribute__((packed)) RestartLog
 {
-    uint32_t magic;           // 0xDEADBEEF jika data valid (bukan boot pertama)
-    uint32_t restart_count;   // total restart sejak pertama kali di-flash
-    uint32_t last_uptime_s;   // uptime (detik) sebelum restart terakhir
-    uint32_t free_heap_kb;    // free heap (KB) saat restart terakhir
-    char     reason[64];      // alasan restart dalam string
+    uint32_t magic;           // 0xDEADBEEF if valid (not the very first boot)
+    uint32_t restart_count;   // total restarts since device was flashed
+    uint32_t last_uptime_s;   // uptime (seconds) before the last restart
+    uint32_t free_heap_kb;    // free heap (KB) during the last restart
+    char     reason[64];      // descriptive reason string for the restart
 };
 
 extern RTC_DATA_ATTR RestartLog g_restartLog;

@@ -2,28 +2,31 @@
 
 #pragma once
 // =============================================================================
-// MeshPackets.h — Definisi struct paket ESP-NOW
+// MeshPackets — ESP-NOW Packet Structure Definitions
 // =============================================================================
 //
-// PERUBAHAN v3.0 (Multi-Hop Dynamic Routing):
-//   Packet type baru:
-//     BEACON      (0x01) → Gateway broadcast periodik untuk RSSI discovery
-//     RSSI_REPORT (0x02) → Node ↔ Node tukar info RSSI ke gateway
-//     ROUTED_CS   (0x20) → Wrapper paket CS yang di-relay antar node
+// Defines all data packet formats transmitted across the multi-hop ESP-NOW mesh.
+// Handles packet serialization and ensures overall sizes fit within the 250-byte
+// ESP-NOW payload limit.
 //
-// ARSITEKTUR ROUTING:
-//   Setiap node memutuskan rute per-window:
-//     DIRECT : node kirim langsung ke gateway (rssi_self >= rssi_neighbor)
-//     RELAYED: node kirim ke neighbor, neighbor forward ke gateway
+// Mesh Network Packet Types:
+//   - BEACON      (0x01) -> Gateway periodic broadcast for RSSI discovery
+//   - RSSI_REPORT (0x02) -> Node exchange of RSSI metrics relative to gateway
+//   - ROUTED_CS   (0x20) -> Wrapper for CS data packets being relayed
 //
-// LAYOUT UKURAN (verify < 250 byte):
-//   BeaconPacket    =  7 bytes  ✓
-//   RssiReportPacket=  9 bytes  ✓
-//   RoutedCsPacket  = 143 bytes ✓ (6 + 1 + 136) atau (6 + 1 + 142)
-//   CS1AxisPacket   = 136 bytes ✓
-//   CSPpgPacket     = 142 bytes ✓
-//   CombinedPacket  =  50 bytes ✓
-//   HeartbeatPacket =  11 bytes ✓
+// Routing Architecture:
+//   Each sensor node determines its routing path dynamically per window:
+//   - DIRECT  : Node transmits directly to gateway (rssi_self >= rssi_neighbor)
+//   - RELAYED : Node routes through neighbor node, which forwards it to gateway
+//
+// Verified Packet Layout Sizes (< 250 bytes limit):
+//   - BeaconPacket    = 7 bytes
+//   - RssiReportPacket= 9 bytes
+//   - RoutedCsPacket  = 143 bytes (6 + 1 + 136) or (6 + 1 + 142)
+//   - CS1AxisPacket   = 136 bytes
+//   - CSPpgPacket     = 142 bytes
+//   - CombinedPacket  = 50 bytes
+//   - HeartbeatPacket = 11 bytes
 // =============================================================================
 
 #include <Arduino.h>

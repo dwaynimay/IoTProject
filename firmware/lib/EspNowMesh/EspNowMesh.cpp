@@ -1,35 +1,29 @@
 // File: firmware/lib/EspNowMesh/EspNowMesh.cpp
 // =============================================================================
-// v5.0 — WiFi-Channel-Sync
+// EspNowMesh — Transport Layer ESP-NOW Implementation
+// =============================================================================
 //
-// KONSEP BARU (menggantikan promiscuous scan v4.x):
-//   Sensor node konek ke WiFi AP yang SAMA dengan gateway untuk mendapatkan
-//   channel yang tepat, lalu langsung disconnect dan init ESP-NOW di channel itu.
+// WiFi Channel Synchronization Flow:
 //
-// ALASAN GANTI:
-//   Promiscuous scan (v3.x–v4.x) terlalu sensitif terhadap timing — sensor
-//   harus boot saat gateway sudah memancarkan beacon di channel yang benar.
-//   WiFi association jauh lebih reliable: channel AP selalu konsisten.
+// SENSOR NODE WORKFLOW:
+//   1. WiFi.begin(SSID, PASSWORD)          <- Connect to the target AP shared with gateway
+//   2. Wait for WL_CONNECTED (timeout 10s)
+//   3. ch = WiFi.channel()                 <- Read the active AP channel
+//   4. WiFi.disconnect() + WiFi.mode(OFF)  <- Disconnect from AP to free the radio
+//   5. delay(200)                          <- Wait for radio hardware stabilizer
+//   6. WiFi.mode(STA) + set channel        <- Prepare STA mode on retrieved channel
+//   7. esp_now_init()                      <- Initialize ESP-NOW on the correct channel
 //
-// FLOW SENSOR (baru):
-//   1. WiFi.begin(SSID, PASSWORD)          ← connect ke AP yang sama dg gateway
-//   2. Tunggu WL_CONNECTED (max 10 detik)
-//   3. ch = WiFi.channel()                 ← baca channel AP
-//   4. WiFi.disconnect() + WiFi.mode(OFF)  ← keluar dari WiFi
-//   5. delay(200)                          ← tunggu radio stabil
-//   6. WiFi.mode(STA) + set ch             ← siapkan mode ESP-NOW
-//   7. esp_now_init()                      ← init ESP-NOW di channel yang benar
+// GATEWAY NODE WORKFLOW:
+//   - Remains permanently connected to the WiFi AP (STA+AP mode).
+//   - The ESP-NOW channel is locked by the active WiFi STA connection.
+//   - Broadcast beacons are sent on this locked channel automatically.
 //
-// FLOW GATEWAY (tidak berubah):
-//   WiFi tetap tersambung ke AP (STA+AP) — channel dikunci oleh koneksi STA.
-//   Beacon dikirim di channel yang sama secara otomatis.
-//
-// TRADEOFF:
-//   + Tidak ada timing sensitivity sama sekali
-//   + Tidak ada promiscuous mode, tidak ada background task discovery
-//   + Sensor boot order bebas (bisa sebelum/sesudah gateway)
-//   - Sensor butuh credentials WiFi (sudah ada di credentials.h)
-//   - WiFi connect +1-3 detik di awal boot (sekali saja)
+// Technical Context:
+//   - Eliminates timing dependency between sensor and gateway boot order.
+//   - Avoids promiscuous mode packet sniffing and background channel sweeps.
+//   - Requires WiFi credentials inside credentials.h to connect initially.
+// =============================================================================
 
 #include <esp_wifi.h>
 #include "EspNowMesh.h"

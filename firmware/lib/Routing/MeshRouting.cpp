@@ -1,22 +1,20 @@
-// File: firmware/lib/EspNowMesh/MeshRouting.cpp
-
+// File: firmware/lib/Routing/MeshRouting.cpp
 // =============================================================================
-// MeshRouting.cpp — Implementasi Routing v3.0 (Multi-Hop)
+// MeshRouting — Router Engine Implementation
 // =============================================================================
 //
-// PERUBAHAN v3.0:
-//   - route() terima parameter router (DynamicRouter*) opsional
-//   - Tambah case ROUTED_CS  → _routeRoutedCs()
-//   - Tambah case RSSI_REPORT → _routeRssiReport()
-//   - Tambah case BEACON     → diabaikan di gateway (tidak perlu diproses)
+// Routing Architecture & Type Dispatching:
+//   - route() processes packets based on type (COMBINED, HEARTBEAT, CS_AXIS,
+//     ROUTED_CS, and RSSI_REPORT).
+//   - BEACON packets are handled directly by EspNowMesh and ignored here.
 //
-// ALUR ROUTED_CS di GATEWAY:
-//   1. Terima RoutedCsPacket dari relay node
-//   2. _routeRoutedCs() baca header: originalNodeId, innerLen
-//   3. Buat RawPacket sementara dari inner payload
-//   4. Dispatch ke _routeCsAxis() atau _routeCsIr() dengan originalNodeId
-//   5. Hasil JSON sama persis seolah diterima langsung dari original node
-//   6. Tambahkan field "relayed_by" di JSON untuk audit trail
+// ROUTED CS FLOW AT THE GATEWAY:
+//   1. Receives a RoutedCsPacket from a relaying sensor node.
+//   2. _routeRoutedCs() reads header metadata: originalNodeId and innerLen.
+//   3. Creates a temporary RawPacket wrapper enclosing the inner payload.
+//   4. Dispatches to _routeCsAxis() or _routeCsIr() using the originalNodeId.
+//   5. Produces identical JSON payload format as if received directly.
+//   6. Appends a "relayed_by" field to the JSON for audit trail tracking.
 // =============================================================================
 
 #include "MeshRouting.h"

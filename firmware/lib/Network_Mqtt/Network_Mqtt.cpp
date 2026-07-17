@@ -1,10 +1,10 @@
 // File: firmware/lib/Network_Mqtt/Network_Mqtt.cpp
 
 // =============================================================================
-// Network_Mqtt.cpp — Implementasi MQTT Client
+// NetworkMqtt — MQTT Client Implementation
 // =============================================================================
-// Semua output log menggunakan makro LOG_* dari utils/Logger.h.
-// DILARANG menggunakan Serial.print/printf secara langsung di file ini.
+// All logging outputs must use the macros defined in utils/Logger.h.
+// Direct use of Serial.print/printf is prohibited in this implementation file.
 // =============================================================================
 
 #include "Network_Mqtt.h"

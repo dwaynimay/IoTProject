@@ -2,31 +2,27 @@
 
 #pragma once
 // =============================================================================
-// Network_Mqtt.h — MQTT Client over WiFi (Gateway Node Only)
+// NetworkMqtt — MQTT Client over WiFi (Gateway Node Only)
 // =============================================================================
 //
-// Tanggung jawab modul ini:
-//   1. Koneksi WiFi dalam mode WIFI_AP_STA
-//   2. Koneksi MQTT ke broker (PubSubClient)
-//   3. Auto-reconnect dengan exponential backoff
-//   4. Publish pesan ke topic MQTT
+// Hardware  : ESP32 WiFi radio
+// Why this implementation:
+//             Manages WiFi connection in WIFI_AP_STA mode alongside MQTT broker
+//             communications with exponential backoff reconnect logic.
+//             - WIFI_AP_STA mode is used instead of pure STA to activate a hidden
+//               AP, locking the radio channel. This prevents gateway channel
+//               hopping during STA idle periods, which would otherwise lead to
+//               missed ESP-NOW packets from sensor nodes.
 //
-// Kenapa WIFI_AP_STA bukan pure STA?
-//   Gateway sebagai pure STA akan melakukan "channel hopping" saat idle.
-//   Channel yang berubah-ubah membuat paket ESP-NOW dari sensor sering
-//   tidak tertangkap (NACK di sisi sensor).
-//   Dengan AP aktif (meski tersembunyi), channel radio dikunci → ESP-NOW stabil.
-//
-// CARA PAKAI:
+// USAGE:
 //   NetworkMqtt mqtt;
-//   mqtt.begin();                              // koneksi WiFi + MQTT
-//   mqtt.publish("topic/sensor", "{...}");     // publish pesan
-//   mqtt.loop();                               // panggil di setiap iterasi task
+//   mqtt.begin();
+//   mqtt.publish("topic/sensor", "payload");
+//   mqtt.loop();
 //
-// RECONNECT STRATEGY:
-//   Reconnect tidak dilakukan di dalam publish() atau loop() secara blocking.
-//   Gunakan isConnected() untuk cek status, dan begin() untuk reconnect manual
-//   jika diperlukan dari task monitor.
+// THREAD SAFETY:
+//   Not thread-safe. Reconnection attempts and data publishes should only be
+//   performed from a single network task (typically taskMqttClient).
 // =============================================================================
 
 #include <Arduino.h>
