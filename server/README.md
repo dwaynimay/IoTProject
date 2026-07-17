@@ -5,7 +5,7 @@ This is the backend server for the IoT Health Monitor project. It handles MQTT m
 ## Architecture
 
 - **`core/`**: Pure logic (validation, quality assessment, SQLite storage). No web or orchestration logic.
-- **`cs/`**: Compressive Sensing algorithms (OMP, LASSO). Isolated library.
+- **`cs/`**: Compressive Sensing algorithms (OMP). Isolated library.
 - **`apps/`**: Applications and services.
   - **`reconstruct/`**: Orchestrator (Listener → Validate → Reconstruct → Quality → Storage → Notifier).
   - **`dashboard/`**: FastAPI REST API and WebSocket hub.

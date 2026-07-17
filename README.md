@@ -35,7 +35,7 @@
 
 **Health Monitor Mesh** adalah firmware ESP32 untuk sistem monitoring kesehatan wearable yang mengukur sinyal IMU (accelerometer + gyroscope) dan PPG (photoplethysmography — detak jantung + SpO2) secara real-time.
 
-Data sensor dikompresi menggunakan **Compressive Sensing (CS)** dengan matriks Hadamard-Gaussian sebelum dikirim melalui jaringan **ESP-NOW mesh multi-hop**. Gateway meneruskan data ke broker **MQTT** untuk diproses dan divisualisasikan lebih lanjut.
+Data sensor dikompresi menggunakan **Compressive Sensing (CS)** dengan matriks Hadamard sebelum dikirim melalui jaringan **ESP-NOW mesh multi-hop**. Gateway meneruskan data ke broker **MQTT** untuk diproses dan divisualisasikan lebih lanjut.
 
 Sistem ini dirancang untuk:
 - **Ketahanan jaringan** — jika sinyal sensor lemah ke gateway, data direlai melalui sensor tetangga
@@ -49,7 +49,7 @@ Sistem ini dirancang untuk:
 | Fitur | Deskripsi |
 |---|---|
 | **Multi-Hop Routing** | Sensor memilih rute optimal (langsung / via relay) berdasarkan RSSI real-time |
-| **Compressive Sensing** | Hadamard-Gaussian Φ, identik dengan server Python untuk rekonstruksi OMP |
+| **Compressive Sensing** | Hadamard Φ, identik dengan server Python untuk rekonstruksi OMP |
 | **WiFi Channel Sync** | Mendapatkan channel dengan konek singkat ke AP WiFi, lalu beralih ke ESP-NOW |
 | **SpO2 Ratio-of-Ratios** | Algoritma Beer-Lambert dengan lookup table empiris Maxim AN6945 |
 | **IMU Sanity Check** | Drop window jika ada axis IMU di luar batas fisis (±2.5g, ±300°/s) |
@@ -112,7 +112,7 @@ Sistem ini dirancang untuk:
 | **Transport** | ESP-NOW (IEEE 802.11 vendor-specific) |
 | **Protokol IoT** | MQTT via PubSubClient |
 | **Serialisasi** | ArduinoJson v7 |
-| **CS Algorithm** | Hadamard-Gaussian + OMP (rekonstruksi di server) |
+| **CS Algorithm** | Hadamard + OMP (rekonstruksi di server) |
 
 ### Hardware per Node Sensor
 
@@ -293,7 +293,7 @@ firmware/
 │       └── Logger.h                # Makro LOG_INFO/WARN/ERROR/DEBUG
 │
 ├── lib/
-│   ├── CS_Model_Gaussian/
+│   ├── CS_Model_Hadamard/
 │   │   ├── CS_Sensor.h             # CSPhiMatrix (singleton) + CSEncoder
 │   │   └── CS_Sensor.cpp           # Definisi static member
 │   ├── EspNowMesh/
@@ -392,7 +392,7 @@ x ∈ ℝ^64  (window)               y ∈ ℝ^32  (terima dari MQTT)
      │                                  │
      ▼                                  ▼
 y = Φ · x                        x̂ = OMP(y, Φ, Ψ)
-Φ: Hadamard-Gaussian             Ψ: Fourier basis
+Φ: Hadamard                      Ψ: Fourier basis
 32×64 matrix                     Rekonstruksi sparse signal
      │
      ▼
@@ -520,7 +520,6 @@ Semua topic berada di bawah prefix `health_monitor/` (konfigurasi di `features.h
 **Solusi:**
 - Kurangi `QueueLen::MQTT_MSG` di `tuning.h` (setiap -10 entry hemat ~19 KB)
 - Kurangi `LOG_LEVEL` ke 2 (WARN) untuk produksi
-- Pastikan `lib_ignore = CS_Model_Lasso` aktif di `platformio.ini` (hanya pakai satu CS model)
 
 ### MQTT tidak terhubung
 
