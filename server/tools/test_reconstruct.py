@@ -2,7 +2,7 @@ import numpy as np
 from scipy.fftpack import idct
 
 # =============================================================================
-# COPIED DIRECTLY FROM GAUSSIAN.PY TO AVOID CIRCULAR IMPORT ISSUES
+# COPIED DIRECTLY FROM HADAMARD.PY TO AVOID CIRCULAR IMPORT ISSUES
 # =============================================================================
 def _build_hadamard(n: int) -> np.ndarray:
     if n == 1:

@@ -1,7 +1,7 @@
 // File: firmware/test_sketches/test_cs_compression.cpp
-// Deskripsi: Test mandiri untuk Compressive Sensing Encoder (CS_Model_Gaussian).
+// Deskripsi: Test mandiri untuk Compressive Sensing Encoder (CS_Model_Hadamard).
 // Bertujuan untuk mengukur:
-//   1. Waktu inisialisasi matriks Hadamard-Gaussian
+//   1. Waktu inisialisasi matriks Hadamard
 //   2. Waktu komputasi encoding Y = Phi * X
 //   3. Stabilitas memori RAM ESP32
 //

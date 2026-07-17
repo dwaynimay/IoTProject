@@ -69,13 +69,11 @@ TOPIC_BASE     = _get("TOPIC_BASE", "health_monitor")
 # CS Algorithm
 # =============================================================================
 #
-# "omp"   → Hadamard-Gaussian Φ + DCT Ψ + OMP (default, tidak butuh sklearn)
-# "lasso" → Gaussian Φ + DCT Ψ + LASSO (butuh scikit-learn)
+# "hadamard" → Hadamard Φ + DCT Ψ + OMP (default, tidak butuh sklearn)
 #
 # ⚠️  Pastikan firmware menggunakan CS_Sensor.h yang sesuai:
-#   CS_ALGORITHM = "omp"   → lib/CS_Model_Gaussian/CS_Sensor.h
-#   CS_ALGORITHM = "lasso" → lib/CS_Model_Lasso/CS_Sensor.h
-CS_ALGORITHM = _get("CS_ALGORITHM", "omp")
+#   CS_ALGORITHM = "hadamard"   → lib/CS_Model_Hadamard/CS_Sensor.h
+CS_ALGORITHM = _get("CS_ALGORITHM", "hadamard")
 
 # =============================================================================
 # Parameter CS — HARUS sama dengan CS_Sensor.h di firmware
@@ -84,13 +82,6 @@ CS_N        = 64   # panjang window — harus pangkat 2
 CS_M        = 32   # jumlah pengukuran (50% kompresi)
 CS_PHI_SEED = 0    # seed Φ — HARUS identik dengan CS_PHI_SEED di firmware
 OMP_K       = 20   # sparsity level OMP
-
-# =============================================================================
-# LASSO (hanya dipakai jika CS_ALGORITHM = "lasso")
-# =============================================================================
-LASSO_ALPHA    = _get_float("LASSO_ALPHA", 0.001)
-LASSO_MAX_ITER = _get_int("LASSO_MAX_ITER", 5000)
-LASSO_TOL      = _get_float("LASSO_TOL", 1e-5)
 
 # =============================================================================
 # Logging

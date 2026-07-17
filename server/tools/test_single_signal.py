@@ -99,14 +99,14 @@ ax_trend2 = ax_trend.twinx()
 fig.canvas.manager.set_window_title(
     f'CS Test | {SIGNAL} | Node {NODE_ID} | K={OMP_K}')
 fig.suptitle(
-    f'CS Test — Hadamard-Gaussian + DCT + OMP | '
+    f'CS Test — Hadamard + DCT + OMP | '
     f'N={CS_N} M={CS_M} ({CS_M*100//CS_N}%) | K={OMP_K}',
     fontsize=10, fontweight='bold')
 
 
 # ── Helper: ambil koefisien DCT sparse dari OMP ──────────────────────────────
 def _get_omp_coeffs(y_arr: np.ndarray) -> tuple[np.ndarray, list[int]]:
-    from cs.gaussian import omp
+    from cs.hadamard import omp
     s_hat   = omp(y_arr, THETA, OMP_K)
     support = [i for i in range(CS_N) if abs(s_hat[i]) > 1e-8]
     return s_hat, support

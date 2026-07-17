@@ -1,4 +1,4 @@
-"""Test konsistensi CS encoder: router, gaussian, lasso."""
+"""Test konsistensi CS encoder: router, gaussian."""
 
 import numpy as np
 import pytest
@@ -62,7 +62,7 @@ def test_reconstruct_residual_reasonable():
 
 def test_phi_deterministic():
     """Φ yang di-generate dua kali dengan seed sama harus identik."""
-    from cs.gaussian import generate_phi
+    from cs.hadamard import generate_phi
     from core import CS_PHI_SEED
     phi1 = generate_phi(CS_PHI_SEED, CS_M, CS_N)
     phi2 = generate_phi(CS_PHI_SEED, CS_M, CS_N)

@@ -1,11 +1,10 @@
 // =============================================================================
-// CS_Sensor.cpp — Definisi static member CSPhiMatrix [DEPRECATED]
+// CS_Sensor.cpp — Static Storage Allocations for Compressive Sensing
+// =============================================================================
 //
-// File ini WAJIB ada agar linker tidak error:
-//   "undefined reference to CSPhiMatrix::_phi"
-//   "undefined reference to CSPhiMatrix::_initialized"
+// File ini mengalokasikan memori statis untuk static members dari CSPhiMatrix
+// untuk mencegah linker error "undefined reference" pada compiler ESP32.
 //
-// Hanya berisi definisi storage — semua logic ada di CS_Sensor.h.
 // =============================================================================
 
 #include "CS_Sensor.h"

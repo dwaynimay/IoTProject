@@ -1,10 +1,10 @@
 #pragma once
 // =============================================================================
-// CS_Sensor.h — Compressive Sensing Encoder (Hadamard-Gaussian + FFT + OMP)
+// CS_Sensor.h — Compressive Sensing Encoder (Hadamard + DCT + OMP)
 //
 // Implementasi sesuai permintaan dosen:
-//   Φ = Hadamard-Gaussian  → akuisisi data di ESP32
-//   Ψ = Fourier (FFT/IDFT) → basis sparse (rekonstruksi di server)
+//   Φ = Hadamard  → akuisisi data di ESP32
+//   Ψ = DCT (Discrete Cosine Transform) → basis sparse (rekonstruksi di server)
 //   Rekonstruksi           → OMP (Orthogonal Matching Pursuit) di server
 //
 // ESP32 hanya melakukan ENCODING: y = Φ · x
@@ -35,19 +35,29 @@ static constexpr uint8_t  CS_M        = 32;  // jumlah pengukuran (50% kompresi)
 static constexpr uint32_t CS_PHI_SEED = 0;   // seed — HARUS sama dengan server
 
 // =============================================================================
-// CSPhiMatrix — Singleton Hadamard-Gaussian Φ (M × N)
+// CSPhiMatrix — Singleton for Hadamard sensing matrix Φ (M × N)
+// =============================================================================
 //
-// Konstruksi (identik dengan generate_phi() di cs_utils.py):
-//   1. H  = Hadamard(N)         — deterministik, elemen ±1
-//   2. d  = random ±1 dari seed — LCG sederhana
-//   3. A  = diag(d) · H         — setiap baris H diskalakan ±1
-//   4. Φ  = A[row_idx, :]       — subsample M baris (index dari seed)
-//   5. Normalisasi per baris     — ||φ_i||₂ = 1/√M
+// Hardware  : none (pure logic / mathematics)
+// Why this implementation:
+//             Stores a single, shared measurement matrix Φ in BSS (static memory)
+//             to save ~48KB of RAM compared to per-encoder copies.
+//             Constructs a scrambled Hadamard matrix deterministically using
+//             Sylvester construction and LCG random signs (matching Python server).
+//
+// USAGE:
+//   const float (*phi)[CS_N] = CSPhiMatrix::get();
+//
+// THREAD SAFETY:
+//   Lazy initialization is NOT thread-safe. Must call CSPhiMatrix::get()
+//   once during single-core setup before spawning RTOS tasks. After that,
+//   read access is thread-safe as Φ is read-only.
 // =============================================================================
 class CSPhiMatrix
 {
 public:
-    // Ambil pointer ke Φ — generate sekali jika belum ada.
+    // Get pointer to Φ (generates the matrix on first call).
+    // Returns a read-only 2D array of size M × N.
     static const float (*get())[CS_N]
     {
         if (!_initialized)
@@ -58,16 +68,17 @@ public:
         return _phi;
     }
 
+    // Print diagnostic configuration details to Serial (M, N, seed, memory size).
     static void printInfo()
     {
-        LOG_INFO("CS", "Hadamard-Gaussian | M=%d N=%d seed=%lu | %d bytes",
+        LOG_INFO("CS", "Hadamard | M=%d N=%d seed=%lu | %d bytes",
                  CS_M, CS_N, CS_PHI_SEED,
                  (int)(CS_M * CS_N * sizeof(float)));
     }
 
-    // Cetak baris pertama Φ untuk verifikasi sinkronisasi dengan Python.
-    // Panggil dari taskCSSender() SETELAH Serial.begin() — bukan dari konstruktor.
-    // Bandingkan output ini dengan: python -m server.verify_phi
+    // Print the first two rows of Φ to Serial to verify synchronization
+    // with the Python server (compare output with: python -m server.verify_phi).
+    // Must be called after Serial.begin() has initialized.
     static void printSyncDebug()
     {
         get();
@@ -89,10 +100,8 @@ private:
     static float _phi[CS_M][CS_N];
     static bool  _initialized;
 
-    // ── Step 1: Hadamard N×N via Sylvester construction ──────────────────────
-    // H(1) = [1], H(2k) = [[H(k), H(k)], [H(k), -H(k)]]
-    // Disimpan sebagai int8_t (hanya ±1) untuk hemat RAM sementara.
-    // Hasil akhir di-copy ke float setelah dikali D.
+    // Build a Sylvester Hadamard matrix of size N x N filled with values +1 or -1.
+    // Order N must be a power of 2.
     static void _buildHadamard(int8_t H[CS_N][CS_N])
     {
         // Inisialisasi H(1) = [1]
@@ -124,18 +133,8 @@ private:
         }
     }
 
-    // ── Step 2–5: D · H → subsample → normalisasi ────────────────────────────
-    // RNG sederhana identik dengan numpy.random.default_rng(seed):
-    //   Numpy default_rng menggunakan PCG64.
-    //   Kita emulasi dengan SFC64-style 32-bit yang memberikan distribusi
-    //   seragam untuk choice([-1, 1]) dan permutation.
-    //
-    // ⚠ CATATAN IMPLEMENTASI:
-    //   numpy.random.default_rng menggunakan PCG64 yang kompleks.
-    //   Untuk memastikan identitas EXACT dengan Python, kita gunakan
-    //   pendekatan deterministik berbeda yang lebih mudah direplikasi:
-    //   LCG sederhana dengan konstanta yang sama di Python dan C++.
-    //   Kedua sisi sudah setuju dengan konstanta ini.
+    // Generate Φ by applying sign scrambling (D) and subsampling (Fisher-Yates)
+    // to the Hadamard matrix H. Normalizes each row to 1/sqrt(M).
     static void _generate()
     {
         // Hadamard sementara di stack — int8_t hemat RAM (64×64 = 4KB vs 16KB float)
@@ -184,20 +183,39 @@ private:
             for (uint8_t n = 0; n < CS_N; n++)
                 _phi[m][n] = scale * static_cast<float>(H[row][n]);
         }
-    } // end _generate()
+    }
 };
-// Definisi storage ada di CS_Sensor.cpp — jangan tambahkan di sini
 
 
 // =============================================================================
-// CSEncoder — Encoder satu sinyal (API tidak berubah dari versi sebelumnya)
+// CSEncoder — Compressive Sensing signal encoder for a single stream
+// =============================================================================
+//
+// Hardware  : none (pure logic / mathematics)
+// Why this implementation:
+//             Accumulates a window of size N, centers the signal by subtracting
+//             the mean, and computes y = Φ · (x - mean). Centering ensures
+//             sparse recovery converges more accurately in the DCT domain.
+//
+// USAGE:
+//   CSEncoder enc;
+//   if (enc.pushSample(val)) {
+//       float y[CS_M];
+//       float mean;
+//       enc.encode(y, mean);
+//   }
+//
+// THREAD SAFETY:
+//   Not thread-safe. Each instance must only be modified and read by
+//   a single task (typically taskCSSender).
 // =============================================================================
 class CSEncoder
 {
 public:
     CSEncoder() : _phi(CSPhiMatrix::get()) {}
 
-    // Push satu sampel. Return true jika window penuh dan siap di-encode.
+    // Push a single sensor sample into the internal window buffer.
+    // Returns true when the buffer is full (N samples collected) and ready to encode.
     bool pushSample(float sample)
     {
         if (_count >= CS_N) return false;
@@ -205,6 +223,9 @@ public:
         return (_count >= CS_N);
     }
 
+    // Subtract the mean of the window and multiply by the sensing matrix Φ.
+    // Output is stored in out[CS_M], and out_mean holds the subtracted signal mean.
+    // Resets the window counter internally. Returns false if the window is not full.
     bool encode(float out[CS_M], float& out_mean)
     {
         if (_count < CS_N) return false;
@@ -251,8 +272,13 @@ public:
         return true;
     }
 
+    // Reset the internal sample counter, clearing the current window.
     void    reset()        { _count = 0; }
+
+    // Get the number of samples currently stored in the window buffer.
     uint8_t count()  const { return _count; }
+
+    // Check if the sample window buffer is full and ready to encode.
     bool    isFull() const { return _count >= CS_N; }
 
 private:

@@ -1,13 +1,13 @@
-# File: server/cs/gaussian.py
+# File: server/cs/hadamard.py
 
 # =============================================================================
-# gaussian.py — Algoritma CS: Hadamard-Gaussian Φ + DCT Ψ + OMP
+# hadamard.py — Algoritma CS: Hadamard Φ + DCT Ψ + OMP
 # =============================================================================
 #
 # Ini adalah implementasi CS versi saat ini (aktif dipakai).
 #
 # Pipeline:
-#   Φ = Hadamard-Gaussian (D · H, subsampled M baris)
+#   Φ = Hadamard (D · H, subsampled M baris)
 #   Ψ = DCT basis (scipy.fftpack.idct) — murni real, cocok untuk sinyal IMU/PPG
 #   Θ = Φ · Ψ
 #   ŝ = OMP(y, Θ, K)    ← sparse coefficients via Orthogonal Matching Pursuit
@@ -20,7 +20,7 @@
 #
 # ⚠️  SINKRONISASI FIRMWARE:
 #   generate_phi() di sini IDENTIK dengan _generate() di
-#   include/CS_Sensor.h (Hadamard-Gaussian version).
+#   include/CS_Sensor.h (Hadamard version).
 #   Verifikasi: python -m server.verify_phi
 # =============================================================================
 
@@ -76,11 +76,11 @@ def _lcg_generator(seed: int):
 
 
 # =============================================================================
-# 3. Generate Φ — Hadamard-Gaussian
+# 3. Generate Φ — Hadamard
 # =============================================================================
 def generate_phi(seed: int, m: int, n: int) -> np.ndarray:
     """
-    Bangkitkan Φ (m × n) Hadamard-Gaussian.
+    Bangkitkan Φ (m × n) Hadamard.
 
     Langkah konstruksi (identik dengan _generate() di CS_Sensor.h):
       1. H  = Hadamard(n)           — deterministik, elemen ±1

@@ -5,7 +5,7 @@
 # =============================================================================
 #
 # Modul ini adalah SATU-SATUNYA interface yang perlu dipakai oleh apps/.
-# apps/ tidak boleh import langsung dari lasso.py atau gaussian.py.
+# apps/ tidak boleh import langsung dari hadamard.py.
 #
 # Keuntungan:
 #   - Ganti algoritma cukup ubah CS_ALGORITHM di config.py
@@ -24,14 +24,13 @@
 #   x_hat = reconstruct(y)   # langsung, tanpa tahu algoritmanya apa
 #
 # CARA GANTI ALGORITMA:
-#   Edit server/core/config.py → ubah CS_ALGORITHM = "lasso" atau "omp"
+#   Edit server/core/config.py → ubah CS_ALGORITHM = "hadamard"
 # =============================================================================
 
 import logging
 
 from core.config import (
     CS_N, CS_M, CS_PHI_SEED, OMP_K,
-    LASSO_ALPHA, LASSO_MAX_ITER, LASSO_TOL,
     CS_ALGORITHM,
 )
 
@@ -41,7 +40,7 @@ _logger = logging.getLogger(__name__)
 # =============================================================================
 # Validasi konfigurasi algoritma
 # =============================================================================
-_SUPPORTED_ALGORITHMS = ("omp", "lasso")
+_SUPPORTED_ALGORITHMS = ("hadamard",)
 
 if CS_ALGORITHM not in _SUPPORTED_ALGORITHMS:
     raise ValueError(
@@ -56,48 +55,23 @@ if CS_ALGORITHM not in _SUPPORTED_ALGORITHMS:
 _logger.info("Algoritma: %s | M=%d N=%d seed=%d",
              CS_ALGORITHM.upper(), CS_M, CS_N, CS_PHI_SEED)
 
-if CS_ALGORITHM == "omp":
-    from . import gaussian as _algo
+from . import hadamard as _algo
 
-    PHI             = _algo.generate_phi(CS_PHI_SEED, CS_M, CS_N)
-    THETA, PSI      = _algo.build_theta(PHI, CS_N)
-    ALGORITHM_NAME  = "Hadamard-Gaussian + DCT + OMP"
+PHI             = _algo.generate_phi(CS_PHI_SEED, CS_M, CS_N)
+THETA, PSI      = _algo.build_theta(PHI, CS_N)
+ALGORITHM_NAME  = "Hadamard + DCT + OMP"
 
-    def reconstruct(y: "list | np.ndarray") -> "np.ndarray":
-        """
-        Rekonstruksi sinyal menggunakan OMP.
+def reconstruct(y: "list | np.ndarray") -> "np.ndarray":
+    """
+    Rekonstruksi sinyal menggunakan OMP.
 
-        Args:
-            y : (m,) measurement vector dari sensor
+    Args:
+        y : (m,) measurement vector dari sensor
 
-        Returns:
-            x_hat : (n,) sinyal rekonstruksi
-        """
-        return _algo.reconstruct(y, THETA, PSI, OMP_K)
-
-elif CS_ALGORITHM == "lasso":
-    from . import lasso as _algo
-
-    PHI             = _algo.generate_phi(CS_PHI_SEED, CS_M, CS_N)
-    THETA, PSI      = _algo.build_theta(PHI, CS_N)
-    ALGORITHM_NAME  = "Gaussian + DCT + LASSO"
-
-    def reconstruct(y: "list | np.ndarray") -> "np.ndarray":
-        """
-        Rekonstruksi sinyal menggunakan LASSO.
-
-        Args:
-            y : (m,) measurement vector dari sensor
-
-        Returns:
-            x_hat : (n,) sinyal rekonstruksi
-        """
-        return _algo.reconstruct(
-            y, THETA, PSI,
-            alpha    = LASSO_ALPHA,
-            max_iter = LASSO_MAX_ITER,
-            tol      = LASSO_TOL,
-        )
+    Returns:
+        x_hat : (n,) sinyal rekonstruksi
+    """
+    return _algo.reconstruct(y, THETA, PSI, OMP_K)
 
 import numpy as np  # noqa: E402 — import setelah branch agar tidak unused
 _logger.info("%s | PHI=%s | THETA=%s", ALGORITHM_NAME, PHI.shape, THETA.shape)
