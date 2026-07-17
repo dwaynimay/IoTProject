@@ -2,23 +2,21 @@
 
 #pragma once
 // =============================================================================
-// PpgDsp.h — Blok Pemrosesan Sinyal PPG (Reusable, Header-Only)
+// PpgDsp — PPG Signal Processing Components (Reusable, Header-Only)
 // =============================================================================
 //
-// Kumpulan komponen DSP kecil yang masing-masing punya SATU tanggung jawab.
-// Tiap kelas berdiri sendiri, tanpa dependensi hardware, sehingga mudah
-// diuji, dipakai ulang, dan dirangkai menjadi pipeline.
+// A collection of small digital signal processing (DSP) blocks, each designed
+// with a single responsibility. Every class is self-contained with no hardware
+// dependencies, enabling easy unit testing, reuse, and custom assembly.
 //
-// Filosofi desain (mirip driver komersial):
-//   - Satu kelas = satu transformasi sinyal.
-//   - Tidak ada global state; semua via member.
-//   - reset() mengembalikan ke kondisi awal yang terdefinisi.
-//   - process(x) -> y : satu sampel masuk, satu sampel keluar.
+// Design Philosophy:
+//   - One class = one signal transformation.
+//   - No global state; all parameters are encapsulated as member variables.
+//   - reset() returns internal states to defined initial conditions.
+//   - process(x) -> y : single sample input to single sample output.
 //
-// Rangkaian tipikal untuk PPG pergelangan tangan:
-//
-//   raw IR --> BandPass --> PeakEnvelope --> BeatDetector --> interval (ms)
-//
+// Example processing chain:
+//   raw IR -> BandPass -> PeakEnvelope -> BeatDetector -> pulse interval (ms)
 // =============================================================================
 
 #include <Arduino.h>
@@ -476,13 +474,13 @@ public:
         if (_bpm > 0)
         {
             const float ratio = instant / static_cast<float>(_bpm);
-            if (ratio < 0.6f || ratio > 1.4f) plausible = false;
+            if (ratio < 0.4f || ratio > 1.7f) plausible = false;
         }
 
         // ── Anti-deadlock ────────────────────────────────────────────────────
         if (!plausible)
         {
-            if (++_rejectStreak >= 2)
+            if (++_rejectStreak >= 5)
             {
                 // _bpm lama usang -> mulai segar dari detak ini.
                 plausible     = true;
@@ -528,7 +526,7 @@ public:
     }
 
     int   bpm()   const { return _bpm; }
-    bool  ready() const { return _fill >= 3; }
+    bool  ready() const { return _fill >= 1; }
 
 private:
     static constexpr uint8_t WINDOW = 5;   // window lebih kecil = lebih responsif

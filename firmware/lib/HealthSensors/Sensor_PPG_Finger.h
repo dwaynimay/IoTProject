@@ -1,42 +1,29 @@
-// File: firmware/lib/HealthSensors/Sensor_PPG.h
+// File: firmware/lib/HealthSensors/Sensor_PPG_Finger.h
 
 #pragma once
 
 #ifdef USE_PPG_FINGER
 // =============================================================================
-// Sensor_PPG_Finger.h — Driver MAX30102 (PPG, Heart Rate, SpO2) untuk FINGER
+// SensorPPG (Finger) — Driver for MAX30102 PPG sensor (Finger Placement)
 // =============================================================================
 //
-// Arsitektur modular:
+// Hardware  : MAX30102 PPG sensor on Wire (I2C) via SparkFun MAX30105 library.
+// Why this implementation:
+//             Implements a thin driver layer that passes raw IR/RED samples to
+//             the HeartRateMonitor DSP pipeline, separating hardware capture
+//             from signal processing.
+//             Critical Init: Wire.begin() MUST be called after esp_now_init().
 //
-//   Sensor_PPG          (file ini)   -> hardware I2C + orkestrasi
-//     |
-//     +-- HeartRateMonitor          -> pipeline detak jantung
-//     |     +-- PpgDsp.h            -> komponen DSP reusable
-//     |           (BandPass, PeakEnvelope, BeatDetector,
-//     |            MotionGate, BpmEstimator)
-//     |
-//     +-- (SpO2: Ratio-of-Ratios, dihitung internal)
-//
-// Driver ini sengaja TIPIS: semua logika sinyal ada di modul terpisah yang
-// bisa diuji tanpa hardware. Sensor_PPG hanya membaca register sensor dan
-// meneruskan sampel ke pipeline.
-//
-// Hardware:
-//   Sensor  : MAX30102          Bus : Wire (pin dikonfigurasi via hardware.h)
-//   Library : SparkFun MAX3010x Posisi : pergelangan tangan
-//
-// URUTAN INISIALISASI KRITIS:
-//   Wire.begin() untuk MAX30102 HARUS dipanggil SETELAH esp_now_init().
-//
-// CARA PAKAI:
+// USAGE:
 //   SensorPPG ppg;
 //   ppg.begin();
-//   // loop (panggil secepat mungkin, >=50 Hz):
+//   // loop (call at >= 50 Hz):
 //   ppg.update();
-//   PpgMeasurement m; ppg.read(m);
+//   PpgMeasurement m;
+//   ppg.read(m);
 //
-// THREAD SAFETY: tidak thread-safe.
+// THREAD SAFETY:
+//   Not thread-safe.
 // =============================================================================
 
 #include <Arduino.h>

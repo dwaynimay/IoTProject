@@ -2,31 +2,27 @@
 
 #pragma once
 // =============================================================================
-// Sensor_MPU.h — Driver MPU6050 (Accelerometer + Gyroscope)
+// SensorMPU — Driver for MPU6050 Accelerometer and Gyroscope
 // =============================================================================
 //
-// Hardware:
-//   Sensor : MPU6050 (termasuk varian KW/clone)
-//   Bus    : Wire (bus I2C utama, pin dikonfigurasi via hardware.h)
-//   Catatan: Berjalan di ESP32 terpisah (Node IMU), sehingga tidak konflik dengan PPG.
+// Hardware  : MPU6050 (including generic clones) connected via Wire (I2C)
+// Why this implementation:
+//             Uses raw register communication via direct I2C calls instead of
+//             common third-party libraries, ensuring high robustness and
+//             compatibility with generic/clone MPU6050 variants.
 //
-// Kenapa implementasi manual (tanpa library)?
-//   Library MPU6050 umum tidak kompatibel dengan sensor kloningan.
-//   Implementasi raw I2C register lebih robust untuk hardware KW.
-//
-// CARA PAKAI:
+// USAGE:
 //   SensorMPU imu;
-//   imu.begin();              // inisialisasi & verifikasi koneksi
-//   imu.calibrate();          // opsional, kurangi offset bias
-//
+//   imu.begin();
+//   imu.calibrate(); // Optional calibration
 //   ImuMeasurement data;
-//   if (imu.read(data)) {     // baca satu sampel
-//       // gunakan data.accelX, data.gyroY, dsb.
+//   if (imu.read(data)) {
+//       // use data.accelX, data.gyroY, etc.
 //   }
 //
 // THREAD SAFETY:
-//   Tidak thread-safe secara bawaan.
-//   Gunakan mutex (misal g_wireMutex) di luar modul ini jika diakses dari beberapa task.
+//   Not thread-safe. Access to the physical I2C bus (Wire) must be synchronized
+//   externally (e.g., using a mutex like g_wireMutex) if shared across tasks.
 // =============================================================================
 
 #include <Arduino.h>

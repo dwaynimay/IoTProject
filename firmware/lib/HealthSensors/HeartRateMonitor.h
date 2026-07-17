@@ -2,7 +2,7 @@
 
 #pragma once
 // =============================================================================
-// HeartRateMonitor.h — Pipeline Deteksi Detak Jantung (Wrist PPG)
+// HeartRateMonitor — DSP Pipeline for Real-time PPG Heart Rate Estimation
 // =============================================================================
 //
 // Merangkai komponen DSP dari PpgDsp.h menjadi satu pipeline heart rate:
@@ -17,13 +17,16 @@
 // Kelas ini TIDAK menyentuh hardware — ia hanya menerima sampel IR dan
 // timestamp. Dengan begitu ia bisa diuji sepenuhnya tanpa sensor fisik.
 //
-// CARA PAKAI:
+// USAGE:
 //   HeartRateMonitor hr;
 //   hr.reset();
-//   // tiap sampel:
+//   // on every sample:
 //   hr.update(irValue, millis());
-//   int bpm = hr.getBpm();       // 0 jika belum siap
+//   int bpm = hr.getBpm();       // 0 if not ready
 //   bool ok = hr.isValid();
+//
+// THREAD SAFETY:
+//   Not thread-safe.
 // =============================================================================
 
 #include "PpgDsp.h"

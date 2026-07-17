@@ -2,10 +2,13 @@
 #pragma once
 
 // =============================================================================
-// ROUTER UNTUK SENSOR PPG (Berdasarkan Build Flag)
+// Sensor_PPG — Routing Header for PPG Sensor Implementations (Finger vs Wrist)
 // =============================================================================
-// Jika di platformio.ini ada flag: -DUSE_PPG_FINGER
-// Maka otomatis akan compile versi Finger, jika tidak ada, compile versi Wrist.
+//
+// Automatically selects the appropriate PPG sensor implementation (Finger or Wrist)
+// depending on whether the USE_PPG_FINGER build flag is defined in platformio.ini.
+//
+// =============================================================================
 
 #ifdef USE_PPG_FINGER
     #include "Sensor_PPG_Finger.h"
