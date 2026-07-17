@@ -115,3 +115,5 @@ new_feature/
 *.log
 logs/
 
+# Backups
+**/backup/
