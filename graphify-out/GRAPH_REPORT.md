@@ -1,16 +1,16 @@
-# Graph Report - IoTProject  (2026-07-15)
+# Graph Report - IoTProject  (2026-07-17)
 
 ## Corpus Check
-- 252 files · ~318,152 words
+- 276 files · ~808,118 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 4254 nodes · 5772 edges · 342 communities (324 shown, 18 thin omitted)
-- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 135 edges (avg confidence: 0.76)
+- 4496 nodes · 6378 edges · 306 communities (286 shown, 20 thin omitted)
+- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 134 edges (avg confidence: 0.76)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `6fc4d764`
+- Built from commit: `161703dd`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -41,6 +41,7 @@
 - [[_COMMUNITY_Community 23|Community 23]]
 - [[_COMMUNITY_Community 24|Community 24]]
 - [[_COMMUNITY_Community 25|Community 25]]
+- [[_COMMUNITY_Community 26|Community 26]]
 - [[_COMMUNITY_Community 27|Community 27]]
 - [[_COMMUNITY_Community 28|Community 28]]
 - [[_COMMUNITY_Community 29|Community 29]]
@@ -56,11 +57,42 @@
 - [[_COMMUNITY_Community 46|Community 46]]
 - [[_COMMUNITY_Community 47|Community 47]]
 - [[_COMMUNITY_Community 48|Community 48]]
+- [[_COMMUNITY_Community 49|Community 49]]
+- [[_COMMUNITY_Community 50|Community 50]]
+- [[_COMMUNITY_Community 51|Community 51]]
 - [[_COMMUNITY_Community 54|Community 54]]
+- [[_COMMUNITY_Community 57|Community 57]]
+- [[_COMMUNITY_Community 58|Community 58]]
+- [[_COMMUNITY_Community 60|Community 60]]
+- [[_COMMUNITY_Community 61|Community 61]]
+- [[_COMMUNITY_Community 62|Community 62]]
+- [[_COMMUNITY_Community 63|Community 63]]
+- [[_COMMUNITY_Community 64|Community 64]]
+- [[_COMMUNITY_Community 65|Community 65]]
+- [[_COMMUNITY_Community 66|Community 66]]
+- [[_COMMUNITY_Community 67|Community 67]]
+- [[_COMMUNITY_Community 68|Community 68]]
+- [[_COMMUNITY_Community 69|Community 69]]
+- [[_COMMUNITY_Community 70|Community 70]]
+- [[_COMMUNITY_Community 71|Community 71]]
+- [[_COMMUNITY_Community 72|Community 72]]
+- [[_COMMUNITY_Community 73|Community 73]]
+- [[_COMMUNITY_Community 74|Community 74]]
+- [[_COMMUNITY_Community 75|Community 75]]
+- [[_COMMUNITY_Community 76|Community 76]]
+- [[_COMMUNITY_Community 77|Community 77]]
+- [[_COMMUNITY_Community 78|Community 78]]
+- [[_COMMUNITY_Community 79|Community 79]]
+- [[_COMMUNITY_Community 80|Community 80]]
+- [[_COMMUNITY_Community 81|Community 81]]
+- [[_COMMUNITY_Community 82|Community 82]]
+- [[_COMMUNITY_Community 83|Community 83]]
+- [[_COMMUNITY_Community 84|Community 84]]
+- [[_COMMUNITY_Community 85|Community 85]]
+- [[_COMMUNITY_Community 86|Community 86]]
+- [[_COMMUNITY_Community 87|Community 87]]
 - [[_COMMUNITY_Community 90|Community 90]]
-- [[_COMMUNITY_Community 109|Community 109]]
 - [[_COMMUNITY_Community 115|Community 115]]
-- [[_COMMUNITY_Community 166|Community 166]]
 - [[_COMMUNITY_Community 167|Community 167]]
 - [[_COMMUNITY_Community 168|Community 168]]
 - [[_COMMUNITY_Community 169|Community 169]]
@@ -84,15 +116,10 @@
 - [[_COMMUNITY_Community 211|Community 211]]
 - [[_COMMUNITY_Community 213|Community 213]]
 - [[_COMMUNITY_Community 214|Community 214]]
-- [[_COMMUNITY_Community 215|Community 215]]
-- [[_COMMUNITY_Community 217|Community 217]]
 - [[_COMMUNITY_Community 220|Community 220]]
-- [[_COMMUNITY_Community 221|Community 221]]
 - [[_COMMUNITY_Community 222|Community 222]]
 - [[_COMMUNITY_Community 223|Community 223]]
-- [[_COMMUNITY_Community 224|Community 224]]
 - [[_COMMUNITY_Community 225|Community 225]]
-- [[_COMMUNITY_Community 226|Community 226]]
 - [[_COMMUNITY_Community 227|Community 227]]
 - [[_COMMUNITY_Community 228|Community 228]]
 - [[_COMMUNITY_Community 229|Community 229]]
@@ -104,17 +131,12 @@
 - [[_COMMUNITY_Community 237|Community 237]]
 - [[_COMMUNITY_Community 238|Community 238]]
 - [[_COMMUNITY_Community 239|Community 239]]
-- [[_COMMUNITY_Community 242|Community 242]]
 - [[_COMMUNITY_Community 243|Community 243]]
-- [[_COMMUNITY_Community 244|Community 244]]
 - [[_COMMUNITY_Community 245|Community 245]]
-- [[_COMMUNITY_Community 246|Community 246]]
 - [[_COMMUNITY_Community 248|Community 248]]
-- [[_COMMUNITY_Community 249|Community 249]]
 - [[_COMMUNITY_Community 250|Community 250]]
 - [[_COMMUNITY_Community 251|Community 251]]
 - [[_COMMUNITY_Community 258|Community 258]]
-- [[_COMMUNITY_Community 260|Community 260]]
 - [[_COMMUNITY_Community 261|Community 261]]
 - [[_COMMUNITY_Community 265|Community 265]]
 - [[_COMMUNITY_Community 267|Community 267]]
@@ -125,13 +147,11 @@
 - [[_COMMUNITY_Community 280|Community 280]]
 - [[_COMMUNITY_Community 282|Community 282]]
 - [[_COMMUNITY_Community 284|Community 284]]
-- [[_COMMUNITY_Community 285|Community 285]]
 - [[_COMMUNITY_Community 288|Community 288]]
 - [[_COMMUNITY_Community 291|Community 291]]
 - [[_COMMUNITY_Community 292|Community 292]]
 - [[_COMMUNITY_Community 293|Community 293]]
 - [[_COMMUNITY_Community 294|Community 294]]
-- [[_COMMUNITY_Community 295|Community 295]]
 - [[_COMMUNITY_Community 296|Community 296]]
 - [[_COMMUNITY_Community 297|Community 297]]
 - [[_COMMUNITY_Community 298|Community 298]]
@@ -192,11 +212,9 @@
 - [[_COMMUNITY_Community 364|Community 364]]
 - [[_COMMUNITY_Community 365|Community 365]]
 - [[_COMMUNITY_Community 366|Community 366]]
-- [[_COMMUNITY_Community 367|Community 367]]
 - [[_COMMUNITY_Community 368|Community 368]]
 - [[_COMMUNITY_Community 369|Community 369]]
 - [[_COMMUNITY_Community 370|Community 370]]
-- [[_COMMUNITY_Community 371|Community 371]]
 - [[_COMMUNITY_Community 372|Community 372]]
 - [[_COMMUNITY_Community 373|Community 373]]
 - [[_COMMUNITY_Community 374|Community 374]]
@@ -219,59 +237,20 @@
 - [[_COMMUNITY_Community 393|Community 393]]
 - [[_COMMUNITY_Community 394|Community 394]]
 - [[_COMMUNITY_Community 395|Community 395]]
-- [[_COMMUNITY_Community 396|Community 396]]
 - [[_COMMUNITY_Community 397|Community 397]]
 - [[_COMMUNITY_Community 399|Community 399]]
 - [[_COMMUNITY_Community 400|Community 400]]
 - [[_COMMUNITY_Community 401|Community 401]]
-- [[_COMMUNITY_Community 402|Community 402]]
-- [[_COMMUNITY_Community 403|Community 403]]
 - [[_COMMUNITY_Community 404|Community 404]]
-- [[_COMMUNITY_Community 405|Community 405]]
-- [[_COMMUNITY_Community 406|Community 406]]
-- [[_COMMUNITY_Community 407|Community 407]]
-- [[_COMMUNITY_Community 408|Community 408]]
 - [[_COMMUNITY_Community 409|Community 409]]
 - [[_COMMUNITY_Community 410|Community 410]]
-- [[_COMMUNITY_Community 411|Community 411]]
-- [[_COMMUNITY_Community 412|Community 412]]
-- [[_COMMUNITY_Community 414|Community 414]]
-- [[_COMMUNITY_Community 415|Community 415]]
 - [[_COMMUNITY_Community 416|Community 416]]
 - [[_COMMUNITY_Community 417|Community 417]]
-- [[_COMMUNITY_Community 418|Community 418]]
-- [[_COMMUNITY_Community 419|Community 419]]
-- [[_COMMUNITY_Community 420|Community 420]]
-- [[_COMMUNITY_Community 421|Community 421]]
-- [[_COMMUNITY_Community 423|Community 423]]
-- [[_COMMUNITY_Community 424|Community 424]]
-- [[_COMMUNITY_Community 425|Community 425]]
-- [[_COMMUNITY_Community 426|Community 426]]
-- [[_COMMUNITY_Community 427|Community 427]]
 - [[_COMMUNITY_Community 428|Community 428]]
-- [[_COMMUNITY_Community 429|Community 429]]
 - [[_COMMUNITY_Community 430|Community 430]]
 - [[_COMMUNITY_Community 431|Community 431]]
 - [[_COMMUNITY_Community 432|Community 432]]
-- [[_COMMUNITY_Community 433|Community 433]]
-- [[_COMMUNITY_Community 434|Community 434]]
-- [[_COMMUNITY_Community 435|Community 435]]
-- [[_COMMUNITY_Community 436|Community 436]]
-- [[_COMMUNITY_Community 437|Community 437]]
-- [[_COMMUNITY_Community 439|Community 439]]
-- [[_COMMUNITY_Community 440|Community 440]]
-- [[_COMMUNITY_Community 441|Community 441]]
-- [[_COMMUNITY_Community 442|Community 442]]
-- [[_COMMUNITY_Community 443|Community 443]]
 - [[_COMMUNITY_Community 444|Community 444]]
-- [[_COMMUNITY_Community 445|Community 445]]
-- [[_COMMUNITY_Community 446|Community 446]]
-- [[_COMMUNITY_Community 447|Community 447]]
-- [[_COMMUNITY_Community 448|Community 448]]
-- [[_COMMUNITY_Community 449|Community 449]]
-- [[_COMMUNITY_Community 451|Community 451]]
-- [[_COMMUNITY_Community 452|Community 452]]
-- [[_COMMUNITY_Community 453|Community 453]]
 - [[_COMMUNITY_Community 456|Community 456]]
 - [[_COMMUNITY_Community 458|Community 458]]
 - [[_COMMUNITY_Community 459|Community 459]]
@@ -307,16 +286,7 @@
 - [[_COMMUNITY_Community 492|Community 492]]
 - [[_COMMUNITY_Community 493|Community 493]]
 - [[_COMMUNITY_Community 494|Community 494]]
-- [[_COMMUNITY_Community 495|Community 495]]
-- [[_COMMUNITY_Community 496|Community 496]]
-- [[_COMMUNITY_Community 497|Community 497]]
-- [[_COMMUNITY_Community 498|Community 498]]
-- [[_COMMUNITY_Community 500|Community 500]]
 - [[_COMMUNITY_Community 502|Community 502]]
-- [[_COMMUNITY_Community 503|Community 503]]
-- [[_COMMUNITY_Community 504|Community 504]]
-- [[_COMMUNITY_Community 505|Community 505]]
-- [[_COMMUNITY_Community 506|Community 506]]
 - [[_COMMUNITY_Community 508|Community 508]]
 - [[_COMMUNITY_Community 509|Community 509]]
 - [[_COMMUNITY_Community 510|Community 510]]
@@ -324,15 +294,11 @@
 - [[_COMMUNITY_Community 512|Community 512]]
 - [[_COMMUNITY_Community 513|Community 513]]
 - [[_COMMUNITY_Community 514|Community 514]]
-- [[_COMMUNITY_Community 516|Community 516]]
-- [[_COMMUNITY_Community 517|Community 517]]
 - [[_COMMUNITY_Community 518|Community 518]]
 - [[_COMMUNITY_Community 519|Community 519]]
 - [[_COMMUNITY_Community 520|Community 520]]
 - [[_COMMUNITY_Community 521|Community 521]]
-- [[_COMMUNITY_Community 522|Community 522]]
 - [[_COMMUNITY_Community 525|Community 525]]
-- [[_COMMUNITY_Community 528|Community 528]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `_()` - 56 edges
@@ -361,31 +327,31 @@
 ## Import Cycles
 - 2-file cycle: `server/cs/__init__.py -> server/cs/router.py -> server/cs/__init__.py`
 
-## Communities (342 total, 18 thin omitted)
+## Communities (306 total, 20 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.10
 Nodes (13): main(), NodeSimulator, mqtt_node_simulator.py — Simulasi node ESP32 yang publish MQTT messages.  Guna, Generate simulated PPG signal (cs_ppg)., Publish cs_imu message., Publish cs_ppg message., Publish satu window (cs_imu + cs_ppg)., Simulasi continuous publish.                  Args:             interval_sec: (+5 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.15
-Nodes (11): class, onContact(), reset(), update(), BeatDetector(), BpmEstimator(), ImuMotionGate(), MotionGate() (+3 more)
+Cohesion: 0.20
+Nodes (9): class, CSEncoder(), CSPhiMatrix(), BeatDetector(), BpmEstimator(), ImuMotionGate(), MotionGate(), PeakEnvelope() (+1 more)
 
 ### Community 2 - "Community 2"
 Cohesion: 0.11
 Nodes (17): A uniform public API, Algorithm/DSP layer must be testable without hardware, Centralized configuration, Comment language, Core principle: explain *why*, not *what*, Each layer owns its data types, Firmware Architecture & Modularity, Header files (.h): a contract, not a tutorial (+9 more)
 
 ### Community 3 - "Community 3"
-Cohesion: 0.29
-Nodes (10): _layer1_schema(), Layer 1: cek field wajib ada., _make_valid_ppg(), Buat payload cs_ppg yang valid., test_layer1_all_fields_present(), test_layer1_missing_multiple(), test_layer1_missing_ts(), test_layer1_ppg_missing_hr() (+2 more)
+Cohesion: 0.22
+Nodes (7): _layer1_schema(), Reset state node tertentu (misalnya saat reboot terdeteksi)., Layer 1: cek field wajib ada., Reset state monotonicity untuk node tertentu., test_layer1_all_fields_present(), test_layer1_missing_multiple(), test_layer1_missing_ts()
 
 ### Community 4 - "Community 4"
 Cohesion: 0.20
 Nodes (8): Error Handling, Examples, Long-running project (~30 weeks), Pipeline Discipline, Short-lived project (~3 weeks), Single-week project (N=1), Weekly Digests, When to Use
 
 ### Community 5 - "Community 5"
-Cohesion: 0.20
-Nodes (10): Accessibility, code:css (/* Recommended: natural deceleration */), code:css (/* Prefer for simple, declarative animations */), code:javascript (/* Use for complex, interactive animations */), code:css (@media (prefers-reduced-motion: reduce) {), CSS Animations, JavaScript Animation, Performance (+2 more)
+Cohesion: 0.07
+Nodes (27): 1. Tujuan Pengujian, 2. Ringkasan Media Uji, 3. Pengujian IMU, 4. Pengujian PPG, 5. Pengujian Komunikasi Wireless, 6. Susunan Subbab Pengujian TA, 7. Template Narasi Singkat, Contoh hal yang diuji (+19 more)
 
 ### Community 6 - "Community 6"
 Cohesion: 0.20
@@ -396,20 +362,20 @@ Cohesion: 0.22
 Nodes (7): code:bash (WORKER_PORT="${CLAUDE_MEM_WORKER_PORT:-$(node -e "const fs=r), Error Handling, Example, Prerequisites, Timeline Report, When to Use, Prerequisites
 
 ### Community 8 - "Community 8"
-Cohesion: 0.11
-Nodes (19): _build_hadamard(), build_psi(), build_theta(), generate_phi(), _lcg_generator(), omp(), Matrix IDCT orthonormal Ψ (n × n).      Kenapa DCT bukan DFT kompleks?, Θ = Φ · Ψ  (m × n), murni real.      Returns:         theta : np.ndarray (m × (+11 more)
+Cohesion: 0.08
+Nodes (40): currentCycleNumber(), currentPhaseIndex(), extractPacketMeta(), jitteredRssi(), loop(), nextHopMac(), PacketMeta, cycle (+32 more)
 
 ### Community 9 - "Community 9"
-Cohesion: 0.22
-Nodes (9): Anti-Patterns, code:css (.trigger {), code:html (<button popovertarget="menu" class="trigger">Open</button>), code:css (.dropdown {), CSS Anchor Positioning, Dropdown & Overlay Positioning, Fixed Positioning Fallback, Popover + Anchor Combo (+1 more)
+Cohesion: 0.10
+Nodes (19): Test konsistensi CS encoder: router, gaussian., Φ harus berukuran (M, N)., Θ = Φ·Ψ harus berukuran (M, N)., Ψ (basis DCT) harus berukuran (N, N)., Rekonstruksi dari y(M,) harus menghasilkan x_hat(N,)., Input nol harus menghasilkan output nol., Harus menerima list Python, bukan hanya ndarray., Residual dari sinyal sparse (di domain DCT) harus kecil (< 0.5). (+11 more)
 
 ### Community 10 - "Community 10"
 Cohesion: 0.25
 Nodes (7): Cognitive Load Assessment, Cognitive Load Checklist, Extraneous Load: Bad Design, Germane Load: Learning Effort, Intrinsic Load: The Task Itself, The Working Memory Rule, Three Types of Cognitive Load
 
 ### Community 11 - "Community 11"
-Cohesion: 0.25
-Nodes (8): Animate complex properties, Interact with the device, Make data feel alive, Make transitions feel cinematic, Push performance boundaries, Render beyond CSS, The Toolkit, Tie animation to scroll position
+Cohesion: 0.12
+Nodes (14): _combined_lifespan(), main(), main_app.py — Orkestrator satu proses: FastAPI + MQTT worker dalam satu perintah, Jalankan semua sistem server dalam satu proses., Blocking MQTT loop — dijalankan di background thread., Ganti lifespan dashboard_server dengan versi yang juga start MQTT thread., _run_mqtt_thread(), get_logger() (+6 more)
 
 ### Community 12 - "Community 12"
 Cohesion: 0.43
@@ -424,32 +390,32 @@ Cohesion: 0.43
 Nodes (6): String, appendJsonArray(), loop(), reconnect(), setup(), setup_wifi()
 
 ### Community 15 - "Community 15"
-Cohesion: 0.33
-Nodes (6): Font selection procedure, Pairing and voice, Reflex-reject aesthetic lanes, Reflex-reject list, Scale, Typography
+Cohesion: 0.24
+Nodes (17): AxisResult, calc_metrics(), capture_windows(), ensure_output_dir(), main(), parse_args(), plot_combined_overlay(), plot_metric_trends() (+9 more)
 
 ### Community 16 - "Community 16"
-Cohesion: 0.33
-Nodes (6): Establish Hierarchy, Fix Readability, Font Selection, Improve Typography Systematically, Refine Details, Weight Consistency
+Cohesion: 0.12
+Nodes (13): FeatureExtractor, Ekstrak feature vector dari WindowInput berdasarkan schema di config.      Args:, Ekstrak feature vector dari WindowInput berdasarkan schema di config.      Arg, Semua stat type harus bisa diekstrak tanpa crash., Meta field dengan cast=int: finger (bool) → 0.0 atau 1.0., Raw feature harus ambil elemen ke-index dari sinyal., Cross-feature correlation ax–ay., Sinyal None → pakai default, masuk ke missing list. (+5 more)
 
 ### Community 17 - "Community 17"
-Cohesion: 0.33
-Nodes (6): code:css (/* Tabular numbers for data alignment */), code:css (/* Even out heading line lengths (browser picks better break), Fluid Type, Modern Web Typography, OpenType Features, Rendering polish
+Cohesion: 0.26
+Nodes (13): calc_metrics(), capture(), ensure_output_dir(), main(), parse_args(), plot_hr_spo2(), plot_metrics(), plot_overlay() (+5 more)
 
 ### Community 18 - "Community 18"
 Cohesion: 0.33
 Nodes (5): 1. A driver that secretly imports the comms layer, 2. Algorithm/DSP fused into the driver (can't test without hardware), 3. A clean orchestrator vs a tangled one, 4. Professional comments vs comments that clutter, Before/After Examples — Firmware Architecture
 
 ### Community 19 - "Community 19"
-Cohesion: 0.40
-Nodes (5): get_all_events(), get_node_events(), _node_or_404(), Event log untuk satu node, opsional filter per tipe., Semua event terbaru dari semua node, opsional filter per tipe.
+Cohesion: 0.09
+Nodes (19): _get(), _get_float(), _get_int(), Ambil env var dengan fallback ke default yang aman untuk lokal., Ambil env var sebagai int., Ambil env var sebagai float., Public API server core.  apps/ HANYA boleh import dari sini, bukan dari submod, assess() (+11 more)
 
 ### Community 20 - "Community 20"
-Cohesion: 0.11
-Nodes (25): CombinedPacket, esp_now_send_status_t, _addPeer(), begin(), forwardRoutedCs(), getQueueMetrics(), _isPeerRegistered(), _onDataSent() (+17 more)
+Cohesion: 0.06
+Nodes (38): CombinedPacket, esp_now_send_status_t, _addPeer(), begin(), EspNowMesh(), forwardRoutedCs(), getQueueMetrics(), _isPeerRegistered() (+30 more)
 
 ### Community 21 - "Community 21"
-Cohesion: 0.40
-Nodes (5): get_db_info(), get_metrics(), _now_ms(), Statistik throughput dan kualitas sejak server start.     Diupdate real-time ol, Ukuran file DB, jumlah baris per tabel, dan konfigurasi retention.
+Cohesion: 0.17
+Nodes (13): computedHash, skillPath, source, sourceType, skillPath, source, sourceType, computedHash (+5 more)
 
 ### Community 22 - "Community 22"
 Cohesion: 0.40
@@ -460,16 +426,20 @@ Cohesion: 0.06
 Nodes (36): ACTIONS, annotLastPinClick, annotState, apply(), bufferToBase64(), buildAnnotationsForCapture(), buildPinElement(), captureAndEmit() (+28 more)
 
 ### Community 24 - "Community 24"
-Cohesion: 0.40
-Nodes (4): Assess Current State, Plan Amplification, Register, Verify Quality
+Cohesion: 0.47
+Nodes (3): Public API for Compressive Sensing package. Other modules should import CS conc, Rekonstruksi sinyal menggunakan OMP.      Args:         y : (m,) measurement, reconstruct()
 
 ### Community 25 - "Community 25"
-Cohesion: 0.30
-Nodes (8): begin(), _connectMqtt(), _connectWifi(), initNTP(), _mqttStateStr(), publish(), _publishOnlineStatus(), tryReconnect()
+Cohesion: 0.09
+Nodes (6): BandPass, BeatDetector, BpmEstimator, HeartRateMonitor, MotionGate, PeakEnvelope
+
+### Community 26 - "Community 26"
+Cohesion: 0.11
+Nodes (31): currentCycleNumber(), currentPhaseIndex(), fillDummyAxis(), fillDummyPpg(), jitteredRssi(), loop(), nextHopMac(), PhaseProfile (+23 more)
 
 ### Community 27 - "Community 27"
-Cohesion: 0.40
-Nodes (5): Anti-reflexes worth defending against, code:css (/* 1. Use font-display: swap for visibility */), Font Selection & Pairing, Pairing Principles, Web Font Loading
+Cohesion: 0.38
+Nodes (4): _get_omp_coeffs(), _process(), _quality_color(), server/tools/test_single_signal.py  Tool debugging: test rekonstruksi 1 sinyal
 
 ### Community 29 - "Community 29"
 Cohesion: 0.50
@@ -480,20 +450,20 @@ Cohesion: 0.50
 Nodes (3): Heuristics Scoring Guide, Issue Severity (P0–P3), Score Summary
 
 ### Community 32 - "Community 32"
-Cohesion: 0.24
-Nodes (8): TaskHandle_t, begin(), checkTaskStack(), healthCheck(), _initHardwareWdt(), _printRestartHistory(), restartCount(), triggerRestart()
+Cohesion: 0.08
+Nodes (18): _now_ms(), Kelola koneksi SQLite dan semua operasi baca-tulis.      Args:         db_pat, Tutup koneksi. Panggil saat shutdown server., Simpan satu window rekonstruksi ke tabel `windows`.         Satu window → beber, Catat satu event ke tabel `events`.          event_type contoh:           "NO, Ambil N window terakhir untuk sinyal tertentu dari node tertentu.          Ret, Ambil N event terakhir, opsional filter node_id dan/atau event_type., Statistik ringkas untuk satu node (berguna untuk dashboard).          Returns (+10 more)
 
 ### Community 33 - "Community 33"
-Cohesion: 0.22
-Nodes (4): CSEncoder(), CSPhiMatrix(), NetworkMqtt(), SystemWatchdog()
+Cohesion: 0.70
+Nodes (4): get_status(), _ms_ago(), _now_ms(), Kembalikan status semua node yang pernah kirim data beserta     statistik rekon
 
 ### Community 35 - "Community 35"
-Cohesion: 0.67
-Nodes (3): 6. Write all variants in a single edit, code:html (<!-- Variants: insert below this line -->), code:tsx (<style data-impeccable-css="SESSION_ID">{`)
+Cohesion: 0.33
+Nodes (6): _layer5_whitelist(), Layer 5: cek node_id ada di whitelist (jika whitelist aktif)., Whitelist None = terima semua., test_whitelist_allowed(), test_whitelist_denied(), test_whitelist_disabled()
 
 ### Community 36 - "Community 36"
-Cohesion: 0.67
-Nodes (3): 7. Parameters (composition-sized, 0–4 per variant), code:html (<div data-impeccable-variant="1" data-impeccable-params='[), code:html (<!-- impeccable-param-values SESSION_ID: {"color-amount":0.7)
+Cohesion: 0.11
+Nodes (31): currentCycleNumber(), currentPhaseIndex(), fillDummyAxis(), fillDummyPpg(), jitteredRssi(), loop(), nextHopMac(), PhaseProfile (+23 more)
 
 ### Community 37 - "Community 37"
 Cohesion: 0.05
@@ -503,41 +473,153 @@ Nodes (43): Catatan untuk Agent, code:python (# GET /api/ml/status), code:block1
 Cohesion: 0.15
 Nodes (11): _acdc(), read(), _rToSpo2(), update(), _updateSpo2(), _acdc(), read(), _rToSpo2() (+3 more)
 
+### Community 46 - "Community 46"
+Cohesion: 0.14
+Nodes (15): wrappers.py — Sklearn-compatible wrappers untuk model .pkl non-standar.  Masal, Wrapper sklearn-compatible untuk model SVM yang disimpan sebagai dict.      Di, Args:             X: ndarray shape (n_samples, n_features), dtype float64, Predict kelas (encoded integer)., SVMActivityWrapper, ndarray, DummyModel, Sklearn-compatible dummy dengan predict_proba tetap. (+7 more)
+
 ### Community 47 - "Community 47"
-Cohesion: 0.13
-Nodes (16): EdgeConfig(), Mqtt(), I2CAddr(), I2CClock(), MacAddr(), Pin(), PpgConfig(), MeshTopology() (+8 more)
+Cohesion: 0.17
+Nodes (13): EdgeConfig(), Mqtt(), I2CAddr(), I2CClock(), MacAddr(), Pin(), PpgConfig(), MeshTopology() (+5 more)
 
 ### Community 48 - "Community 48"
+Cohesion: 0.42
+Nodes (7): begin(), _burstRead(), calibrate(), clearCalibration(), loadCalibration(), read(), ImuMeasurement
+
+### Community 49 - "Community 49"
 Cohesion: 0.27
-Nodes (9): begin(), _burstRead(), calibrate(), clearCalibration(), loadCalibration(), Mpu6050Reg(), read(), SensorMPU() (+1 more)
+Nodes (18): AxisResult, calc_metrics(), capture_windows(), ensure_output_dir(), main(), parse_args(), plot_combined_overlay(), plot_metric_trends() (+10 more)
+
+### Community 50 - "Community 50"
+Cohesion: 0.13
+Nodes (14): Apply Clarity Principles, Assess Current Copy, Button & CTA Text, Confirmation Dialogs, Empty States, Error Messages, Form Labels & Instructions, Help Text & Tooltips (+6 more)
+
+### Community 51 - "Community 51"
+Cohesion: 0.17
+Nodes (14): _build_hadamard(), build_psi(), build_theta(), generate_phi(), _lcg_generator(), omp(), Matrix IDCT orthonormal Ψ (n × n).      Kenapa DCT bukan DFT kompleks?, Θ = Φ · Ψ  (m × n), murni real.      Returns:         theta : np.ndarray (m × (+6 more)
 
 ### Community 54 - "Community 54"
-Cohesion: 0.35
-Nodes (6): DynamicRouter(), decide(), isDiscoveryDone(), isNeighborRssiValid(), isSelfRssiValid(), printStatus()
+Cohesion: 0.11
+Nodes (18): 1. Compressive Sensing IMU, 2. Compressive Sensing PPG, 3. Pengujian Relay Mesh Berbasis Manipulasi RSSI, 4. Pengujian QoS Mesh, 5.1 Skema Pengujian Sistem, 5.2 Pengujian Compressive Sensing pada Sinyal IMU, 5.3 Pengujian Compressive Sensing pada Sinyal PPG, 5.4 Pengujian ESP-NOW Mesh dengan Manipulasi RSSI (+10 more)
+
+### Community 58 - "Community 58"
+Cohesion: 0.16
+Nodes (14): _build_group_lookups(), listener.py — MQTT subscribe + dispatch ke NodeState (group-aware).  Tanggung, Build reverse lookup maps dari NODE_GROUPS config.      Returns:         imu_, Jalankan MQTT listener (blocking — panggil dari thread atau main).      Args:, run(), main(), Entry point: python -m server.apps.reconstruct  (dari root project)          at, Setup logging, singleton, lalu jalankan listener (blocking). (+6 more)
+
+### Community 60 - "Community 60"
+Cohesion: 0.14
+Nodes (14): Brand bans (on top of the shared absolute bans), Brand permissions, Brand register, Color, Font selection procedure, Imagery, Layout, Motion (+6 more)
+
+### Community 61 - "Community 61"
+Cohesion: 0.14
+Nodes (14): skillPath, sourceType, computedHash, source, sourceType, computedHash, skillPath, sourceType (+6 more)
+
+### Community 62 - "Community 62"
+Cohesion: 0.25
+Nodes (7): Extract Flow, Step 1: Discover the Design System, Step 2: Identify Patterns, Step 3: Plan Extraction, Step 4: Extract & Enrich, Step 5: Migrate, Step 6: Document
+
+### Community 63 - "Community 63"
+Cohesion: 0.27
+Nodes (17): currentCycleNumber(), currentPhaseIndex(), extractPacketMeta(), jitteredRssi(), loop(), nextHopMac(), phaseNumber(), printPhaseBannerIfChanged() (+9 more)
+
+### Community 64 - "Community 64"
+Cohesion: 0.22
+Nodes (15): build_mqtt_client(), Event, main(), parse_args(), r""" Capture end-to-end automated test: - serial from gateway / node1 / node2 -, serial_reader(), write_csv(), Queue (+7 more)
+
+### Community 65 - "Community 65"
+Cohesion: 0.26
+Nodes (13): calc_metrics(), capture(), ensure_output_dir(), main(), parse_args(), plot_hr_spo2(), plot_metrics(), plot_overlay() (+5 more)
+
+### Community 67 - "Community 67"
+Cohesion: 0.24
+Nodes (9): begin(), _connectMqtt(), _connectWifi(), initNTP(), _mqttStateStr(), NetworkMqtt(), publish(), _publishOnlineStatus() (+1 more)
+
+### Community 68 - "Community 68"
+Cohesion: 0.20
+Nodes (9): TaskHandle_t, begin(), checkTaskStack(), healthCheck(), _initHardwareWdt(), _printRestartHistory(), restartCount(), SystemWatchdog() (+1 more)
+
+### Community 69 - "Community 69"
+Cohesion: 0.59
+Nodes (11): MqttMessage, RawPacket, RouteResult, route(), _routeCombined(), _routeCsAxis(), _routeCsIr(), _routeHeartbeat() (+3 more)
+
+### Community 70 - "Community 70"
+Cohesion: 0.18
+Nodes (12): sourceType, cavecrew, caveman, timeline-report, wowerpoint, source, computedHash, skillPath (+4 more)
+
+### Community 71 - "Community 71"
+Cohesion: 0.18
+Nodes (10): Arti Log Serial, Firmware yang Diunggah, Kesimpulan yang Ingin Dibuktikan, Log Gateway, Log Node Pengirim, Log Node Relay, Pengujian ESP-NOW Mesh dengan Manipulasi RSSI Otomatis, Skema Fase Otomatis (+2 more)
+
+### Community 72 - "Community 72"
+Cohesion: 0.18
+Nodes (11): PacketMeta, cycle, neighborRssi, nodeId, packetBytes, phaseIdx, scenario, selfRssi (+3 more)
+
+### Community 73 - "Community 73"
+Cohesion: 0.20
+Nodes (9): Broker MQTT, File Hasil, Firmware, Makna Pembuktian, Output yang Dihasilkan, Pengujian End-to-End Otomatis, Script Capture, Serial (+1 more)
+
+### Community 74 - "Community 74"
+Cohesion: 0.42
+Nodes (8): Event, main(), mean(), parse_args(), r""" Capture serial logs from three ESP32 nodes during the automated RSSI mesh t, reader_thread(), stddev(), write_csv()
+
+### Community 75 - "Community 75"
+Cohesion: 0.22
+Nodes (8): 5.1 Skema Pengujian Sistem, 5.2.1 Pengujian Compressive Sensing pada Sinyal IMU, 5.2.2 Pengujian Compressive Sensing pada Sinyal PPG, 5.2.3 Pengujian ESP-NOW Mesh dengan Manipulasi RSSI, 5.2.4 Pengujian End-to-End Sistem, 5.2.5 Analisis Umum Hasil Pengujian, 5.2 Proses Pengujian dan Analisis Hasil, BAB 5 PENGUJIAN DAN ANALISIS
+
+### Community 76 - "Community 76"
+Cohesion: 0.44
+Nodes (8): Document, add_centered_picture_after(), build_markdown(), insert_paragraph_after(), insert_table_after(), main(), read_csv(), replace_bab5_content()
+
+### Community 77 - "Community 77"
+Cohesion: 0.28
+Nodes (5): onContact(), reset(), update(), SensorPPG(), SensorPPG()
+
+### Community 78 - "Community 78"
+Cohesion: 0.42
+Nodes (8): Event, main(), mean(), parse_args(), r""" Capture serial logs from three ESP32 nodes during the automated RSSI mesh t, reader_thread(), stddev(), write_csv()
+
+### Community 79 - "Community 79"
+Cohesion: 0.33
+Nodes (4): QualityAssessor, Hitung metrik kualitas rekonstruksi CS.      Args:         phi : np.ndarray (, Statistik akumulatif sejak assessor dibuat.         Berguna untuk print ke cons, Satu baris ringkasan statistik global.
+
+### Community 80 - "Community 80"
+Cohesion: 0.29
+Nodes (7): TestContext, activeRelayRssi, activeSelfRssi, cycleCount, lastPhaseIndex, lastPhasePrint, txSeq
+
+### Community 81 - "Community 81"
+Cohesion: 0.40
+Nodes (5): get_all_events(), get_node_events(), _node_or_404(), Event log untuk satu node, opsional filter per tipe., Semua event terbaru dari semua node, opsional filter per tipe.
+
+### Community 82 - "Community 82"
+Cohesion: 0.40
+Nodes (5): get_db_info(), get_metrics(), _now_ms(), Statistik throughput dan kualitas sejak server start.     Diupdate real-time ol, Ukuran file DB, jumlah baris per tabel, dan konfigurasi retention.
+
+### Community 83 - "Community 83"
+Cohesion: 0.40
+Nodes (3): Dilempar jika ingin validasi gagal menghentikan eksekusi secara eksplisit., ValidationError, Exception
+
+### Community 84 - "Community 84"
+Cohesion: 0.40
+Nodes (5): PhaseProfile, expectDirect, name, relayBaseRssi, senderSelfBaseRssi
+
+### Community 86 - "Community 86"
+Cohesion: 0.50
+Nodes (3): 4.3.1 Skenario Pengujian, 4.3.2 Hasil Pengujian dan Analisis, 4.3 Pengujian Skenario Routing ESP-NOW Mesh
 
 ### Community 90 - "Community 90"
-Cohesion: 0.05
-Nodes (42): 2. Node Cards (Sidebar Kiri), 5. Vitals Trend Chart (Detail Panel — Tengah Kanan), 6. Activity Timeline (Detail Panel — Tengah Bawah), 9. Alert System, Arsitektur Dashboard, code:block3 (┌─────────────────────────────┐), code:block4 (── ACTIVITY CLASSIFIER v1.0 ──), code:json ({) (+34 more)
-
-### Community 109 - "Community 109"
-Cohesion: 0.36
-Nodes (6): ImuSample, RouteDecision, _imuInRange(), _resetAllEncoders(), _selectDstMac(), taskCSSender()
+Cohesion: 0.06
+Nodes (36): 2. Node Cards (Sidebar Kiri), 5. Vitals Trend Chart (Detail Panel — Tengah Kanan), 6. Activity Timeline (Detail Panel — Tengah Bawah), 9. Alert System, Arsitektur Dashboard, code:block3 (┌─────────────────────────────┐), code:block4 (── ACTIVITY CLASSIFIER v1.0 ──), code:css (:root {) (+28 more)
 
 ### Community 115 - "Community 115"
 Cohesion: 0.11
 Nodes (68): C, _(), ae(), at(), be(), bt(), Ce(), Ct() (+60 more)
 
-### Community 166 - "Community 166"
-Cohesion: 0.08
-Nodes (12): DynamicRouter, MqttMessage, RawPacket, RouteResult, route(), _routeCombined(), _routeCsAxis(), _routeCsIr() (+4 more)
-
 ### Community 168 - "Community 168"
 Cohesion: 0.08
-Nodes (41): Path, benchmark_pair(), count_tokens(), main(), print_table(), main(), print_usage(), build_compress_prompt() (+33 more)
+Nodes (40): benchmark_pair(), count_tokens(), main(), print_table(), main(), print_usage(), build_compress_prompt(), build_fix_prompt() (+32 more)
 
 ### Community 169 - "Community 169"
-Cohesion: 0.40
-Nodes (5): computedHash, skillPath, source, sourceType, caveman-commit
+Cohesion: 0.25
+Nodes (8): computedHash, skillPath, source, sourceType, computedHash, sourceType, caveman-commit, knowledge-agent
 
 ### Community 170 - "Community 170"
 Cohesion: 0.09
@@ -592,56 +674,36 @@ Cohesion: 0.07
 Nodes (28): 1️⃣ Sensor `begin(true)` = BLOCKING INFINITE LOOP, 1. WiFi.mode() vs ESP-NOW Init Order (Gateway), 2️⃣ Gateway Mulai Beacon SETELAH WiFi + MQTT Selesai, 2. Sensor Mengirim Data ke Channel Salah Sementara, 3. Promiscuous Mode + ESP-NOW Interference, 3️⃣ Tidak Ada Mekanisme Re-discovery Setelah Init, Analisis Konektivitas ESP-NOW / MQTT — Problem & Solusi, Arsitektur Saat Ini (+20 more)
 
 ### Community 207 - "Community 207"
-Cohesion: 0.15
-Nodes (12): Registry validasi dengan state per-node untuk monotonicity check.      Buat sa, Kembalikan salinan counter statistik., Kembalikan salinan counter statistik., ValidatorRegistry, Simulasi beberapa window berturut-turut — ts maju terus., Jika schema gagal, layer length/finite tidak dijalankan., test_registry_invalid_counts(), test_registry_monotonicity_caught() (+4 more)
+Cohesion: 0.11
+Nodes (15): Cek apakah ts valid dibandingkan ts terakhir untuk node ini.          Returns:, Registry validasi dengan state per-node untuk monotonicity check.      Buat sa, Validasi payload cs_imu.          Args:             node_id : ID node pengiri, Validasi payload cs_ppg.          Args:             node_id : ID node pengiri, Kembalikan salinan counter statistik., Jalankan semua layer validasi secara berurutan.         Berhenti lebih awal jik, ValidatorRegistry, Simulasi beberapa window berturut-turut — ts maju terus. (+7 more)
 
 ### Community 211 - "Community 211"
-Cohesion: 0.16
-Nodes (25): _make_db(), _make_results(), Nilai ndarray harus bisa dibaca kembali dari DB., Tanpa report, kolom metrik harus NULL., get_last_windows harus filter signal dengan benar., DB di file temporer — diisolasi per test., Buat hasil rekonstruksi dummy., test_db_size_bytes_positive_after_write() (+17 more)
+Cohesion: 0.12
+Nodes (30): _FakeMetric, _FakeReport, _make_db(), _make_results(), Nilai ndarray harus bisa dibaca kembali dari DB., Metrik dari WindowReport harus tersimpan., Tanpa report, kolom metrik harus NULL., get_last_windows harus filter signal dengan benar. (+22 more)
 
 ### Community 213 - "Community 213"
 Cohesion: 0.21
 Nodes (14): _check_finite(), _check_length(), _check_node_whitelist(), _check_ts_monotonic(), get_validation_stats(), Validasi payload cs_ppg.      Args:         payload  : dict hasil json.loads() d, Reset timestamp state untuk node tertentu (misal: setelah reboot terdeteksi)., Return info state validator saat ini (untuk debugging). (+6 more)
 
 ### Community 214 - "Community 214"
-Cohesion: 0.13
-Nodes (13): _MonotonicityTracker, Simpan ts terakhir yang valid per node.     Instance ini dimiliki oleh Validato, Simpan ts terakhir yang valid per node.     Instance ini dimiliki oleh Validato, Reset semua state — berguna saat server restart., Reset semua state — berguna saat server restart., Lompat besar ke depan = kemungkinan reboot, diterima dengan warning., Monotonicity tracking harus per-node, tidak saling pengaruh., test_monotonicity_backward_ts() (+5 more)
-
-### Community 215 - "Community 215"
-Cohesion: 0.33
-Nodes (4): Dilempar jika ingin validasi gagal menghentikan eksekusi secara eksplisit., Dilempar jika ingin validasi gagal menghentikan eksekusi secara eksplisit., ValidationError, Exception
-
-### Community 217 - "Community 217"
-Cohesion: 0.10
-Nodes (19): _get(), _get_float(), _get_int(), Ambil env var dengan fallback ke default yang aman untuk lokal., Ambil env var sebagai int., Ambil env var sebagai float., Public API server core.  apps/ HANYA boleh import dari sini, bukan dari submod, assess() (+11 more)
+Cohesion: 0.15
+Nodes (11): _MonotonicityTracker, Simpan ts terakhir yang valid per node.     Instance ini dimiliki oleh Validato, Reset semua state — berguna saat server restart., Lompat besar ke depan = kemungkinan reboot, diterima dengan warning., Monotonicity tracking harus per-node, tidak saling pengaruh., test_monotonicity_backward_ts(), test_monotonicity_different_nodes_independent(), test_monotonicity_first_packet() (+3 more)
 
 ### Community 220 - "Community 220"
 Cohesion: 0.06
 Nodes (32): 1. Salin file dashboard/index.html ke server/static/index.html, 2. Install dependencies baru:, 3. Jalankan server (dari root project):, 4. Buka dashboard:, @app.get("/", include_in_schema=False), app.mount("/static", StaticFiles(directory=_STATIC_DIR), name="static"), async def serve_dashboard():, cp dashboard/index.html server/static/index.html (+24 more)
 
-### Community 221 - "Community 221"
-Cohesion: 0.29
-Nodes (7): _layer5_whitelist(), Layer 5: cek node_id ada di whitelist (jika whitelist aktif)., Layer 5: cek node_id ada di whitelist (jika whitelist aktif)., Whitelist None = terima semua., test_whitelist_allowed(), test_whitelist_denied(), test_whitelist_disabled()
-
 ### Community 222 - "Community 222"
-Cohesion: 0.12
-Nodes (16): lifespan(), FastAPI, Sajikan halaman kalibrasi IMU dengan visualisasi 3D., serve_calibration(), delete_node_data(), purge_old(), Hapus baris windows dan events yang lebih lama dari `max_age_hours`.     Defaul, Hapus semua windows dan events untuk node tertentu.     Berguna untuk reset nod (+8 more)
+Cohesion: 0.14
+Nodes (12): lifespan(), FastAPI, Sajikan halaman kalibrasi IMU dengan visualisasi 3D., serve_calibration(), delete_node_data(), purge_old(), Hapus baris windows dan events yang lebih lama dari `max_age_hours`.     Defaul, Hapus semua windows dan events untuk node tertentu.     Berguna untuk reset nod (+4 more)
 
 ### Community 223 - "Community 223"
 Cohesion: 0.17
 Nodes (12): 2.1 Isi `core/__init__.py`, 2.2 Migrasi referensi cs_utils, 2.3 Hapus cs_utils.py, 2.4 Buat `tests/test_cs_encoder.py`, 2.5 Verifikasi Langkah 2, code:python (# server/core/__init__.py), code:bash (grep -rn "cs_utils" server/), code:python (# SEBELUM) (+4 more)
 
-### Community 224 - "Community 224"
-Cohesion: 0.10
-Nodes (19): Test konsistensi CS encoder: router, gaussian, lasso., Φ harus berukuran (M, N)., Θ = Φ·Ψ harus berukuran (M, N)., Ψ (basis DCT) harus berukuran (N, N)., Rekonstruksi dari y(M,) harus menghasilkan x_hat(N,)., Input nol harus menghasilkan output nol., Harus menerima list Python, bukan hanya ndarray., Residual dari sinyal sparse (di domain DCT) harus kecil (< 0.5). (+11 more)
-
 ### Community 225 - "Community 225"
 Cohesion: 0.10
 Nodes (16): AbstractEventLoop, BroadcastHub, Thread-safe hub untuk push pesan ke semua WebSocket client., Simpan referensi event loop., Kirim data ke semua client, hapus yang sudah disconnect., Dipanggil dari MQTT thread., Dipanggil dari MQTT thread., Dipanggil dari MQTT thread. (+8 more)
-
-### Community 226 - "Community 226"
-Cohesion: 0.22
-Nodes (7): Args:             pipeline      : sklearn Pipeline dengan steps [scaler, smote,, Buka koneksi ke database dan buat tabel jika belum ada.         Panggil sekali, str, BadModel, TypeError jika model tidak punya predict_proba., Model tanpa predict_proba — untuk test validasi engine., test_load_model_no_predict_proba()
 
 ### Community 227 - "Community 227"
 Cohesion: 0.17
@@ -672,8 +734,8 @@ Cohesion: 0.22
 Nodes (9): 4.1 Buat `core/logger.py`, 4.2 Pola penggunaan di setiap modul, 4.3 Daftar print() yang harus dimigrasi, 4.4 Verifikasi Langkah 4, code:python (# server/core/logger.py), code:python (# Di setiap file core/ dan apps/), code:bash (grep -rn "^[[:space:]]*print(" server/core/ server/apps/), code:bash (# Tidak boleh ada print() di core/ (kecuali yang dikecualika) (+1 more)
 
 ### Community 237 - "Community 237"
-Cohesion: 0.06
-Nodes (57): MLInferenceEngine, Hapus model dari memori., Generic inference engine untuk model .pkl + manifest model_config.json.      L, _make_model_files(), _make_window(), tests/test_ml_engine.py — Unit test untuk ML Inference Engine.  Jalankan dari, WindowInput dengan sinyal dummy., Engine berhasil load model dan config yang valid. (+49 more)
+Cohesion: 0.07
+Nodes (47): MLInferenceEngine, Hapus model dari memori., Generic inference engine untuk model .pkl + manifest model_config.json.      L, _make_model_files(), _make_window(), tests/test_ml_engine.py — Unit test untuk ML Inference Engine.  Jalankan dari, WindowInput dengan sinyal dummy., Engine berhasil load model dan config yang valid. (+39 more)
 
 ### Community 238 - "Community 238"
 Cohesion: 0.13
@@ -683,41 +745,25 @@ Nodes (10): Metrik kualitas untuk satu sinyal dalam satu window., Ringkasan satu
 Cohesion: 0.50
 Nodes (4): 1. Konteks & Tujuan, Latar belakang, Masalah yang ditemukan, Tujuan refactor
 
-### Community 242 - "Community 242"
-Cohesion: 0.14
-Nodes (11): _now_ms(), Simpan satu window rekonstruksi ke tabel `windows`.         Satu window → beber, Simpan satu window rekonstruksi ke tabel `windows`.         Satu window → beber, Catat satu event ke tabel `events`.          event_type contoh:           "NO, Catat satu event ke tabel `events`.          event_type contoh:           "NO, Hapus data lebih tua dari max_age_hours.         Default: gunakan retention_hou, Hapus data lebih tua dari max_age_hours.         Default: gunakan retention_hou, Epoch time dalam milidetik. (+3 more)
-
 ### Community 243 - "Community 243"
 Cohesion: 0.33
 Nodes (4): Catatan Fitur PPG, PPG Models, Rencana Model, Sinyal Input
 
-### Community 244 - "Community 244"
-Cohesion: 0.17
-Nodes (8): Cek apakah ts valid dibandingkan ts terakhir untuk node ini.          Returns:, Cek apakah ts valid dibandingkan ts terakhir untuk node ini.          Returns:, Validasi payload cs_imu.          Args:             node_id : ID node pengiri, Validasi payload cs_imu.          Args:             node_id : ID node pengiri, Validasi payload cs_ppg.          Args:             node_id : ID node pengiri, Validasi payload cs_ppg.          Args:             node_id : ID node pengiri, Jalankan semua layer validasi secara berurutan.         Berhenti lebih awal jik, Jalankan semua layer validasi secara berurutan.         Berhenti lebih awal jik
-
 ### Community 245 - "Community 245"
 Cohesion: 0.15
 Nodes (11): Architecture, code:bash (python -m venv .venv), code:bash (pip install -r requirements.txt), code:bash (cp .env.example .env), code:bash (python -m server), code:bash (python -m server.apps.reconstruct), code:bash (pytest tests/), Health Monitor Server (+3 more)
-
-### Community 246 - "Community 246"
-Cohesion: 0.33
-Nodes (4): Reset state node tertentu (misalnya saat reboot terdeteksi)., Reset state node tertentu (misalnya saat reboot terdeteksi)., Reset state monotonicity untuk node tertentu., Reset state monotonicity untuk node tertentu.
 
 ### Community 248 - "Community 248"
 Cohesion: 0.29
 Nodes (7): code:c++ (const char* json = "{\"sensor\":\"gps\",\"time\":1351824120,), code:c++ (JsonDocument doc;), Deserialization, Features, Quickstart, Serialization, Sponsors
 
 ### Community 258 - "Community 258"
-Cohesion: 0.10
-Nodes (23): wrappers.py — Sklearn-compatible wrappers untuk model .pkl non-standar.  Masal, Wrapper sklearn-compatible untuk model SVM yang disimpan sebagai dict.      Di, Args:             X: ndarray shape (n_samples, n_features), dtype float64, Predict kelas (encoded integer)., SVMActivityWrapper, build_psi(), build_theta(), generate_phi() (+15 more)
-
-### Community 260 - "Community 260"
-Cohesion: 0.38
-Nodes (4): Public API for Compressive Sensing package. Other modules should import CS conc, Rekonstruksi sinyal menggunakan OMP.          Args:             y : (m,) meas, Rekonstruksi sinyal menggunakan LASSO.          Args:             y : (m,) me, reconstruct()
+Cohesion: 0.12
+Nodes (13): Any, Args:             pipeline      : sklearn Pipeline dengan steps [scaler, smote,, Buka koneksi ke database dan buat tabel jika belum ada.         Panggil sekali, Load model .pkl dan manifest JSON.          Thread-safe: assign atomik di akhi, Validasi minimal struktur model_config.json., Validasi model punya interface yang dibutuhkan., _validate_config(), _validate_model() (+5 more)
 
 ### Community 261 - "Community 261"
-Cohesion: 0.29
-Nodes (6): notify_event(), notify_window(), Dipanggil setelah window selesai direkonstruksi.     Push payload ke semua /ws/, Dipanggil setelah window selesai direkonstruksi.     Push payload ke semua /ws/, Dipanggil saat ada event anomali atau validasi gagal.     Push ke semua /ws/eve, Dipanggil saat ada event anomali atau validasi gagal.     Push ke semua /ws/eve
+Cohesion: 0.40
+Nodes (4): notify_event(), notify_window(), Dipanggil setelah window selesai direkonstruksi.     Push payload ke semua /ws/, Dipanggil saat ada event anomali atau validasi gagal.     Push ke semua /ws/eve
 
 ### Community 273 - "Community 273"
 Cohesion: 0.08
@@ -739,10 +785,6 @@ Nodes (16): Infer satu window. Thread-safe (read-only akses ke model).          
 Cohesion: 0.13
 Nodes (14): author, _comment, description, features, labels, model_name, model_version, output (+6 more)
 
-### Community 285 - "Community 285"
-Cohesion: 0.15
-Nodes (9): Any, Load model .pkl dan manifest JSON.          Thread-safe: assign atomik di akhi, Validasi minimal struktur model_config.json., Validasi model punya interface yang dibutuhkan., _validate_config(), _validate_model(), FeatureExtractor, Ekstrak feature vector dari WindowInput berdasarkan schema di config.      Args: (+1 more)
-
 ### Community 288 - "Community 288"
 Cohesion: 0.05
 Nodes (43): A. Kontrak Engine (Non-Negotiable), Alur Kerja Saat Generate Notebook, B. FEATURE_SCHEMA sebagai Single Source of Truth (SSOT), C. Urutan Kelas Mengikuti sklearn (Alphabetical), Checklist Final Sebelum Generate, code:block1 (model.predict_proba(X)), code:python (from imblearn.pipeline import Pipeline as ImbPipeline), code:python (from sklearn.pipeline import Pipeline) (+35 more)
@@ -762,10 +804,6 @@ Nodes (24): author, svm__C, svm__gamma, description, features, labels, model_nam
 ### Community 294 - "Community 294"
 Cohesion: 0.07
 Nodes (18): _ModelEntry, ModelRegistry, Pool dinamis MLInferenceEngine yang jalan parallel.      Jumlah model tidak di, Daftarkan satu model ke registry.          Args:             model_path  : pa, Scan folder dan auto-register semua pasangan .pkl + config.          Konvensi pe, Scan folder dan auto-register semua pasangan .pkl + config.          Konvensi, Hapus model dari registry dan bebaskan memori., Hot-reload model tertentu tanpa menyentuh model lain.         Berguna saat .pkl (+10 more)
-
-### Community 295 - "Community 295"
-Cohesion: 0.15
-Nodes (8): Ambil N window terakhir untuk sinyal tertentu dari node tertentu.          Ret, Ambil N window terakhir untuk sinyal tertentu dari node tertentu.          Ret, Ambil N event terakhir, opsional filter node_id dan/atau event_type., Ambil N event terakhir, opsional filter node_id dan/atau event_type., Statistik ringkas untuk satu node (berguna untuk dashboard).          Returns, Statistik ringkas untuk satu node (berguna untuk dashboard).          Returns, Daftar semua node_id yang pernah kirim data., Daftar semua node_id yang pernah kirim data.
 
 ### Community 296 - "Community 296"
 Cohesion: 0.12
@@ -796,32 +834,32 @@ Cohesion: 0.10
 Nodes (38): hasGeneratedHeader(), HEADER_MARKERS, isGeneratedFile(), isGitIgnored(), acceptCli(), argVal(), deindentContent(), detectCommentSyntax() (+30 more)
 
 ### Community 303 - "Community 303"
-Cohesion: 0.22
-Nodes (9): 1. Pastikan model sudah sklearn-compatible, 2. Jika perlu wrapper, tambah class di `wrappers.py` lalu generate, 3. Buat file `_config.json`, 4. Verifikasi, 5. Tidak perlu restart untuk model baru, Cara Menambah Model Baru, code:python (from apps.ml_inference.wrappers import KelasBaru), code:python (from apps.ml_inference import ModelRegistry) (+1 more)
+Cohesion: 0.25
+Nodes (8): 2. Jika perlu wrapper, tambah class di `wrappers.py` lalu generate, 3. Buat file `_config.json`, 4. Verifikasi, 5. Tidak perlu restart untuk model baru, Cara Menambah Model Baru, code:python (from apps.ml_inference.wrappers import KelasBaru), code:python (from apps.ml_inference import ModelRegistry), code:python (registry.register("models/imu/model_baru.pkl", "models/imu/m)
 
 ### Community 306 - "Community 306"
-Cohesion: 0.25
-Nodes (8): code:python (# wrappers.py — tambah class baru), code:python (from apps.ml_inference.wrappers import ModelWithSeparateScal), code:python (class CustomPreprocessWrapper:), code:python (from sklearn.pipeline import Pipeline), Menggunakan Scaler / Preprocessing, Opsi A: Scaler di dalam sklearn Pipeline (Direkomendasikan), Opsi B: Scaler sebagai file `.pkl` terpisah, Opsi C: Preprocessing custom (non-sklearn)
+Cohesion: 0.29
+Nodes (7): code:python (# wrappers.py — tambah class baru), code:python (from apps.ml_inference.wrappers import ModelWithSeparateScal), code:python (class CustomPreprocessWrapper:), Menggunakan Scaler / Preprocessing, Opsi A: Scaler di dalam sklearn Pipeline (Direkomendasikan), Opsi B: Scaler sebagai file `.pkl` terpisah, Opsi C: Preprocessing custom (non-sklearn)
 
 ### Community 307 - "Community 307"
-Cohesion: 0.18
-Nodes (11): code:json ({), code:python (# Di wrappers.py (tambah class ini):), code:json ({), code:json ({), Contoh 1 — RandomForest sklearn Pipeline (Paling Sederhana), Contoh 2 — Model dengan Scaler Terpisah, Contoh 3 — Model PPG (Klasifikasi HR), Contoh Lengkap (+3 more)
+Cohesion: 0.24
+Nodes (10): code:python (from sklearn.pipeline import Pipeline), code:python (# Di wrappers.py (tambah class ini):), code:json ({), Contoh 1 — RandomForest sklearn Pipeline (Paling Sederhana), Contoh 2 — Model dengan Scaler Terpisah, Contoh 3 — Model PPG (Klasifikasi HR), Contoh Lengkap, Kontrak Config JSON (+2 more)
 
 ### Community 308 - "Community 308"
 Cohesion: 0.29
 Nodes (7): 1. File `.pkl` harus expose `predict_proba()`, 2. `n_features_in_` disarankan ada, 3. Urutan label harus konsisten, code:python (proba = model.predict_proba(X)), code:python (if hasattr(model, "n_features_in_"):), code:python (# Contoh: model punya classes_ = ["duduk", "jalan", "jatuh",), Kontrak Model — Syarat Wajib
 
 ### Community 310 - "Community 310"
-Cohesion: 0.33
-Nodes (6): code:python (import pickle), code:python (# Tambah di server/apps/ml_inference/wrappers.py), code:python (# Jalankan dari root server/:), Deteksi masalah ini:, Model Disimpan sebagai Dict (Non-Standar), Solusi: Buat wrapper class di `wrappers.py`
+Cohesion: 0.29
+Nodes (7): 1. Pastikan model sudah sklearn-compatible, code:python (import pickle), code:python (# Tambah di server/apps/ml_inference/wrappers.py), code:python (# Jalankan dari root server/:), Deteksi masalah ini:, Model Disimpan sebagai Dict (Non-Standar), Solusi: Buat wrapper class di `wrappers.py`
 
 ### Community 311 - "Community 311"
 Cohesion: 0.05
 Nodes (36): 1. `taskCSSender` — 7 `esp_now_send()` per window berturutan, 2. Dynamic Peer (v4.1) — `esp_now_del_peer` + `esp_now_add_peer` per send, 5. Log berlebihan di produksi, 6. `taskCSSender` delay di akhir loop = `IMU_SAMPLE_MS = 10ms`, 7. `DynamicRouter` overhead, 9. `processPendingChannelSync()` dipanggil setiap window, code:block1 (┌─────────────────────────────────────────────────────────┐), code:block2 (SETIAP WINDOW (setiap 10ms dari IMU_SAMPLE_MS):) (+28 more)
 
 ### Community 312 - "Community 312"
-Cohesion: 0.08
-Nodes (46): QualityAssessor, Hitung metrik kualitas rekonstruksi CS.      Args:         phi : np.ndarray (, Statistik akumulatif sejak assessor dibuat.         Berguna untuk print ke cons, Satu baris ringkasan statistik global., _encode(), _make_assessor(), _make_full_results_and_measurements(), _make_phi() (+38 more)
+Cohesion: 0.10
+Nodes (42): _encode(), _make_assessor(), _make_full_results_and_measurements(), _make_phi(), _make_sparse_signal(), Jika x_hat salah (noise), residual besar → LOW_QUALITY atau CRITICAL., Rekonstruksi sangat buruk → CRITICAL.     Paksa dengan x_hat = 0 sehingga resid, sparsity_ratio = fraksi elemen non-nol. (+34 more)
 
 ### Community 314 - "Community 314"
 Cohesion: 0.08
@@ -848,8 +886,8 @@ Cohesion: 0.07
 Nodes (28): code:yaml (---), code:markdown (---), code:json ({), code:markdown (<!-- SEED: re-run /impeccable document once there's code to ), Component translation rules, Narrative mapping, Pitfalls, Scan mode (approach C: auto-extract, then confirm descriptive language) (+20 more)
 
 ### Community 323 - "Community 323"
-Cohesion: 0.12
-Nodes (17): code:css (/* Hide focus ring for mouse/touch */), code:html (<!-- When modal is open -->), code:javascript (const dialog = document.querySelector('dialog');), code:html (<button popovertarget="menu">Open menu</button>), code:html (<div role="tablist">), Destructive Actions: Undo > Confirm, Focus Rings: Do Them Right, Form Design: The Non-Obvious (+9 more)
+Cohesion: 0.07
+Nodes (26): Anti-Patterns, code:css (/* Hide focus ring for mouse/touch */), code:html (<!-- When modal is open -->), code:javascript (const dialog = document.querySelector('dialog');), code:html (<button popovertarget="menu">Open menu</button>), code:css (.trigger {), code:html (<button popovertarget="menu" class="trigger">Open</button>), code:css (.dropdown {) (+18 more)
 
 ### Community 325 - "Community 325"
 Cohesion: 0.07
@@ -880,8 +918,8 @@ Cohesion: 0.08
 Nodes (23): Appropriate to Context, Assess Delight Opportunities, Celebration Moments, code:css (/* Satisfying button press */), code:block2 ("Error 404"), code:block3 ("No projects"), code:block4 ("Delete"), code:block5 (Loading messages: write ones specific to your product, not g) (+15 more)
 
 ### Community 334 - "Community 334"
-Cohesion: 0.12
-Nodes (15): Assess What "Extraordinary" Means Here, code:block1 (──────────── ⚡ OVERDRIVE ─────────────), code:css (@supports (animation-timeline: scroll()) {), code:javascript (if ('gpu' in navigator) { /* WebGPU */ }), For data-heavy interfaces, For functional UI, For performance-critical UI, For visual/marketing surfaces (+7 more)
+Cohesion: 0.08
+Nodes (23): Animate complex properties, Assess What "Extraordinary" Means Here, code:block1 (──────────── ⚡ OVERDRIVE ─────────────), code:css (@supports (animation-timeline: scroll()) {), code:javascript (if ('gpu' in navigator) { /* WebGPU */ }), For data-heavy interfaces, For functional UI, For performance-critical UI (+15 more)
 
 ### Community 335 - "Community 335"
 Cohesion: 0.06
@@ -900,16 +938,16 @@ Cohesion: 0.18
 Nodes (14): appendOriginToDirective(), buildTagBlock(), commentClose(), commentOpen(), CONFIG_PATH, __dirname, findCspMetaTags(), getAttr() (+6 more)
 
 ### Community 339 - "Community 339"
-Cohesion: 0.17
-Nodes (23): cleanup(), clearScrollY(), clearSession(), copyToClipboard(), desc(), handleClick(), handleKeyDown(), handleMouseMove() (+15 more)
+Cohesion: 0.14
+Nodes (26): cleanup(), clearScrollY(), clearSession(), copyToClipboard(), desc(), handleClick(), handleKeyDown(), handleMouseMove() (+18 more)
 
 ### Community 340 - "Community 340"
 Cohesion: 0.09
 Nodes (21): code:block1 (N. Good design is <principle> — Score: X/3), code:` (/make-plan Design <product/screen/component name> from scrat), code:` (/make-plan Refine <product/screen/component name> based on a), code:` (/make-plan Redesign <product/screen/component name>. Current), Delegation Model, Design Is, Do not use for, Failure Modes to Prevent (+13 more)
 
 ### Community 341 - "Community 341"
-Cohesion: 0.17
-Nodes (11): Assess Animation Opportunities, Delight Moments, Entrance Animations, Feedback & Guidance, Implement Animations, Micro-interactions, Navigation & Flow, Plan Animation Strategy (+3 more)
+Cohesion: 0.09
+Nodes (21): Accessibility, Assess Animation Opportunities, code:css (/* Recommended: natural deceleration */), code:css (/* Prefer for simple, declarative animations */), code:javascript (/* Use for complex, interactive animations */), code:css (@media (prefers-reduced-motion: reduce) {), CSS Animations, Delight Moments (+13 more)
 
 ### Community 342 - "Community 342"
 Cohesion: 0.09
@@ -932,8 +970,8 @@ Cohesion: 0.11
 Nodes (18): Accent Color Application, Accessibility, Assess Color Opportunity, Background & Surfaces, Balance & Refinement, Borders & Accents, code:json ({"id":"color-amount","kind":"range","min":0,"max":1,"step":0), Cohesion (+10 more)
 
 ### Community 347 - "Community 347"
-Cohesion: 0.29
-Nodes (7): Accessibility Considerations, Classic Typography Principles, Modular Scale & Hierarchy, Readability & Measure, Typography, Typography System Architecture, Vertical Rhythm
+Cohesion: 0.11
+Nodes (18): Accessibility Considerations, Anti-reflexes worth defending against, Classic Typography Principles, code:css (/* 1. Use font-display: swap for visibility */), code:css (/* Tabular numbers for data alignment */), code:css (/* Even out heading line lengths (browser picks better break), Fluid Type, Font Selection & Pairing (+10 more)
 
 ### Community 348 - "Community 348"
 Cohesion: 0.19
@@ -944,8 +982,8 @@ Cohesion: 0.10
 Nodes (18): 3-Layer Workflow (ALWAYS Follow), code:block1 (search(query="authentication", limit=20, project="my-project), code:block2 (| ID | Time | T | Title | Read |), code:block3 (timeline(anchor=11131, depth_before=3, depth_after=3, projec), code:block4 (timeline(query="authentication", depth_before=3, depth_after), code:block5 (get_observations(ids=[11131, 10942])), code:block6 (search(query="bug", type="observations", obs_type="bugfix", ), code:block7 (search(type="observations", dateStart="2025-11-11", limit=20) (+10 more)
 
 ### Community 350 - "Community 350"
-Cohesion: 0.13
-Nodes (19): clearHandled(), cycleVariant(), extractContext(), handleGo(), id8(), isSessionHandled(), loadSession(), pickVariantContent() (+11 more)
+Cohesion: 0.22
+Nodes (11): clearHandled(), cycleVariant(), isSessionHandled(), loadSession(), pickVariantContent(), queueCheckpoint(), readScrollY(), resumeSession() (+3 more)
 
 ### Community 351 - "Community 351"
 Cohesion: 0.19
@@ -976,8 +1014,8 @@ Cohesion: 0.12
 Nodes (15): Alpha Is A Design Smell, Building Functional Palettes, Color & Contrast, Color Spaces: Use OKLCH, Contrast & Accessibility, Dangerous Color Combinations, Dark Mode Is Not Inverted Light Mode, Never Use Pure Gray or Pure Black (+7 more)
 
 ### Community 359 - "Community 359"
-Cohesion: 0.12
-Nodes (15): Cleanup, code:bash (node {{scripts_path}}/live.mjs), code:bash (node {{scripts_path}}/live-server.mjs stop), code:block2 (LOOP:), code:bash (node {{scripts_path}}/live-status.mjs), Exit, Handle `accept`, Handle `discard` (+7 more)
+Cohesion: 0.10
+Nodes (20): Cleanup, code:bash (node {{scripts_path}}/live.mjs), code:bash (node {{scripts_path}}/live-server.mjs stop), code:block2 (LOOP:), code:bash (node {{scripts_path}}/live-status.mjs), Exit, Handle `accept`, Handle `discard` (+12 more)
 
 ### Community 360 - "Community 360"
 Cohesion: 0.12
@@ -992,8 +1030,8 @@ Cohesion: 0.12
 Nodes (15): Accessibility & Inclusion, Brand & Personality, code:bash (node {{scripts_path}}/load-context.mjs), code:markdown (# Product), Interview mode, not confirmation mode, Minimum viable interview, Register (ask first; it shapes everything below), Step 1: Load current state (+7 more)
 
 ### Community 363 - "Community 363"
-Cohesion: 0.20
-Nodes (10): 1. Read the screenshot (if present), 2. Wrap the element, 3. Load the action's reference, 5. Apply the freeform prompt (if present), 8. Signal done, Aborting an in-flight session, code:bash (node {{scripts_path}}/live-poll.mjs --reply EVENT_ID error "), code:bash (node {{scripts_path}}/live-wrap.mjs --id EVENT_ID --count EV) (+2 more)
+Cohesion: 0.10
+Nodes (21): 1. Read the screenshot (if present), 2. Wrap the element, 3. Load the action's reference, 4. Plan three variants: identity first, then mode, then axes, 5. Apply the freeform prompt (if present), 6. Write all variants in a single edit, 7. Parameters (composition-sized, 0–4 per variant), 8. Signal done (+13 more)
 
 ### Community 364 - "Community 364"
 Cohesion: 0.13
@@ -1004,12 +1042,8 @@ Cohesion: 0.13
 Nodes (14): 1. Accessibility (A11y), 2. Performance, 3. Theming, 4. Responsive Design, 5. Anti-Patterns (CRITICAL), Anti-Patterns Verdict, Audit Health Score, Detailed Findings by Severity (+6 more)
 
 ### Community 366 - "Community 366"
-Cohesion: 0.25
-Nodes (8): Brand bans (on top of the shared absolute bans), Brand permissions, Brand register, Color, Imagery, Layout, Motion, The brand slop test
-
-### Community 367 - "Community 367"
-Cohesion: 0.13
-Nodes (14): Apply Clarity Principles, Assess Current Copy, Button & CTA Text, Confirmation Dialogs, Empty States, Error Messages, Form Labels & Instructions, Help Text & Tooltips (+6 more)
+Cohesion: 0.14
+Nodes (12): Assess Current Typography, code:json ({"id":"scale","kind":"range","min":0.85,"max":1.3,"step":0.0), Establish Hierarchy, Fix Readability, Font Selection, Improve Typography Systematically, Live-mode signature params, Plan Typography Improvements (+4 more)
 
 ### Community 368 - "Community 368"
 Cohesion: 0.18
@@ -1022,10 +1056,6 @@ Nodes (12): getLegacyLiveSessionsDir(), readLiveServerInfo(), completeCli(), com
 ### Community 370 - "Community 370"
 Cohesion: 0.18
 Nodes (14): buildDesignHeader(), designPanelCss(), fetchDesignSystem(), initDesignPanel(), loadDesignPrefs(), loadDetectScript(), onDetectMessage(), renderDesignBody() (+6 more)
-
-### Community 371 - "Community 371"
-Cohesion: 0.25
-Nodes (6): Assess Current Typography, code:json ({"id":"scale","kind":"range","min":0.85,"max":1.3,"step":0.0), Live-mode signature params, Plan Typography Improvements, Register, Verify Typography Improvements
 
 ### Community 372 - "Community 372"
 Cohesion: 0.27
@@ -1044,8 +1074,8 @@ Cohesion: 0.23
 Nodes (13): applyParamDefaults(), applyParamValue(), closedClipPath(), closeTunePopover(), hideParamsPanel(), openTunePopover(), parseVariantParams(), popoverDirection() (+5 more)
 
 ### Community 376 - "Community 376"
-Cohesion: 0.29
-Nodes (7): Amplify the Design, Color Intensification, Composition Boldness, Motion & Animation, Spatial Drama, Typography Amplification, Visual Effects
+Cohesion: 0.17
+Nodes (11): Amplify the Design, Assess Current State, Color Intensification, Composition Boldness, Motion & Animation, Plan Amplification, Register, Spatial Drama (+3 more)
 
 ### Community 377 - "Community 377"
 Cohesion: 0.18
@@ -1068,15 +1098,15 @@ Cohesion: 0.06
 Nodes (34): 10. IMAGE-FIRST CODEX WEBSITE WORKFLOW, 11. WHEN TO TRIGGER IMAGE GENERATION FIRST, 13. WEBSITE REFERENCE RULE, 15. RESPONSIVE FIRST-VIEW RULE, 16. ANTI-NESTED-BOX RULE, 17. REDUCE MICRO-UI CLUTTER RULE, 18. SECTION IMAGE GENERATION RULE, 19. WEBSITE IMAGE SYSTEM RULE (+26 more)
 
 ### Community 383 - "Community 383"
-Cohesion: 0.26
-Nodes (12): beginEditPin(), cancelEditingPin(), clearAnnotations(), finalizeEditingPin(), localCoords(), onAnnotDown(), onAnnotInputKey(), onAnnotMove() (+4 more)
+Cohesion: 0.17
+Nodes (17): beginEditPin(), cancelEditingPin(), clearAnnotations(), extractContext(), finalizeEditingPin(), handleGo(), id8(), localCoords() (+9 more)
 
 ### Community 385 - "Community 385"
 Cohesion: 0.20
 Nodes (10): After This File, code:text (Asset production will work better as a scoped subagent job. ), Codex: Visual Direction & Asset Production, Four stop points before code, Step A: Explore Directions with the User, Step B: Generate the Brand Palette First, Step C: Generate 1-3 Visual Mocks Against the Palette, Step D: Approval Loop (+2 more)
 
 ### Community 386 - "Community 386"
-Cohesion: 0.20
+Cohesion: 0.15
 Nodes (10): code:css (/* Quart out - smooth, refined (recommended default) */), code:css (/* Define animations normally */), Duration: The 100/300/500 Rule, Easing: Pick the Right Curve, Motion Design, Perceived Performance, Performance, Premium Motion Materials (+2 more)
 
 ### Community 387 - "Community 387"
@@ -1115,17 +1145,13 @@ Nodes (7): code:text (Use the provided crop as the approved visual reference.), 
 Cohesion: 0.22
 Nodes (7): After Each Phase, Between Phases, Do Plan, During Each Phase, Execution Protocol, Failure Modes to Prevent, Rules
 
-### Community 396 - "Community 396"
-Cohesion: 0.25
-Nodes (7): Extract Flow, Step 1: Discover the Design System, Step 2: Identify Patterns, Step 3: Plan Extraction, Step 4: Extract & Enrich, Step 5: Migrate, Step 6: Document
-
 ### Community 397 - "Community 397"
 Cohesion: 0.50
 Nodes (6): completionAckForAcceptResult(), completionTypeForAcceptResult(), buildPollReplyPayload(), pollCli(), postReply(), readServerInfo()
 
 ### Community 399 - "Community 399"
-Cohesion: 0.29
-Nodes (7): append-arrays, append-string, code:bash (node {{scripts_path}}/detect-csp.mjs), code:ts (// Dev-only allowance so impeccable live mode can load. Guar), code:ts (// Dev-only allowance so impeccable live mode can load.), Consent prompt template, CSP detection (first-time only)
+Cohesion: 0.20
+Nodes (11): append-arrays, append-string, code:json ({), code:bash (node {{scripts_path}}/detect-csp.mjs), code:ts (// Dev-only allowance so impeccable live mode can load. Guar), code:ts (// Dev-only allowance so impeccable live mode can load.), Consent prompt template, CSP detection (first-time only) (+3 more)
 
 ### Community 400 - "Community 400"
 Cohesion: 0.40
@@ -1135,189 +1161,37 @@ Nodes (4): How claude-mem works, What it does, When it kicks in, Where data live
 Cohesion: 0.33
 Nodes (4): How claude-mem works, What it does, When it kicks in, Where data lives
 
-### Community 402 - "Community 402"
-Cohesion: 0.40
-Nodes (5): computedHash, skillPath, source, sourceType, babysit
-
-### Community 403 - "Community 403"
-Cohesion: 0.40
-Nodes (5): computedHash, skillPath, source, sourceType, cavecrew
-
 ### Community 404 - "Community 404"
-Cohesion: 0.40
-Nodes (5): computedHash, skillPath, source, sourceType, caveman-compress
-
-### Community 405 - "Community 405"
-Cohesion: 0.40
-Nodes (5): computedHash, skillPath, source, sourceType, caveman
-
-### Community 406 - "Community 406"
-Cohesion: 0.22
-Nodes (9): computedHash, skillPath, source, sourceType, caveman-help, weekly-digests, skillPath, source (+1 more)
-
-### Community 407 - "Community 407"
-Cohesion: 0.40
-Nodes (5): computedHash, skillPath, source, sourceType, caveman-review
-
-### Community 408 - "Community 408"
-Cohesion: 0.40
-Nodes (5): computedHash, skillPath, source, sourceType, caveman-stats
+Cohesion: 0.25
+Nodes (8): computedHash, computedHash, skillPath, source, sourceType, sourceType, caveman-compress, image-to-code
 
 ### Community 409 - "Community 409"
-Cohesion: 0.40
-Nodes (5): computedHash, skillPath, source, sourceType, claude-code-plugin-release
+Cohesion: 0.16
+Nodes (14): computedHash, sourceType, computedHash, source, computedHash, skillPath, source, computedHash (+6 more)
 
 ### Community 410 - "Community 410"
-Cohesion: 0.40
-Nodes (5): computedHash, skillPath, source, sourceType, design-is
-
-### Community 411 - "Community 411"
-Cohesion: 0.18
-Nodes (11): computedHash, skillPath, source, sourceType, computedHash, source, sourceType, skills (+3 more)
-
-### Community 412 - "Community 412"
-Cohesion: 0.40
-Nodes (5): computedHash, skillPath, source, sourceType, how-it-works
-
-### Community 414 - "Community 414"
-Cohesion: 0.40
-Nodes (5): computedHash, skillPath, source, sourceType, knowledge-agent
-
-### Community 415 - "Community 415"
-Cohesion: 0.40
-Nodes (5): computedHash, skillPath, source, sourceType, learn-codebase
+Cohesion: 0.25
+Nodes (8): computedHash, source, sourceType, skillPath, computedHash, skillPath, design-taste-frontend, how-it-works
 
 ### Community 416 - "Community 416"
-Cohesion: 0.40
-Nodes (5): computedHash, skillPath, source, sourceType, make-plan
+Cohesion: 0.14
+Nodes (16): skillPath, source, sourceType, sourceType, computedHash, source, skillPath, computedHash (+8 more)
 
 ### Community 417 - "Community 417"
-Cohesion: 0.40
-Nodes (5): computedHash, skillPath, source, sourceType, mem-search
-
-### Community 418 - "Community 418"
-Cohesion: 0.40
-Nodes (5): computedHash, skillPath, source, sourceType, oh-my-issues
-
-### Community 419 - "Community 419"
-Cohesion: 0.40
-Nodes (5): computedHash, skillPath, source, sourceType, pathfinder
-
-### Community 420 - "Community 420"
-Cohesion: 0.40
-Nodes (5): smart-explore, computedHash, skillPath, source, sourceType
-
-### Community 421 - "Community 421"
-Cohesion: 0.40
-Nodes (5): timeline-report, computedHash, skillPath, source, sourceType
-
-### Community 423 - "Community 423"
-Cohesion: 0.40
-Nodes (5): wowerpoint, computedHash, skillPath, source, sourceType
-
-### Community 424 - "Community 424"
-Cohesion: 0.40
-Nodes (5): 4. Plan three variants: identity first, then mode, then axes, Phase A: Extract the identity (non-skippable), Phase B: Pick mode (default vs departure), Phase C: Plan three variants, Phase D: Squint test
-
-### Community 425 - "Community 425"
-Cohesion: 0.67
-Nodes (4): code:json ({), Drift-heal warning, First-time setup (config missing or invalid), Troubleshooting
-
-### Community 426 - "Community 426"
-Cohesion: 0.40
-Nodes (5): Handle fallback, Step 1: Identify where the element actually lives, Step 2: Show three variants in the DOM for preview, Step 3: On accept, write to true source, Step 4: On discard, clean up the served file
-
-### Community 427 - "Community 427"
-Cohesion: 0.25
-Nodes (8): adapt, argumentHint, description, craft, argumentHint, description, typeset, description
+Cohesion: 0.15
+Nodes (15): skillPath, source, source, sourceType, computedHash, skillPath, source, skillPath (+7 more)
 
 ### Community 428 - "Community 428"
 Cohesion: 0.50
 Nodes (3): candidates, detectorPath, __dirname
 
-### Community 429 - "Community 429"
-Cohesion: 0.13
-Nodes (10): Kelola koneksi SQLite dan semua operasi baca-tulis.      Args:         db_pat, Tutup koneksi. Panggil saat shutdown server., Tutup koneksi. Panggil saat shutdown server., Ukuran file DB dalam byte., Ukuran file DB dalam byte., StorageManager, open() dua kali tidak crash — tabel CREATE IF NOT EXISTS., test_context_manager() (+2 more)
-
 ### Community 432 - "Community 432"
 Cohesion: 0.06
 Nodes (34): 10. DEVICE MOCKUP FRAME RULE, 11. ONBOARDING FLOW RULE, 12. FIRST SCREEN CLEANLINESS RULE, 13. SAFE AREA AND SYSTEM REGION RULE, 14. NAVIGATION RULE, 15. CLEAN LAYOUT RULE, 16. CREATIVE IMAGE DIRECTION RULE, 17. BACKGROUND TEXTURE AND SURFACE RULE (+26 more)
 
-### Community 433 - "Community 433"
-Cohesion: 0.67
-Nodes (3): animate, argumentHint, description
-
-### Community 434 - "Community 434"
-Cohesion: 0.67
-Nodes (3): audit, argumentHint, description
-
-### Community 435 - "Community 435"
-Cohesion: 0.67
-Nodes (3): bolder, argumentHint, description
-
-### Community 436 - "Community 436"
-Cohesion: 0.67
-Nodes (3): clarify, argumentHint, description
-
-### Community 437 - "Community 437"
-Cohesion: 0.67
-Nodes (3): colorize, argumentHint, description
-
-### Community 439 - "Community 439"
-Cohesion: 0.67
-Nodes (3): critique, argumentHint, description
-
-### Community 440 - "Community 440"
-Cohesion: 0.67
-Nodes (3): delight, argumentHint, description
-
-### Community 441 - "Community 441"
-Cohesion: 0.67
-Nodes (3): distill, argumentHint, description
-
-### Community 442 - "Community 442"
-Cohesion: 0.67
-Nodes (3): document, argumentHint, description
-
-### Community 443 - "Community 443"
-Cohesion: 0.67
-Nodes (3): extract, argumentHint, description
-
 ### Community 444 - "Community 444"
-Cohesion: 0.67
-Nodes (3): harden, argumentHint, description
-
-### Community 445 - "Community 445"
-Cohesion: 0.67
-Nodes (3): layout, argumentHint, description
-
-### Community 446 - "Community 446"
-Cohesion: 0.67
-Nodes (3): live, argumentHint, description
-
-### Community 447 - "Community 447"
-Cohesion: 0.67
-Nodes (3): onboard, argumentHint, description
-
-### Community 448 - "Community 448"
-Cohesion: 0.67
-Nodes (3): optimize, argumentHint, description
-
-### Community 449 - "Community 449"
-Cohesion: 0.67
-Nodes (3): overdrive, argumentHint, description
-
-### Community 451 - "Community 451"
-Cohesion: 0.40
-Nodes (5): polish, argumentHint, quieter, argumentHint, description
-
-### Community 452 - "Community 452"
-Cohesion: 0.67
-Nodes (3): shape, argumentHint, description
-
-### Community 453 - "Community 453"
-Cohesion: 0.67
-Nodes (3): teach, argumentHint, description
+Cohesion: 0.08
+Nodes (41): adapt, animate, audit, bolder, argumentHint, description, clarify, argumentHint (+33 more)
 
 ### Community 456 - "Community 456"
 Cohesion: 0.06
@@ -1348,8 +1222,8 @@ Cohesion: 0.13
 Nodes (14): 1. Visual Theme & Atmosphere, 2. Color Palette & Roles, 3. Typography Rules, 4. Component Stylings, 5. Hero Section, 6. Layout Principles, 7. Responsive Rules, 8. Motion & Interaction (Code-Phase Intent) (+6 more)
 
 ### Community 464 - "Community 464"
-Cohesion: 0.20
-Nodes (9): 13. OUT OF SCOPE, 14. FINAL PRE-FLIGHT CHECK, 2.A When to reach for a real design system (use official packages), 2.B When the brief is an aesthetic, not a system, 2. BRIEF → DESIGN SYSTEM MAP, APPENDICES - Real Source-Backed Reference Material, Appendix A - Install Commands per Design System, code:bash (# Material Web (Material 3)) (+1 more)
+Cohesion: 0.13
+Nodes (15): 0.A Read these signals first, 0.B Output a one-line "Design Read" before generating, 0. BRIEF INFERENCE (Read the Room Before Anything Else), 0.C If the brief is ambiguous, ask one question, do not guess, 0.D Anti-Default Discipline, 13. OUT OF SCOPE, 14. FINAL PRE-FLIGHT CHECK, 1.A Dial Inference (design read → dial values) (+7 more)
 
 ### Community 465 - "Community 465"
 Cohesion: 0.13
@@ -1380,8 +1254,8 @@ Cohesion: 0.20
 Nodes (10): 22. STYLE VARIATION ENGINE, Decorative Asset Set, Image Art Direction Bias, Motion-Implied Language, Palette Logic, Signature Component Set, Structure Bias, Texture / Surface Treatment (+2 more)
 
 ### Community 473 - "Community 473"
-Cohesion: 0.40
-Nodes (5): Appendix C - Apple Liquid Glass: Honest Web Approximation, code:css (.liquid-glass-web-approx {), Safer web approximation skeleton, What is NOT official, What is official
+Cohesion: 0.20
+Nodes (8): APPENDICES - Real Source-Backed Reference Material, Appendix A - Install Commands per Design System, Appendix C - Apple Liquid Glass: Honest Web Approximation, code:bash (# Material Web (Material 3)), code:css (.liquid-glass-web-approx {), Safer web approximation skeleton, What is NOT official, What is official
 
 ### Community 474 - "Community 474"
 Cohesion: 0.22
@@ -1396,8 +1270,8 @@ Cohesion: 0.22
 Nodes (7): Banned Output Patterns, Baseline, code:block1 ([PAUSED — X of Y complete. Send "continue" to resume from: n), Execution Process, Full-Output Enforcement, Handling Long Outputs, Quick Check
 
 ### Community 478 - "Community 478"
-Cohesion: 0.33
-Nodes (7): 5.A Sticky-Stack - Canonical Skeleton, 5.B Horizontal-Pan - Canonical Skeleton, 5.C Scroll-Reveal Stagger - Canonical Skeleton (lighter alternative), 5. CONTEXT-AWARE PROACTIVITY, 5.D Forbidden Animation Patterns, code:tsx ("use client";), code:tsx ("use client";)
+Cohesion: 0.47
+Nodes (6): 5.A Sticky-Stack - Canonical Skeleton, 5.B Horizontal-Pan - Canonical Skeleton, 5.C Scroll-Reveal Stagger - Canonical Skeleton (lighter alternative), 5. CONTEXT-AWARE PROACTIVITY, 5.D Forbidden Animation Patterns, code:tsx ("use client";)
 
 ### Community 479 - "Community 479"
 Cohesion: 0.25
@@ -1448,56 +1322,20 @@ Cohesion: 0.33
 Nodes (6): 5. IMAGE COUNT & PAGE SLICING, Continuity Rule, Counting rule, Format, Section size variety, THIS IS THE PRIMARY OUTPUT RULE
 
 ### Community 492 - "Community 492"
-Cohesion: 0.07
-Nodes (27): _build_group_lookups(), listener.py — MQTT subscribe + dispatch ke NodeState (group-aware).  Tanggung ja, Build reverse lookup maps dari NODE_GROUPS config.      Returns:         imu_map, Jalankan MQTT listener (blocking — panggil dari thread atau main).      Args:, run(), main(), Entry point: python -m server.apps.reconstruct  (dari root project)          at, Setup logging, singleton, lalu jalankan listener (blocking). (+19 more)
+Cohesion: 0.12
+Nodes (13): NodeState, Terima payload cs_ppg, validasi dengan node_id fisik, simpan ke buffer., Buang buffer yang sudah menunggu terlalu lama tanpa pasangannya., Cek apakah kedua buffer siap. Jika ya, submit ke thread pool., Dijalankan di thread pool — boleh lambat tanpa memblokir MQTT., Buffer dan state per node sensor.      Args:         node_id      : ID node (, Buffer dan state per node group.      Mendukung dua mode:       1. Same-node, Terima payload cs_imu, validasi, simpan ke buffer. (+5 more)
 
 ### Community 493 - "Community 493"
 Cohesion: 0.40
 Nodes (5): 21. MOBILE ANTI-AI-TELLS RULE, Copy AI tells, Layout AI tells, UI clutter tells, Visual AI tells
 
 ### Community 494 - "Community 494"
-Cohesion: 0.40
-Nodes (5): computedHash, skillPath, source, sourceType, brandkit
-
-### Community 495 - "Community 495"
-Cohesion: 0.40
-Nodes (5): computedHash, skillPath, source, sourceType, design-taste-frontend
-
-### Community 496 - "Community 496"
-Cohesion: 0.40
-Nodes (5): computedHash, skillPath, source, sourceType, design-taste-frontend-v1
-
-### Community 497 - "Community 497"
-Cohesion: 0.40
-Nodes (5): computedHash, skillPath, source, sourceType, full-output-enforcement
-
-### Community 498 - "Community 498"
-Cohesion: 0.40
-Nodes (5): computedHash, skillPath, source, sourceType, gpt-taste
-
-### Community 500 - "Community 500"
-Cohesion: 0.40
-Nodes (5): computedHash, skillPath, source, sourceType, image-to-code
+Cohesion: 0.22
+Nodes (10): skillPath, source, sourceType, computedHash, source, brandkit, pathfinder, stitch-design-taste (+2 more)
 
 ### Community 502 - "Community 502"
-Cohesion: 0.22
-Nodes (9): computedHash, skillPath, source, computedHash, skillPath, source, sourceType, imagegen-frontend-mobile (+1 more)
-
-### Community 503 - "Community 503"
-Cohesion: 0.22
-Nodes (9): computedHash, skillPath, sourceType, computedHash, skillPath, source, sourceType, high-end-visual-design (+1 more)
-
-### Community 504 - "Community 504"
-Cohesion: 0.40
-Nodes (5): computedHash, skillPath, source, sourceType, minimalist-ui
-
-### Community 505 - "Community 505"
-Cohesion: 0.40
-Nodes (5): computedHash, skillPath, source, sourceType, redesign-existing-projects
-
-### Community 506 - "Community 506"
-Cohesion: 0.40
-Nodes (5): stitch-design-taste, computedHash, skillPath, source, sourceType
+Cohesion: 0.25
+Nodes (8): computedHash, skillPath, source, source, sourceType, skillPath, babysit, caveman-stats
 
 ### Community 508 - "Community 508"
 Cohesion: 0.50
@@ -1527,14 +1365,6 @@ Nodes (4): 12-section pack, 15. DEFAULT SITE PACKS, 4-section pack, 8-section pa
 Cohesion: 0.50
 Nodes (4): 20. EXAMPLE INTERPRETATIONS, Example 1, Example 2, Example 3
 
-### Community 516 - "Community 516"
-Cohesion: 0.12
-Nodes (14): _combined_lifespan(), main(), main_app.py — Orkestrator satu proses: FastAPI + MQTT worker dalam satu perintah, Jalankan semua sistem server dalam satu proses., Blocking MQTT loop — dijalankan di background thread., Ganti lifespan dashboard_server dengan versi yang juga start MQTT thread., _run_mqtt_thread(), get_logger() (+6 more)
-
-### Community 517 - "Community 517"
-Cohesion: 0.40
-Nodes (5): 0.A Read these signals first, 0.B Output a one-line "Design Read" before generating, 0. BRIEF INFERENCE (Read the Room Before Anything Else), 0.C If the brief is ambiguous, ask one question, do not guess, 0.D Anti-Default Discipline
-
 ### Community 518 - "Community 518"
 Cohesion: 0.29
 Nodes (7): code:cpp (#define LOG_LEVEL        3    // 0=SILENT 1=ERROR 2=WARN 3=I), code:cpp (namespace MeshTopology {), code:cpp (// Uncomment bagian 2-node di tuning.h dan comment bagian 3-), `features.h` — Log Level & Fitur, ⚙️ Konfigurasi, `tuning.h` — Timing & Performa, `tuning.h` — Topologi Mesh
@@ -1551,37 +1381,29 @@ Nodes (7): code:block17 (SENSOR (ESP32)                   SERVER (Python)), code
 Cohesion: 0.40
 Nodes (5): 📋 Changelog, v2.0 — Compressive Sensing, v3.0 — Multi-Hop Dynamic Routing, v3.1 — Multi-Hop Routing Fixes, v5.0 — WiFi Channel Sync
 
-### Community 522 - "Community 522"
-Cohesion: 0.50
-Nodes (4): 1.A Dial Inference (design read → dial values), 1.B Use-Case Presets, 1.C How the Dials Drive Output, 1. THE THREE DIALS (Core Configuration)
-
 ### Community 525 - "Community 525"
-Cohesion: 0.17
-Nodes (16): _layer2_length(), _layer3_finite(), Layer 2: cek panjang measurement vector == CS_M., Layer 2: cek panjang measurement vector == CS_M., Layer 3: cek setiap elemen y[i] finite (tidak NaN / Inf) dan dalam batas., Layer 3: cek setiap elemen y[i] finite (tidak NaN / Inf) dan dalam batas., _make_valid_imu(), Buat payload cs_imu yang valid. (+8 more)
-
-### Community 528 - "Community 528"
-Cohesion: 0.33
-Nodes (4): _FakeMetric, _FakeReport, Metrik dari WindowReport harus tersimpan., test_save_window_with_report()
+Cohesion: 0.19
+Nodes (19): _layer2_length(), _layer3_finite(), Layer 2: cek panjang measurement vector == CS_M., Layer 3: cek setiap elemen y[i] finite (tidak NaN / Inf) dan dalam batas., _make_valid_imu(), _make_valid_ppg(), Buat payload cs_imu yang valid., Buat payload cs_ppg yang valid. (+11 more)
 
 ## Knowledge Gaps
-- **1734 isolated node(s):** `fs`, `DEPRECATED_NAMES`, `HARNESS_DIRS`, `SKILL_FINGERPRINTS`, `CANONICAL_SECTIONS` (+1729 more)
+- **1733 isolated node(s):** `fs`, `DEPRECATED_NAMES`, `HARNESS_DIRS`, `SKILL_FINGERPRINTS`, `CANONICAL_SECTIONS` (+1728 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **18 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **20 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `_parse_args()` connect `Community 189` to `Community 47`?**
-  _High betweenness centrality (0.022) - this node is a cross-community bridge._
-- **Why does `_fmt()` connect `Community 189` to `Community 226`?**
-  _High betweenness centrality (0.010) - this node is a cross-community bridge._
+- **Why does `route()` connect `Community 69` to `Community 66`?**
+  _High betweenness centrality (0.012) - this node is a cross-community bridge._
+- **Why does `_routeRssiReport()` connect `Community 69` to `Community 66`?**
+  _High betweenness centrality (0.012) - this node is a cross-community bridge._
+- **Why does `reconstruct()` connect `Community 51` to `Community 65`, `Community 46`, `Community 15`, `Community 49`, `Community 17`?**
+  _High betweenness centrality (0.011) - this node is a cross-community bridge._
 - **Are the 27 inferred relationships involving `MLInferenceEngine` (e.g. with `FeatureExtractor` and `InferenceResult`) actually correct?**
   _`MLInferenceEngine` has 27 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `Heuristic denylist for files that must never be shipped to a third-party API.`, `Strip outer ```markdown ... ``` fence when it wraps the entire output.`, `Check if a line looks like code.` to the rest of the system?**
-  _2029 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _2005 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.10461538461538461 - nodes in this community are weakly interconnected._
 - **Should `Community 2` be split into smaller, more focused modules?**
   _Cohesion score 0.1111111111111111 - nodes in this community are weakly interconnected._
-- **Should `Community 8` be split into smaller, more focused modules?**
-  _Cohesion score 0.10507246376811594 - nodes in this community are weakly interconnected._
