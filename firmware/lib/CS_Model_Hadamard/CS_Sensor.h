@@ -230,27 +230,36 @@ public:
     {
         if (_count < CS_N) return false;
 
+        #if LOG_LEVEL >= _LOG_LEVEL_DEBUG
         // --- DEBUG STAGE 1: Data Asli ---
-        Serial.println("\n[CS STAGE 1] Data Asli (Original Signal):");
-        for (uint8_t n = 0; n < CS_N; n++) {
-            Serial.print(_buf[n]); Serial.print(" ");
+        {
+            char debugBuf[512];
+            int pos = snprintf(debugBuf, sizeof(debugBuf), "Asli: ");
+            for (uint8_t n = 0; n < CS_N && pos < sizeof(debugBuf); n++) {
+                pos += snprintf(debugBuf + pos, sizeof(debugBuf) - pos, "%.2f ", _buf[n]);
+            }
+            LOG_DEBUG("CS_ENC", "%s", debugBuf);
         }
-        Serial.println();
+        #endif
 
         // 1. Hitung mean
         float sum_val = 0.0f;
         for (uint8_t n = 0; n < CS_N; n++) sum_val += _buf[n];
         out_mean = sum_val / CS_N;
 
-        Serial.print("[CS STAGE 2] Mean: ");
-        Serial.println(out_mean, 4);
+        LOG_DEBUG("CS_ENC", "Mean: %.4f", out_mean);
 
+        #if LOG_LEVEL >= _LOG_LEVEL_DEBUG
         // --- DEBUG STAGE 3: Data Terpusat ---
-        Serial.println("[CS STAGE 3] Data Terpusat (Centered Signal):");
-        for (uint8_t n = 0; n < CS_N; n++) {
-            Serial.print(_buf[n] - out_mean); Serial.print(" ");
+        {
+            char debugBuf[512];
+            int pos = snprintf(debugBuf, sizeof(debugBuf), "Center: ");
+            for (uint8_t n = 0; n < CS_N && pos < sizeof(debugBuf); n++) {
+                pos += snprintf(debugBuf + pos, sizeof(debugBuf) - pos, "%.2f ", _buf[n] - out_mean);
+            }
+            LOG_DEBUG("CS_ENC", "%s", debugBuf);
         }
-        Serial.println();
+        #endif
 
         // 2. Lakukan perkalian matrix dengan mean terpusat di 0
         for (uint8_t m = 0; m < CS_M; m++)
@@ -261,12 +270,17 @@ public:
             out[m] = sum;
         }
 
+        #if LOG_LEVEL >= _LOG_LEVEL_DEBUG
         // --- DEBUG STAGE 4: Hasil Kompresi (y = Phi * x) ---
-        Serial.println("[CS STAGE 4] Hasil Kompresi (Compressed Data):");
-        for (uint8_t m = 0; m < CS_M; m++) {
-            Serial.print(out[m]); Serial.print(" ");
+        {
+            char debugBuf[512];
+            int pos = snprintf(debugBuf, sizeof(debugBuf), "Compress: ");
+            for (uint8_t m = 0; m < CS_M && pos < sizeof(debugBuf); m++) {
+                pos += snprintf(debugBuf + pos, sizeof(debugBuf) - pos, "%.2f ", out[m]);
+            }
+            LOG_DEBUG("CS_ENC", "%s", debugBuf);
         }
-        Serial.println("\n------------------------------------------------");
+        #endif
 
         _count = 0;
         return true;
