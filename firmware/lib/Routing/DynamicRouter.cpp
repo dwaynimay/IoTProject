@@ -84,11 +84,15 @@ DynamicRouter::DynamicRouter(uint8_t selfNodeId)
 void DynamicRouter::updateSelfRssi(int8_t rssi)
 {
     taskENTER_CRITICAL(&_mux);
-    _rssiSelf = rssi;
+    if (RoutingOverride::ENABLE_MANUAL_RSSI) {
+        _rssiSelf = RoutingOverride::MANUAL_SELF_RSSI;
+    } else {
+        _rssiSelf = rssi;
+    }
     _lastSelfUpdateMs = millis();
     taskEXIT_CRITICAL(&_mux);
 
-    LOG_DEBUG(TAG, "RSSI self→gw: %d dBm", rssi);
+    LOG_DEBUG(TAG, "RSSI self→gw: %d dBm", _rssiSelf);
 }
 
 // =============================================================================
@@ -129,12 +133,16 @@ void DynamicRouter::updateNeighborRssi(uint8_t neighborNodeId,
     }
 
     taskENTER_CRITICAL(&_mux);
-    _rssiNeighbor = rssiNeighborToGw;
+    if (RoutingOverride::ENABLE_MANUAL_RSSI) {
+        _rssiNeighbor = RoutingOverride::MANUAL_NEIGHBOR_RSSI;
+    } else {
+        _rssiNeighbor = rssiNeighborToGw;
+    }
     _lastNeighborUpdateMs = millis();
     taskEXIT_CRITICAL(&_mux);
 
     LOG_DEBUG(TAG, "RSSI neighbor(%d)→gw: %d dBm",
-              neighborNodeId, rssiNeighborToGw);
+              neighborNodeId, _rssiNeighbor);
 }
 
 // =============================================================================

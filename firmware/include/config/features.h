@@ -54,3 +54,18 @@ namespace Mqtt
     constexpr uint16_t KEEPALIVE           = 60;
     constexpr uint16_t RECONNECT_DELAY_MS  = 5000;
 }
+
+// ---------------------------------------------------------------------------
+// ROUTING OVERRIDE (MANUAL RSSI)
+// ---------------------------------------------------------------------------
+// Pengaturan ini digunakan untuk memanipulasi RSSI secara manual (misalnya 
+// saat testing simulasi Mesh Routing di meja tanpa harus memindahkan sensor).
+namespace RoutingOverride
+{
+    // Set true untuk mengabaikan RSSI asli dan menggunakan nilai statis di bawah
+    constexpr bool ENABLE_MANUAL_RSSI = false;
+    
+    // Nilai RSSI palsu yang disuntikkan ke DynamicRouter jika ENABLE_MANUAL_RSSI = true
+    constexpr int8_t MANUAL_SELF_RSSI = -80;      // Contoh: Seolah-olah jauh dari gateway
+    constexpr int8_t MANUAL_NEIGHBOR_RSSI = -40;  // Contoh: Seolah-olah neighbor lebih dekat
+}
