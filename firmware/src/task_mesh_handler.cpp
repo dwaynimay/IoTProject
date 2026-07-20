@@ -143,6 +143,7 @@ void taskMqttPublish(void* param)
 
     MqttMessage msg{};
     uint32_t    lastStatusLogMs = 0;
+    uint8_t     lastSyncedWifiChannel = 0;
 
     LOG_INFO(TAG_PUBLISH, "taskMqttPublish dimulai (Core 0)");
 
@@ -154,6 +155,17 @@ void taskMqttPublish(void* param)
         // PubSubClient butuh loop() tiap <keepalive detik agar PINGREQ terkirim.
         // Sebelumnya loop() hanya dipanggil di akhir → terlewat saat queue idle.
         g_mqtt.loop();
+
+        if (g_mqtt.isWifiConnected())
+        {
+            const uint8_t wifiChannel = static_cast<uint8_t>(WiFi.channel());
+            if (wifiChannel > 0 && wifiChannel <= 13 &&
+                wifiChannel != lastSyncedWifiChannel)
+            {
+                g_mesh.setGatewayChannel(wifiChannel);
+                lastSyncedWifiChannel = wifiChannel;
+            }
+        }
 
         // Status log setiap 10 detik
         if (millis() - lastStatusLogMs >= 10000)
@@ -217,7 +229,14 @@ void taskMqttPublish(void* param)
             {
                 // Pesan valid diterima — publish langsung
                 if (!g_mqtt.publish(msg.topic, msg.payload))
-                    LOG_WARN(TAG_PUBLISH, "Publish gagal saat idle drain");
+                {
+                    if (xQueueSendToFront(g_mqttQueue, &msg, 0) != pdTRUE)
+                        LOG_ERROR(TAG_PUBLISH,
+                                  "Idle publish gagal dan queue penuh - DATA LOST!");
+                    else
+                        LOG_WARN(TAG_PUBLISH,
+                                 "Idle publish gagal - pesan dikembalikan ke queue");
+                }
             }
             // Jika timeout (pdFALSE), tidak ada pesan — lanjut iterasi berikutnya.
             // loop() di atas akan dipanggil lagi untuk keepalive.

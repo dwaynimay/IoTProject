@@ -44,8 +44,12 @@ def test_integration_full_pipeline():
     imu_payload = {"ts": 1000, "finger": True}
     for sig in IMU_SIGNALS:
         imu_payload[sig] = [0.01 * i for i in range(CS_M)]
+        imu_payload[f"mean_{sig}"] = 0.0
 
-    ppg_payload = {"ts": 1000, "hr": 75, "finger": True}
+    ppg_payload = {
+        "ts": 1000, "hr": 75, "spo2": 98.0,
+        "ppg_valid": True, "finger": True, "mean_ir": 100.0,
+    }
     for sig in PPG_SIGNALS:
         ppg_payload[sig] = [100.0 + i for i in range(CS_M)]
 
@@ -54,7 +58,9 @@ def test_integration_full_pipeline():
     assessor  = QualityAssessor(phi=PHI)
 
     node = NodeState(
-        node_id      = 1,
+        group_id     = 1,
+        imu_node_id  = 1,
+        ppg_node_id  = 2,
         processor_fn = process_window,
         validator    = validator,
         assessor     = assessor,
@@ -63,6 +69,7 @@ def test_integration_full_pipeline():
 
     node.on_imu(imu_payload)
     node.on_ppg(ppg_payload)
+    node._work_queue.join()
 
     # 4. Verifikasi REST API merefleksikan data terproses
     # Cek DB info

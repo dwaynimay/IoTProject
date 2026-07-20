@@ -201,10 +201,15 @@ bool NetworkMqtt::_connectMqtt()
 {
     LOG_INFO(TAG, "Konek ke broker %s:%d ...", Mqtt::BROKER, Mqtt::PORT);
 
+    char willTopic[64];
+    snprintf(willTopic, sizeof(willTopic), "%s/gateway/status", Mqtt::TOPIC_BASE);
+
     // Gunakan credentials jika tersedia, anonymous jika tidak
     const bool ok = (strlen(Mqtt::USER) > 0)
-        ? _mqttClient.connect(Mqtt::CLIENT_ID, Mqtt::USER, Mqtt::PASSWORD)
-        : _mqttClient.connect(Mqtt::CLIENT_ID);
+        ? _mqttClient.connect(Mqtt::CLIENT_ID, Mqtt::USER, Mqtt::PASSWORD,
+                              willTopic, 1, true, "offline")
+        : _mqttClient.connect(Mqtt::CLIENT_ID,
+                              willTopic, 1, true, "offline");
 
     if (ok)
     {

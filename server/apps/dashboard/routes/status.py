@@ -24,7 +24,7 @@ def _ms_ago(ts_ms: int) -> Optional[float]:
     summary="Status semua node",
     response_description="Daftar semua node dengan statistik ringkas",
 )
-async def get_status():
+def get_status():
     """
     Kembalikan status semua node yang pernah kirim data beserta
     statistik rekonstruksi dan kondisi WebSocket client saat ini.

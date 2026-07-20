@@ -77,10 +77,16 @@ except ImportError:
 # =============================================================================
 
 # cs_imu: timestamp + finger flag + 6 sinyal IMU
-_IMU_REQUIRED_FIELDS: tuple[str, ...] = ("ts", "finger") + tuple(IMU_SIGNALS)
+_IMU_REQUIRED_FIELDS: tuple[str, ...] = (
+    ("ts", "finger")
+    + tuple(IMU_SIGNALS)
+    + tuple(f"mean_{sig}" for sig in IMU_SIGNALS)
+)
 
 # cs_ppg: timestamp + metadata HR + finger flag + sinyal IR
-_PPG_REQUIRED_FIELDS: tuple[str, ...] = ("ts", "hr", "finger") + tuple(PPG_SIGNALS)
+_PPG_REQUIRED_FIELDS: tuple[str, ...] = (
+    "ts", "hr", "spo2", "ppg_valid", "finger", "mean_ir"
+) + tuple(PPG_SIGNALS)
 
 
 # =============================================================================
@@ -224,6 +230,47 @@ def _layer3_finite(payload: dict, signals: list[str]) -> list[str]:
     return errors
 
 
+def _layer_metadata(payload: dict, signals: list[str], *, is_ppg: bool) -> list[str]:
+    """Validate scalar metadata before reconstruction or ML conversion."""
+    errors: list[str] = []
+
+    ts = payload.get("ts")
+    if isinstance(ts, bool) or not isinstance(ts, (int, float)):
+        errors.append(f"metadata: 'ts' bukan angka (type={type(ts).__name__})")
+    elif not math.isfinite(float(ts)) or float(ts) < 0:
+        errors.append(f"metadata: 'ts' tidak valid: {ts!r}")
+
+    if not isinstance(payload.get("finger"), bool):
+        errors.append("metadata: 'finger' harus boolean")
+
+    for sig in signals:
+        key = f"mean_{sig}"
+        value = payload.get(key)
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            errors.append(f"metadata: '{key}' bukan angka")
+        elif not math.isfinite(float(value)) or abs(float(value)) > MEASUREMENT_ABS_MAX:
+            errors.append(f"metadata: '{key}' tidak finite atau di luar batas")
+
+    if is_ppg:
+        hr = payload.get("hr")
+        if isinstance(hr, bool) or not isinstance(hr, (int, float)):
+            errors.append("metadata: 'hr' bukan angka")
+        elif not math.isfinite(float(hr)) or not -1 <= float(hr) <= 255:
+            errors.append(f"metadata: 'hr' di luar range: {hr!r}")
+
+        spo2 = payload.get("spo2")
+        if spo2 is not None:
+            if isinstance(spo2, bool) or not isinstance(spo2, (int, float)):
+                errors.append("metadata: 'spo2' harus angka atau null")
+            elif not math.isfinite(float(spo2)) or not 0 <= float(spo2) <= 100:
+                errors.append(f"metadata: 'spo2' di luar range: {spo2!r}")
+
+        if not isinstance(payload.get("ppg_valid"), bool):
+            errors.append("metadata: 'ppg_valid' harus boolean")
+
+    return errors
+
+
 def _layer5_whitelist(node_id: int) -> list[str]:
     """Layer 5: cek node_id ada di whitelist (jika whitelist aktif)."""
     if ALLOWED_NODE_IDS is None:
@@ -287,6 +334,7 @@ class ValidatorRegistry:
             payload   = payload,
             required  = _IMU_REQUIRED_FIELDS,
             signals   = list(IMU_SIGNALS),
+            is_ppg    = False,
         )
 
         if warnings:
@@ -321,6 +369,7 @@ class ValidatorRegistry:
             payload   = payload,
             required  = _PPG_REQUIRED_FIELDS,
             signals   = list(PPG_SIGNALS),
+            is_ppg    = True,
         )
 
         if warnings:
@@ -350,6 +399,7 @@ class ValidatorRegistry:
         payload: dict,
         required: tuple[str, ...],
         signals: list[str],
+        is_ppg: bool,
     ) -> tuple[list[str], list[str]]:
         """
         Jalankan semua layer validasi secara berurutan.
@@ -373,19 +423,6 @@ class ValidatorRegistry:
             return errors, warnings
 
         # Layer 4 — monotonicity (ts ada di payload, baru bisa dicek)
-        ts = payload.get("ts")
-        if not isinstance(ts, (int, float)):
-            errors.append(f"monotonicity: 'ts' bukan angka (type={type(ts).__name__})")
-            return errors, warnings
-
-        ts_int = int(ts)
-        mono_ok, mono_msg = self._tracker.check(node_id, ts_int)
-        if not mono_ok:
-            errors.append(f"monotonicity: {mono_msg}")
-            return errors, warnings
-        elif mono_msg:  # warning dari lompat besar
-            warnings.append(mono_msg)
-
         # Layer 2 — length
         errors += _layer2_length(payload, signals)
         if errors:
@@ -393,5 +430,16 @@ class ValidatorRegistry:
 
         # Layer 3 — finite (paling mahal, jalankan paling akhir)
         errors += _layer3_finite(payload, signals)
+        errors += _layer_metadata(payload, signals, is_ppg=is_ppg)
+        if errors:
+            return errors, warnings
+
+        # Commit timestamp only after all stateless validation has passed.
+        ts_int = int(payload["ts"])
+        mono_ok, mono_msg = self._tracker.check(node_id, ts_int)
+        if not mono_ok:
+            errors.append(f"monotonicity: {mono_msg}")
+        elif mono_msg:
+            warnings.append(mono_msg)
 
         return errors, warnings

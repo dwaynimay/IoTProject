@@ -8,12 +8,13 @@ logger = logging.getLogger(__name__)
 
 # Try importing dashboard components for single-process integration
 try:
-    from apps.dashboard.hub import hub, server_stats
+    from apps.dashboard.hub import hub, server_stats, server_stats_lock
     _DASHBOARD_AVAILABLE = True
 except ImportError:
     _DASHBOARD_AVAILABLE = False
     hub = None
     server_stats = None
+    server_stats_lock = None
 
 
 def notify_window(
@@ -75,13 +76,14 @@ def notify_window(
     }
 
     # Update statistik server
-    if server_stats is not None:
-        server_stats["total_windows"]    += 1
-        server_stats["total_rekon_ms"]   += elapsed_ms
-        if report and report.has_critical():
-            server_stats["total_critical"] += 1
-        elif report and report.has_low_quality():
-            server_stats["total_low_quality"] += 1
+    if server_stats is not None and server_stats_lock is not None:
+        with server_stats_lock:
+            server_stats["total_windows"]    += 1
+            server_stats["total_rekon_ms"]   += elapsed_ms
+            if report and report.has_critical():
+                server_stats["total_critical"] += 1
+            elif report and report.has_low_quality():
+                server_stats["total_low_quality"] += 1
 
     hub.publish_window_threadsafe(data)
 
@@ -106,7 +108,9 @@ def notify_event(
         "ts_ms":      int(time.time() * 1000),
     }
 
-    if event_type == "VALIDATION_ERROR" and server_stats is not None:
-        server_stats["total_val_errors"] += 1
+    if (event_type == "VALIDATION_ERROR" and server_stats is not None
+            and server_stats_lock is not None):
+        with server_stats_lock:
+            server_stats["total_val_errors"] += 1
 
     hub.publish_event_threadsafe(data)

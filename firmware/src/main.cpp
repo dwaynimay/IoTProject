@@ -174,6 +174,8 @@ static void taskBeacon(void *param)
 
 static void taskMonitorGateway(void *param)
 {
+    uint32_t wifiDownSince = 0;
+
     for (;;)
     {
         g_watchdog.healthCheck();
@@ -189,11 +191,14 @@ static void taskMonitorGateway(void *param)
 
         if (!g_mqtt.isWifiConnected())
         {
-            static uint32_t wifiDownSince = 0;
             if (wifiDownSince == 0)
                 wifiDownSince = millis();
             if (millis() - wifiDownSince > 30000)
                 g_watchdog.triggerRestart("WiFi down > 30s");
+        }
+        else
+        {
+            wifiDownSince = 0;
         }
 
         LOG_INFO(TAG,
@@ -208,6 +213,21 @@ static void taskMonitorGateway(void *param)
 }
 
 #endif // ROLE_GATEWAY
+
+static void startTaskOrRestart(TaskFunction_t task,
+                               const char* name,
+                               uint32_t stackDepth,
+                               UBaseType_t priority,
+                               BaseType_t core)
+{
+    if (xTaskCreatePinnedToCore(task, name, stackDepth, nullptr,
+                                priority, nullptr, core) != pdPASS)
+    {
+        char reason[64];
+        snprintf(reason, sizeof(reason), "Gagal buat task %s", name);
+        g_watchdog.triggerRestart(reason);
+    }
+}
 
 // =============================================================================
 // setup()
@@ -244,14 +264,12 @@ void setup()
     if (!g_mesh.begin(true))
         g_watchdog.triggerRestart("ESP-NOW init gagal");
 
-    xTaskCreatePinnedToCore(taskCSSender, "CS_TX", StackSize::ESPNOW_TX,
-                            nullptr, TaskPrio::ESPNOW_TX, nullptr, 0);
-    xTaskCreatePinnedToCore(taskRssiExchange, "RSSI_EX", 4096,
-                            nullptr, 1, nullptr, 0);
-    xTaskCreatePinnedToCore(taskMonitorSensor, "MONITOR", StackSize::MONITOR,
-                            nullptr, 1, nullptr, 0);
-    xTaskCreatePinnedToCore(taskSensorReceiver, "RX", 4096,
-                            nullptr, TaskPrio::ESPNOW_TX + 1, nullptr, 1);
+    startTaskOrRestart(taskCSSender, "CS_TX", StackSize::ESPNOW_TX,
+                       TaskPrio::ESPNOW_TX, 0);
+    startTaskOrRestart(taskRssiExchange, "RSSI_EX", 4096, 1, 0);
+    startTaskOrRestart(taskMonitorSensor, "MONITOR", StackSize::MONITOR, 1, 0);
+    startTaskOrRestart(taskSensorReceiver, "RX", 4096,
+                       TaskPrio::ESPNOW_TX + 1, 1);
 
     LOG_INFO(TAG, "Sensor IMU node siap — 4 task terdaftar");
 
@@ -268,14 +286,12 @@ void setup()
     if (!g_ppg.begin())
         g_watchdog.triggerRestart("MAX30102 init gagal");
 
-    xTaskCreatePinnedToCore(taskCSSender, "CS_TX", StackSize::ESPNOW_TX,
-                            nullptr, TaskPrio::ESPNOW_TX, nullptr, 0);
-    xTaskCreatePinnedToCore(taskRssiExchange, "RSSI_EX", 4096,
-                            nullptr, 1, nullptr, 0);
-    xTaskCreatePinnedToCore(taskMonitorSensor, "MONITOR", StackSize::MONITOR,
-                            nullptr, 1, nullptr, 0);
-    xTaskCreatePinnedToCore(taskSensorReceiver, "RX", 4096,
-                            nullptr, TaskPrio::ESPNOW_TX + 1, nullptr, 1);
+    startTaskOrRestart(taskCSSender, "CS_TX", StackSize::ESPNOW_TX,
+                       TaskPrio::ESPNOW_TX, 0);
+    startTaskOrRestart(taskRssiExchange, "RSSI_EX", 4096, 1, 0);
+    startTaskOrRestart(taskMonitorSensor, "MONITOR", StackSize::MONITOR, 1, 0);
+    startTaskOrRestart(taskSensorReceiver, "RX", 4096,
+                       TaskPrio::ESPNOW_TX + 1, 1);
 
     LOG_INFO(TAG, "Sensor PPG node siap — 4 task terdaftar");
 
@@ -309,13 +325,12 @@ void setup()
         }
     }
 
-    xTaskCreatePinnedToCore(taskBeacon,       "BEACON",  4096, nullptr, 1, nullptr, 0);
-    xTaskCreatePinnedToCore(taskMeshHandler,  "HANDLER", StackSize::MQTT_PUB,
-                            nullptr, TaskPrio::MQTT_PUB + 1, nullptr, 1);
-    xTaskCreatePinnedToCore(taskMqttPublish,  "MQTT",    StackSize::MQTT_PUB,
-                            nullptr, TaskPrio::MQTT_PUB,     nullptr, 0);
-    xTaskCreatePinnedToCore(taskMonitorGateway,"MONITOR", StackSize::MONITOR,
-                            nullptr, 1, nullptr, 0);
+    startTaskOrRestart(taskBeacon, "BEACON", 4096, 1, 0);
+    startTaskOrRestart(taskMeshHandler, "HANDLER", StackSize::MQTT_PUB,
+                       TaskPrio::MQTT_PUB + 1, 1);
+    startTaskOrRestart(taskMqttPublish, "MQTT", StackSize::MQTT_PUB,
+                       TaskPrio::MQTT_PUB, 0);
+    startTaskOrRestart(taskMonitorGateway, "MONITOR", StackSize::MONITOR, 1, 0);
 
     LOG_INFO(TAG, "Gateway siap — 4 task aktif");
 

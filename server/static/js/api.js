@@ -17,9 +17,13 @@ export async function fetchStatus() {
   if (!d) return null;
   
   // Populate state.nodes
+  const currentIds = new Set(d.nodes.map(node => node.node_id));
   d.nodes.forEach(node => {
-    state.nodes.set(node.node_id, node);
+    state.nodes.set(node.node_id, { ...(state.nodes.get(node.node_id) || {}), ...node });
   });
+  for (const nodeId of state.nodes.keys()) {
+    if (!currentIds.has(nodeId)) state.nodes.delete(nodeId);
+  }
   
   return d;
 }

@@ -1,5 +1,6 @@
 import sys
 import os
+from pathlib import Path
 
 # Masukkan folder server ke python path
 sys.path.insert(0, os.path.abspath("server"))
@@ -9,7 +10,8 @@ from apps.ml_inference import ModelRegistry
 def test_model_registry_scan():
     # Inisialisasi registry dan scan folder models
     registry = ModelRegistry()
-    registry.scan("server/apps/ml_inference/models/", recursive=True)
+    model_dir = Path(__file__).resolve().parents[1] / "apps" / "ml_inference" / "models"
+    registry.scan(model_dir, recursive=True)
 
     # Cetak status pemuatan model (akan muncul jika pytest gagal atau dijalankan dengan flag -s)
     print("\n=== STATUS MODEL REGISTRY ===")

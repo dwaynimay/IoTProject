@@ -11,10 +11,10 @@
 //             determines the target transmission channel without manual timing.
 //
 // GATEWAY INITIALIZATION SEQUENCE (Critical Flow):
-//   1. g_mesh.begin(false)          <- ESP-NOW initialized (temporary channel = 1)
-//   2. taskBeacon created           <- starts broadcasting beacons on temporary channel
-//   3. g_mqtt.begin()               <- connects to WiFi AP, retrieves active AP channel (e.g. 11)
-//   4. g_mesh.setGatewayChannel(ch) <- updates ESP-NOW and all registered peers to channel 11
+//   1. g_mqtt.begin()               <- connects WiFi and establishes AP channel
+//   2. g_mesh.begin(false)          <- initializes ESP-NOW on the active channel
+//   3. g_mesh.setGatewayChannel(ch) <- synchronizes all registered peers
+//   4. gateway tasks start          <- beacon, routing, MQTT, and monitoring
 //
 //   Note: Sensor nodes do not need to call setGatewayChannel() as they detect and
 //   align to the AP channel automatically during startup (WiFi-Channel-Sync).
@@ -46,13 +46,13 @@ public:
 
     // senderMode = true  → sensor node (kirim ke gateway / neighbor)
     // senderMode = false → gateway node (terima dari semua node)
-    // [FIX-1] Gateway: WiFi BELUM harus aktif saat begin() dipanggil.
+    // Gateway requires WiFi to be active before begin(false).
     bool begin(bool senderMode);
 
     // ── Channel Management (Gateway Only) ─────────────────────────────────────
 
     // [FIX-2] Update channel ESP-NOW setelah WiFi gateway terkoneksi.
-    // Panggil SEKALI dari main.cpp setelah g_mqtt.begin() berhasil.
+    // Call after startup and whenever WiFi reconnects on a different channel.
     // Parameter: channel WiFi yang aktif (dari esp_wifi_get_channel atau WiFi.channel())
     void setGatewayChannel(uint8_t channel);
 

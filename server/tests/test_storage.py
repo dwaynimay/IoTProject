@@ -14,6 +14,7 @@
 import sys
 import os
 import json
+import sqlite3
 import time
 import tempfile
 
@@ -84,6 +85,32 @@ def test_double_open_idempotent():
     db2 = StorageManager(db_path=path)
     db2.open()
     db2.close()
+
+
+def test_open_migrates_legacy_windows_table():
+    path = tempfile.mktemp(suffix=".db")
+    conn = sqlite3.connect(path)
+    conn.execute(
+        """
+        CREATE TABLE windows (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            node_id INTEGER NOT NULL, window_num INTEGER NOT NULL,
+            ts_sensor_ms INTEGER NOT NULL, ts_server_ms INTEGER NOT NULL,
+            signal TEXT NOT NULL, values_json TEXT NOT NULL,
+            rel_error REAL, sparsity REAL, snr_db REAL, quality_flag TEXT,
+            hr INTEGER, spo2 REAL, finger INTEGER
+        )
+        """
+    )
+    conn.commit()
+    conn.close()
+
+    db = StorageManager(db_path=path)
+    db.open()
+    columns = {row[1] for row in db._conn.execute("PRAGMA table_info(windows)")}
+    assert "session_id" in columns
+    assert db.save_window(1, 1, 100, _make_results(("ax",))) == 1
+    db.close()
 
 def test_ensure_open_raises_if_not_opened():
     db = StorageManager(db_path=":memory:")
@@ -254,9 +281,40 @@ def test_get_node_stats_counts():
     stats = db.get_node_stats(node_id=1)
 
     assert stats["total_windows"]     == 2
-    assert stats["low_quality_count"] >= 1   # setidaknya window 2
+    assert stats["low_quality_count"] == 1
     assert stats["avg_rel_error"]     > 0
     assert stats["last_hr"]           == 72  # window terakhir
+    db.close()
+
+
+def test_stats_distinguish_same_window_number_across_sessions():
+    path = tempfile.mktemp(suffix=".db")
+    results = _make_results(("ax", "ir"))
+
+    first = StorageManager(db_path=path)
+    first.open()
+    first.save_window(1, 1, 100, results)
+    first.close()
+
+    second = StorageManager(db_path=path)
+    second.open()
+    second.save_window(1, 1, 200, results)
+    assert second.get_node_stats(1)["total_windows"] == 2
+    second.close()
+
+
+def test_activity_rows_are_ordered_by_server_time_not_window_number():
+    db = _make_db()
+    results = _make_results(("ir",))
+    db.save_window(1, 99, 100, results)
+    db.save_window(1, 1, 200, results)
+    ids = db._conn.execute("SELECT id FROM windows ORDER BY id").fetchall()
+    db._conn.execute("UPDATE windows SET ts_server_ms = 2000 WHERE id = ?", ids[0])
+    db._conn.execute("UPDATE windows SET ts_server_ms = 3000 WHERE id = ?", ids[1])
+    db._conn.commit()
+
+    rows = db.get_activity_rows(1, cutoff_ms=0)
+    assert [row[0] for row in rows] == [2000, 3000]
     db.close()
 
 def test_get_all_node_ids():

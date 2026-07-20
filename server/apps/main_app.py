@@ -29,6 +29,7 @@ from __future__ import annotations
 import logging
 import threading
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 import asyncio
 import uvicorn
@@ -58,6 +59,7 @@ _nodes:      dict = {}
 _nodes_lock: threading.Lock = threading.Lock()
 _validator   = ValidatorRegistry()
 _assessor    = QualityAssessor(phi=PHI)
+_MODEL_DIR   = Path(__file__).resolve().parent / "ml_inference" / "models"
 
 
 # ── MQTT worker thread ────────────────────────────────────────────────────────
@@ -91,7 +93,7 @@ async def _combined_lifespan(app: FastAPI):
     # Startup
     storage.open()
     hub.set_loop(asyncio.get_running_loop())
-    registry.scan("server/apps/ml_inference/models/", recursive=True)
+    registry.scan(_MODEL_DIR, recursive=True)
 
     mqtt_thread = threading.Thread(
         target  = _run_mqtt_thread,

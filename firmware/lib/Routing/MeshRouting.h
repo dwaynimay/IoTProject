@@ -62,6 +62,9 @@ private:
     // ── Helpers ───────────────────────────────────────────────────────────────
     static int _writeFloatArray(char* dst, int rem,
                                 const float* arr, uint8_t len);
+    static bool _advanceBuffer(char*& dst, int& rem, int written);
+    static const uint8_t* _expectedNodeMac(uint8_t nodeId);
+    static bool _isExpectedSource(uint8_t nodeId, const uint8_t* sourceMac);
 
     // Buffer akumulasi IMU — index 0 = node 1, index 1 = node 2
     static ImuWindowBuffer _imuBuf[2];

@@ -81,6 +81,7 @@ import logging
 import sqlite3
 import threading
 import time
+import uuid
 from pathlib import Path
 from typing import Optional
 
@@ -128,6 +129,7 @@ class StorageManager:
         self._retention_hours = retention_hours
         self._conn: Optional[sqlite3.Connection] = None
         self._lock           = threading.Lock()
+        self._session_id     = uuid.uuid4().hex
 
     # ── Lifecycle ─────────────────────────────────────────────────────────────
 
@@ -136,6 +138,9 @@ class StorageManager:
         Buka koneksi ke database dan buat tabel jika belum ada.
         Panggil sekali di awal sebelum operasi apapun.
         """
+        if self._conn is not None:
+            return
+
         self._path.parent.mkdir(parents=True, exist_ok=True)
         self._conn = sqlite3.connect(
             str(self._path),
@@ -210,6 +215,7 @@ class StorageManager:
                 quality_flag = m.flag.value
 
             rows.append((
+                self._session_id,
                 node_id,
                 window_num,
                 ts_sensor,
@@ -229,11 +235,11 @@ class StorageManager:
             self._conn.executemany(
                 """
                 INSERT INTO windows
-                    (node_id, window_num, ts_sensor_ms, ts_server_ms,
+                    (session_id, node_id, window_num, ts_sensor_ms, ts_server_ms,
                      signal, values_json,
                      rel_error, sparsity, snr_db, quality_flag,
                      hr, spo2, finger)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 rows,
             )
@@ -324,7 +330,7 @@ class StorageManager:
 
         if clauses:
             query += " WHERE " + " AND ".join(clauses)
-        query += " ORDER BY ts_server_ms DESC LIMIT ?"
+        query += " ORDER BY ts_server_ms DESC, id DESC LIMIT ?"
         params.append(n)
 
         rows = self._conn.execute(query, params).fetchall()
@@ -338,6 +344,19 @@ class StorageManager:
             for r in rows
         ]
 
+    def get_activity_rows(self, node_id: int, cutoff_ms: int) -> list[tuple[int, str]]:
+        """Return chronological IR quality rows for dashboard segmentation."""
+        self._ensure_open()
+        return self._conn.execute(
+            """
+            SELECT ts_server_ms, quality_flag
+            FROM windows
+            WHERE node_id = ? AND signal = 'ir' AND ts_server_ms > ?
+            ORDER BY ts_server_ms ASC, id ASC
+            """,
+            (node_id, cutoff_ms),
+        ).fetchall()
+
     def get_node_stats(self, node_id: int) -> dict:
         """
         Statistik ringkas untuk satu node (berguna untuk dashboard).
@@ -350,14 +369,28 @@ class StorageManager:
 
         row = self._conn.execute(
             """
+            WITH per_window AS (
+                SELECT
+                    session_id,
+                    window_num,
+                    MAX(CASE
+                        WHEN quality_flag = 'CRITICAL' THEN 2
+                        WHEN quality_flag = 'LOW_QUALITY' THEN 1
+                        ELSE 0
+                    END) AS quality_rank,
+                    AVG(rel_error) AS avg_err,
+                    MAX(ts_server_ms) AS last_seen
+                FROM windows
+                WHERE node_id = ?
+                GROUP BY session_id, window_num
+            )
             SELECT
-                COUNT(DISTINCT window_num)                              AS total_windows,
-                COUNT(CASE WHEN quality_flag='LOW_QUALITY' THEN 1 END) AS low_q,
-                COUNT(CASE WHEN quality_flag='CRITICAL'    THEN 1 END) AS crit,
-                AVG(rel_error)                                          AS avg_err,
-                MAX(ts_server_ms)                                       AS last_seen
-            FROM windows
-            WHERE node_id = ?
+                COUNT(*) AS total_windows,
+                SUM(CASE WHEN quality_rank = 1 THEN 1 ELSE 0 END) AS low_q,
+                SUM(CASE WHEN quality_rank = 2 THEN 1 ELSE 0 END) AS crit,
+                AVG(avg_err) AS avg_err,
+                MAX(last_seen) AS last_seen
+            FROM per_window
             """,
             (node_id,),
         ).fetchone()
@@ -433,6 +466,7 @@ class StorageManager:
             """
             CREATE TABLE IF NOT EXISTS windows (
                 id            INTEGER PRIMARY KEY AUTOINCREMENT,
+                session_id    TEXT    NOT NULL DEFAULT 'legacy',
                 node_id       INTEGER NOT NULL,
                 window_num    INTEGER NOT NULL,
                 ts_sensor_ms  INTEGER NOT NULL,
@@ -466,6 +500,15 @@ class StorageManager:
                 ON events (node_id, ts_server_ms DESC);
             """
         )
+
+        columns = {
+            row[1] for row in self._conn.execute("PRAGMA table_info(windows)")
+        }
+        if "session_id" not in columns:
+            self._conn.execute(
+                "ALTER TABLE windows "
+                "ADD COLUMN session_id TEXT NOT NULL DEFAULT 'legacy'"
+            )
         self._conn.commit()
 
     def _ensure_open(self) -> None:

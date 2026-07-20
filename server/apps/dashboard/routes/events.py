@@ -18,7 +18,7 @@ def _node_or_404(node_id: int) -> None:
     summary="Event log satu node",
     tags=["Node"],
 )
-async def get_node_events(
+def get_node_events(
     node_id:    int,
     event_type: Optional[str] = Query(
         None,
@@ -37,7 +37,7 @@ async def get_node_events(
     summary="Semua event terbaru lintas node",
     tags=["Overview"],
 )
-async def get_all_events(
+def get_all_events(
     event_type: Optional[str] = Query(None, description="Filter tipe event"),
     n:          int            = Query(50, ge=1, le=500),
 ):

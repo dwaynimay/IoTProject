@@ -144,7 +144,7 @@ def from_storage_rows(
         gx = signal_rows.get("gx"),
         gy = signal_rows.get("gy"),
         gz = signal_rows.get("gz"),
-        ir = signal_rows.get("ir"),
+        ir = _to_g("ir"),
         hr     = hr,
         spo2   = spo2,
         finger = finger,

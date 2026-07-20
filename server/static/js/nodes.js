@@ -148,6 +148,7 @@ export function renderNodeList() {
 
   updateConnectionStatuses();
 }
+window.renderNodeList = renderNodeList;
 
 export function initTrendChart(nodeId) {
   const el = document.getElementById(`chart-${nodeId}`);

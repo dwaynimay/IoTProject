@@ -132,10 +132,25 @@ RouteResult MeshRouting::_routeRoutedCs(const RawPacket& raw, MqttMessage& out)
 
     const auto* routedHdr = reinterpret_cast<const RoutedCsHeader*>(raw.data);
 
+    if (!_isExpectedSource(routedHdr->relayNodeId, raw.srcMac))
+    {
+        LOG_WARN(TAG, "ROUTED_CS MAC relay tidak cocok dengan node %d",
+                 routedHdr->relayNodeId);
+        return RouteResult::DROPPED;
+    }
+
     if (routedHdr->innerLen == 0 ||
         routedHdr->innerLen > sizeof(RoutedCsPacket::inner))
     {
         LOG_WARN(TAG, "ROUTED_CS innerLen tidak valid: %d", routedHdr->innerLen);
+        return RouteResult::DROPPED;
+    }
+
+    const size_t routedSize = sizeof(RoutedCsHeader) + routedHdr->innerLen;
+    if (raw.len < static_cast<int>(routedSize))
+    {
+        LOG_WARN(TAG, "ROUTED_CS terpotong: %d < %d bytes",
+                 raw.len, routedSize);
         return RouteResult::DROPPED;
     }
 
@@ -152,7 +167,20 @@ RouteResult MeshRouting::_routeRoutedCs(const RawPacket& raw, MqttMessage& out)
     memcpy(innerRaw.data,
            raw.data + sizeof(RoutedCsHeader),
            routedHdr->innerLen);
-    memcpy(innerRaw.srcMac, raw.srcMac, 6);
+    if (innerRaw.len < sizeof(PacketHeader))
+        return RouteResult::DROPPED;
+
+    const auto* innerHeader = reinterpret_cast<const PacketHeader*>(innerRaw.data);
+    if (innerHeader->nodeId != routedHdr->originalNodeId)
+    {
+        LOG_WARN(TAG, "ROUTED_CS original node mismatch: outer=%d inner=%d",
+                 routedHdr->originalNodeId, innerHeader->nodeId);
+        return RouteResult::DROPPED;
+    }
+
+    const uint8_t* originalMac = _expectedNodeMac(routedHdr->originalNodeId);
+    if (!originalMac) return RouteResult::DROPPED;
+    memcpy(innerRaw.srcMac, originalMac, 6);
 
     // Dispatch ke handler yang sesuai berdasarkan tipe inner packet
     const uint8_t innerType = innerRaw.data[0];
@@ -297,6 +325,16 @@ RouteResult MeshRouting::_routeCsAxis(const RawPacket& raw, MqttMessage& out)
     }
 
     const auto*    pkt    = reinterpret_cast<const CS1AxisPacket*>(raw.data);
+    if (pkt->header.nodeId < 1 || pkt->header.nodeId > 2)
+    {
+        LOG_WARN(TAG, "CS_AXIS node ID tidak valid: %d", pkt->header.nodeId);
+        return RouteResult::DROPPED;
+    }
+    if (!_isExpectedSource(pkt->header.nodeId, raw.srcMac))
+    {
+        LOG_WARN(TAG, "CS_AXIS MAC tidak cocok dengan node %d", pkt->header.nodeId);
+        return RouteResult::DROPPED;
+    }
     const uint8_t  axIdx  = raw.data[0] - PKT_CS_AX;
     const uint8_t  bufIdx = _nodeIdx(pkt->header.nodeId);
 
@@ -367,7 +405,7 @@ RouteResult MeshRouting::_routeCsAxis(const RawPacket& raw, MqttMessage& out)
     w = snprintf(p, rem, "{\"ts\":%lu,\"finger\":%s",
                  (unsigned long)buf.timestamp,
                  buf.fingerOn ? "true" : "false");
-    p += w; rem -= w;
+    if (!_advanceBuffer(p, rem, w)) return RouteResult::DROPPED;
 
     const char* names[] = {"ax","ay","az","gx","gy","gz"};
     float*      arrs[]  = {buf.ax,buf.ay,buf.az,buf.gx,buf.gy,buf.gz};
@@ -376,15 +414,16 @@ RouteResult MeshRouting::_routeCsAxis(const RawPacket& raw, MqttMessage& out)
     for (uint8_t i = 0; i < 6; i++)
     {
         w = snprintf(p, rem, ",\"mean_%s\":%.4f", names[i], meanVals[i]);
-        p += w; rem -= w;
+        if (!_advanceBuffer(p, rem, w)) return RouteResult::DROPPED;
         w = snprintf(p, rem, ",\"%s\":[", names[i]);
-        p += w; rem -= w;
+        if (!_advanceBuffer(p, rem, w)) return RouteResult::DROPPED;
         w = _writeFloatArray(p, rem, arrs[i], CS_M);
-        p += w; rem -= w;
+        if (!_advanceBuffer(p, rem, w)) return RouteResult::DROPPED;
         w = snprintf(p, rem, "]");
-        p += w; rem -= w;
+        if (!_advanceBuffer(p, rem, w)) return RouteResult::DROPPED;
     }
-    snprintf(p, rem, "}");
+    if (!_advanceBuffer(p, rem, snprintf(p, rem, "}")))
+        return RouteResult::DROPPED;
 
     // Guard: jika payload mendekati batas, log warning
     const size_t used = strlen(out.payload);
@@ -409,6 +448,12 @@ RouteResult MeshRouting::_routeCsIr(const RawPacket& raw, MqttMessage& out)
     }
 
     const auto* pkt = reinterpret_cast<const CSPpgPacket*>(raw.data);
+
+    if (!_isExpectedSource(pkt->header.nodeId, raw.srcMac))
+    {
+        LOG_WARN(TAG, "CS_IR MAC tidak cocok dengan node %d", pkt->header.nodeId);
+        return RouteResult::DROPPED;
+    }
 
     snprintf(out.topic, sizeof(out.topic),
              "%s/node_%d/cs_ppg", Mqtt::TOPIC_BASE, pkt->header.nodeId);
@@ -439,11 +484,12 @@ RouteResult MeshRouting::_routeCsIr(const RawPacket& raw, MqttMessage& out)
                      pkt->edge.fingerOn ? "true" : "false",
                      pkt->mean);
     }
-    p += w; rem -= w;
+    if (!_advanceBuffer(p, rem, w)) return RouteResult::DROPPED;
 
     w = _writeFloatArray(p, rem, pkt->yIr, CS_M);
-    p += w; rem -= w;
-    snprintf(p, rem, "]}");
+    if (!_advanceBuffer(p, rem, w)) return RouteResult::DROPPED;
+    if (!_advanceBuffer(p, rem, snprintf(p, rem, "]}")))
+        return RouteResult::DROPPED;
 
     return RouteResult::PUBLISHED;
 }
@@ -456,12 +502,40 @@ int MeshRouting::_writeFloatArray(char* dst, int rem,
                                   const float* arr, uint8_t len)
 {
     int total = 0;
-    for (uint8_t i = 0; i < len && rem > 15; i++)
+    for (uint8_t i = 0; i < len; i++)
     {
+        if (rem <= 0) return -1;
         const int w = snprintf(dst, rem, i ? ",%.4f" : "%.4f", arr[i]);
+        if (w < 0 || w >= rem) return -1;
         dst += w; rem -= w; total += w;
     }
     return total;
+}
+
+bool MeshRouting::_advanceBuffer(char*& dst, int& rem, int written)
+{
+    if (written < 0 || written >= rem)
+    {
+        if (rem > 0) dst[rem - 1] = '\0';
+        LOG_WARN(TAG, "Payload JSON melebihi buffer %d byte", sizeof(MqttMessage::payload));
+        return false;
+    }
+    dst += written;
+    rem -= written;
+    return true;
+}
+
+const uint8_t* MeshRouting::_expectedNodeMac(uint8_t nodeId)
+{
+    if (nodeId == 1) return MacAddr::NODE_IMU;
+    if (nodeId == 2) return MacAddr::NODE_PPG;
+    return nullptr;
+}
+
+bool MeshRouting::_isExpectedSource(uint8_t nodeId, const uint8_t* sourceMac)
+{
+    const uint8_t* expected = _expectedNodeMac(nodeId);
+    return expected && sourceMac && memcmp(expected, sourceMac, 6) == 0;
 }
 
 

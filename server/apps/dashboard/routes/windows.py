@@ -12,7 +12,7 @@ router = APIRouter(tags=["Node"])
     "/api/nodes/{node_id}/windows",
     summary="N window terakhir untuk satu sinyal",
 )
-async def get_windows(
+def get_windows(
     node_id: int,
     signal:  str  = Query("ax",  description="Sinyal: ax/ay/az/gx/gy/gz/ir"),
     n:       int  = Query(20,    description="Jumlah window", ge=1, le=500),

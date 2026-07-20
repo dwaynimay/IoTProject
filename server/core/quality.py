@@ -58,6 +58,7 @@ from enum import Enum
 from typing import Optional
 
 import numpy as np
+from scipy.fftpack import dct
 
 try:
     from .config import CS_M, CS_N, IMU_SIGNALS, PPG_SIGNALS
@@ -264,6 +265,16 @@ class QualityAssessor:
         y_arr   = np.asarray(y,     dtype=np.float64)
         x_arr   = np.asarray(x_hat, dtype=np.float64)
 
+        if y_arr.ndim != 1 or x_arr.ndim != 1:
+            raise ValueError("y dan x_hat harus berupa array 1D")
+        if self._phi.shape != (len(y_arr), len(x_arr)):
+            raise ValueError(
+                f"Shape tidak cocok: phi={self._phi.shape}, "
+                f"y={y_arr.shape}, x_hat={x_arr.shape}"
+            )
+        if not np.all(np.isfinite(y_arr)) or not np.all(np.isfinite(x_arr)):
+            raise ValueError("y dan x_hat harus berisi nilai finite")
+
         y_norm  = float(np.linalg.norm(y_arr))
 
         # Sinyal nol — tidak bisa dinilai
@@ -285,9 +296,10 @@ class QualityAssessor:
 
         relative_error = residual_norm / y_norm
 
-        # Sparsity: fraksi koefisien DCT yang dipakai OMP
-        n_nonzero     = int(np.sum(np.abs(x_arr) > SPARSITY_EPSILON))
-        sparsity_ratio = n_nonzero / max(len(x_arr), 1)
+        # OMP bekerja pada basis DCT; sparsity harus diukur di domain yang sama.
+        dct_coeffs     = dct(x_arr, norm="ortho")
+        n_nonzero      = int(np.sum(np.abs(dct_coeffs) > SPARSITY_EPSILON))
+        sparsity_ratio = n_nonzero / max(len(dct_coeffs), 1)
 
         # SNR estimasi
         if residual_norm > ZERO_SIGNAL_THRESHOLD:

@@ -50,12 +50,16 @@ def _make_valid_imu(ts: int = 1000, node_id: int = 1) -> dict:
     payload = {"ts": ts, "finger": True}
     for sig in IMU_SIGNALS:
         payload[sig] = [0.01 * i for i in range(CS_M)]
+        payload[f"mean_{sig}"] = 0.0
     return payload
 
 
 def _make_valid_ppg(ts: int = 1000, node_id: int = 1) -> dict:
     """Buat payload cs_ppg yang valid."""
-    payload = {"ts": ts, "hr": 75, "finger": True}
+    payload = {
+        "ts": ts, "hr": 75, "spo2": 98.0,
+        "ppg_valid": True, "finger": True, "mean_ir": 100.0,
+    }
     for sig in PPG_SIGNALS:
         payload[sig] = [100.0 + i for i in range(CS_M)]
     return payload
@@ -299,6 +303,25 @@ def test_registry_monotonicity_caught():
     ok, errors = reg.validate_imu(node_id=1, payload=_make_valid_imu(ts=4000))
     assert not ok
     assert any("monotonicity" in e for e in errors)
+
+
+def test_invalid_payload_does_not_poison_monotonicity_tracker():
+    reg = ValidatorRegistry()
+    invalid = _make_valid_imu(ts=5000)
+    invalid["gx"][0] = float("nan")
+    ok, _ = reg.validate_imu(node_id=1, payload=invalid)
+    assert not ok
+
+    ok, errors = reg.validate_imu(node_id=1, payload=_make_valid_imu(ts=1000))
+    assert ok, errors
+
+
+def test_nonfinite_timestamp_rejected_without_crash():
+    reg = ValidatorRegistry()
+    payload = _make_valid_imu(ts=float("nan"))
+    ok, errors = reg.validate_imu(node_id=1, payload=payload)
+    assert not ok
+    assert any("ts" in error for error in errors)
 
 
 # =============================================================================

@@ -64,6 +64,7 @@ MQTT_BROKER    = _get("MQTT_BROKER", "localhost")
 MQTT_PORT      = _get_int("MQTT_PORT", 1883)
 MQTT_KEEPALIVE = _get_int("MQTT_KEEPALIVE", 60)
 TOPIC_BASE     = _get("TOPIC_BASE", "health_monitor")
+ADMIN_API_TOKEN = _get("ADMIN_API_TOKEN", "").strip()
 
 # =============================================================================
 # CS Algorithm
@@ -110,6 +111,8 @@ UNITS = {
 }
 
 TS_SPREAD_TOLERANCE_MS = _get_int("TS_SPREAD_TOLERANCE_MS", 500)
+PAIR_BUFFER_SIZE       = _get_int("PAIR_BUFFER_SIZE", 8)
+PROCESSOR_QUEUE_SIZE   = _get_int("PROCESSOR_QUEUE_SIZE", 8)
 
 # =============================================================================
 # Node Grouping — 1 sensor per ESP

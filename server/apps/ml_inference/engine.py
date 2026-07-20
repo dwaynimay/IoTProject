@@ -128,6 +128,7 @@ class MLInferenceEngine:
             model = pickle.load(f)
 
         _validate_model(model)
+        _validate_model_labels(model, config["labels"])
 
         # Build extractor dari schema fitur di config
         extractor = FeatureExtractor(config["features"])
@@ -204,6 +205,11 @@ class MLInferenceEngine:
 
             # Inferensi
             proba_arr = self._model.predict_proba(X)[0]  # shape (n_classes,)
+            if len(proba_arr) != len(self._labels):
+                raise ValueError(
+                    f"Model menghasilkan {len(proba_arr)} probabilitas, "
+                    f"manifest mendefinisikan {len(self._labels)} label"
+                )
 
             # Map ke dict label → proba
             proba_dict = {
@@ -307,6 +313,11 @@ class MLInferenceEngine:
         try:
             X         = np.array(valid_feats, dtype=np.float64)
             proba_mat = self._model.predict_proba(X)   # (n_valid, n_classes)
+            if proba_mat.ndim != 2 or proba_mat.shape[1] != len(self._labels):
+                raise ValueError(
+                    f"Shape probabilitas {proba_mat.shape} tidak cocok dengan "
+                    f"{len(self._labels)} label"
+                )
             elapsed_ms = (time.perf_counter() - t0) * 1000
             self._total_ms += elapsed_ms
 
@@ -431,6 +442,10 @@ def _validate_config(config: dict) -> None:
 
     if not isinstance(config["labels"], list) or len(config["labels"]) < 2:
         raise ValueError("config['labels'] harus list dengan minimal 2 kelas")
+    if any(not isinstance(label, str) or not label for label in config["labels"]):
+        raise ValueError("semua config['labels'] harus string non-kosong")
+    if len(set(config["labels"])) != len(config["labels"]):
+        raise ValueError("config['labels'] tidak boleh duplikat")
 
     if not isinstance(config["features"], list) or len(config["features"]) == 0:
         raise ValueError("config['features'] harus list non-kosong")
@@ -448,4 +463,20 @@ def _validate_model(model: Any) -> None:
         raise TypeError(
             f"Model {type(model).__name__} tidak punya method predict_proba(). "
             "Wrapper model dengan predict_proba jika perlu."
+        )
+
+
+def _validate_model_labels(model: Any, labels: list[str]) -> None:
+    """Reject manifest/model class mappings that can be proven inconsistent."""
+    if not hasattr(model, "classes_"):
+        return
+
+    classes = list(model.classes_)
+    if len(classes) != len(labels):
+        raise ValueError(
+            f"Model memiliki {len(classes)} kelas, manifest memiliki {len(labels)} label"
+        )
+    if all(isinstance(value, str) for value in classes) and classes != labels:
+        raise ValueError(
+            f"Urutan classes_ model {classes} tidak sama dengan labels manifest {labels}"
         )

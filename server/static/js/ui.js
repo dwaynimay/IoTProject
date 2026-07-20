@@ -64,15 +64,23 @@ export function appendEvent(e, prepend = true) {
   else if (e.event_type === 'LOW_QUALITY') badgeClass = 'badge-warn';
   else if (e.event_type === 'NODE_REGISTERED') badgeClass = 'badge-info';
   
-  div.innerHTML = `
-    <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-      <span class="badge ${badgeClass}">${e.event_type}</span>
-      <span style="font-size:10px; color:var(--text3); font-family:var(--mono);">${ts}</span>
-    </div>
-    <div style="font-size:11px; color:var(--text); font-family:var(--mono); word-break:break-all;">
-      Node ${e.node_id} | ${e.detail || '—'}
-    </div>
-  `;
+  const header = document.createElement('div');
+  header.style.cssText = 'display:flex;justify-content:space-between;margin-bottom:4px';
+
+  const badge = document.createElement('span');
+  badge.className = `badge ${badgeClass}`;
+  badge.textContent = e.event_type || 'UNKNOWN';
+
+  const timestamp = document.createElement('span');
+  timestamp.style.cssText = 'font-size:10px;color:var(--text3);font-family:var(--mono)';
+  timestamp.textContent = ts;
+
+  const detail = document.createElement('div');
+  detail.style.cssText = 'font-size:11px;color:var(--text);font-family:var(--mono);word-break:break-all';
+  detail.textContent = `Node ${e.node_id} | ${e.detail || '-'}`;
+
+  header.append(badge, timestamp);
+  div.append(header, detail);
 
   if (prepend) log.insertBefore(div, log.firstChild);
   else         log.appendChild(div);

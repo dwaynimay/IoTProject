@@ -17,6 +17,7 @@ Tidak ada logika rekonstruksi. Tidak ada state per-node di sini.
 
 import json
 import logging
+import time
 
 import paho.mqtt.client as mqtt
 
@@ -142,11 +143,15 @@ def run(
         else:
             logger.error("MQTT gagal konek rc=%d", rc_val)
 
-    def _on_message(client, userdata, message) -> None:
+    def _handle_message(client, userdata, message) -> None:
         try:
             payload = json.loads(message.payload.decode())
         except Exception as exc:
             logger.error("JSON parse error: %s", exc)
+            return
+
+        if not isinstance(payload, dict):
+            logger.warning("Payload MQTT harus berupa object: %s", message.topic)
             return
 
         parts = message.topic.split("/")
@@ -188,6 +193,16 @@ def run(
             elif sig_type == "cs_ppg":
                 node.on_ppg(payload)
 
+    def _on_message(client, userdata, message) -> None:
+        try:
+            _handle_message(client, userdata, message)
+        except Exception as exc:
+            logger.exception("MQTT dispatch gagal untuk topic %s", message.topic)
+            try:
+                storage.log_event(0, "INGEST_ERROR", f"{message.topic}: {exc}")
+            except Exception:
+                logger.exception("Gagal menyimpan event INGEST_ERROR")
+
     # ── Build client ──────────────────────────────────────────────────────────
     if _PAHO_V2:
         client = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2)
@@ -197,5 +212,15 @@ def run(
     client.on_connect = _on_connect
     client.on_message = _on_message
 
-    client.connect(broker, port, keepalive=keepalive)
-    client.loop_forever()
+    retry_delay_s = 1
+    while True:
+        try:
+            client.connect(broker, port, keepalive=keepalive)
+            retry_delay_s = 1
+            client.loop_forever()
+            logger.warning("MQTT loop berhenti; mencoba koneksi ulang")
+        except Exception:
+            logger.exception("MQTT gagal terhubung/berjalan pada %s:%d", broker, port)
+
+        time.sleep(retry_delay_s)
+        retry_delay_s = min(retry_delay_s * 2, 30)

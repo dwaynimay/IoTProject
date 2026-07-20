@@ -16,6 +16,7 @@ import os
 import math
 
 import numpy as np
+from scipy.fftpack import idct
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
@@ -134,12 +135,12 @@ def test_assess_signal_critical():
 
 
 def test_assess_signal_sparsity_ratio():
-    """sparsity_ratio = fraksi elemen non-nol."""
+    """sparsity_ratio dihitung dari koefisien DCT, bukan sampel waktu."""
     assessor = _make_assessor()
 
-    # x_hat dengan 4 non-nol dari 16 → sparsity = 4/16 = 0.25
-    x_hat = np.zeros(_N)
-    x_hat[[0, 1, 2, 3]] = [1.0, -0.5, 0.3, 2.1]
+    coeffs = np.zeros(_N)
+    coeffs[[0, 1, 2, 3]] = [1.0, -0.5, 0.3, 2.1]
+    x_hat = idct(coeffs, norm="ortho")
     y = _encode(assessor._phi, x_hat)
 
     metric = assessor.assess_signal("az", x_hat=x_hat, y=y)

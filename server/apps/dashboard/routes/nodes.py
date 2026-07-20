@@ -2,9 +2,9 @@
 
 import time
 from typing import Optional
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 
-from core.config import SIGNALS
+from core.config import SIGNALS, WINDOW_MS
 from apps.dashboard.hub import storage
 
 router = APIRouter(tags=["Node"])
@@ -29,7 +29,7 @@ def _node_or_404(node_id: int) -> None:
     "/api/nodes/{node_id}",
     summary="Detail satu node",
 )
-async def get_node_detail(node_id: int):
+def get_node_detail(node_id: int):
     """
     Statistik lengkap satu node, preview 1 window terakhir per sinyal,
     dan 10 event terbaru.
@@ -49,8 +49,8 @@ async def get_node_detail(node_id: int):
                 "window_num":   r["window_num"],
                 "rel_error":    r["rel_error"],
                 "quality_flag": r["quality_flag"],
-                "snr_db":       round(r["snr_db"], 2) if r["snr_db"] else None,
-                "sparsity":     round(r["sparsity"], 3) if r["sparsity"] else None,
+                "snr_db":       round(r["snr_db"], 2) if r["snr_db"] is not None else None,
+                "sparsity":     round(r["sparsity"], 3) if r["sparsity"] is not None else None,
                 "ts_sensor_ms": r["ts_sensor_ms"],
             }
 
@@ -64,7 +64,10 @@ async def get_node_detail(node_id: int):
     "/api/nodes/{node_id}/activity",
     summary="Aktivitas node (segment)",
 )
-async def get_node_activity(node_id: int, hours: int = 24):
+def get_node_activity(
+    node_id: int,
+    hours: int = Query(24, ge=1, le=24 * 365),
+):
     """
     Riwayat aktivitas (segment) berdasarkan kualitas data / ML labels sementara.
     """
@@ -72,34 +75,20 @@ async def get_node_activity(node_id: int, hours: int = 24):
     
     cutoff_ms = _now_ms() - (hours * 3600 * 1000)
     
-    # Akses langsung DB via storage manager internals
-    # Jangan tiru ini untuk write, tapi untuk read sementara aman
-    storage._ensure_open()
-    rows = storage._conn.execute(
-        """
-        SELECT window_num, ts_server_ms, quality_flag
-        FROM windows
-        WHERE node_id = ? AND signal = 'ir' AND ts_server_ms > ?
-        ORDER BY window_num ASC
-        """,
-        (node_id, cutoff_ms)
-    ).fetchall()
+    rows = storage.get_activity_rows(node_id, cutoff_ms)
 
     segments = []
     if not rows:
         return {"segments": []}
 
     # Collapse
-    current_label = rows[0][2] or "OK"
-    start_ms = rows[0][1]
-    last_ms = rows[0][1]
+    current_label = rows[0][1] or "OK"
+    start_ms = rows[0][0]
+    last_ms = rows[0][0]
 
     def _push_segment(label, start, end):
+        end += WINDOW_MS
         dur_s = (end - start) / 1000.0
-        # If duration is 0 (single window), give it ~2 seconds default duration
-        if dur_s <= 0:
-            dur_s = 2.0
-            end = start + 2000
         segments.append({
             "label": label,
             "start_ms": start,
@@ -109,7 +98,7 @@ async def get_node_activity(node_id: int, hours: int = 24):
         })
 
     for row in rows[1:]:
-        wn, ts, flag = row
+        ts, flag = row
         label = flag or "OK"
         # Split jika beda label ATAU gap waktu > 10 detik
         if label != current_label or (ts - last_ms) > 10000:

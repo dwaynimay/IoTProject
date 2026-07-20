@@ -22,9 +22,9 @@
 // Verified Packet Layout Sizes (< 250 bytes limit):
 //   - BeaconPacket    = 7 bytes
 //   - RssiReportPacket= 9 bytes
-//   - RoutedCsPacket  = 143 bytes (6 + 1 + 136) or (6 + 1 + 142)
-//   - CS1AxisPacket   = 136 bytes
-//   - CSPpgPacket     = 142 bytes
+//   - RoutedCsPacket  = 208 bytes capacity; wire length is header + inner
+//   - CS1AxisPacket   = 140 bytes
+//   - CSPpgPacket     = 146 bytes
 //   - CombinedPacket  = 50 bytes
 //   - HeartbeatPacket = 11 bytes
 // =============================================================================
@@ -220,11 +220,18 @@ struct __attribute__((packed)) CSPpgPacket
     EdgeResult edge;
 }; // 146 bytes ✓
 
+static_assert(sizeof(PacketHeader) == 6, "PacketHeader ABI changed");
+static_assert(sizeof(RoutedCsHeader) == 8, "RoutedCsHeader ABI changed");
+static_assert(sizeof(CS1AxisPacket) == 140, "CS1AxisPacket ABI changed");
+static_assert(sizeof(CSPpgPacket) == 146, "CSPpgPacket ABI changed");
+static_assert(sizeof(RoutedCsHeader) + sizeof(CSPpgPacket) <= 250,
+              "Largest routed packet exceeds ESP-NOW payload limit");
+
 // =============================================================================
 // Internal structs
 // =============================================================================
 
-// RawPacket — wrapper ISR → taskMeshHandler (tidak berubah)
+// RawPacket - wrapper Wi-Fi callback -> taskMeshHandler
 struct RawPacket
 {
     uint8_t data[250];

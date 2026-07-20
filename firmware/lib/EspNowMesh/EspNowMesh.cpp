@@ -21,7 +21,7 @@
 //
 // Technical Context:
 //   - Eliminates timing dependency between sensor and gateway boot order.
-//   - Avoids promiscuous mode packet sniffing and background channel sweeps.
+//   - Uses a bounded channel sweep only if initial Wi-Fi channel sync fails.
 //   - Requires WiFi credentials inside credentials.h to connect initially.
 // =============================================================================
 
@@ -30,9 +30,10 @@
 
 static constexpr char TAG[] = "MESH";
 
-static uint8_t  s_channel          = 1;
-static bool     s_channelConfirmed = false;
+static volatile uint8_t  s_channel          = 1;
+static volatile bool     s_channelConfirmed = false;
 static volatile bool s_espnowReady = false;
+static uint32_t s_lastChannelSweepMs = 0;
 
 static const uint8_t BROADCAST_MAC[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
@@ -50,6 +51,8 @@ EspNowMesh* EspNowMesh::_instance = nullptr;
 // =============================================================================
 static SemaphoreHandle_t s_sendSem    = nullptr;
 static volatile bool     s_sendResult = false;
+static volatile bool     s_sendAwaiting = false;
+static uint8_t           s_expectedDst[6] = {};
 
 // Mutex untuk serialisasi _send(): hanya satu unicast in-flight pada satu waktu.
 // Mencegah race antara taskCSSender, taskRssiExchange, dan taskSensorReceiver
@@ -136,6 +139,7 @@ bool EspNowMesh::begin(bool senderMode)
         WiFi.mode(WIFI_STA);
         WiFi.begin(Wifi::SSID, Wifi::PASSWORD);
 
+        bool channelFromAp = false;
         const uint32_t wifiStart = millis();
         while (WiFi.status() != WL_CONNECTED)
         {
@@ -151,6 +155,7 @@ bool EspNowMesh::begin(bool senderMode)
 
         // Berhasil konek — baca channel dari AP
         s_channel = static_cast<uint8_t>(WiFi.channel());
+        channelFromAp = true;
         LOG_INFO(TAG, "WiFi connected! ch=%d | IP=%s | RSSI=%d dBm",
                  s_channel, WiFi.localIP().toString().c_str(), WiFi.RSSI());
 
@@ -168,7 +173,7 @@ bool EspNowMesh::begin(bool senderMode)
 
         // Set channel sesuai yang didapat dari WiFi AP
         esp_wifi_set_channel(s_channel, WIFI_SECOND_CHAN_NONE);
-        s_channelConfirmed = true;  // channel sudah pasti, tidak perlu discovery
+        s_channelConfirmed = channelFromAp;
 
         LOG_INFO(TAG, "Sensor: ESP-NOW akan init di ch=%d (dari WiFi AP)", s_channel);
     }
@@ -196,8 +201,14 @@ bool EspNowMesh::begin(bool senderMode)
 
     s_espnowReady = true;
 
-    esp_now_register_send_cb(_onDataSent);
-    esp_now_register_recv_cb(_onDataRecv);
+    if (esp_now_register_send_cb(_onDataSent) != ESP_OK ||
+        esp_now_register_recv_cb(_onDataRecv) != ESP_OK)
+    {
+        LOG_ERROR(TAG, "Gagal register callback ESP-NOW");
+        esp_now_deinit();
+        s_espnowReady = false;
+        return false;
+    }
 
     // ── Register peers ───────────────────────────────────────────────────────
     // Dengan dynamic peer di _send(), peer awal ini tetap didaftarkan
@@ -231,8 +242,12 @@ bool EspNowMesh::begin(bool senderMode)
     // Aktifkan promiscuous mode untuk RSSI monitoring (tidak untuk discovery)
     if (senderMode)
     {
-        esp_wifi_set_promiscuous(true);
-        esp_wifi_set_promiscuous_rx_cb(_promiscuousRxCb);
+        if (esp_wifi_set_promiscuous_rx_cb(_promiscuousRxCb) != ESP_OK ||
+            esp_wifi_set_promiscuous(true) != ESP_OK)
+        {
+            LOG_ERROR(TAG, "Gagal aktifkan promiscuous RSSI monitoring");
+            return false;
+        }
         LOG_INFO(TAG, "Promiscuous ON untuk RSSI monitoring");
     }
 
@@ -258,6 +273,8 @@ void EspNowMesh::setGatewayChannel(uint8_t channel)
 {
     if (channel == 0 || channel > 13) return;
 
+    if (s_sendMutex) xSemaphoreTake(s_sendMutex, portMAX_DELAY);
+
     const uint8_t oldCh = s_channel;
     s_channel           = channel;
     s_channelConfirmed  = true;
@@ -267,6 +284,7 @@ void EspNowMesh::setGatewayChannel(uint8_t channel)
     // esp_wifi_set_channel tidak dipakai di gateway karena channel dikontrol STA.
 
     _updateAllPeerChannels(s_channel);
+    if (s_sendMutex) xSemaphoreGive(s_sendMutex);
 
     LOG_INFO(TAG, "setGatewayChannel: %d → %d | peers updated", oldCh, s_channel);
 }
@@ -440,26 +458,22 @@ bool EspNowMesh::_send(const void* data, size_t len, const uint8_t* dstMac)
 
     // Drain semaphore sebelum send (buang sisa dari callback sebelumnya)
     xSemaphoreTake(s_sendSem, 0);
+    memcpy(s_expectedDst, dstMac, sizeof(s_expectedDst));
+    s_sendAwaiting = true;
 
     const esp_err_t err = esp_now_send(
         dstMac, reinterpret_cast<const uint8_t*>(data), len);
     if (err != ESP_OK)
     {
+        s_sendAwaiting = false;
         LOG_EVERY_N(10, LOG_WARN, TAG, "esp_now_send err: 0x%X", err);
         _lastSendOk = false;
         if (s_sendMutex) xSemaphoreGive(s_sendMutex);
         return false;
     }
 
-    // Broadcast tidak punya ACK — anggap sukses
-    if (isBroadcast)
-    {
-        _lastSendOk = true;
-        if (s_sendMutex) xSemaphoreGive(s_sendMutex);
-        return true;
-    }
-
-    // Unicast: tunggu callback ACK/NACK (max 50ms)
+    // Consume callback broadcast maupun unicast agar hasil transaksi lama tidak
+    // bisa dianggap sebagai hasil unicast berikutnya.
     // ESP-NOW internal MAC retry butuh ~10-30ms sebelum menyerah.
     if (xSemaphoreTake(s_sendSem, pdMS_TO_TICKS(50)) == pdTRUE)
     {
@@ -470,6 +484,7 @@ bool EspNowMesh::_send(const void* data, size_t len, const uint8_t* dstMac)
     }
 
     // Timeout — anggap NACK
+    s_sendAwaiting = false;
     _lastSendOk = false;
     bool isGw = (memcmp(dstMac, MacAddr::GATEWAY, 6) == 0);
     if (isGw) _nackCountGw++; else _nackCountNode++;
@@ -515,28 +530,25 @@ void EspNowMesh::_onDataSent(const uint8_t* mac, esp_now_send_status_t status)
     if (status == ESP_NOW_SEND_SUCCESS)
     {
         if (isGw) _ackCountGw++; else _ackCountNode++;
-        s_sendResult = true;
     }
     else
     {
         if (isGw)
         {
             _nackCountGw++;
-            s_sendResult = false;
         }
         else
         {
             _nackCountNode++;
-            s_sendResult = false;
         }
     }
 
     // Sinyal ke _send() yang sedang menunggu
-    if (s_sendSem)
+    if (s_sendSem && s_sendAwaiting && memcmp(mac, s_expectedDst, 6) == 0)
     {
-        BaseType_t woken = pdFALSE;
-        xSemaphoreGiveFromISR(s_sendSem, &woken);
-        portYIELD_FROM_ISR(woken);
+        s_sendResult = (status == ESP_NOW_SEND_SUCCESS);
+        s_sendAwaiting = false;
+        xSemaphoreGive(s_sendSem);
     }
 }
 
@@ -559,9 +571,7 @@ void EspNowMesh::_onDataRecv(const uint8_t* mac, const uint8_t* data, int len)
         memcpy(raw.data,   data, raw.len);
         memcpy(raw.srcMac, mac,  6);
 
-        BaseType_t woken = pdFALSE;
-        xQueueSendFromISR(_instance->_rxQueue, &raw, &woken);
-        if (woken == pdTRUE) portYIELD_FROM_ISR();
+        xQueueSend(_instance->_rxQueue, &raw, 0);
     }
 }
 
@@ -584,19 +594,54 @@ bool EspNowMesh::readPacket(RawPacket& out)
 //
 //   DILARANG: esp_now_fetch_peer(), esp_now_mod_peer(), esp_now_add_peer()
 //             — semua fungsi ini akan crash jika esp_now belum init
-//             — bahkan setelah esp_now init, TIDAK AMAN dipanggil dari ISR
+//             — tidak aman dipanggil dari callback Wi-Fi prioritas tinggi
 //
 //   Setelah esp_now ready (s_espnowReady=true), channel sync dilakukan
 //   via flag s_needChannelUpdate yang diproses dari task context.
 // =============================================================================
 
-// Flag untuk deferred channel update (diproses dari task, bukan ISR)
+// Flag untuk deferred channel update (diproses dari task biasa)
 static volatile uint8_t  s_pendingChannel = 0;
 static volatile bool     s_needChannelUpdate = false;
 
 bool EspNowMesh::processPendingChannelSync()
 {
-    if (!s_needChannelUpdate) return false;
+    if (!s_needChannelUpdate)
+    {
+        // If AP association failed, rotate slowly enough to overlap the
+        // gateway's one-second beacon on every channel.
+        if (!s_channelConfirmed &&
+            millis() - s_lastChannelSweepMs >= RoutingCfg::BEACON_INTERVAL_MS + 200)
+        {
+            if (s_sendMutex &&
+                xSemaphoreTake(s_sendMutex, pdMS_TO_TICKS(100)) != pdTRUE)
+            {
+                return false;
+            }
+
+            const uint8_t nextCh = s_channel >= 13 ? 1 : s_channel + 1;
+            const esp_err_t err = esp_wifi_set_channel(nextCh, WIFI_SECOND_CHAN_NONE);
+            if (err == ESP_OK)
+            {
+                s_channel = nextCh;
+                s_lastChannelSweepMs = millis();
+                LOG_WARN(TAG, "Fallback channel sweep -> ch=%d", nextCh);
+            }
+            else
+            {
+                LOG_ERROR(TAG, "Fallback channel sweep gagal: %s", esp_err_to_name(err));
+            }
+
+            if (s_sendMutex) xSemaphoreGive(s_sendMutex);
+        }
+        return false;
+    }
+
+    if (s_sendMutex &&
+        xSemaphoreTake(s_sendMutex, pdMS_TO_TICKS(100)) != pdTRUE)
+    {
+        return false;
+    }
 
     const uint8_t newCh = s_pendingChannel;
     s_needChannelUpdate = false;
@@ -625,12 +670,14 @@ bool EspNowMesh::processPendingChannelSync()
 
     LOG_WARN(TAG, "Channel sync + peer re-register → ch=%d | %d peers",
              newCh, updated);
+    if (s_sendMutex) xSemaphoreGive(s_sendMutex);
     return true;
 }
 
 void EspNowMesh::_promiscuousRxCb(void* buf, wifi_promiscuous_pkt_type_t type)
 {
-    if (type != WIFI_PKT_DATA) return;
+    // ESP-NOW uses vendor-specific Wi-Fi management action frames.
+    if (type != WIFI_PKT_MGMT) return;
     if (!_instance) return;
 
     const wifi_promiscuous_pkt_t* ppkt =
@@ -660,7 +707,7 @@ void EspNowMesh::_promiscuousRxCb(void* buf, wifi_promiscuous_pkt_type_t type)
 
     if (beaconCh < 1 || beaconCh > 13) return;
 
-    // Update RSSI — aman dari ISR (hanya write ke volatile variable)
+    // Callback hanya menulis state ringan; operasi peer ditunda ke task biasa.
     _instance->_lastBeaconRssi = rssi;
 
     // --- Deteksi gateway restart ---
@@ -712,7 +759,7 @@ void EspNowMesh::_promiscuousRxCb(void* buf, wifi_promiscuous_pkt_type_t type)
     else if (s_espnowReady && beaconCh != s_channel)
     {
         // Fase operasional (esp_now sudah init): channel berubah
-        // JANGAN panggil esp_now_mod_peer dari ISR!
+        // JANGAN panggil esp_now_mod_peer dari callback Wi-Fi!
         // Set flag, biarkan task yang handle
         static uint8_t s_midCandCh    = 0;
         static uint8_t s_midCandCount = 0;
